@@ -6,6 +6,8 @@ using UnityEngine.InputSystem;
 public class PlayerControl : MonoBehaviour
 {
 
+    private Vector2 currDirection;
+
     [SerializeField]
     PlayerValue playerValue;
 
@@ -38,6 +40,7 @@ public class PlayerControl : MonoBehaviour
         if (playerAnimator == null)
         {
             playerAnimator = GetComponentInChildren<Animator>();
+            Debug.LogAssertion(playerAnimator);
         }
 
 
@@ -50,15 +53,19 @@ public class PlayerControl : MonoBehaviour
             FrontCheckCollider = playerRigid.transform.Find("BodyCollider").GetComponent<Collider>();
         }
 
+        currDirection = playerRigid.transform.forward;
+
         //Bind();
     }
 
-
-
-    // Update is called once per frame
-    void Update()
+    private void FixedUpdate()
     {
         Move(moveAction.action.ReadValue<Vector2>());
+    }
+
+    private void Update()
+    {
+        LookDirection();
     }
 
     void OnJump(InputValue inputValue)
@@ -67,6 +74,16 @@ public class PlayerControl : MonoBehaviour
         {
             Jump();
         }
+    }
+
+    void LookDirection()
+    {
+        float angle = Mathf.Atan2(currDirection.x, currDirection.y) * Mathf.Rad2Deg;
+        Quaternion targetRotation = Quaternion.Euler(0, angle, 0);
+
+        Quaternion smoothRotation = Quaternion.Slerp(playerRigid.transform.rotation, targetRotation, Time.deltaTime * playerValue.rotateSpeed);
+
+        playerRigid.transform.rotation = smoothRotation;
     }
 
 
@@ -87,8 +104,7 @@ public class PlayerControl : MonoBehaviour
 
         input *= playerValue.moveSpeed;
         playerRigid.velocity = new Vector3(input.x, playerRigid.velocity.y, input.y);
-        playerRigid.transform.LookAt(playerRigid.transform.position + new Vector3(input.x, 0, input.y));
-        
+        currDirection = input;
     }
 
     void MoveEnd(Vector3 nonY)
