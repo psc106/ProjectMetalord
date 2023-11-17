@@ -5,55 +5,67 @@ using UnityEngine;
 
 public class Pulley : MonoBehaviour
 {
-    public float moveSpeed = 3f; // 풀리 이동 속도
-    public Transform topPosition; // 풀리가 이동할 최상단 위치 Transform
-    public Transform bottomPosition; // 풀리가 이동할 최하단 위치 Transform
+    public float moveSpeed = 3f; // 도르래 이동 속도
+    public Transform topPosition; // 도르래가 이동할 최상단 위치 Transform
+    public Transform bottomPosition; // 도르래가 이동할 최하단 위치 Transform
+    public bool isActivated = false; // 도르래가 활성화되었는지 여부
 
-    public bool isActivated = false; // 풀리가 활성화되었는지 여부
+
+    public float divideNum = 5; // 도르래 몇번 눌렀을때 도착하게 할지
+    private float upSize; // 한번 버튼을 밟았을때 올라가는 크기
+    private float checkSize; // 다음 위치값 계산을 위한 변수
+
+    private void Start()
+    {
+        // 한번 올라갈 크기(upSize)를 계산하여 초기화
+        upSize = topPosition.position.y / divideNum; 
+    }
+
 
     void Update()
     {
-        if (isActivated)
+        if (isActivated) // 도르래 활성화 되었는가
         {
-            UpPulley();
+            UpPulley(); // 활성화시 올라간다.
         }
         else
         {
-            DownPulley();
+            DownPulley(); // 아니면 내려간다.
         }
     }
 
-
-    //public void UpPulley()
-    //{
-    //    if (transform.position.y < topPosition.position.y) // 최상단 위치보다 위에 있지 않으면 위로 이동
-    //    {
-    //        transform.Translate(Vector3.up * moveSpeed * Time.deltaTime);
-    //    }
-    //    else // 최상단 위치에 도달하면 비활성화
-    //    {
-    //        isActivated = false;
-    //    }
-
-    //    if (transform.position.y > bottomPosition.position.y) // 최하단 위치보다 아래에 있지 않으면 아래로 이동
-    //    {
-    //        transform.Translate(Vector3.down * moveSpeed * Time.deltaTime);
-    //    }
-    //    else // 최하단 위치에 도달하면 비활성화
-    //    {
-    //        isActivated = false;
-    //    }
-    //}
-
-    private void UpPulley()
+    /// <summary>
+    /// 다음 위치값 계산 함수
+    /// 배경택_231117
+    /// </summary>
+    public void plusCheckSize()
     {
-        if (bottomPosition)
-            transform.Translate(Vector3.up * moveSpeed * Time.deltaTime);
+        checkSize = transform.position.y + upSize;
     }
 
+    /// <summary>
+    /// 도르래를 올리는 함수
+    /// 배경택_231117
+    /// </summary>
+    private void UpPulley()
+    {
+        // 계산된 크기보다 현재 y위치가 낮고, 가장 높은 포지션의 y값보다 현재 y위치값이 낮으면 활성화
+        if(checkSize > transform.position.y && topPosition.position.y > transform.position.y)
+        {
+            transform.Translate(Vector3.up * moveSpeed * Time.deltaTime);
+        }
+    }
 
+    /// <summary>
+    /// 도르래를 내리는 함수
+    /// 배경택_231117
+    /// </summary>
     private void DownPulley()
     {
-        transform.Translate(Vector3.down * moveSpeed * Time.deltaTime);
+        // 가장 낮은 포지션의 y값보다 현재 y위치값이 높으면 활성화
+        if(bottomPosition.position.y < transform.position.y)
+        {
+            transform.Translate(Vector3.down * moveSpeed * Time.deltaTime);
+        }
     }
 }
