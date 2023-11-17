@@ -1,16 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerCollision : MonoBehaviour
 {
     [SerializeField]
     PlayerValue playerValue;
-
     private void OnCollisionEnter(Collision collision)
     {
-        //ÃßÈÄ ¸Â´Â ·¹ÀÌ¾î·Î º¯°æ
-        if(collision.gameObject.layer == LayerMask.NameToLayer("Water"))
+        //ì¶”í›„ ë§ëŠ” ë ˆì´ì–´ë¡œ ë³€ê²½
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Water"))
         {
             if (!playerValue.isGround)
             {
@@ -21,20 +18,19 @@ public class PlayerCollision : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        //ÃßÈÄ ¸Â´Â ·¹ÀÌ¾î·Î º¯°æ
-        //¾ÆÀÌÅÛ »óÈ£ÀÛ¿ë
         if (other.gameObject.layer == LayerMask.NameToLayer("UI"))
         {
             IInteractObject interactObject = other.GetComponent<IInteractObject>();
 
-            //»óÈ£ÀÛ¿ë °¡´É »óÅÂÀÏ °æ¿ì ¾ÆÀÌÅÛ¿¡ popup
+            //ìƒí˜¸ì‘ìš© ê°€ëŠ¥ ìƒíƒœì¼ ê²½ìš° ì•„ì´í…œì— popup
+
             if (interactObject != null)
             {
                 if (playerValue.interactObject == null)
                 {
                     playerValue.interactObject = other.gameObject;
                 }
-                else if (CompareClosedDistance(playerValue.interactObject.transform.position,other.transform.position))
+                else if (CompareClosedDistance(playerValue.interactObject.transform.position, other.transform.position))
                 {
                     playerValue.interactObject = other.gameObject;
                 }
@@ -45,13 +41,13 @@ public class PlayerCollision : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        //ÃßÈÄ ¸Â´Â ·¹ÀÌ¾î·Î º¯°æ
-        //¾ÆÀÌÅÛ »óÈ£ÀÛ¿ë
+        //ì¶”í›„ ë§ëŠ” ë ˆì´ì–´ë¡œ ë³€ê²½
+        //ì•„ì´í…œ ìƒí˜¸ì‘ìš©
         if (other.gameObject.layer == LayerMask.NameToLayer("UI"))
         {
             IInteractObject interactObject = other.GetComponent<IInteractObject>();
 
-            //»óÈ£ÀÛ¿ë °¡´É »óÅÂÀÏ °æ¿ì ¾ÆÀÌÅÛ¿¡ popup
+            //ìƒí˜¸ì‘ìš© ê°€ëŠ¥ ìƒíƒœì¼ ê²½ìš° ì•„ì´í…œì— popup
             if (interactObject != null)
             {
                 if (playerValue.interactObject == other.gameObject)
