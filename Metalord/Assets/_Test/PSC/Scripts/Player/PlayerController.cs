@@ -2,20 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Windows;
 
-public class PlayerControl : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
+    private Vector2 moveDir;
+    private bool jumpTrigger;
+    private bool interactTrigger;
 
-    private Vector2 currDirection;
 
     [SerializeField]
     PlayerValue playerValue;
 
     [SerializeField]
-    InputActionReference moveAction;
+    private InputReader reader;
 
-    [SerializeField]
-    private PlayerInput input;
     [SerializeField]
     private Rigidbody playerRigid;
     [SerializeField]
@@ -27,12 +28,6 @@ public class PlayerControl : MonoBehaviour
 
     private void Awake()
     {
-        if (input == null)
-        {
-            input = GetComponent<PlayerInput>();
-        }
-
-
         if (playerRigid == null)
         {
             playerRigid = GetComponentInChildren<Rigidbody>();
@@ -40,7 +35,6 @@ public class PlayerControl : MonoBehaviour
         if (playerAnimator == null)
         {
             playerAnimator = GetComponentInChildren<Animator>();
-            Debug.LogAssertion(playerAnimator);
         }
 
 
@@ -53,14 +47,21 @@ public class PlayerControl : MonoBehaviour
             FrontCheckCollider = playerRigid.transform.Find("BodyCollider").GetComponent<Collider>();
         }
 
-        currDirection = playerRigid.transform.forward;
+        moveDir = playerRigid.transform.forward;
+        jumpTrigger = false;
+        interactTrigger = false;
 
-        //Bind();
+    }
+
+    private void Start()
+    {
+        BindHandler();
     }
 
     private void FixedUpdate()
     {
-        Move(moveAction.action.ReadValue<Vector2>());
+        Move(moveDir);
+        Jump();
     }
 
     private void Update()
@@ -68,17 +69,10 @@ public class PlayerControl : MonoBehaviour
         LookDirection();
     }
 
-    void OnJump(InputValue inputValue)
-    {
-        if (playerValue.isGround)
-        {
-            Jump();
-        }
-    }
 
     void LookDirection()
     {
-        float angle = Mathf.Atan2(currDirection.x, currDirection.y) * Mathf.Rad2Deg;
+        float angle = Mathf.Atan2(moveDir.x, moveDir.y) * Mathf.Rad2Deg;
         Quaternion targetRotation = Quaternion.Euler(0, angle, 0);
 
         Quaternion smoothRotation = Quaternion.Slerp(playerRigid.transform.rotation, targetRotation, Time.deltaTime * playerValue.rotateSpeed);
@@ -90,7 +84,7 @@ public class PlayerControl : MonoBehaviour
     void Move(Vector2 input)
     {
 
-        if (input.magnitude <= 0)
+        if (input == Vector2.zero)
         {
             Vector3 nonY = playerRigid.velocity;
             nonY.y = 0;
@@ -104,7 +98,7 @@ public class PlayerControl : MonoBehaviour
 
         input *= playerValue.moveSpeed;
         playerRigid.velocity = new Vector3(input.x, playerRigid.velocity.y, input.y);
-        currDirection = input;
+        moveDir = input;
     }
 
     void MoveEnd(Vector3 nonY)
@@ -115,19 +109,44 @@ public class PlayerControl : MonoBehaviour
     void Jump()
     {
         playerRigid.AddForce(Vector3.up* playerValue.jumpForce, ForceMode.Impulse);
-        playerValue.SetGroundState(false);
+        playerValue.CheckGround = (false);
     }
 
-    public void Bind()
+    void HandleMove(Vector2 dir)
     {
-
-        this.moveAction.action.performed += (callbackContext) =>
-        {
-        };
-
-        this.moveAction.action.canceled += (callbackContext) =>
-        {
-        };
+        moveDir = dir;
     }
 
+    private void HandleJump()
+    {
+        jumpTrigger = true;
+
+    }
+    private void HandleJumpCancel()
+    {
+        jumpTrigger = false;
+
+    }
+
+    private void HandleInteract()
+    {
+        interactTrigger = true;
+
+    }
+    private void HandleInteractCancel()
+    {
+        interactTrigger = false;
+
+    }
+
+    private void BindHandler()
+    {
+        reader.MoveEvent += HandleMove;
+
+        reader.JumpEvent += HandleJump;
+        reader.JumpCancelEvent += HandleJumpCancel;
+
+        reader.InteractEvent += HandleInteract;
+        reader.InteractCancelEvent += HandleInteractCancel;
+    }
 }

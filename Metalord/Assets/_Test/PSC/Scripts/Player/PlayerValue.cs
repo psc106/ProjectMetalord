@@ -8,34 +8,29 @@ public class PlayerValue : MonoBehaviour
     public float rotateSpeed = 5;
     public float jumpForce = 5;
     public float slowSpeed = 0.5f;
-    public bool isGround { get; private set; }
-    public bool isInteract { get; private set; }
+
+    private bool checkGround;
+    private bool checkGrabObject;
+    private bool checkUmbrellaOpen;
+    private bool checkMoveToObject;
+    public bool CheckGround { get { return checkGround; } set { checkGround = value; } }
+    public bool CheckGrabObject { get { return checkGrabObject; } set { checkGrabObject = value; } }
+    public bool CheckUmbrellaOpen { get { return checkUmbrellaOpen; } set { checkUmbrellaOpen = value; } }
+    public bool CheckMoveToObject { get { return checkMoveToObject; } set { checkMoveToObject = value; } }
 
     public PlayerState stateMachine;
-    public GameObject interactObject;
-
-    public Transform handPos;
 
     private void Awake()
     {
-        isGround = true;
+        checkGround = true;
+        checkGrabObject = false;
+        checkUmbrellaOpen = false;
+        checkMoveToObject = false;
         stateMachine = PlayerState.IDLE;
-        interactObject = null;
     }
-    public void SetGroundState(bool check)
-    {
-        isGround = check;
-    }
-    public void SetInteractState(bool state)
-    {
-        isInteract = state;
-    }
-
-
-
 }
 
 public enum PlayerState
 {
-    IDLE, JUMP, ITEM, STORY
+    IDLE, JUMP, GRAB, STOP
 }
