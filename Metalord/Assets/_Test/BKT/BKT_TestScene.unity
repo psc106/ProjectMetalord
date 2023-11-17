@@ -402,7 +402,7 @@ GameObject:
   - component: {fileID: 298188570}
   m_Layer: 0
   m_Name: item3
-  m_TagString: Untagged
+  m_TagString: Item
   m_Icon: {fileID: 5721338939258241955, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -663,66 +663,12 @@ Transform:
   m_GameObject: {fileID: 608489974}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 671087891}
-  m_Father: {fileID: 1397107429}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &671087890
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 671087891}
-  - component: {fileID: 671087892}
-  m_Layer: 0
-  m_Name: Range
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &671087891
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 671087890}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 3.06, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 608489975}
+  m_Father: {fileID: 1397107429}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!135 &671087892
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 671087890}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 5
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &698680892
 GameObject:
   m_ObjectHideFlags: 0
@@ -1078,7 +1024,7 @@ Transform:
   m_GameObject: {fileID: 1213388300}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 7.83, z: 0}
+  m_LocalPosition: {x: 0, y: 11.04, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1170,8 +1116,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1315401057}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.2854271, y: 0.01725006, z: -0.005138245, w: 0.9582314}
-  m_LocalPosition: {x: 0.051324606, y: 11.09239, z: -16.151999}
+  m_LocalRotation: {x: 0.36850277, y: 0.0013949928, z: -0.000552852, w: 0.92962545}
+  m_LocalPosition: {x: 0.85408753, y: 14.84227, z: -19.254208}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1320,9 +1266,10 @@ GameObject:
   - component: {fileID: 1565228170}
   - component: {fileID: 1565228169}
   - component: {fileID: 1565228168}
+  - component: {fileID: 1565228172}
   - component: {fileID: 1565228167}
   - component: {fileID: 1565228171}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Pulley
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1409,7 +1356,7 @@ Transform:
   m_GameObject: {fileID: 1565228165}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.09, y: 0.1, z: 0}
+  m_LocalPosition: {x: -0.09, y: 3.1599998, z: 0}
   m_LocalScale: {x: 1, y: 0.2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1432,6 +1379,27 @@ MonoBehaviour:
   bottomPosition: {fileID: 608489975}
   isActivated: 0
   divideNum: 5
+--- !u!135 &1565228172
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1565228165}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 5
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1658911834
 GameObject:
   m_ObjectHideFlags: 0
@@ -1703,7 +1671,7 @@ GameObject:
   - component: {fileID: 1801861997}
   m_Layer: 0
   m_Name: item2
-  m_TagString: Untagged
+  m_TagString: Item
   m_Icon: {fileID: 5721338939258241955, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2170,7 +2138,7 @@ GameObject:
   - component: {fileID: 2147338873}
   m_Layer: 0
   m_Name: item1
-  m_TagString: Untagged
+  m_TagString: Item
   m_Icon: {fileID: 5721338939258241955, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

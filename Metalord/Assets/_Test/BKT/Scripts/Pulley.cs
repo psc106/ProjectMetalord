@@ -18,7 +18,7 @@ public class Pulley : MonoBehaviour
     private void Start()
     {
         // 한번 올라갈 크기(upSize)를 계산하여 초기화
-        upSize = topPosition.position.y / divideNum; 
+        upSize = (topPosition.position.y - bottomPosition.position.y) / divideNum; 
     }
 
 
@@ -33,6 +33,17 @@ public class Pulley : MonoBehaviour
             DownPulley(); // 아니면 내려간다.
         }
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.tag == "Item")
+        {
+            other.transform.parent = transform;
+            other.transform.position = new Vector3(transform.position.x, transform.position.y - 1,transform.position.z);
+            other.GetComponent<Rigidbody>().isKinematic = true;
+        }
+    }
+
 
     /// <summary>
     /// 다음 위치값 계산 함수
