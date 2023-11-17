@@ -29,7 +29,7 @@ public class InputReader : ScriptableObject, PlayerAction.IPlayerActions
     }
     public void OnInteract(InputAction.CallbackContext context)
     {
-        if (context.phase == InputActionPhase.Performed)
+        if (context.phase == InputActionPhase.Started)
         {
             InteractEvent?.Invoke();
         }
@@ -41,7 +41,7 @@ public class InputReader : ScriptableObject, PlayerAction.IPlayerActions
 
     public void OnJump(InputAction.CallbackContext context)
     {
-        if (context.phase == InputActionPhase.Performed)
+        if (context.phase == InputActionPhase.Started)
         {
             JumpEvent?.Invoke();
         }

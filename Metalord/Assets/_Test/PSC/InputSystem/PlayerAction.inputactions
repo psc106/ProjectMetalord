@@ -1,19 +1,10 @@
 {
-    "name": "PlayerInputActions",
+    "name": "PlayerAction",
     "maps": [
         {
             "name": "Player",
             "id": "da545b12-c430-4807-91bf-31261279ca3e",
             "actions": [
-                {
-                    "name": "Jump",
-                    "type": "Button",
-                    "id": "d8bccdce-9e47-46bc-be22-93d06b40415c",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
                 {
                     "name": "Move",
                     "type": "Value",
@@ -22,6 +13,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "Jump",
+                    "type": "Button",
+                    "id": "d8bccdce-9e47-46bc-be22-93d06b40415c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Interact",
@@ -46,9 +46,20 @@
                     "isPartOfComposite": false
                 },
                 {
+                    "name": "",
+                    "id": "311c40ba-547c-48d0-960d-f9e0e707b5a1",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
                     "name": "KeyBoard",
                     "id": "c92f5a65-e9e9-40be-9d50-8822494e3002",
-                    "path": "2DVector",
+                    "path": "2DVector(mode=1)",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -99,17 +110,6 @@
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
-                },
-                {
-                    "name": "",
-                    "id": "311c40ba-547c-48d0-960d-f9e0e707b5a1",
-                    "path": "<Keyboard>/e",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Interact",
-                    "isComposite": false,
-                    "isPartOfComposite": false
                 }
             ]
         }

@@ -9,9 +9,11 @@ public class PlayerCollision : MonoBehaviour
         //추후 맞는 레이어로 변경
         if (collision.gameObject.layer == LayerMask.NameToLayer("Water"))
         {
-            if (!playerValue.isGround)
+            if (!playerValue.CheckGround)
             {
-                playerValue.SetGroundState(true);
+                playerValue.CheckGround = (true);
+                playerValue.playerState = PlayerState.IDLE;
+                playerValue.force = new Vector3(0, -1, 0);
             }
         }
     }
@@ -26,7 +28,7 @@ public class PlayerCollision : MonoBehaviour
 
             if (interactObject != null)
             {
-                if (playerValue.interactObject == null)
+                if (playerValue.playerState != PlayerState.GRAB)
                 {
                     playerValue.interactObject = other.gameObject;
                 }
