@@ -6,6 +6,8 @@ public class Player : MonoBehaviour
 {
     public float moveSpeed = 5f; // 플레이어 이동 속도
     public float jumpForce = 5f; // 플레이어 점프 힘
+    public bool isUmbrella = false; // 플레이어가 우산을 펼쳤는지
+    private bool toggleUmbrella = false;
     private Rigidbody rb; // Rigidbody 컴포넌트
 
     void Start()
@@ -26,8 +28,18 @@ public class Player : MonoBehaviour
         {
             Jump();
         }
+
+        // 우산 처리
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            if(isUmbrella == false) isUmbrella = true;
+            else isUmbrella = false;
+
+            Debug.Log(isUmbrella);
+        }
     }
 
+    // 점프 함수
     void Jump()
     {
         if (Mathf.Abs(rb.velocity.y) < 0.01f) // 플레이어가 바닥에 있을 때만 점프 가능하도록
