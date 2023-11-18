@@ -3,23 +3,11 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    //IDLE =0, GRAB, JUMP, FALL, UMBRELLA, SYSTEM_STOP
-    float[] moveMultiple = { 1, .7f, .2f, 0, .3f, 0f };
-
-    //입력 데이터
-    private Vector2 moveValue;
     private Vector2 preMoveDir;
-    private bool jumpTrigger;
-    private bool interactTrigger;
 
-
-    //인풋 시스템
+    //플레이어가 가진 값들
     [SerializeField]
     PlayerValue playerValue;
-
-    //인풋 시스템 리더
-    [SerializeField]
-    private InputReader reader;
 
     //기본 컴퍼넌트
     [SerializeField]
@@ -52,18 +40,9 @@ public class PlayerController : MonoBehaviour
             FrontCheckCollider = playerRigid.transform.Find("BodyCollider").GetComponent<Collider>();
         }
 
-        //입력 초기화
-        moveValue = Vector2.zero;
         preMoveDir = -Vector3.forward;
-        jumpTrigger = false;
-        interactTrigger = false;
     }
 
-    private void Start()
-    {
-        //키-함수 바인드
-        BindHandler();
-    }
 
     private void Update()
     {
@@ -105,7 +84,7 @@ public class PlayerController : MonoBehaviour
         Quaternion targetRotation = Quaternion.Euler(0, angle, 0);
 
         //lerp를 사용하여 부드럽게 회전시킨다.
-        Quaternion smoothRotation = Quaternion.Slerp(playerRigid.transform.rotation, targetRotation, Time.deltaTime * playerValue.rotateSpeed);
+        Quaternion smoothRotation = Quaternion.Slerp(playerRigid.transform.rotation, targetRotation, Time.deltaTime * playerValue.RotateSpeed);
 
         //적용
         playerRigid.transform.rotation = smoothRotation;
@@ -116,10 +95,12 @@ public class PlayerController : MonoBehaviour
     void Move()
     {
         //상태에 따른 이동속도 계수
-        float multiple = moveMultiple[(int)playerValue.playerState];
+        float multiple = playerValue.GetMoveMultiple();
 
+        Debug.Log(multiple);
+        Debug.Log(playerValue.moveValue);
         //이동키를 뗄 경우
-        if (moveValue == Vector2.zero)
+        if (playerValue.moveValue == Vector2.zero)
         {
             //천천히 멈춘다.
             StopSmooth();
@@ -129,9 +110,9 @@ public class PlayerController : MonoBehaviour
         //이동키 누를 경우
 
         //입력 방향 저장
-        preMoveDir = moveValue;
+        preMoveDir = playerValue.moveValue;
         //기본 속도 + 이동속도 계수 계산
-        Vector2 input = moveValue * playerValue.moveSpeed * multiple;
+        Vector2 input = playerValue.moveValue * playerValue.MoveSpeed * multiple;
 
         //적용
         playerRigid.velocity = new Vector3(input.x, playerRigid.velocity.y, input.y);
@@ -148,21 +129,21 @@ public class PlayerController : MonoBehaviour
         if (nonY.magnitude >= 0.005f)
         {
             //미리 설정한 속도를 계속 곱하여 적용
-            playerRigid.velocity = nonY * playerValue.slowSpeed + Vector3.up * playerRigid.velocity.y;
+            playerRigid.velocity = nonY * playerValue.SlowSpeed + Vector3.up * playerRigid.velocity.y;
         }
     }
 
     void Jump()
     {
         //점프 입력이 들어온 경우
-        if (jumpTrigger)
+        if (playerValue.jumpTrigger)
         {
-            jumpTrigger = false;
+            playerValue.jumpTrigger = false;
             //기본 상태 - 점프
             if (playerValue.playerState == PlayerState.IDLE)
             {
                 playerValue.playerState = PlayerState.JUMP;
-                playerRigid.AddForce(Vector3.up * playerValue.jumpForce, ForceMode.Impulse);
+                playerRigid.AddForce(Vector3.up * playerValue.JumpForce, ForceMode.Impulse);
                 playerValue.CheckGround = (false);
                 playerValue.extraGravity.enabled = true;
             }
@@ -197,10 +178,10 @@ public class PlayerController : MonoBehaviour
 
     void Interact()
     {
-        if (interactTrigger)
+        if (playerValue.interactTrigger)
         {
             Debug.Log("상호작용키");
-            interactTrigger = false;
+            playerValue.interactTrigger = false;
         }
     }
 
@@ -248,45 +229,4 @@ public class PlayerController : MonoBehaviour
 
     }
 
-
-    #region 바인딩 함수
-    private void BindHandler()
-    {
-        reader.MoveEvent += HandleMove;
-
-        reader.JumpEvent += HandleJump;
-        reader.JumpCancelEvent += HandleJumpCancel;
-
-        reader.InteractEvent += HandleInteract;
-        reader.InteractCancelEvent += HandleInteractCancel;
-    }
-
-    void HandleMove(Vector2 dir)
-    {
-        moveValue = dir;
-    }
-
-    private void HandleJump()
-    {
-        jumpTrigger = true;
-
-    }
-    private void HandleJumpCancel()
-    {
-        jumpTrigger = false;
-
-    }
-
-    private void HandleInteract()
-    {
-        interactTrigger = true;
-
-    }
-    private void HandleInteractCancel()
-    {
-        interactTrigger = false;
-
-    }
-
-    #endregion
 }
