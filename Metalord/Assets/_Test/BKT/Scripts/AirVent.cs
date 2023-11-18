@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AirVent : MonoBehaviour
 {
-    public float upwardForce = 20f; // 위로 가해질 힘
+    public float upwardForce = 15f; // 위로 가해질 힘
 
     private void OnTriggerStay(Collider other)
     {
