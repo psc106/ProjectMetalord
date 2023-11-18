@@ -22,11 +22,13 @@ public class PlayerValue : MonoBehaviour
 
     public Transform openUmbrella;
     public Transform closeUmbrella;
-    public ConstantForce constantForce;
 
-    private void Awake()
+    public ConstantForce extraGravity;
+
+    private void Awake()    
     {
         checkGround = true;
+        extraGravity.enabled = false;
         playerState = PlayerState.IDLE;
     }
 }

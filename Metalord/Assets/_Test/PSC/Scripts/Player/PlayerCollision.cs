@@ -13,7 +13,7 @@ public class PlayerCollision : MonoBehaviour
             {
                 playerValue.CheckGround = (true);
                 playerValue.playerState = PlayerState.IDLE;
-                playerValue.force = new Vector3(0, -1, 0);
+                playerValue.extraGravity.enabled = false;
             }
         }
     }
