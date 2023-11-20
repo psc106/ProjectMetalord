@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Windows;
 
 
 public class PlayerController : MonoBehaviour
@@ -46,6 +47,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        CheckItemDistance();
         //공중 체크
         //기본 상태, 그랩 상태, 점프 상태일 경우 작동한다.
         //아래 방향으로 레이캐스트 진행
@@ -89,6 +91,31 @@ public class PlayerController : MonoBehaviour
         //적용
         playerRigid.transform.rotation = smoothRotation;
 
+        if (playerValue.playerState == PlayerState.GRAB)
+        {
+            playerValue.interactObject.transform.LookAt(playerRigid.position-Vector3.up* playerRigid.position.y+Vector3.up*playerValue.interactObject.transform.position.y);
+        }
+    }
+
+    void CheckItemDistance()
+    {
+        if (playerValue.playerState == PlayerState.GRAB)
+        {
+            if (Mathf.Abs(playerValue.interactObject.transform.position.y - transform.position.y) > 4)
+            {
+                Debug.Log("높이로 인한 해제 : "+ Mathf.Abs(playerValue.interactObject.transform.position.y - transform.position.y));
+                playerValue.playerState = PlayerState.IDLE;
+                playerValue.interactObject.Interact(playerValue);
+            }
+            if(Vector3.Distance(playerValue.interactObject.transform.position-Vector3.up* playerValue.interactObject.transform.position.y,
+                                playerRigid.position - Vector3.up * playerRigid.position.y) >= 6)
+            {
+                Debug.Log("이동 거리로 인한 해제 : "+ Vector3.Distance(playerValue.interactObject.transform.position - Vector3.up * playerValue.interactObject.transform.position.y,
+                                playerRigid.position - Vector3.up * playerRigid.position.y));
+                playerValue.playerState = PlayerState.IDLE;
+                playerValue.interactObject.Interact(playerValue);
+            }
+        }
     }
 
 
@@ -97,8 +124,6 @@ public class PlayerController : MonoBehaviour
         //상태에 따른 이동속도 계수
         float multiple = playerValue.GetMoveMultiple();
 
-        Debug.Log(multiple);
-        Debug.Log(playerValue.moveValue);
         //이동키를 뗄 경우
         if (playerValue.moveValue == Vector2.zero)
         {
@@ -116,6 +141,10 @@ public class PlayerController : MonoBehaviour
 
         //적용
         playerRigid.velocity = new Vector3(input.x, playerRigid.velocity.y, input.y);
+        if (playerValue.playerState == PlayerState.GRAB)
+        {
+            playerValue.interactObject.itemRigidbody.velocity = playerRigid.velocity;
+        }
     }
 
 
@@ -130,6 +159,10 @@ public class PlayerController : MonoBehaviour
         {
             //미리 설정한 속도를 계속 곱하여 적용
             playerRigid.velocity = nonY * playerValue.SlowSpeed + Vector3.up * playerRigid.velocity.y;
+            if (playerValue.playerState == PlayerState.GRAB)
+            {
+                playerValue.interactObject.itemRigidbody.velocity = playerRigid.velocity;
+            }
         }
     }
 
@@ -182,6 +215,26 @@ public class PlayerController : MonoBehaviour
         {
             Debug.Log("상호작용키");
             playerValue.interactTrigger = false;
+            if (playerValue.playerState == PlayerState.IDLE)
+            {
+                if (playerValue.interactObject != null)
+                {
+                    playerValue.playerState = PlayerState.GRAB;
+                    playerValue.interactObject.Interact(playerValue);
+                }
+
+            }
+            else if (playerValue.playerState == PlayerState.GRAB)
+            {
+                if (playerValue.interactObject != null)
+                {
+                    playerValue.playerState = PlayerState.IDLE;
+                    playerValue.interactObject.Interact(playerValue);
+                }
+
+            }
+
+
         }
     }
 

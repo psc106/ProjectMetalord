@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class PlayerValue : MonoBehaviour
 {
-    //IDLE =0, GRAB, JUMP, FALL, UMBRELLA, SYSTEM_STOP
-    private float[] moveMultiple = { 1, .7f, .6f, 0.1f, .3f, 0f };
+    //IDLE, GRAB, JUMP, FALL, UMBRELLA, SYSTEM_STOP
+    private float[] moveMultiple = { 1, .2f, .6f, 0.1f, .3f, 0f };
     public float GetMoveMultiple()
     {     
         return moveMultiple[(int)playerState];
@@ -36,9 +36,11 @@ public class PlayerValue : MonoBehaviour
     private bool checkGround;
     public bool CheckGround { get { return checkGround; } set { checkGround = value; } }
 
+    private bool checkInteract;
+    public bool CheckInteract { get { return checkInteract; } set { checkInteract = value; } }
 
     public PlayerState playerState;
-    public GameObject interactObject;
+    public ItemBaseTest interactObject;
 
     public Transform leftHandsHook;
     public Transform rightHandsHook;
@@ -54,6 +56,7 @@ public class PlayerValue : MonoBehaviour
     private void Awake()    
     {
         checkGround = true;
+        checkGround = false;
         extraGravity.enabled = false;
         playerState = PlayerState.IDLE;
 
