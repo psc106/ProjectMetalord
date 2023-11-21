@@ -1,14 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
+[System.Serializable]
 public class QuestData
 {
-    public string questName;
-    public int[] npcId;
+    public QuestState state;
+    public int questStepIndex;
+    public QuestStepState[] questStepStates;
 
-    public QuestData(string _questName, int[] _npcId)
+    public QuestData(QuestState state, int questStepIndex, QuestStepState[] questStepStates)
     {
-        questName = _questName;
-        npcId = _npcId;
+        this.state = state;
+        this.questStepIndex = questStepIndex;
+        this.questStepStates = questStepStates;
     }
 }
