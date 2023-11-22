@@ -81,6 +81,7 @@ public class PlayerController : MonoBehaviour
 
         CheckEnviroment();
         Move();
+        LookDirection();
         Jump();
 
     }
@@ -144,7 +145,6 @@ public class PlayerController : MonoBehaviour
                         playerRigid.AddForce(Vector3.down * 100, ForceMode.Force);
                     }
                 }
-                playerRigid.transform.rotation = Quaternion.LookRotation(preMoveDir);
             }
             //천천히 멈춘다.
             return;
@@ -167,7 +167,6 @@ public class PlayerController : MonoBehaviour
         {
             Vector3 slopeAngle = Vector3.ProjectOnPlane(inputDirection, groundHit.normal).normalized;
             playerRigid.velocity = (slopeAngle * playerValue.moveSpeed * multiple);
-            playerRigid.transform.rotation = Quaternion.LookRotation(slopeAngle);
             if (playerRigid.velocity.y > 0)
             {
             }
@@ -176,7 +175,6 @@ public class PlayerController : MonoBehaviour
         else
         {
             playerRigid.velocity = inputDirection + (Vector3.up * playerRigid.velocity.y);
-            playerRigid.transform.rotation = Quaternion.LookRotation(inputDirection);
             preMoveDir = inputDirection;
         }
 
@@ -190,7 +188,26 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+    void LookDirection()
+    {
+        //lerp를 사용하여 부드럽게 회전시킨다.
+        Quaternion smoothRotation = Quaternion.Slerp(playerRigid.transform.rotation, Quaternion.LookRotation(preMoveDir), Time.deltaTime * playerValue.rotateSpeed);
 
+        //적용
+        playerRigid.rotation = smoothRotation;
+
+
+
+        if (playerValue.playerState == PlayerState.GRAB)
+        {
+            Vector3 player = playerRigid.position;
+            Vector3 item = playerValue.interactObject.transform.position;
+            player.y = item.y;
+
+            //playerValue.interactObject.transform.LookAt(player);
+            playerRigid.transform.LookAt(item);
+        }
+    }
 
     void Jump()
     {
