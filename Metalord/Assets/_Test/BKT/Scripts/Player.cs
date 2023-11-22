@@ -7,6 +7,8 @@ public class Player : MonoBehaviour
     public float moveSpeed = 5f; // 플레이어 이동 속도
     public float jumpForce = 5f; // 플레이어 점프 힘
     public bool isUmbrella = false; // 플레이어가 우산을 펼쳤는지
+    public float INTERECT_RADIOUS = 1f; // 상호작용 반경
+
     private bool toggleUmbrella = false;
     private Rigidbody rb; // Rigidbody 컴포넌트
 
@@ -37,6 +39,32 @@ public class Player : MonoBehaviour
 
             Debug.Log(isUmbrella);
         }
+
+        // NPC와 상호작용
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            CheckNPC();
+        }
+    }
+
+    /// <summary>
+    /// [임시] 플레이어가 NPC와 상호작용할때 사용하는 함수
+    /// </summary>
+    void CheckNPC()
+    {
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position,INTERECT_RADIOUS); // 반경 유닛 내의 충돌체 검출
+
+        foreach (Collider col in hitColliders)
+        {
+            if (col.gameObject.layer == LayerMask.NameToLayer("NPC"))
+            {
+                Debug.Log("NPC 상호작용 함수 호출");
+
+                // 상대방 객체의 함수 호출
+                col.GetComponent<NPC>().InterectNPC();
+                break; // NPC를 찾아서 함수 호출했다면 foreach문 종료
+            }
+        }
     }
 
     // 점프 함수
@@ -47,4 +75,6 @@ public class Player : MonoBehaviour
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
     }
+
+
 }
