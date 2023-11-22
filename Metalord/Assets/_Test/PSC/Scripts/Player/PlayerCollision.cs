@@ -4,26 +4,16 @@ using UnityEngine;
 public class PlayerCollision : MonoBehaviour
 {
 
-    public GameObject TEST;
-
     [SerializeField]
     PlayerValue playerValue;
-    private void OnCollisionEnter(Collision collision)
-    {
-        //추후 맞는 레이어로 변경
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
-        {
-            if (!playerValue.CheckGround)
-            {
-                playerValue.CheckGround = (true);
-                playerValue.playerState = PlayerState.IDLE;
-                playerValue.extraGravity.enabled = false;
-            }
-        }
-    }
 
     private void OnTriggerStay(Collider other)
     {
+
+        if(playerValue.playerState == PlayerState.GRAB || (playerValue.interactObject != null && other.gameObject == playerValue.interactObject.gameObject))
+        {
+            return;
+        }
 
         if (other.gameObject.layer == LayerMask.NameToLayer("InteractObject"))
         {
@@ -33,15 +23,20 @@ public class PlayerCollision : MonoBehaviour
 
             if (interactObject != null)
             {
-                Debug.Log(playerValue.interactObject);
-                if (playerValue.playerState != PlayerState.GRAB)
+                if (playerValue.interactObject == null) {
+
+                    other.GetComponent<Renderer>().material.color = Color.blue;
+                    playerValue.interactObject = other.gameObject.GetComponent<ItemBaseTest>();
+
+                }
+                else if (CompareClosedDistance(other.transform.position,playerValue.interactObject.transform.position))
                 {
+                    playerValue.interactObject.GetComponent<Renderer>().material.color = Color.gray;
+
+                    other.GetComponent<Renderer>().material.color = Color.blue;
                     playerValue.interactObject = other.gameObject.GetComponent<ItemBaseTest>();
                 }
-                else if (CompareClosedDistance(playerValue.interactObject.transform.position, other.transform.position))
-                {
-                    playerValue.interactObject = other.gameObject.GetComponent<ItemBaseTest>();
-                }
+
             }
         }
 
@@ -64,8 +59,9 @@ public class PlayerCollision : MonoBehaviour
             if (interactObject != null)
             {
                 Debug.Log("out : "+playerValue.interactObject+"/"+ other.gameObject);
-                if (playerValue.interactObject == other.gameObject)
+                if (playerValue.interactObject.gameObject == other.gameObject)
                 {
+                    playerValue.interactObject.GetComponent<Renderer>().material.color = Color.gray;
                     playerValue.interactObject = null;
                 }
             }
