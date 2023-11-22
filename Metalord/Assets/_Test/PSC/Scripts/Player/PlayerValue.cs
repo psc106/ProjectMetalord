@@ -20,32 +20,25 @@ public class PlayerValue : MonoBehaviour
     [HideInInspector]
     public bool interactTrigger;
 
-    [SerializeField]
-    float moveSpeed = default;
-    public float MoveSpeed { get { return moveSpeed; } private set { moveSpeed = value; } }
-    [SerializeField]
-    float rotateSpeed = default;
-    public float RotateSpeed { get { return rotateSpeed; } private set { rotateSpeed = value; } }
-    [SerializeField]
-    float jumpForce = default;
-    public float JumpForce { get { return jumpForce; } private set { jumpForce = value; } }
-    [SerializeField]
-    float slowSpeed = default;
-    public float SlowSpeed { get { return slowSpeed; } private set { slowSpeed = value; } }
+    public float moveSpeed = default;
+    public float rotateSpeed = default;
+    public float jumpForce = default;
+    public float slowSpeed = default;
 
-    private bool checkGround;
-    public bool CheckGround { get { return checkGround; } set { checkGround = value; } }
-
-    private bool checkInteract;
-    public bool CheckInteract { get { return checkInteract; } set { checkInteract = value; } }
+    public bool checkGround;
+    public bool checkInteract;
+    public bool checkSlope;
 
     public PlayerState playerState;
     public ItemBaseTest interactObject;
+    public float grabDistance;
 
+    public Transform oriented;
     public Transform leftHandsHook;
     public Transform rightHandsHook;
     public Transform openUmbrella;
     public Transform closeUmbrella;
+    public Transform closeUmbrellaEnd;
 
     public ConstantForce extraGravity;
 
@@ -56,7 +49,7 @@ public class PlayerValue : MonoBehaviour
     private void Awake()    
     {
         checkGround = true;
-        checkGround = false;
+        checkSlope = false;
         extraGravity.enabled = false;
         playerState = PlayerState.IDLE;
 

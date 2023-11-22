@@ -19,10 +19,16 @@ public class ItemBaseTest : MonoBehaviour, IInteractObject
         if (player.playerState == PlayerState.GRAB)
         {
             GetComponent<Renderer>().material.color = Color.green;
+            itemRigidbody.mass  = 2;
+            itemRigidbody.angularDrag = 20;
+            
         }
         else
         {
             GetComponent<Renderer>().material.color = Color.gray;
+            itemRigidbody.mass  = 1000.0f;
+
+            player.interactObject = null;
         }
     }
 
