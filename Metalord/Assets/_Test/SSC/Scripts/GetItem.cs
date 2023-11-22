@@ -1,13 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class GetItem : MonoBehaviour
 {
     Dictionary<string, int> itemList;
+    Rigidbody rb;
 
+    Vector3 speed;
     private void Awake()
     {
+         rb = GetComponent<Rigidbody>();
         itemList = new Dictionary<string, int>();
 
         // TODO : csv파일로 읽어올것
@@ -22,17 +26,17 @@ public class GetItem : MonoBehaviour
         itemList[id] += 1;
     }
 
-    public void GIvePassItem()
+    public void CleaningTrain()
     {
         // 먹은 아이템 갯수 초기화
-        foreach (string test in itemList.Keys)
+        foreach (var test in itemList.ToList())
         {
-            if (itemList[test] == 0)
+            if (itemList[test.Key] == 0)
             {
                 continue;
             }
 
-            itemList[test] = 0;           
+            itemList[test.Key] = 0;           
         }
 
         Debug.Log($"아이템 id : 1001, 초기화 갯수 : {itemList["1001"]}");
@@ -42,27 +46,33 @@ public class GetItem : MonoBehaviour
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.P))
+        float x = Input.GetAxis("Horizontal");
+        float z = Input.GetAxis("Vertical");
+
+        rb.velocity = new Vector3(x,0,z) * 5f;
+
+        if (Input.GetKeyDown(KeyCode.P))
         {
             foreach(KeyValuePair<string, int> test in itemList)
             {
                 Debug.Log($"아이템 id : {test.Key}, 획득한 갯수 : {test.Value}");
             }
-
-            Debug.Log($"개별로 찍으면? 1001 : {itemList["1001"]}");
         }
 
-        if(Input.GetKeyDown(KeyCode.O))
-        {
-            GIvePassItem();
-        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if(other.CompareTag("Item"))
         {
-            Debug.Log(other.gameObject.GetComponent<GetFieldItemBase>().Id);
+            GetFieldItemBase obj = other.gameObject.GetComponent<GetFieldItemBase>();
+            obj.GetItem();
+            Debug.Log($"현재 접촉한 아이템 아이디 : {obj.Id}, 아이템 갯수 : {itemList[obj.Id]}");
+        }
+
+        if(other.gameObject.name == "Pulley")
+        {
+            CleaningTrain();
         }
     }
 }
