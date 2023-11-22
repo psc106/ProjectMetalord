@@ -924,7 +924,7 @@ GameObject:
   - component: {fileID: 1188596949}
   - component: {fileID: 1188596954}
   - component: {fileID: 1188596955}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: QuestNPC (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1141,13 +1141,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db652879b9c474997b309bef1c56f079, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  questId: 0
-  questActionIndex: 0
-  NPCs:
-  - {fileID: 1663873546}
-  - {fileID: 1324479869}
-  - {fileID: 1188596954}
-  - {fileID: 1528061047}
+  loadQuestState: 1
 --- !u!4 &1229214114
 Transform:
   m_ObjectHideFlags: 0
@@ -1383,7 +1377,7 @@ GameObject:
   - component: {fileID: 1324479864}
   - component: {fileID: 1324479869}
   - component: {fileID: 1324479870}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: QuestNPC (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1621,7 +1615,7 @@ GameObject:
   - component: {fileID: 1528061042}
   - component: {fileID: 1528061047}
   - component: {fileID: 1528061048}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: QuestNPC (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2058,7 +2052,7 @@ GameObject:
   - component: {fileID: 1663873541}
   - component: {fileID: 1663873546}
   - component: {fileID: 1663873547}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: QuestNPC (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2425,7 +2419,7 @@ GameObject:
   - component: {fileID: 1969137957}
   - component: {fileID: 1969137962}
   - component: {fileID: 1969137963}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: WorkNPC
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2597,7 +2591,7 @@ GameObject:
   - component: {fileID: 2097586427}
   - component: {fileID: 2097586432}
   - component: {fileID: 2097586433}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: TrainNPC
   m_TagString: Untagged
   m_Icon: {fileID: 0}
