@@ -43,9 +43,14 @@ public class PlayerController : MonoBehaviour
             FrontCheckCollider = playerRigid.transform.Find("BodyCollider").GetComponent<Collider>();
         }
 
-        preMoveDir = -Vector3.forward;
     }
 
+    private void FixedUpdate()
+    {
+        Move();
+        LookDirection();
+
+    }
 
     private void Update()
     {
@@ -80,11 +85,10 @@ public class PlayerController : MonoBehaviour
         Interact();*/
 
         CheckEnviroment();
-        Move();
-        LookDirection();
         Jump();
 
     }
+
 
     RaycastHit groundHit;
 
@@ -106,47 +110,50 @@ public class PlayerController : MonoBehaviour
             }
             return;
         }
-        playerValue.checkSlope = false;
-        playerRigid.useGravity = true;
+
 
 
         //점프 상태 체크
-        if (Physics.Raycast(playerRigid.position + Vector3.up, Vector3.down, out groundHit, 5))
+        if (Physics.Raycast(playerRigid.position + Vector3.up, Vector3.down, out groundHit, 5f, LayerMask.GetMask("Ground")))
         {
+           
             return;
         }
 
         //공중 상태
-        if (playerValue.playerState == PlayerState.IDLE &&
-            playerValue.playerState == PlayerState.GRAB &&
-            playerValue.playerState == PlayerState.JUMP)
+        if (!playerValue.checkGround && 
+            (playerValue.playerState == PlayerStateName.IDLE ||
+            playerValue.playerState == PlayerStateName.GRAB ||
+            playerValue.playerState == PlayerStateName.JUMP))
         {
-            playerValue.playerState = PlayerState.FALL;
+            playerValue.checkSlope = false;
+            playerRigid.useGravity = true;
+            playerValue.playerState = PlayerStateName.FALL;
         } 
 
     }
 
     void Move()
     {
+        if (playerValue.playerState == PlayerStateName.FALL) return;
+
         //상태에 따른 이동속도 계수
         float multiple = playerValue.GetMoveMultiple();
 
         //이동키를 뗄 경우
         if (playerValue.moveValue == Vector2.zero)
         {
-            if (playerValue.playerState == PlayerState.IDLE || playerValue.playerState == PlayerState.GRAB)
+            if (playerValue.playerState == PlayerStateName.IDLE || playerValue.playerState == PlayerStateName.GRAB)
             {
                 playerRigid.velocity = Vector3.zero + Vector3.up * playerRigid.velocity.y;
-                if (playerValue.checkSlope)
+                if (playerValue.checkSlope && playerValue.checkJump)
                 {
-
                     if (playerRigid.velocity.y > 0)
                     {
                         playerRigid.AddForce(Vector3.down * 100, ForceMode.Force);
                     }
                 }
             }
-            //천천히 멈춘다.
             return;
         }
 
@@ -156,21 +163,22 @@ public class PlayerController : MonoBehaviour
         //기본 속도 + 이동속도 계수 계산
         Vector2 input = playerValue.moveValue ;
         //적용
-
+        
 
         
         Vector3 cameraForward = (playerValue.oriented.forward * input.y).normalized;
         Vector3 cameraRight = (playerValue.oriented.right * input.x).normalized ;
 
         Vector3 inputDirection = (cameraForward + cameraRight).normalized * playerValue.moveSpeed * multiple;
-        if (playerValue.checkSlope)
+        if (playerValue.checkSlope && playerValue.checkJump)
         {
             Vector3 slopeAngle = Vector3.ProjectOnPlane(inputDirection, groundHit.normal).normalized;
             playerRigid.velocity = (slopeAngle * playerValue.moveSpeed * multiple);
             if (playerRigid.velocity.y > 0)
             {
+                playerRigid.AddForce(Vector3.down * 100, ForceMode.Force);
             }
-            preMoveDir = slopeAngle;
+            preMoveDir = inputDirection;
         }
         else
         {
@@ -178,7 +186,7 @@ public class PlayerController : MonoBehaviour
             preMoveDir = inputDirection;
         }
 
-        if (playerValue.playerState == PlayerState.GRAB)
+        if (playerValue.playerState == PlayerStateName.GRAB)
         {
             playerValue.interactObject.itemRigidbody.velocity = playerRigid.velocity;
             float currDistance = Vector3.Distance(playerValue.interactObject.transform.position, playerRigid.position);
@@ -191,14 +199,14 @@ public class PlayerController : MonoBehaviour
     void LookDirection()
     {
         //lerp를 사용하여 부드럽게 회전시킨다.
-        Quaternion smoothRotation = Quaternion.Slerp(playerRigid.transform.rotation, Quaternion.LookRotation(preMoveDir), Time.deltaTime * playerValue.rotateSpeed);
+        Quaternion smoothRotation = Quaternion.Lerp(playerRigid.transform.rotation, Quaternion.LookRotation(preMoveDir), Time.deltaTime * playerValue.rotateSpeed);
 
         //적용
         playerRigid.rotation = smoothRotation;
 
 
 
-        if (playerValue.playerState == PlayerState.GRAB)
+        if (playerValue.playerState == PlayerStateName.GRAB)
         {
             Vector3 player = playerRigid.position;
             Vector3 item = playerValue.interactObject.transform.position;
@@ -215,27 +223,30 @@ public class PlayerController : MonoBehaviour
         {
             playerValue.jumpTrigger = false;
             //기본 상태 - 점프
-            if (playerValue.playerState == PlayerState.IDLE)
+            if (playerValue.playerState == PlayerStateName.IDLE)
             {
-                playerValue.playerState = PlayerState.JUMP;
+                playerValue.checkSlope = false;
+                playerRigid.useGravity = true;
+                playerValue.playerState = PlayerStateName.JUMP;
                 playerRigid.AddForce(Vector3.up * playerValue.jumpForce, ForceMode.Impulse);
                 playerValue.checkGround = (false);
+                playerValue.checkJump = true;
                 playerValue.extraGravity.enabled = true;
             }
 
             //공중 상태 - 우산
-            else if (playerValue.playerState == PlayerState.FALL)
+           /* else if (playerValue.playerState == PlayerStateName.FALL)
             {
-                playerValue.playerState = PlayerState.UMBRELLA;
+                playerValue.playerState = PlayerStateName.UMBRELLA;
                 playerValue.extraGravity.enabled = false;
             }
 
             //우산 상태 - 공중
-            else if (playerValue.playerState == PlayerState.UMBRELLA)
+            else if (playerValue.playerState == PlayerStateName.UMBRELLA)
             {
-                playerValue.playerState = PlayerState.FALL;
+                playerValue.playerState = PlayerStateName.FALL;
                 playerValue.extraGravity.enabled = true;
-            }
+            }*/
         }
     }
 /*

@@ -10,7 +10,7 @@ public class PlayerCollision : MonoBehaviour
     private void OnTriggerStay(Collider other)
     {
 
-        if(playerValue.playerState == PlayerState.GRAB || (playerValue.interactObject != null && other.gameObject == playerValue.interactObject.gameObject))
+        if(playerValue.playerState == PlayerStateName.GRAB || (playerValue.interactObject != null && other.gameObject == playerValue.interactObject.gameObject))
         {
             return;
         }
@@ -44,7 +44,7 @@ public class PlayerCollision : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (playerValue.playerState == PlayerState.GRAB)
+        if (playerValue.playerState == PlayerStateName.GRAB)
         {
             return;
         }

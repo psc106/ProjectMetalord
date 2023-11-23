@@ -12,6 +12,12 @@ public class PlayerValue : MonoBehaviour
         return moveMultiple[(int)playerState];
     }
 
+    //기본 컴퍼넌트
+    public Rigidbody playerRigid;
+    public Animator playerAnimator;
+    public Collider FrontCheckCollider;
+    public Collider BodyCollider;
+
     //입력 데이터
     [HideInInspector]
     public Vector2 moveValue;
@@ -28,8 +34,9 @@ public class PlayerValue : MonoBehaviour
     public bool checkGround;
     public bool checkInteract;
     public bool checkSlope;
+    public bool checkJump;
 
-    public PlayerState playerState;
+    public PlayerStateName playerState;
     public ItemBaseTest interactObject;
     public float grabDistance;
 
@@ -46,12 +53,32 @@ public class PlayerValue : MonoBehaviour
     [SerializeField]
     private InputReader reader;
 
-    private void Awake()    
+    private void Awake()
     {
+        if (playerRigid == null)
+        {
+            playerRigid = GetComponentInChildren<Rigidbody>();
+        }
+        if (playerAnimator == null)
+        {
+            playerAnimator = GetComponentInChildren<Animator>();
+        }
+
+
+        if (FrontCheckCollider == null)
+        {
+            FrontCheckCollider = playerRigid.transform.Find("FrontCollider").GetComponent<Collider>();
+        }
+        if (BodyCollider == null)
+        {
+            FrontCheckCollider = playerRigid.transform.Find("BodyCollider").GetComponent<Collider>();
+        }
+
         checkGround = true;
         checkSlope = false;
+        checkJump = false;
         extraGravity.enabled = false;
-        playerState = PlayerState.IDLE;
+        playerState = PlayerStateName.IDLE;
 
         //입력 초기화
         moveValue = Vector2.zero;
@@ -107,9 +134,4 @@ public class PlayerValue : MonoBehaviour
     }
 
     #endregion
-}
-
-public enum PlayerState
-{
-    IDLE =0, GRAB, JUMP, FALL, UMBRELLA, SYSTEM_STOP
 }
