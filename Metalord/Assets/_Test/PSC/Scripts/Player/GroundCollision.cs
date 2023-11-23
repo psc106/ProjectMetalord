@@ -14,20 +14,20 @@ public class GroundCollision : MonoBehaviour
         {
             playerValue.checkGround = true;
             playerValue.extraGravity.enabled = false;
-            playerValue.playerState = PlayerState.IDLE;
+            playerValue.playerState = PlayerStateName.IDLE;
         }
 
     }
-   /* private void OnTriggerExit(Collider other)
+    private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
         {
             playerValue.checkGround = false;
             playerValue.extraGravity.enabled = true;
-            playerValue.playerState = PlayerState.JUMP;
+            playerValue.playerState = PlayerStateName.JUMP;
         }
 
-    }*/
+    }
 
 
 

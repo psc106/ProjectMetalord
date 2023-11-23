@@ -16,7 +16,7 @@ public class ItemBaseTest : MonoBehaviour, IInteractObject
 
     public virtual void Interact(PlayerValue player)
     {
-        if (player.playerState == PlayerState.GRAB)
+        if (player.playerState == PlayerStateName.GRAB)
         {
             GetComponent<Renderer>().material.color = Color.green;
             itemRigidbody.mass  = 2;
