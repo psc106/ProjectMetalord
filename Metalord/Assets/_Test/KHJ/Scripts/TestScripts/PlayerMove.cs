@@ -46,20 +46,20 @@ public class PlayerMove : MonoBehaviour
     }
 
 
-    //private void OnTriggerStay(Collider other)
-    //{
-    //    if (Input.GetKeyDown(KeyCode.E))
-    //    {
-    //        IInteractableObject interObj = other.GetComponent<IInteractableObject>();
-    //        //여기는 안에 있어야만 변화하는 사물의 메서드 작성
-    //        interObj?.Interact();
-    //    }
-    //}
+    private void OnTriggerStay(Collider other)
+    {
+        //여기는 안에 있어야만 변화하는 사물의 메서드 작성
+        
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            IInteractableObject interObj = other.GetComponent<IInteractableObject>();
+        }
+    }
 
     private void OnTriggerExit(Collider other) 
     {
         IInteractableObject interObj = other.GetComponent<IInteractableObject>();
-        //TODO 여기에는 입장하기만 해도 변화하는 사물의 메서드 작성
         interObj?.InteractOut();
+        //TODO 여기에는 입장하기만 해도 변화하는 사물의 메서드 작성
     }
 }

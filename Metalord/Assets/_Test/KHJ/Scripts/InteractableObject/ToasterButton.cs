@@ -14,12 +14,12 @@ public class ToasterButton : MonoBehaviour,IInteractableObject
     public void Interact()
     {
         pareantObject.UpToast();
+        pareantObject.DownToast();
         //pareantObject.isToaster = true;
     }
 
     public void InteractOut()
     {
-        pareantObject.DownToast();
         //pareantObject.isToaster = false;
     }
 }

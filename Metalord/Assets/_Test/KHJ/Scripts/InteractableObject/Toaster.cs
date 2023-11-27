@@ -5,48 +5,43 @@ using UnityEngine;
 
 public class Toaster : MonoBehaviour
 {
+    private float goalHeigh = 0f;
     private GameObject firstToast; //올라갈 빵 계단 오브젝트 
     private Vector3 firstToastPos; // 올라갈 빵 처음 위치
-    
+    public Vector3 firstToastGoal;
 
     private GameObject secondToast; //올라갈 빵 계단 오브젝트 
     private Vector3 secondToastPos; // 올라갈 빵 처음 위치
-   
-
+    public Vector3 secondToastGoal;
 
     public bool isToaster; //계단 올리기 위한 트리거 
-    private bool isTriggerOn; // isToaster 확인하기 위한 bool 값
 
     private void Start()
     {
+        goalHeigh = 2f;
         firstToast = transform.GetChild(0).gameObject;
         firstToastPos = firstToast.transform.localPosition;
-       
+        firstToastGoal = new  Vector3(firstToastPos.x, firstToastPos.y * goalHeigh, firstToastPos.z);
+
+        goalHeigh = 3f;
         secondToast = transform.GetChild(1).gameObject;
         secondToastPos = secondToast.transform.localPosition;
+        secondToastGoal = new Vector3(secondToastPos.x, secondToastPos.y * goalHeigh, secondToastPos.z);
 
         isToaster = false;
-        isTriggerOn = false;
     }
 
-    //TODO : Lerp 를 사용해서 코루틴으로 빵이 이동하는 것을 구현해야함 
     public void UpToast(Transform upObject, float heighFloat)
     {
         //upObject.localPosition = new Vector3(upObject.localPosition.x, upObject.localPosition.y * heighFloat, upObject.localPosition.z);
-
-        if(isToaster == false)
-        {
-            StartCoroutine(UpToastObject(firstToast.transform, 2f));
-            StartCoroutine(UpToastObject(secondToast.transform, 3f));
-        }
     }
 
     public void UpToast()
     {
         if (isToaster == false)
-        {
-            StartCoroutine(UpToastObject(firstToast.transform, 2f));
-            StartCoroutine(UpToastObject(secondToast.transform, 3f));
+        {             
+            StartCoroutine(UpToastObject(firstToast.transform,firstToastGoal, 2f));
+            StartCoroutine(UpToastObject(secondToast.transform, secondToastGoal, 3f));
         }
     }
 
@@ -62,26 +57,28 @@ public class Toaster : MonoBehaviour
             StartCoroutine(DownToastObject(secondToast.transform, secondToastPos));
         }
     }
-
-    IEnumerator UpToastObject(Transform upObject, float heighFloat)
+    
+    IEnumerator UpToastObject(Transform upObject, Vector3 goalPos ,float heighFloat)
     {
         float duration = 0;
         float moveSpeed = 2f;
         Vector3 startPos = upObject.localPosition;
-        Vector3 endPos = new Vector3(upObject.localPosition.x, upObject.localPosition.y * heighFloat, upObject.localPosition.z);
-        while (duration <= 1f)
+        Vector3 endPos = goalPos;
+
+        while (duration <= 1f ) 
         {
             //upObject.position = Vector3.Lerp(upObject.localPosition , new Vector3(upObject.localPosition.x, upObject.localPosition.y * heighFloat, upObject.localPosition.z), duration);
             upObject.localPosition  = Vector3.Lerp(startPos, endPos, duration);
-            if (startPos.y >= endPos.y)
+            
+            duration += moveSpeed * Time.deltaTime;
+            if (upObject.transform.localPosition.y >= endPos.y || isToaster)
             {
-                startPos.y = endPos.y;
+                
                 yield break;
             }
-            duration += moveSpeed * Time.deltaTime;
             yield return null;
         }
-
+          
         isToaster = true;
     }
 
@@ -91,11 +88,16 @@ public class Toaster : MonoBehaviour
         float moveSpeed = 2f;
         Vector3 startPos = originTransform.localPosition;
         Vector3 endPos = targetPos;
-        while (duration <= 1f)
+       
+        while (duration <= 1f )
         {
             //upObject.position = Vector3.Lerp(upObject.localPosition , new Vector3(upObject.localPosition.x, upObject.localPosition.y * heighFloat, upObject.localPosition.z), duration);
             originTransform.localPosition = Vector3.Lerp(startPos, endPos, duration);
             duration += moveSpeed * Time.deltaTime;
+            if (startPos.y >= endPos.y && isToaster == false)
+            {
+                yield break;
+            }
             yield return null;
         }
         isToaster = false;
