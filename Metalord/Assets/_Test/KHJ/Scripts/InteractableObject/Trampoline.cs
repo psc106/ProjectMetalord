@@ -8,4 +8,8 @@ public class Trampoline : MonoBehaviour, IInteractableObject
     {
         Debug.Log("트램펄린 Interact 메서드 실행됨");
     }
+
+    public void InteractOut()
+    {
+    }
 }

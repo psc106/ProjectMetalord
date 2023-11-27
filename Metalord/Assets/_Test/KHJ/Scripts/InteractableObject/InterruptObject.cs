@@ -9,4 +9,8 @@ public class InterruptObject : MonoBehaviour, IInteractableObject
         Debug.Log("방해 오브젝트 Interact 메서드 실행됨");
 
     }
+
+    public void InteractOut()
+    {
+    }
 }

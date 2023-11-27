@@ -9,4 +9,8 @@ public class Bidet : MonoBehaviour, IInteractableObject
         Debug.Log("비데 Interact 메서드 실행됨");
 
     }
+
+    public void InteractOut()
+    {
+    }
 }

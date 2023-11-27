@@ -9,4 +9,8 @@ public class Flubber : MonoBehaviour, IInteractableObject
         Debug.Log("탱탱볼 Interact 메서드 실행됨");
 
     }
+
+    public void InteractOut()
+    {
+    }
 }

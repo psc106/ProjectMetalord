@@ -64,4 +64,8 @@ public class Fan : MonoBehaviour, IInteractableObject
             objRb.velocity = Vector3.zero;
         }
     }
+
+    public void InteractOut()
+    {
+    }
 }

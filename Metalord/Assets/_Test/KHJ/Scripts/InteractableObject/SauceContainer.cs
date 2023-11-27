@@ -9,4 +9,8 @@ public class SauceContainer : MonoBehaviour, IInteractableObject
     {
         Debug.Log("소스통 Interact 메서드 실행됨");
     }
+
+    public void InteractOut()
+    {
+    }
 }
