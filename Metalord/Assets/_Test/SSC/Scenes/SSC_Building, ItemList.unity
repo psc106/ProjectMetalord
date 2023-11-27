@@ -1207,7 +1207,7 @@ GameObject:
   - component: {fileID: 2003641502}
   - component: {fileID: 2003641506}
   m_Layer: 0
-  m_Name: Capsule
+  m_Name: DissolveObj
   m_TagString: Item
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1256,7 +1256,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: -876546973899608171, guid: 393746e14e4ba044eae927917680f7af, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1295,7 +1295,7 @@ Transform:
   m_GameObject: {fileID: 2003641501}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.75, y: 0.5, z: 0}
+  m_LocalPosition: {x: -2.75, y: 0.89, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1322,8 +1322,8 @@ SceneRoots:
   - {fileID: 1858488578}
   - {fileID: 143374038}
   - {fileID: 112198418}
-  - {fileID: 2003641505}
   - {fileID: 1804152084}
   - {fileID: 1650886382}
   - {fileID: 1793024467}
   - {fileID: 1358505075}
+  - {fileID: 2003641505}
