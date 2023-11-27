@@ -5,7 +5,7 @@ public class GameEventsManager : MonoBehaviour
 {
     public static GameEventsManager instance { get; private set; }
 
-    public QuestEvents questEvents;
+    public NPCEvents npcEvents;
 
     private void Awake()
     {
@@ -16,7 +16,6 @@ public class GameEventsManager : MonoBehaviour
         }
         instance = this;
 
-        // 이벤트 초기화
-        questEvents = new QuestEvents();
+        npcEvents = new NPCEvents();
     }
 }
