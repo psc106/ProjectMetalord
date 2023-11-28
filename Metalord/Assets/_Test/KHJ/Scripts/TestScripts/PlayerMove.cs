@@ -14,7 +14,7 @@ public class PlayerMove : MonoBehaviour
     {
         myRb = transform.GetComponent<Rigidbody>();
         moveSpeed = 10f;
-        jumpForce = 15f;
+        jumpForce = 5f;
     }
 
     // Update is called once per frame
@@ -34,7 +34,7 @@ public class PlayerMove : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             //myRb.velocity = Vector3.zero;
-            myRb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            Jump(jumpForce);
         }
     }
 
@@ -61,5 +61,11 @@ public class PlayerMove : MonoBehaviour
         IInteractableObject interObj = other.GetComponent<IInteractableObject>();
         interObj?.InteractOut();
         //TODO 여기에는 입장하기만 해도 변화하는 사물의 메서드 작성
+    }
+
+    public void Jump(float jumpF)
+    {
+        myRb.AddForce(Vector3.up * jumpF, ForceMode.Impulse);
+
     }
 }

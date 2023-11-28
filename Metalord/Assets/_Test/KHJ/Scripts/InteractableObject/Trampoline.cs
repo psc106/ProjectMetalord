@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class Trampoline : MonoBehaviour
 {
-
     private Vector3 originSize = default;
     public Vector3 downSize = default;
 
@@ -21,13 +20,17 @@ public class Trampoline : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if(other.tag == "Player")
+        if (other.tag == "Player")
         {
-            CapsuleCollider capsuleCollider = other.gameObject.GetComponent<CapsuleCollider>();
-            PhysicMaterial otherPhysicMat = capsuleCollider.material;
-            otherPhysicMat.bounciness = 0.9f;
+            //CapsuleCollider capsuleCollider = other.gameObject.GetComponent<CapsuleCollider>();
+            //PhysicMaterial otherPhysicMat = capsuleCollider.material;
+            //otherPhysicMat.bounciness = 0.9f;
+            PlayerMove myPlayer = other.gameObject.GetComponent<PlayerMove>();
+            myPlayer.Jump(1.2f);
         }
     }
+
+    
 
     private void OnTriggerExit(Collider other)
     {
@@ -75,9 +78,8 @@ public class Trampoline : MonoBehaviour
         while (transform.localScale.y > downSize.y)
         {
             elapsedTime += Time.deltaTime;
-            float t = Mathf.Clamp01(elapsedTime / duration); // 시간 비율 계산
-
-            // 보간된 값을 직접 계산하여 스케일 조정
+            float t = Mathf.Clamp01(elapsedTime / duration); 
+            
             float newYScale = Mathf.Lerp(originSize.y, downSize.y, t);
             transform.localScale = new Vector3(transform.localScale.x, newYScale, transform.localScale.z);
 
@@ -97,7 +99,6 @@ public class Trampoline : MonoBehaviour
 
     IEnumerator ScaleUp()
     {
-        float duration = 1f;
         //for(float i = downSize.y; i <= originSize.y; i++)
         //{
         //    Debug.Log("트램펄린 업 실행됨?");
@@ -121,14 +122,14 @@ public class Trampoline : MonoBehaviour
         //}
         //===========================================
 
+        float duration = 1f;
         float elapsedTime = 0.7f;
 
         while (transform.localScale.y < originSize.y)
         {
             elapsedTime += Time.deltaTime;
-            float t = Mathf.Clamp01(elapsedTime / duration); // 시간 비율 계산
-
-            // 보간된 값을 직접 계산하여 스케일 조정
+            float t = Mathf.Clamp01(elapsedTime / duration); 
+           
             float newYScale = Mathf.Lerp(downSize.y, originSize.y, t);
             transform.localScale = new Vector3(transform.localScale.x, newYScale, transform.localScale.z);
 
@@ -138,7 +139,6 @@ public class Trampoline : MonoBehaviour
         isPlay = false;
         if (transform.localScale.y >= originSize.y)
         {
-           
             transform.localScale = originSize;
             yield break;
         }
