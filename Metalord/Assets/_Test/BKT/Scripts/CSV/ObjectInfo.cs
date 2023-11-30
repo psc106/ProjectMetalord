@@ -8,8 +8,8 @@ using UnityEngine;
 /// </summary>
 public class ObjectInfo : MonoBehaviour
 {
-    public string objectID;
-    public string objectPlace;
-    public string objectName;
-    public string objectDescription;
+    public string objectID { get; set; }
+    public string objectPlace { get; set; }
+    public string objectName { get; set; }
+    public string objectDescription { get; set; }
 }
