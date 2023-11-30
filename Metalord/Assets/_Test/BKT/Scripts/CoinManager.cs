@@ -10,25 +10,33 @@ public enum CoinType
 
 public class CoinManager : MonoBehaviour
 {
+    static public CoinManager instance;
+
     [SerializeField] private int startCoin = 10; // 시작 코인
-    [SerializeField] private const int SMALL_COIN = 5; // 작은코인 값
-    [SerializeField] private const int BIG_COIN = 100; // 큰 코인 값
 
     public int currentCoin { get; private set; }
 
     private void Awake()
     {
+        if(instance != null)
+        {
+            Destroy(gameObject);
+        }
+        instance = this;
+
         currentCoin = startCoin; // 시작시 코인 세팅
     }
 
     private void OnEnable()
     {
-        GameEventsManager.instance.coinEvents.onUseCoin += UseCoin;
+        Debug.Log(GameEventsManager.instance);
+        //GameEventsManager.instance.coinEvents.onUseCoin += UseCoin;
+        GameEventsManager.instance.coinEvents.ChangeCoin(currentCoin); // 코인 먹을 경우 코인 변경
     }
 
     private void OnDisable()
     {
-        GameEventsManager.instance.coinEvents.onUseCoin -= UseCoin;
+        //GameEventsManager.instance.coinEvents.onUseCoin -= UseCoin;
     }
 
     private void Start()
@@ -40,6 +48,8 @@ public class CoinManager : MonoBehaviour
     {
         currentCoin += coin; // 코인을 현재 코인에 반영
         GameEventsManager.instance.coinEvents.ChangeCoin(currentCoin); // 코인 먹을 경우 코인 변경
+
+        Debug.Log(currentCoin);
     }
 
     public void UseCoin(int coin)
