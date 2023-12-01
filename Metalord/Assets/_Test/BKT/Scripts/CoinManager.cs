@@ -8,6 +8,10 @@ public enum CoinType
     BIG_COIN
 }
 
+/// <summary>
+/// 재화 매니저
+/// 231129_배경택
+/// </summary>
 public class CoinManager : MonoBehaviour
 {
     static public CoinManager instance;

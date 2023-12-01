@@ -14,7 +14,10 @@ public class RecordManager : MonoBehaviour
 
     private GameObject itemUIObjectPrefab; // 복사하여 생성할 프리펩
     private List<Dictionary<string, object>> objectCSV = new List<Dictionary<string, object>>();
+
     [SerializeField] private GameObject recordPanel;
+    [SerializeField] private GameObject descriptionPanel;
+
 
     public GameObject[] records { get; private set;}
 
@@ -64,10 +67,10 @@ public class RecordManager : MonoBehaviour
     /// </summary>
     private void ReflectObjectInfo()
     {
-        for(int index = 0; index < objectCSV.Count; index++)
+        for (int index = 0; index < objectCSV.Count; index++)
         {
-            records[index].name = objectCSV[index]["ObjectID"].ToString();
-            records[index].GetComponent<Image>().sprite = Resources.Load<Sprite>("Object/" + objectCSV[index]["ObjectID"].ToString());
+            records[index].name = records[index].GetComponent<ObjectInfo>().objectID;
+            records[index].GetComponent<Image>().sprite = Resources.Load<Sprite>("Object/" + records[index].GetComponent<ObjectInfo>().objectID);
         }
     }
 }
