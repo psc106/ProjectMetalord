@@ -1,11 +1,11 @@
-﻿ObjectID,Place,ObjectName,Description
-Sungchang,LivingRoom,Sin,Junior Sin
-Kyungtaek,BabyRoom,Bae,Junior Bae
-HyungJun,Kitchen,DEVKim,Junior DevKim
-Mijeong,LivingRoom,Lee,Junior Lee
-Sungchul,BabyRoom,Park,Senior Park
-Jiwan,Kitchen,Go,Junior Go
-Nayoung,LivingRoom,Jung,Junior Jung
-Hyunggyun,BabyRoom,PDKim,Junior PDKim
-Sanghyun,Kitchen,GDKim,Junior GDKim
-Youjun,LivingRoom,Ahn,Junior Ahn
+﻿ID,ID_Description,Item_Name,Zone,Obtained,Description
+1,Sungchang,Sin,2,false,Junior Sin
+2,Kyungtaek,Bae,3,false,Junior Bae
+3,HyungJun,DEVKim,1,false,Junior DevKim
+4,Mijeong,Lee,2,false,Junior Lee
+5,Sungchul,Park,3,false,Senior Park
+6,Jiwan,Go,1,false,Junior Go
+7,Nayoung,Jung,2,false,Junior Jung
+8,Hyunggyun,PDKim,3,false,Junior PDKim
+9,Sanghyun,GDKim,1,false,Junior GDKim
+10,Youjun,Ahn,2,false,Junior Ahn

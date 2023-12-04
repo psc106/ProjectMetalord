@@ -8,8 +8,12 @@ using UnityEngine;
 /// </summary>
 public class ObjectInfo : MonoBehaviour
 {
-    public string objectID { get; set; }
-    public string objectPlace { get; set; }
-    public string objectName { get; set; }
-    public string objectDescription { get; set; }
+    public int id { get; set; }
+    public string id_Description { get; set; }
+    public string item_Name { get; set; }
+    public int zone { get; set; } // 1 = 주방, 2= 거실, 3= 아기방
+    public bool obtained { get; set; }
+    public string description { get; set; }
+
+    
 }
