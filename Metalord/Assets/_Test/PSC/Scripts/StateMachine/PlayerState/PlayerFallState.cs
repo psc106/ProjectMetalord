@@ -7,6 +7,9 @@ public class PlayerFallState : StateBase<PlayerStateName>
     public PlayerFallState(PlayerStateName key) : base(key)
     {
     }
+    public PlayerFallState(PlayerStateName key, PlayerValue playerValue) : base(key)
+    {
+    }
 
 
     public override void Enter()

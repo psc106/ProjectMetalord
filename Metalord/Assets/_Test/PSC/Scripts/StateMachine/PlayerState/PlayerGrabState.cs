@@ -9,6 +9,9 @@ public class PlayerGrabState : StateBase<PlayerStateName>
     public PlayerGrabState(PlayerStateName key) : base(key)
     {
     }
+    public PlayerGrabState(PlayerStateName key, PlayerValue playerValue) : base(key)
+    {
+    }
 
 
     public override void Enter()

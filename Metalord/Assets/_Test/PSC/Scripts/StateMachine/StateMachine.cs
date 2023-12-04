@@ -45,7 +45,7 @@ public abstract class StateMachine<EState> : MonoBehaviour where EState : Enum
 
     }
 
-    void TransitionToState(EState nextState)
+    protected void TransitionToState(EState nextState)
     {
         isTransitioningState = true;
         currState.Exit();

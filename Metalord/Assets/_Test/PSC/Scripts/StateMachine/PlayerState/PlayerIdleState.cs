@@ -6,6 +6,7 @@ using UnityEngine;
 public class PlayerIdleState : StateBase<PlayerStateName>
 {
     public PlayerValue playerValue;
+
     public Vector3 preMoveDir;
 
     public PlayerIdleState(PlayerStateName key) : base(key)

@@ -8,6 +8,9 @@ public class PlayerJumpState : StateBase<PlayerStateName>
     {
     }
 
+    public PlayerJumpState(PlayerStateName key, PlayerValue playerValue) : base(key)
+    {
+    }
 
     public override void Enter()
     {
