@@ -8,23 +8,7 @@ using UnityEngine.EventSystems;
 public class RecordObject : MonoBehaviour,IPointerDownHandler
 {
     public RecordObjectInfo recordInfo { get; set; }
-
-    private GameObject name;
-    private GameObject zone;
-    private GameObject description;
-
-    private TMP_Text itemExplain;
-    private string s_zone;
-
-    private bool isClicked;
-
    
-
-    private void Awake()
-    {
-        ReflectInfo(); // 이미지 초기화
-    }
-
     private void OnEnable()
     {
         GameEventsManager.instance.recordEvents.onChangeRecord += ReflectInfo; // 도감 변경알림시 갖고있는 정보 반영
@@ -33,6 +17,11 @@ public class RecordObject : MonoBehaviour,IPointerDownHandler
     private void OnDisable()
     {
         GameEventsManager.instance.recordEvents.onChangeRecord -= ReflectInfo; // 도감 변경알림시 갖고있는 정보 반영
+    }
+
+    private void Start()
+    {
+        ReflectInfo(); // 이미지 초기화
     }
 
     private void ReflectInfo()

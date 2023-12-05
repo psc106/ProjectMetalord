@@ -20,25 +20,39 @@ public class RecordManager : MonoBehaviour
     private List<GameObject> pageList;
     private RecordObjectInfo[] recordObjectInfos;
 
-    [SerializeField] private GameObject pagePanel;
-    [SerializeField] private GameObject recordPanel;
-    [SerializeField] private GameObject descriptionPanel;
-    [SerializeField] private GameObject leftButton;
-    [SerializeField] private GameObject rightButton;
+    private GameObject pagePanel; //페이지 좌측 페이지가 생성될 기준 패널
+    private GameObject itemName; //페이지 우측 이름 text
+    private GameObject zone; //페이지 우측 지역 text
+    private GameObject description; //페이지 우측 설명 text
 
-    private GameObject name;
-    private GameObject zone;
-    private GameObject description;
-    private string s_zone;
+    private string s_zone; // 지역저장을 위한 임시변수
 
-    private const int PAGE_FULL_ITEMCOUNT = 3;
+    private const int PAGE_FULL_ITEMCOUNT = 3; // 한페이지에 몇개의 아이템을 표시할 것인지
 
+    // 우측 도감 설명 초기화 텍스트
     private const string RESET_NAME = "Not Select";
     private const string RESET_Zone = "Not Select";
     private const string RESET_Description = "Not Select";
 
     private int checkRecordInfoId;
     private const int ID_RESET = -1;
+
+    // 페이지 번호 및 활성화 비활성화
+    private int _pageIndex;
+    private int pageIndex
+    {
+        get
+        {
+            return _pageIndex;
+        }
+        set
+        {
+            // 페이지 인덱스번호에 맞춰서 페이지전환
+            pageList[_pageIndex].SetActive(false);
+            _pageIndex = value;
+            pageList[_pageIndex].SetActive(true);
+        }
+    }
 
     private void Awake()
     {
@@ -48,14 +62,16 @@ public class RecordManager : MonoBehaviour
         }
         instance = this;
 
-        // 사전 우측 정보창 게임오브젝트 가져오기
-        name = GameObject.Find("Text(Info_Name)");
+        // 도감 우측 정보창 게임오브젝트 가져오기
+        itemName = GameObject.Find("Text(Info_Name)");
         zone = GameObject.Find("Text(Info_Zone)");
         description = GameObject.Find("Text(Info_Description)");
-        checkRecordInfoId = ID_RESET;
+        pagePanel = GameObject.Find("RecordPagePanel");
 
         itemUIObjectPrefab = Resources.Load<GameObject>("Prefabs/Object_ForRecordObject");
         pagePrefab = Resources.Load<GameObject>("Prefabs/Object_ForPage");
+
+        checkRecordInfoId = ID_RESET;
 
         objectCSV = CSVReader_KT.Read("CSV/ObjectCSV"); // CSV 파일 읽어들이기
         recordObjectInfos = new RecordObjectInfo[objectCSV.Count]; // CSV 파일의 크기만큼 배열 크기 생성
@@ -109,6 +125,8 @@ public class RecordManager : MonoBehaviour
             page.SetActive(false); // 페이지 비활성화
             pageList.Add(page); // 리스트에 페이지 추가
         }
+        pageList[0].SetActive(true); // 첫 페이지 보이도록 실행 
+
     }
 
     /// <summary>
@@ -120,9 +138,9 @@ public class RecordManager : MonoBehaviour
     {
         for (int infoIndex = 0; infoIndex < _recordObjectInfos.Length; infoIndex++)
         {
-            int pageIndex = infoIndex / PAGE_FULL_ITEMCOUNT; 
+            int tempIndex = infoIndex / PAGE_FULL_ITEMCOUNT; 
 
-            GameObject recordObject = Instantiate(itemUIObjectPrefab, pageList[pageIndex].transform);
+            GameObject recordObject = Instantiate(itemUIObjectPrefab, pageList[tempIndex].transform);
             recordObject.GetComponent<RecordObject>().recordInfo = _recordObjectInfos[infoIndex];
         }
         
@@ -141,7 +159,7 @@ public class RecordManager : MonoBehaviour
         }
         checkRecordInfoId = recordInfo.id; // 도감 ID값 저장
 
-        name.GetComponent<TMP_Text>().text = recordInfo.item_Name;
+        itemName.GetComponent<TMP_Text>().text = recordInfo.item_Name;
         description.GetComponent<TMP_Text>().text = recordInfo.description;
 
         switch (recordInfo.zone)
@@ -164,11 +182,35 @@ public class RecordManager : MonoBehaviour
     /// 도감정보 내용 지우기
     /// 231205 배경택
     /// </summary>
-    public void DeleteRecordInfo()
+    private void DeleteRecordInfo()
     {
         checkRecordInfoId = ID_RESET;
-        name.GetComponent<TMP_Text>().text = RESET_NAME;
+        itemName.GetComponent<TMP_Text>().text = RESET_NAME;
         description.GetComponent<TMP_Text>().text = RESET_Description;
         zone.GetComponent<TMP_Text>().text = RESET_Zone;
+    }
+
+    /// <summary>
+    /// 우측 버튼 누르면 pageIndex가 증가하며 페이지 변경
+    /// 231205 배경택
+    /// </summary>
+    public  void PushRightButton()
+    {
+        if (pageIndex < pageList.Count-1)
+        {
+            pageIndex++;
+        }
+    }
+
+    /// <summary>
+    /// 좌측 버튼 누르면 pageIndex가 감소하며 페이지 변경
+    /// 231205 배경택
+    /// </summary>
+    public void PushLeftButton()
+    {
+        if (pageIndex > 0)
+        {
+            pageIndex--;
+        }
     }
 }
