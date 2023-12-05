@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -25,10 +26,19 @@ public class RecordManager : MonoBehaviour
     [SerializeField] private GameObject leftButton;
     [SerializeField] private GameObject rightButton;
 
+    private GameObject name;
+    private GameObject zone;
+    private GameObject description;
+    private string s_zone;
+
     private const int PAGE_FULL_ITEMCOUNT = 3;
 
+    private const string RESET_NAME = "Not Select";
+    private const string RESET_Zone = "Not Select";
+    private const string RESET_Description = "Not Select";
 
-    public GameObject[] records { get; private set;}
+    private int checkRecordInfoId;
+    private const int ID_RESET = -1;
 
     private void Awake()
     {
@@ -37,6 +47,12 @@ public class RecordManager : MonoBehaviour
             Destroy(gameObject);
         }
         instance = this;
+
+        // 사전 우측 정보창 게임오브젝트 가져오기
+        name = GameObject.Find("Text(Info_Name)");
+        zone = GameObject.Find("Text(Info_Zone)");
+        description = GameObject.Find("Text(Info_Description)");
+        checkRecordInfoId = ID_RESET;
 
         itemUIObjectPrefab = Resources.Load<GameObject>("Prefabs/Object_ForRecordObject");
         pagePrefab = Resources.Load<GameObject>("Prefabs/Object_ForPage");
@@ -47,9 +63,13 @@ public class RecordManager : MonoBehaviour
         pageList = new List<GameObject>();
 
         InputCSVFileToInfo(); // 초기화 레코드 정보 저장
-        makePage(objectCSV.Count); //초기화 페이지 수 계산
-        makeRecordObject(recordObjectInfos); //초기화 도감 오브젝트 구성
-        //ReflectObjectInfo();
+        MakePage(objectCSV.Count); //초기화 페이지 수 계산
+        MakeRecordObject(recordObjectInfos); //초기화 도감 오브젝트 구성
+    }
+
+    private void Start()
+    {
+        GameEventsManager.instance.recordEvents.ReflectRecord();
     }
 
     /// <summary>
@@ -71,14 +91,6 @@ public class RecordManager : MonoBehaviour
             recordInfo.description = objectCSV[index]["Description"].ToString();
 
             recordObjectInfos[index] = recordInfo; // 도감 정보를 저장해서 배열로 관리
-
-            // 읽은 정보를 각각의 오브젝트에 넣어줌
-            //uiObject.GetComponent<ObjectInfo>().id = int.Parse(objectCSV[index]["ID"].ToString());
-            //uiObject.GetComponent<ObjectInfo>().id_Description = objectCSV[index]["ID_Description"].ToString();
-            //uiObject.GetComponent<ObjectInfo>().zone = int.Parse(objectCSV[index]["Zone"].ToString());
-            //uiObject.GetComponent<ObjectInfo>().item_Name = objectCSV[index]["Item_Name"].ToString();
-            //uiObject.GetComponent<ObjectInfo>().obtained = bool.Parse(objectCSV[index]["Obtained"].ToString());
-            //uiObject.GetComponent<ObjectInfo>().description = objectCSV[index]["Description"].ToString();
         }
     }
 
@@ -87,14 +99,13 @@ public class RecordManager : MonoBehaviour
     /// 231204 배경택
     /// </summary>
     /// <param name="ItemCount"> 도감에 표시될 아이템 개수 </param>
-    private void makePage(int ItemCount)
+    private void MakePage(int ItemCount)
     {
-        int temp = ItemCount; //임시 숫자 초기화
-        while(temp > 0)
+        while(ItemCount > 0)
         {
-            temp -= PAGE_FULL_ITEMCOUNT; // 한 페이지에 들어가는 총 도감아이템 개수만큼 빼주면서 생성
+            ItemCount -= PAGE_FULL_ITEMCOUNT; // 한 페이지에 들어가는 총 도감아이템 개수만큼 빼주면서 생성
 
-            GameObject page = Instantiate(pagePrefab, pagePanel.transform); // 페이지아래로 생성
+            GameObject page = Instantiate(pagePrefab, pagePanel.transform); // 페이지패널 아래로 생성
             page.SetActive(false); // 페이지 비활성화
             pageList.Add(page); // 리스트에 페이지 추가
         }
@@ -105,7 +116,7 @@ public class RecordManager : MonoBehaviour
     /// 231204 배경택
     /// </summary>
     /// <param name="_recordObjectInfos"> 레코드오브젝트 정보배열을 페이지에 생성 </param>
-    private void makeRecordObject(RecordObjectInfo[] _recordObjectInfos)
+    private void MakeRecordObject(RecordObjectInfo[] _recordObjectInfos)
     {
         for (int infoIndex = 0; infoIndex < _recordObjectInfos.Length; infoIndex++)
         {
@@ -118,19 +129,46 @@ public class RecordManager : MonoBehaviour
     }
 
 
+    /// <summary>
+    /// 도감정보에 선택된 도감아이템 정보 입력
+    /// 231205 배경택
+    /// </summary>
+    public void InputRecordInfo(RecordObjectInfo recordInfo)
+    {
+        if (checkRecordInfoId == recordInfo.id) // 중복으로 같은 아이디값이 들어올 경우
+        {
+            DeleteRecordInfo(); return; // 도감 우측 텍스트정보 지우기
+        }
+        checkRecordInfoId = recordInfo.id; // 도감 ID값 저장
 
-    
+        name.GetComponent<TMP_Text>().text = recordInfo.item_Name;
+        description.GetComponent<TMP_Text>().text = recordInfo.description;
+
+        switch (recordInfo.zone)
+        {
+            case 1:
+                s_zone = "Kitchen";
+                break;
+            case 2:
+                s_zone = "Living Room";
+                break;
+            case 3:
+                s_zone = "Baby Room";
+                break;
+        }
+
+        zone.GetComponent<TMP_Text>().text = s_zone;
+    }
 
     /// <summary>
-    /// UI 오브젝트에 정보를 반영하는 함수
-    /// 231130_배경택
+    /// 도감정보 내용 지우기
+    /// 231205 배경택
     /// </summary>
-    //private void ReflectObjectInfo()
-    //{
-    //    for (int index = 0; index < objectCSV.Count; index++)
-    //    {
-    //        records[index].name = records[index].GetComponent<ObjectInfo>().id_Description;
-    //        records[index].GetComponent<Image>().sprite = Resources.Load<Sprite>("Object/" + records[index].GetComponent<ObjectInfo>().id_Description);
-    //    }
-    //}
+    public void DeleteRecordInfo()
+    {
+        checkRecordInfoId = ID_RESET;
+        name.GetComponent<TMP_Text>().text = RESET_NAME;
+        description.GetComponent<TMP_Text>().text = RESET_Description;
+        zone.GetComponent<TMP_Text>().text = RESET_Zone;
+    }
 }

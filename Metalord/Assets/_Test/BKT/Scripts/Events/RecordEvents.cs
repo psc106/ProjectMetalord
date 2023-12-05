@@ -11,6 +11,10 @@ public class RecordEvents
         Debug.Log("RecordEvents 생성");
     }
 
+    /// <summary>
+    /// 아이템을 먹었을때 발생하는 이벤트
+    /// 231130 배경택
+    /// </summary>
     public event Action<string> onGetRecordItem;
     public void GetRecordItem(string id)
     {
@@ -18,5 +22,18 @@ public class RecordEvents
         {
             onGetRecordItem(id);
         } 
+    }
+
+    /// <summary>
+    /// 도감 변경사항이 있을때 발생하는 이벤트
+    /// 231204 배경택
+    /// </summary>
+    public event Action onChangeRecord;
+    public void ReflectRecord()
+    {
+        if(onChangeRecord != null)
+        {
+            onChangeRecord();
+        }
     }
 }
