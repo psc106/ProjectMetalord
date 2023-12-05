@@ -18,7 +18,10 @@ public class RecordManager : MonoBehaviour
     private GameObject pagePrefab; // 복사하여 생성할 프리펩
     private List<Dictionary<string, object>> objectCSV = new List<Dictionary<string, object>>();
     private List<GameObject> pageList;
-    private RecordObjectInfo[] recordObjectInfos;
+    private RecordObjectInfo[] recordObjectInfos; // 도감 정보 전체가 저장된 원본 배열
+    private List<RecordObjectInfo> tempRecordObjectInfos; // 정렬에 맞춰 변경될 도감 정보 배열
+    private int zoneSortIndex;
+    private int gotSortIndex;
 
     private GameObject pagePanel; //페이지 좌측 페이지가 생성될 기준 패널
     private GameObject itemName; //페이지 우측 이름 text
@@ -75,8 +78,13 @@ public class RecordManager : MonoBehaviour
 
         objectCSV = CSVReader_KT.Read("CSV/ObjectCSV"); // CSV 파일 읽어들이기
         recordObjectInfos = new RecordObjectInfo[objectCSV.Count]; // CSV 파일의 크기만큼 배열 크기 생성
+        tempRecordObjectInfos = new List<RecordObjectInfo>();
         //records = new GameObject[objectCSV.Count]; // CSV 파일에 입력된 정보의 크기만큼의 배열 생성
         pageList = new List<GameObject>();
+
+        // 정렬 인덱스 초기화
+        gotSortIndex = 0;
+        zoneSortIndex = 0;
 
         InputCSVFileToInfo(); // 초기화 레코드 정보 저장
         MakePage(objectCSV.Count); //초기화 페이지 수 계산
@@ -117,6 +125,22 @@ public class RecordManager : MonoBehaviour
     /// <param name="ItemCount"> 도감에 표시될 아이템 개수 </param>
     private void MakePage(int ItemCount)
     {
+        if(pageList.Count > 0)
+        {
+            for(int i = 0; i < pageList.Count; i++)
+            {
+                Destroy(pageList[i]);
+            }
+            pageList.Clear();
+        }
+
+        if(ItemCount == 0)// 만약 아이이템 수량이 없다면
+        {
+            GameObject page = Instantiate(pagePrefab, pagePanel.transform);
+            pageList.Add(page); // 리스트에 페이지 추가
+            return;
+        }
+
         while(ItemCount > 0)
         {
             ItemCount -= PAGE_FULL_ITEMCOUNT; // 한 페이지에 들어가는 총 도감아이템 개수만큼 빼주면서 생성
@@ -125,7 +149,9 @@ public class RecordManager : MonoBehaviour
             page.SetActive(false); // 페이지 비활성화
             pageList.Add(page); // 리스트에 페이지 추가
         }
-        pageList[0].SetActive(true); // 첫 페이지 보이도록 실행 
+
+        pageList[0].SetActive(true); // 첫 페이지 보이도록 실행
+        //pageIndex = 0;
 
     }
 
@@ -143,7 +169,22 @@ public class RecordManager : MonoBehaviour
             GameObject recordObject = Instantiate(itemUIObjectPrefab, pageList[tempIndex].transform);
             recordObject.GetComponent<RecordObject>().recordInfo = _recordObjectInfos[infoIndex];
         }
-        
+    }
+
+    /// <summary>
+    /// 도감 목록 생성
+    /// 231204 배경택
+    /// </summary>
+    /// <param name="_recordObjectInfos"> 레코드오브젝트 정보배열을 페이지에 생성 </param>
+    private void MakeRecordObject(List<RecordObjectInfo> _recordObjectInfos)
+    {
+        for (int infoIndex = 0; infoIndex < _recordObjectInfos.Count; infoIndex++)
+        {
+            int tempIndex = infoIndex / PAGE_FULL_ITEMCOUNT;
+
+            GameObject recordObject = Instantiate(itemUIObjectPrefab, pageList[tempIndex].transform);
+            recordObject.GetComponent<RecordObject>().recordInfo = _recordObjectInfos[infoIndex];
+        }
     }
 
 
@@ -213,4 +254,102 @@ public class RecordManager : MonoBehaviour
             pageIndex--;
         }
     }
+
+    /// <summary>
+    /// 획득기준으로 정렬하는 함수
+    /// 231205 배경택
+    /// </summary>
+    /// <param name="optionIndex">정렬목록 옵션 인덱스(0: 전체, 1: 획득, 2: 미획득)</param>
+    public void SortGot(int optionIndex) 
+    {
+        gotSortIndex = optionIndex; //정렬 인덱스 저장
+        Debug.Log(gotSortIndex);
+
+        List<RecordObjectInfo> gotObjects = new List<RecordObjectInfo>();
+        tempRecordObjectInfos.Clear();
+
+        bool check = false; // 비교를 위한 임시 변수
+
+        if (optionIndex == 1) check = false;
+        else if (optionIndex == 2) check = true;
+        
+        for(int i = 0; i < recordObjectInfos.Length; i++) // 전체
+        {
+            if (recordObjectInfos[i].obtained == check) // 획득 또는 미획득이 선택되었을 경우
+            {
+                gotObjects.Add(recordObjectInfos[i]);
+            }
+            else if(optionIndex == 0) // 전체가 선택되었을 경우
+            {
+                gotObjects.Add(recordObjectInfos[i]);
+            }
+        }
+
+        for(int i = 0; i < gotObjects.Count; i++)
+        {
+            if (gotObjects[i].zone == zoneSortIndex)
+            {
+                tempRecordObjectInfos.Add(gotObjects[i]);
+            }
+            else if(zoneSortIndex == 0)
+            {
+                tempRecordObjectInfos.Add(gotObjects[i]);
+            }
+        }
+
+        Debug.Log("임시 오브젝트 정보"+tempRecordObjectInfos.Count);
+
+        MakePage(tempRecordObjectInfos.Count);
+        MakeRecordObject(tempRecordObjectInfos);
+
+    }
+
+    /// <summary>
+    /// 지역기준으로 정렬하는 함수
+    /// 231205 배경택
+    /// </summary>
+    /// <param name="optionIndex">정렬목록 옵션 인덱스(0: 전체, 1: 주방, 2: 거실, 3: 아기방) </param>
+    public void SortZone(int optionIndex)
+    {
+        zoneSortIndex = optionIndex; // 정렬 인덱스 저장
+
+        List<RecordObjectInfo> zoneObjects = new List<RecordObjectInfo>();
+        tempRecordObjectInfos.Clear();
+
+        bool check = false; // 비교를 위한 임시 변수
+
+        for (int i = 0; i < recordObjectInfos.Length; i++)
+        {
+            if (recordObjectInfos[i].zone == zoneSortIndex)
+            {
+                zoneObjects.Add(recordObjectInfos[i]);
+            }
+            else if (zoneSortIndex == 0)
+            {
+                zoneObjects.Add(recordObjectInfos[i]);
+            }
+        }
+
+        if (gotSortIndex == 1) check = false;
+        else if (gotSortIndex == 2) check = true;
+
+        for (int i = 0; i < zoneObjects.Count; i++) // 전체
+        {
+            if (zoneObjects[i].obtained == check) // 획득 또는 미획득이 선택되었을 경우
+            {
+                tempRecordObjectInfos.Add(zoneObjects[i]);
+            }
+            else if (gotSortIndex == 0) // 전체가 선택되었을 경우
+            {
+                tempRecordObjectInfos.Add(zoneObjects[i]);
+
+            }
+        }
+
+        Debug.Log("임시 오브젝트 정보" + tempRecordObjectInfos.Count);
+
+        MakePage(tempRecordObjectInfos.Count);
+        MakeRecordObject(tempRecordObjectInfos);
+    }
+
 }
