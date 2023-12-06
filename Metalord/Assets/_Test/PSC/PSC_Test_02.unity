@@ -1232,6 +1232,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2097562325}
   - component: {fileID: 2097562326}
+  - component: {fileID: 2097562327}
   m_Layer: 0
   m_Name: CameraSystem
   m_TagString: Untagged
@@ -1274,6 +1275,18 @@ MonoBehaviour:
   targetX: {fileID: 502131792}
   freeLookCam: {fileID: 0}
   SpeedMulitiplier: 1.65
+--- !u!114 &2097562327
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2097562324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: edc33e0cbe590a64dbae20226cca7c47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &9171100248855847
 GameObject:
   m_ObjectHideFlags: 0
@@ -1466,7 +1479,6 @@ GameObject:
   m_Component:
   - component: {fileID: 543450653401087029}
   - component: {fileID: 307338209}
-  - component: {fileID: 919132149462640273}
   - component: {fileID: 307338212}
   - component: {fileID: 919132149462640272}
   - component: {fileID: 919132149462640274}
@@ -1501,29 +1513,19 @@ MonoBehaviour:
   rb: {fileID: 307338209}
   playerInputSpace: {fileID: 1529073044783738815}
   trailRenderer: {fileID: 0}
-  jumpHeight: 10
+  jumpHeight: 5
   probeDistance: 1
-  maxMoveSpeed: 15
-  maxAirMoveSpeed: 7.5
-  maxAcceleration: 40
-  maxAirAcceleration: 1
-  maxSnapSpeed: 15
+  maxMoveSpeed: 30
+  maxAirMoveSpeed: 10
+  maxClimbSpeed: 8
+  maxAcceleration: 100
+  maxAirAcceleration: 0
+  maxClimbAcceleration: 100
+  maxSnapSpeed: 100
   maxAirJumps: 0
   maxGroundAngle: 45
   maxObjectAngle: 45
-  maxClimbAngle: 122.5
---- !u!75 &919132149462640273
-ConstantForce:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 919132149462640271}
-  m_Enabled: 1
-  m_Force: {x: 0, y: -15, z: 0}
-  m_RelativeForce: {x: 0, y: 0, z: 0}
-  m_Torque: {x: 0, y: 0, z: 0}
-  m_RelativeTorque: {x: 0, y: 0, z: 0}
+  maxClimbAngle: 90
 --- !u!96 &919132149462640274
 TrailRenderer:
   serializedVersion: 3

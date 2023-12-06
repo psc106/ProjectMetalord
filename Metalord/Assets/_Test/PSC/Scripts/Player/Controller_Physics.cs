@@ -26,10 +26,12 @@ public class Controller_Physics : MonoBehaviour
 
     Vector3 input = Vector3.zero;
     Vector3 inputMouse = Vector3.zero;
-    
-    Vector3 velocity = Vector3.zero;
-    Vector3 desireVelocity = Vector3.zero;
-    Vector3 connectionVelocity = Vector3.zero;
+
+    Vector3 velocity;
+    Vector3 connectionVelocity;
+    //Vector3 velocity = Vector3.zero;
+    //Vector3 desireVelocity = Vector3.zero;
+    //Vector3 connectionVelocity = Vector3.zero;
 
     Vector3 upAxis;
     Vector3 rightAxis;
@@ -41,15 +43,17 @@ public class Controller_Physics : MonoBehaviour
     Vector3 contactNormal;
     Vector3 steepNormal;
     Vector3 climbNormal;
+    Vector3 lastClimbNormal;
 
     float minGroundDotProduct;
     float minObjectDotProduct;
     float minClimbDotProduct;
     float currMouseSpeed = 0;
 
+    bool desireClimb = true;
     bool desireJump = false;
-    bool OnGround => groundContactCount>0;
-    bool OnSteep => steepContactCount>0;
+    bool OnGround => groundContactCount > 0;
+    bool OnSteep => steepContactCount > 0;
     bool OnClimb => climbContactCount > 0;
 
     int jumpPhase = 0;
@@ -70,10 +74,16 @@ public class Controller_Physics : MonoBehaviour
     float maxMoveSpeed = default;
     [SerializeField, Range(0, 100)]
     float maxAirMoveSpeed = default;
+    [SerializeField, Range(0,100f)]
+    float maxClimbSpeed = default;
+
     [SerializeField, Range(0, 100)]
     float maxAcceleration = default;
     [SerializeField, Range(0, 100)]
     float maxAirAcceleration = default;
+    [SerializeField, Range(0, 100)]
+    float maxClimbAcceleration = default;
+
     [SerializeField, Range(0f, 100f)]
     float maxSnapSpeed = default;
     [SerializeField, Range(0, 5)]
@@ -140,7 +150,13 @@ public class Controller_Physics : MonoBehaviour
             rightAxis = ProjectDirectionOnPlane(Vector3.right, upAxis);
             forwardAxis = ProjectDirectionOnPlane(Vector3.forward, upAxis);
         }
-        desireVelocity = input * maxMoveSpeed;
+
+        if (OnClimb)
+        {
+           // transform.rotation = Quaternion.Euler(climbNormal);
+        }
+
+        //desireVelocity = input * maxMoveSpeed;
         desireJump |= Input.GetButtonDown("Jump");
 
         //디버그
@@ -160,7 +176,6 @@ public class Controller_Physics : MonoBehaviour
     {
         //upAxis = -Physics.gravity.normalized;
         Vector3 gravity = CustomGravity.GetGravity(rb.position, out upAxis);
-
         //상태 업데이트
         UpdateState();
 
@@ -173,7 +188,19 @@ public class Controller_Physics : MonoBehaviour
             desireJump = false;
             Jump(gravity);
         }
-        if (!OnClimb)
+        if (OnClimb)
+        {
+            velocity -= contactNormal * (maxClimbAcceleration * 0.9f * Time.deltaTime);
+        }
+        else if(OnGround && velocity.sqrMagnitude < 0.01f)
+        {
+            velocity += contactNormal * (Vector3.Dot(gravity, contactNormal) * Time.deltaTime);
+        }
+        else if(desireClimb && OnGround)
+        {
+            velocity += (gravity - contactNormal * maxClimbAcceleration * 0.9f) * Time.deltaTime;
+        }
+        else
         {
             velocity += gravity * Time.deltaTime;
         }
@@ -199,6 +226,9 @@ public class Controller_Physics : MonoBehaviour
 
     void AdjustVelocity()
     {
+        float acceleration;
+        float speed;
+
         //기준이 되는 축을 해당 각도로 올린다.
         //Vector3 xAxis = ProjectOnContactPlane(Vector3.right).normalized;
         //Vector3 zAxis = ProjectOnContactPlane(Vector3.forward).normalized;
@@ -209,18 +239,22 @@ public class Controller_Physics : MonoBehaviour
         Vector3 zAxis;
         if (OnClimb)
         {
+            acceleration = maxClimbAcceleration;
+            speed = maxClimbSpeed;
             xAxis = Vector3.Cross(contactNormal, upAxis);
             zAxis = upAxis;
         }
         else
         {
+            acceleration = OnGround ? maxAcceleration : maxAirAcceleration;
+            speed = OnGround && desireClimb? maxClimbSpeed: maxMoveSpeed;
             xAxis = rightAxis;
             zAxis = forwardAxis;
         }
         xAxis = ProjectDirectionOnPlane(xAxis, contactNormal);
         zAxis = ProjectDirectionOnPlane(zAxis, contactNormal);
 
-        Debug.Log(xAxis + "/" + zAxis);
+       // Debug.Log(xAxis + "/" + zAxis);
 
         Vector3 relativeVelocity = velocity - connectionVelocity;
 
@@ -229,12 +263,12 @@ public class Controller_Physics : MonoBehaviour
         float currZ = Vector3.Dot(relativeVelocity, zAxis);
 
         //가속
-        float acceleration = OnGround ? maxAcceleration : maxAirAcceleration;
+        //float acceleration = OnGround ? maxAcceleration : maxAirAcceleration;
         float maxSpeedChange = acceleration * Time.deltaTime;
 
         //원하는 속도로 가속/감속한다.
-        float newX = Mathf.MoveTowards(currX, desireVelocity.x, maxSpeedChange);
-        float newZ = Mathf.MoveTowards(currZ, desireVelocity.z, maxSpeedChange);
+        float newX = Mathf.MoveTowards(currX, input.x * speed, maxSpeedChange);
+        float newZ = Mathf.MoveTowards(currZ, input.z * speed, maxSpeedChange);
 
         //새로운 속도와 현재 속도의 차이만큼 가속 시킨다.
         velocity += xAxis * (newX - currX) + zAxis * (newZ - currZ);
@@ -243,13 +277,30 @@ public class Controller_Physics : MonoBehaviour
     void Jump(Vector3 gravity)
     {
         Vector3 jumpDirection;
-        if (OnGround)
+        if (OnClimb)
         {
+            /*if(input.magnitude != 0)
+            {
+                Vector3 xAxis = Vector3.Cross(contactNormal, upAxis);
+                Vector3 zAxis = upAxis;
+                jumpDirection = xAxis* input.x + zAxis*input.z;
+                jumpDirection.Normalize();
+            }
+            else
+            {
+                jumpDirection = contactNormal;
+            }*/
             jumpDirection = contactNormal;
+        }
+        else if (OnGround)
+        {
+            //jumpDirection = contactNormal;
+            jumpDirection = upAxis;
         }
         else if (OnSteep)
         {
             jumpDirection = steepNormal;
+            //jumpDirection = upAxis;
             jumpPhase = 0;
         }
         else if (maxAirJumps > 0 &&jumpPhase <= maxAirJumps)
@@ -259,6 +310,7 @@ public class Controller_Physics : MonoBehaviour
                 jumpPhase = 1;
             }
             jumpDirection = contactNormal;
+            //jumpDirection = upAxis;
         }
         else
         {
@@ -291,6 +343,8 @@ public class Controller_Physics : MonoBehaviour
 
     void EvaluateCollision(Collision collision)
     {
+        //여기서 현재 평면이 이동 가능한 절벽인지 체크?
+
         int layer = collision.gameObject.layer;
         float minDot = GetMinDot(layer);
         //모든 contact를 검사하여 일정 각도 이상의 평면을 모두 저장한다.
@@ -319,10 +373,11 @@ public class Controller_Physics : MonoBehaviour
                         connectedBody = collision.rigidbody;
                     }
                 }
-                if(upDot >= minClimbDotProduct && (climbMask & (1<<layer)) != 0)
+                if(desireClimb && upDot >= minClimbDotProduct && (climbMask & (1<<layer)) != 0)
                 {
                     climbContactCount += 1;
                     climbNormal += normal;
+                    lastClimbNormal += normal;
                     connectedBody = collision.rigidbody;
                 }
             }
@@ -469,7 +524,16 @@ public class Controller_Physics : MonoBehaviour
     {
         if (OnClimb)
         {
-            groundContactCount = climbContactCount;
+            if(climbContactCount > 1)
+            {
+                climbNormal.Normalize();
+                float upDot = Vector3.Dot(upAxis, climbNormal);
+                if(upDot >= minGroundDotProduct)
+                {
+                    climbNormal = lastClimbNormal;
+                }
+            }
+            groundContactCount = 1;
             contactNormal = climbNormal;
             return true;
         }
