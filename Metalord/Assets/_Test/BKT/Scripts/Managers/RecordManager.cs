@@ -229,8 +229,7 @@ public class RecordManager : MonoBehaviour
         checkRecordInfoId = recordInfo.id; // 도감 ID값 저장
 
         itemName.GetComponent<TMP_Text>().text = recordInfo.item_Name;
-        description.GetComponent<TMP_Text>().text = recordInfo.description;
-
+        
         switch (recordInfo.zone)
         {
             case 1:
@@ -243,8 +242,11 @@ public class RecordManager : MonoBehaviour
                 s_zone = "Baby Room";
                 break;
         }
-
         zone.GetComponent<TMP_Text>().text = s_zone;
+
+        // 얻은 도감아이템일 경우에만 설명이 출력됨
+        if (recordInfo.obtained) description.GetComponent<TMP_Text>().text = recordInfo.description;
+        else description.GetComponent<TMP_Text>().text = "???";
     }
 
     /// <summary>
