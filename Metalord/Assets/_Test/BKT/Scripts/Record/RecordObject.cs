@@ -27,6 +27,14 @@ public class RecordObject : MonoBehaviour,IPointerDownHandler
     private void ReflectInfo()
     {
         GetComponent<Image>().sprite = Resources.Load<Sprite>("Object/" + recordInfo.id_Description);
+        if(recordInfo.obtained == true)
+        {
+            transform.GetChild(0).gameObject.SetActive(false);
+        }
+        else
+        {
+            transform.GetChild(0).gameObject.SetActive(true);
+        }
     }
 
     /// <summary>

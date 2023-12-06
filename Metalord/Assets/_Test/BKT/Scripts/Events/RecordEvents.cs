@@ -15,8 +15,8 @@ public class RecordEvents
     /// 아이템을 먹었을때 발생하는 이벤트
     /// 231130 배경택
     /// </summary>
-    public event Action<string> onGetRecordItem;
-    public void GetRecordItem(string id)
+    public event Action<int> onGetRecordItem;
+    public void GetRecordItem(int id)
     {
         if(onGetRecordItem != null) // 이벤트함수가 비어있지 않다면
         {
@@ -36,4 +36,5 @@ public class RecordEvents
             onChangeRecord();
         }
     }
+
 }

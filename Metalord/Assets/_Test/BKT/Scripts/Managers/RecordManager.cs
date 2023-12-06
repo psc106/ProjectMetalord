@@ -91,6 +91,34 @@ public class RecordManager : MonoBehaviour
         MakeRecordObject(recordObjectInfos); //초기화 도감 오브젝트 구성
     }
 
+    private void OnEnable()
+    {
+        GameEventsManager.instance.recordEvents.onGetRecordItem += GetItem;
+    }
+
+    private void OnDisable()
+    {
+        GameEventsManager.instance.recordEvents.onGetRecordItem -= GetItem;
+    }
+
+    /// <summary>
+    /// 레코드 아이템을 먹었을때 호출되는 함수
+    /// 231206 배경택
+    /// </summary>
+    /// <param name="_id"></param>
+    private void GetItem(int _id)
+    {
+        for(int i = 0; i < recordObjectInfos.Length; i++)
+        {
+            if (recordObjectInfos[i].id == _id)
+            {
+                recordObjectInfos[i].obtained = true;
+                GameEventsManager.instance.recordEvents.ReflectRecord(); // 정보 반영 이벤트 발생
+                break;
+            }
+        }
+    }
+
     private void Start()
     {
         GameEventsManager.instance.recordEvents.ReflectRecord();
@@ -270,9 +298,10 @@ public class RecordManager : MonoBehaviour
 
         bool check = false; // 비교를 위한 임시 변수
 
-        if (optionIndex == 1) check = false;
-        else if (optionIndex == 2) check = true;
-        
+        if (optionIndex == 1) check = true;
+        else if (optionIndex == 2) check = false;
+
+        // 전체 원본 도감정보에서 획득여부로 획득 리스트에 추가
         for(int i = 0; i < recordObjectInfos.Length; i++) // 전체
         {
             if (recordObjectInfos[i].obtained == check) // 획득 또는 미획득이 선택되었을 경우
@@ -285,6 +314,7 @@ public class RecordManager : MonoBehaviour
             }
         }
 
+        // 획득 리스트에서 지역 기준으로 임시 리스트에 추가
         for(int i = 0; i < gotObjects.Count; i++)
         {
             if (gotObjects[i].zone == zoneSortIndex)
@@ -299,9 +329,9 @@ public class RecordManager : MonoBehaviour
 
         Debug.Log("임시 오브젝트 정보"+tempRecordObjectInfos.Count);
 
+        // 임시리스트를 매개변수로 페이지와 오브젝트 생성
         MakePage(tempRecordObjectInfos.Count);
         MakeRecordObject(tempRecordObjectInfos);
-
     }
 
     /// <summary>
@@ -318,6 +348,7 @@ public class RecordManager : MonoBehaviour
 
         bool check = false; // 비교를 위한 임시 변수
 
+        // 전체 원본 도감정보에서 지역 기준으로 지역 리스트에 추가
         for (int i = 0; i < recordObjectInfos.Length; i++)
         {
             if (recordObjectInfos[i].zone == zoneSortIndex)
@@ -330,9 +361,10 @@ public class RecordManager : MonoBehaviour
             }
         }
 
-        if (gotSortIndex == 1) check = false;
-        else if (gotSortIndex == 2) check = true;
+        if (gotSortIndex == 1) check = true; // 획득된 상태
+        else if (gotSortIndex == 2) check = false; //획득되지 않은 상태
 
+        // 지역 리스트에서 획득여부 기준으로 임시 리스트에 추가
         for (int i = 0; i < zoneObjects.Count; i++) // 전체
         {
             if (zoneObjects[i].obtained == check) // 획득 또는 미획득이 선택되었을 경우
@@ -348,8 +380,8 @@ public class RecordManager : MonoBehaviour
 
         Debug.Log("임시 오브젝트 정보" + tempRecordObjectInfos.Count);
 
+        // 임시리스트를 매개변수로 페이지와 오브젝트 생성
         MakePage(tempRecordObjectInfos.Count);
         MakeRecordObject(tempRecordObjectInfos);
     }
-
 }
