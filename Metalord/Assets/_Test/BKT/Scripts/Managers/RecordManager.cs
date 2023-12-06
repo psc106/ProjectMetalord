@@ -18,7 +18,9 @@ public class RecordManager : MonoBehaviour
     private GameObject pagePrefab; // 복사하여 생성할 프리펩
     private List<Dictionary<string, object>> objectCSV = new List<Dictionary<string, object>>();
     private List<GameObject> pageList;
-    private Dictionary<int,RecordObjectInfo> recordObjectInfos; // 도감 정보 전체가 저장된 원본 
+
+    private Dictionary<int,RecordObjectInfo> recordObjectInfos; // 도감 정보 전체가 저장된 원본
+
     private List<RecordObjectInfo> tempRecordObjectInfos; // 정렬에 맞춰 변경될 도감 정보 배열
 
     private int zoneSortIndex;
@@ -142,6 +144,7 @@ public class RecordManager : MonoBehaviour
             recordInfo.item_Name = objectCSV[index]["Item_Name"].ToString();
             recordInfo.obtained = bool.Parse(objectCSV[index]["Obtained"].ToString());
             recordInfo.description = objectCSV[index]["Description"].ToString();
+            recordInfo.isSelected = false;
 
             recordObjectInfos[recordInfo.id] = recordInfo; // 도감 정보를 저장해서 Dictionary로 관리
         }
@@ -221,37 +224,38 @@ public class RecordManager : MonoBehaviour
     /// </summary>
     public void InputRecordInfo(int selectedId)
     {
-
-        if (recordObjectInfos[selectedId].id == selectedId)
+        for(int i = 1; i < recordObjectInfos.Count; i++)
         {
-            if (checkRecordInfoId == recordObjectInfos[selectedId].id) // 중복으로 같은 아이디값이 들어올 경우
-            {
-                DeleteRecordInfo(); // 도감 우측 텍스트정보 지우기
-                return;
-            }
-            checkRecordInfoId = recordObjectInfos[selectedId].id; // 도감 ID값 저장
-
-            itemName.GetComponent<TMP_Text>().text = recordObjectInfos[selectedId].item_Name;
-
-            switch (recordObjectInfos[selectedId].zone)
-            {
-                case 1:
-                    s_zone = "Kitchen";
-                    break;
-                case 2:
-                    s_zone = "Living Room";
-                    break;
-                case 3:
-                    s_zone = "Baby Room";
-                    break;
-            }
-            zone.GetComponent<TMP_Text>().text = s_zone;
-
-            // 얻은 도감아이템일 경우에만 설명이 출력됨
-            if (recordObjectInfos[selectedId].obtained) description.GetComponent<TMP_Text>().text = recordObjectInfos[selectedId].description;
-            else description.GetComponent<TMP_Text>().text = "???";
+            if(selectedId == i) continue;
+            recordObjectInfos[i].isSelected = false;
         }
-        
+
+        if (checkRecordInfoId == recordObjectInfos[selectedId].id) // 중복으로 같은 아이디값이 들어올 경우
+        {
+            DeleteRecordInfo(); // 도감 우측 텍스트정보 지우기
+            return;
+        }
+        checkRecordInfoId = recordObjectInfos[selectedId].id; // 도감 ID값 저장
+
+        itemName.GetComponent<TMP_Text>().text = recordObjectInfos[selectedId].item_Name;
+
+        switch (recordObjectInfos[selectedId].zone)
+        {
+            case 1:
+                s_zone = "Kitchen";
+                break;
+            case 2:
+                s_zone = "Living Room";
+                break;
+            case 3:
+                s_zone = "Baby Room";
+                break;
+        }
+        zone.GetComponent<TMP_Text>().text = s_zone;
+
+        // 얻은 도감아이템일 경우에만 설명이 출력됨
+        if (recordObjectInfos[selectedId].obtained) description.GetComponent<TMP_Text>().text = recordObjectInfos[selectedId].description;
+        else description.GetComponent<TMP_Text>().text = "???";
     }
 
 

@@ -9,38 +9,35 @@ public class RecordObject : MonoBehaviour,IPointerDownHandler
 {
     public RecordObjectInfo recordInfo { get; set; }
 
-    private bool isSelected = false;
-
     private void Awake()
     {
-        GameEventsManager.instance.recordEvents.onSelectRecord += CheckSelected; // 선택여부 체크
-        
+        GameEventsManager.instance.recordEvents.onSelectRecord += CheckSelected; // 선택여부 체크 추가
     }
 
     private void OnEnable()
     {
-        GameEventsManager.instance.recordEvents.onChangeRecord += ReflectInfo; // 도감 변경알림시 갖고있는 정보 반영
+        GameEventsManager.instance.recordEvents.onChangeRecord += ReflectInfo; // 도감 변경알림시 갖고있는 정보 반영 추가
     }
 
     private void OnDisable()
     {
-        GameEventsManager.instance.recordEvents.onChangeRecord -= ReflectInfo; // 도감 변경알림시 갖고있는 정보 반영
-        //InActiveChecking(); // 페이지 넘길때 비활성화가 되므로 실행
+        GameEventsManager.instance.recordEvents.onChangeRecord -= ReflectInfo; // 도감 변경알림시 갖고있는 정보 반영 해제
     }
 
     private void OnDestroy()
     {
-        GameEventsManager.instance.recordEvents.onSelectRecord -= CheckSelected; // 선택여부 체크
-        
+        GameEventsManager.instance.recordEvents.onSelectRecord -= CheckSelected; // 선택여부 체크 해제
     }
 
 
     private void Start()
     {
-        ReflectInfo(); // 이미지 초기화
+        ReflectInfo(); // 초기화
     }
 
-    
+    /// <summary>
+    /// 수집 아이템 정보를 반영하는 함수
+    /// </summary>
     private void ReflectInfo()
     {
         GetComponent<Image>().sprite = Resources.Load<Sprite>("Object/" + recordInfo.id_Description);
@@ -104,8 +101,4 @@ public class RecordObject : MonoBehaviour,IPointerDownHandler
     {
         GameEventsManager.instance.recordEvents.SelectRecord(recordInfo.id);
     }
-
-    
-
-    
 }
