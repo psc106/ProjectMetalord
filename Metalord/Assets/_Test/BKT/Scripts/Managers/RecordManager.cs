@@ -94,11 +94,14 @@ public class RecordManager : MonoBehaviour
     private void OnEnable()
     {
         GameEventsManager.instance.recordEvents.onGetRecordItem += GetItem;
+        GameEventsManager.instance.recordEvents.onSelectRecord += InputRecordInfo;
     }
 
     private void OnDisable()
     {
         GameEventsManager.instance.recordEvents.onGetRecordItem -= GetItem;
+        GameEventsManager.instance.recordEvents.onSelectRecord -= InputRecordInfo;
+
     }
 
     /// <summary>
@@ -220,11 +223,22 @@ public class RecordManager : MonoBehaviour
     /// 도감정보에 선택된 도감아이템 정보 입력
     /// 231205 배경택
     /// </summary>
-    public void InputRecordInfo(RecordObjectInfo recordInfo)
+    public void InputRecordInfo(int selectedId)
     {
+        RecordObjectInfo recordInfo = new RecordObjectInfo();
+
+        for (int i = 0; i < recordObjectInfos.Length; i++)
+        {
+            if (recordObjectInfos[i].id == selectedId)
+            {
+                recordInfo = recordObjectInfos[i];
+                break;
+            }
+        }
+
         if (checkRecordInfoId == recordInfo.id) // 중복으로 같은 아이디값이 들어올 경우
         {
-            DeleteRecordInfo(); return; // 도감 우측 텍스트정보 지우기
+            DeleteRecordInfo(); return; // 도감 우측 텍스트정보 지우기i
         }
         checkRecordInfoId = recordInfo.id; // 도감 ID값 저장
 
@@ -248,6 +262,7 @@ public class RecordManager : MonoBehaviour
         if (recordInfo.obtained) description.GetComponent<TMP_Text>().text = recordInfo.description;
         else description.GetComponent<TMP_Text>().text = "???";
     }
+
 
     /// <summary>
     /// 도감정보 내용 지우기

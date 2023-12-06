@@ -16,11 +16,11 @@ public class RecordEvents
     /// 231130 배경택
     /// </summary>
     public event Action<int> onGetRecordItem;
-    public void GetRecordItem(int id)
+    public void GetRecordItem(int _id)
     {
         if(onGetRecordItem != null) // 이벤트함수가 비어있지 않다면
         {
-            onGetRecordItem(id);
+            onGetRecordItem(_id);
         } 
     }
 
@@ -34,6 +34,17 @@ public class RecordEvents
         if(onChangeRecord != null)
         {
             onChangeRecord();
+        }
+    }
+
+    public event Action<int> onSelectRecord;
+    public void SelectRecord(int _id)
+    {
+        if(onSelectRecord != null)
+        {
+            Debug.Log(onSelectRecord);
+
+            onSelectRecord(_id);
         }
     }
 
