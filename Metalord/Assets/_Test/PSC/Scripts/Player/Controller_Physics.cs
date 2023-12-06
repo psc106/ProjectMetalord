@@ -18,15 +18,25 @@ public class Controller_Physics : MonoBehaviour
     [SerializeField]
     TrailRenderer trailRenderer;
 
+
+    Rigidbody connectedBody;
+    Rigidbody previousConnectedBody;
+
     Vector3 input = Vector3.zero;
     Vector3 inputMouse = Vector3.zero;
     Vector3 velocity = Vector3.zero;
     Vector3 desireVelocity = Vector3.zero;
+    Vector3 connectionVelocity = Vector3.zero;
+
+    Vector3 connectionWorldPosition;
+
     Vector3 contactNormal;
     Vector3 steepNormal;
+    Vector3 climbNormal;
 
     float minGroundDotProduct;
     float minObjectDotProduct;
+    float minClimbDotProduct;
     float currMouseSpeed = 0;
 
     bool desireJump = false;
@@ -34,10 +44,13 @@ public class Controller_Physics : MonoBehaviour
     bool OnSteep => steepContactCount>0;
 
     int jumpPhase = 0;
-    int groundContactCount = 0;
-    int steepContactCount = 0;
     int stepsSinceLastGrounded = 0;
     int stepsSinceLastJump = 0;
+
+
+    int groundContactCount = 0;
+    int steepContactCount = 0;
+    int climbContactCount = 0;
 
     [SerializeField, Range(0, 100f)]
     float jumpHeight = default;
@@ -56,6 +69,8 @@ public class Controller_Physics : MonoBehaviour
     float maxGroundAngle = default;
     [SerializeField, Range(0, 90f)]
     float maxObjectAngle = default;
+    [SerializeField, Range(0, 90f)]
+    float maxClimbAngle = default;
     [SerializeField, Range(0f, 100f)]
     float maxSnapSpeed = default;
     [SerializeField, Range(0, 5)]
@@ -64,7 +79,8 @@ public class Controller_Physics : MonoBehaviour
     private void OnValidate()
     {
         minGroundDotProduct = Mathf.Cos(maxGroundAngle * Mathf.Deg2Rad);
-        minObjectDotProduct = Mathf.Cos(maxGroundAngle * Mathf.Deg2Rad);
+        minObjectDotProduct = Mathf.Cos(maxObjectAngle * Mathf.Deg2Rad);
+        minClimbDotProduct = Mathf.Cos(maxClimbAngle * Mathf.Deg2Rad);
     }
 
     private void Awake()
@@ -83,22 +99,23 @@ public class Controller_Physics : MonoBehaviour
 
         input = Input.GetAxis("Horizontal") * right.normalized;
         input += Input.GetAxis("Vertical") * forward.normalized;
-        desireJump |= Input.GetButtonDown("Jump");
 
 
         //입력값 변환
         input = Vector3.ClampMagnitude(input, 1);
 
         desireVelocity = input * maxMoveSpeed;
+        desireJump |= Input.GetButtonDown("Jump");
 
         //디버그
-//        GetComponent<Renderer>().material.SetColor("_Color", OnGround ? Color.black : Color.white);
+        GetComponent<Renderer>().material.color = OnGround ? Color.black : Color.white;
     }
 
     private void FixedUpdate()
     {
         //상태 업데이트
         UpdateState();
+
         //속도 계산
         AdjustVelocity();
 
@@ -162,6 +179,24 @@ public class Controller_Physics : MonoBehaviour
             //접촉 방향 Vector3.up(평지)
             contactNormal = Vector3.up;
         }
+
+        if (connectedBody)
+        {
+            if(connectedBody.isKinematic || connectedBody.mass >= rb.mass)
+            {
+                UpdateConnectionState();
+            }
+        }
+    }
+
+    void UpdateConnectionState()
+    {
+        if(connectedBody == previousConnectedBody)
+        {
+            Vector3 connectionMovement = connectedBody.position - connectionWorldPosition;
+            connectionVelocity = connectionMovement / Time.deltaTime;
+        }
+        connectionWorldPosition = connectedBody.position;
     }
 
     void AdjustVelocity()
@@ -254,12 +289,16 @@ public class Controller_Physics : MonoBehaviour
             {
                 groundContactCount += 1;
                 contactNormal += normal;
+                connectedBody = collision.rigidbody;
             }
             else if (normal.y > -0.01f)
             {
-
                 steepContactCount += 1;
                 steepNormal += normal;
+                if(groundContactCount == 0)
+                {
+                    connectedBody = collision.rigidbody;
+                }
             }
         }
     }
@@ -274,6 +313,13 @@ public class Controller_Physics : MonoBehaviour
         //가파른 경사
         steepContactCount = 0;
         steepNormal = Vector3.zero;
+        //등산가능
+        climbContactCount = 0;
+        climbNormal = Vector3.zero;
+
+        connectionVelocity = Vector3.zero;
+        previousConnectedBody = connectedBody;
+        connectedBody = null;
     }
 
     bool SnapToGround()
@@ -315,6 +361,7 @@ public class Controller_Physics : MonoBehaviour
            velocity = (velocity - hit.normal * dot).normalized * speed;
         }
 
+        connectedBody = hit.rigidbody;
         return true;
     }
 
