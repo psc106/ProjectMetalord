@@ -291,47 +291,8 @@ public class RecordManager : MonoBehaviour
     public void SortGot(int optionIndex) 
     {
         gotSortIndex = optionIndex; //정렬 인덱스 저장
-        Debug.Log(gotSortIndex);
 
-        List<RecordObjectInfo> gotObjects = new List<RecordObjectInfo>();
-        tempRecordObjectInfos.Clear();
-
-        bool check = false; // 비교를 위한 임시 변수
-
-        if (optionIndex == 1) check = true;
-        else if (optionIndex == 2) check = false;
-
-        // 전체 원본 도감정보에서 획득여부로 획득 리스트에 추가
-        for(int i = 0; i < recordObjectInfos.Length; i++) // 전체
-        {
-            if (recordObjectInfos[i].obtained == check) // 획득 또는 미획득이 선택되었을 경우
-            {
-                gotObjects.Add(recordObjectInfos[i]);
-            }
-            else if(optionIndex == 0) // 전체가 선택되었을 경우
-            {
-                gotObjects.Add(recordObjectInfos[i]);
-            }
-        }
-
-        // 획득 리스트에서 지역 기준으로 임시 리스트에 추가
-        for(int i = 0; i < gotObjects.Count; i++)
-        {
-            if (gotObjects[i].zone == zoneSortIndex)
-            {
-                tempRecordObjectInfos.Add(gotObjects[i]);
-            }
-            else if(zoneSortIndex == 0)
-            {
-                tempRecordObjectInfos.Add(gotObjects[i]);
-            }
-        }
-
-        Debug.Log("임시 오브젝트 정보"+tempRecordObjectInfos.Count);
-
-        // 임시리스트를 매개변수로 페이지와 오브젝트 생성
-        MakePage(tempRecordObjectInfos.Count);
-        MakeRecordObject(tempRecordObjectInfos);
+        SortTotal();
     }
 
     /// <summary>
@@ -342,45 +303,43 @@ public class RecordManager : MonoBehaviour
     public void SortZone(int optionIndex)
     {
         zoneSortIndex = optionIndex; // 정렬 인덱스 저장
+        SortTotal();
+    }
 
-        List<RecordObjectInfo> zoneObjects = new List<RecordObjectInfo>();
+    /// <summary>
+    /// 전체 정렬 함수
+    /// 231206 배경택
+    /// </summary>
+    private void SortTotal()
+    {
         tempRecordObjectInfos.Clear();
 
         bool check = false; // 비교를 위한 임시 변수
 
-        // 전체 원본 도감정보에서 지역 기준으로 지역 리스트에 추가
-        for (int i = 0; i < recordObjectInfos.Length; i++)
-        {
-            if (recordObjectInfos[i].zone == zoneSortIndex)
-            {
-                zoneObjects.Add(recordObjectInfos[i]);
-            }
-            else if (zoneSortIndex == 0)
-            {
-                zoneObjects.Add(recordObjectInfos[i]);
-            }
-        }
-
         if (gotSortIndex == 1) check = true; // 획득된 상태
         else if (gotSortIndex == 2) check = false; //획득되지 않은 상태
 
-        // 지역 리스트에서 획득여부 기준으로 임시 리스트에 추가
-        for (int i = 0; i < zoneObjects.Count; i++) // 전체
+        for (int i = 0; i < recordObjectInfos.Length; i++)
         {
-            if (zoneObjects[i].obtained == check) // 획득 또는 미획득이 선택되었을 경우
+            if (recordObjectInfos[i].obtained == check && recordObjectInfos[i].zone == zoneSortIndex)
             {
-                tempRecordObjectInfos.Add(zoneObjects[i]);
+                tempRecordObjectInfos.Add(recordObjectInfos[i]);
             }
-            else if (gotSortIndex == 0) // 전체가 선택되었을 경우
+            else if(recordObjectInfos[i].obtained == check && zoneSortIndex == 0)
             {
-                tempRecordObjectInfos.Add(zoneObjects[i]);
-
+                tempRecordObjectInfos.Add(recordObjectInfos[i]);
+            }
+            else if(gotSortIndex == 0 && recordObjectInfos[i].zone == zoneSortIndex)
+            {
+                tempRecordObjectInfos.Add(recordObjectInfos[i]);
+            }
+            else if(gotSortIndex == 0 && zoneSortIndex == 0)
+            {
+                tempRecordObjectInfos.Add(recordObjectInfos[i]);
             }
         }
 
-        Debug.Log("임시 오브젝트 정보" + tempRecordObjectInfos.Count);
-
-        // 임시리스트를 매개변수로 페이지와 오브젝트 생성
+        // 임시 리스트를 매개변수로 페이지와 오브젝트 생성
         MakePage(tempRecordObjectInfos.Count);
         MakeRecordObject(tempRecordObjectInfos);
     }
