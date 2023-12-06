@@ -8,6 +8,7 @@ using UnityEngine.EventSystems;
 public class RecordObject : MonoBehaviour,IPointerDownHandler
 {
     public RecordObjectInfo recordInfo { get; set; }
+
     private bool isSelected = false;
 
     private void Awake()
@@ -37,20 +38,18 @@ public class RecordObject : MonoBehaviour,IPointerDownHandler
     private void Start()
     {
         ReflectInfo(); // 이미지 초기화
-        isSelected = false;
     }
 
+    
     private void ReflectInfo()
     {
         GetComponent<Image>().sprite = Resources.Load<Sprite>("Object/" + recordInfo.id_Description);
-        if(recordInfo.obtained == true)
-        {
-            transform.GetChild(0).gameObject.SetActive(false);
-        }
-        else
-        {
-            transform.GetChild(0).gameObject.SetActive(true);
-        }
+
+        if(recordInfo.obtained == true) transform.GetChild(0).gameObject.SetActive(false);
+        else transform.GetChild(0).gameObject.SetActive(true);
+
+        if (recordInfo.isSelected == true) transform.GetChild(1).gameObject.SetActive(true);
+        else transform.GetChild(1).gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -60,15 +59,13 @@ public class RecordObject : MonoBehaviour,IPointerDownHandler
     /// <param name="_id"></param>
     private void CheckSelected(int _id)
     {
-        Debug.Log(_id + " " + recordInfo.id);
-
         if (recordInfo.id != _id)
         {
             InActiveChecking();
         }
         else // 선택된 id값과 내 id값이 같고
         {
-            if (!isSelected) // 선택된 적이 없다면
+            if (!recordInfo.isSelected) // 선택된 적이 없다면
             {
                 ActiveChecking();
             }
@@ -84,7 +81,7 @@ public class RecordObject : MonoBehaviour,IPointerDownHandler
     /// </summary>
     private void InActiveChecking()
     {
-        isSelected = false;
+        recordInfo.isSelected = false;
         transform.GetChild(1).gameObject.SetActive(false);
     }
 
@@ -93,7 +90,7 @@ public class RecordObject : MonoBehaviour,IPointerDownHandler
     /// </summary>
     private void ActiveChecking()
     {
-        isSelected = true; //선택되었다고 표시
+        recordInfo.isSelected = true; //선택되었다고 표시
         transform.GetChild(1).gameObject.SetActive(true); //선택되었다고 표시
     }
 

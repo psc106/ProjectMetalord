@@ -14,4 +14,5 @@ public class RecordObjectInfo
     public int zone { get; set; } // 1 = 주방, 2= 거실, 3= 아기방
     public bool obtained { get; set; }
     public string description { get; set; }
+    public bool isSelected { get; set; }
 }

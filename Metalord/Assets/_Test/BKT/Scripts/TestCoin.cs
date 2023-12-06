@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 /// 테스트 코인, OnPointerDown 함수 내용 추후 먹는 코인에 반영하면 됨
 /// 231130_배경택
 /// </summary>
-public class TestCoin : MonoBehaviour, IPointerDownHandler
+public class TestCoin : MonoBehaviour
 {
     [SerializeField] private CoinType mytype; // 인스펙터창에서 코인 타입 선택
 
