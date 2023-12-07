@@ -4,8 +4,25 @@ using UnityEngine;
 
 public class DialogueDataParse : MonoBehaviour
 {
-    public TextAsset csvFile = default;
-
+    public DialogueQuestion[] ParseQuestionList(TextAsset questionCsvData)
+    {
+        List<DialogueQuestion> questionList = new List<DialogueQuestion>();
+        string[] data = questionCsvData.text.Split('\n');
+        
+        for (int i = 1; i < data.Length - 1;  i++) 
+        {
+            string[] row = data[i].Split(new char[] { ',' });
+            DialogueQuestion question = new DialogueQuestion();
+            for (int j = 0; j < row.Length - 1;j++)
+            {
+                question.questionID = row[0];
+                question.questionContextes = row[1];
+                question.nextTextNum = row[2];
+            }
+            questionList.Add(question);
+        }
+        return questionList.ToArray();
+    }
     public Dialogue[] ParseDialogue(TextAsset csvData)
     {
         List<Dialogue> dialogueList = new List<Dialogue>();

@@ -14,10 +14,10 @@ public class Dialogue
     public string nextTextNum; //다음 대사 내용 ID
 }
 
-[System.Serializable]
-public class DialogueEvent
-{
-    public string speakerName;
-    public Vector2 line;
-    public Dialogue[] dialogues;
-}
+//[System.Serializable]
+//public class DialogueEvent
+//{
+//    public string speakerName;
+//    public Vector2 line;
+//    public Dialogue[] dialogues;
+//}

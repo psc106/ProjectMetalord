@@ -7,9 +7,11 @@ using UnityEngine.UI;
 
 public class QuestionListTest : MonoBehaviour
 {
-    [SerializeField] private RectTransform responseBox;
-    [SerializeField] private RectTransform responseButtonTemplete;
-    [SerializeField] private RectTransform responseContainer;
+    //[SerializeField] private RectTransform responseBox;
+    //[SerializeField] private RectTransform responseButtonTemplete;
+    //[SerializeField] private RectTransform responseContainer;
+
+    //public DialogueDataParse testData = default;
 
     private DialogueUI dialogueUI;
 
@@ -28,7 +30,8 @@ public class QuestionListTest : MonoBehaviour
 
     void Start()
     {
-        dialogueUI = GetComponent<DialogueUI>();
+        //dialogueUI = GetComponent<DialogueUI>();
+        //testData.QuestionListParse();
     }
 
     void Update()
