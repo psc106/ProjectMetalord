@@ -26,10 +26,10 @@ public class RecordManager : MonoBehaviour
     private int zoneSortIndex;
     private int gotSortIndex;
 
-    private GameObject pagePanel; //페이지 좌측 페이지가 생성될 기준 패널
-    private GameObject itemName; //페이지 우측 이름 text
-    private GameObject zone; //페이지 우측 지역 text
-    private GameObject description; //페이지 우측 설명 text
+    [SerializeField] private GameObject pagePanel; //페이지 좌측 페이지가 생성될 기준 패널
+    [SerializeField] private GameObject itemName; //페이지 우측 이름 text
+    [SerializeField] private GameObject zone; //페이지 우측 지역 text
+    [SerializeField] private GameObject description; //페이지 우측 설명 text
 
     private string s_zone; // 지역저장을 위한 임시변수
 
@@ -69,10 +69,10 @@ public class RecordManager : MonoBehaviour
         instance = this;
 
         // 도감 우측 정보창 게임오브젝트 가져오기
-        itemName = GameObject.Find("Text(Info_Name)");
-        zone = GameObject.Find("Text(Info_Zone)");
-        description = GameObject.Find("Text(Info_Description)");
-        pagePanel = GameObject.Find("RecordPagePanel");
+        //itemName = GameObject.Find("Text(Info_Name)");
+        //zone = GameObject.Find("Text(Info_Zone)");
+        //description = GameObject.Find("Text(Info_Description)");
+        //pagePanel = GameObject.Find("RecordPagePanel");
 
         itemUIObjectPrefab = Resources.Load<GameObject>("Prefabs/Object_ForRecordObject");
         pagePrefab = Resources.Load<GameObject>("Prefabs/Object_ForPage");
