@@ -9,7 +9,13 @@ public class CameraManager : MonoBehaviour
     [SerializeField] InputReader input;
     [SerializeField] Transform targetY;
     [SerializeField] Transform targetX;
-    [SerializeField] CinemachineFreeLook freeLookCam;
+
+    [SerializeField]
+    Controller_Physics player;
+    [SerializeField]
+    Transform crossHair;
+    [SerializeField]
+    CinemachineVirtualCamera climbCamera;
 
     [Header("Settings")]
     [SerializeField, Range(0.5f, 3f)] float SpeedMulitiplier = 1f;
@@ -20,6 +26,8 @@ public class CameraManager : MonoBehaviour
 
     private void OnEnable()
     {
+        transform.parent = null;
+
         input.Look += OnLook;
         input.EnableMouseControlCamera += OnEnableMouseControlCamera;
         input.DisableMouseControlCamera += OnDisableMouseControlCamera;
@@ -37,23 +45,44 @@ public class CameraManager : MonoBehaviour
 
     }
 
+    private void LateUpdate()
+    {
+        climbCamera.gameObject.SetActive(player.OnClimb);
+        crossHair.gameObject.SetActive(!player.OnClimb);
+
+
+        //y축 변경
+        if (player.OnClimb)
+        {
+            Vector3 lookPoint = player.GetClimbNormal();
+            lookPoint.y = 0;
+            player.transform.LookAt(player.transform.position - lookPoint);
+        }
+        else
+        {
+            targetY.Rotate(Vector3.up, newRotationY);
+        }
+        //x축 변경
+        targetX.rotation = Quaternion.Euler(newRotationX, targetX.eulerAngles.y, targetX.eulerAngles.z);
+    }
+    float newRotationY;
+    float newRotationX;
+
     void OnLook(Vector2 cameraMovement, bool isDeviceMouse)
     {
         if (cameraMovementLock) return;
         if (isDeviceMouse && isUnLockPressed) return;
 
         float deviceMultiplier = isDeviceMouse ? Time.fixedDeltaTime : Time.deltaTime;
-        //freeLookCam.m_XAxis.m_InputAxisValue = cameraMovement.x * SpeedMulitiplier * deviceMultiplier;
-        //freeLookCam.m_YAxis.m_InputAxisValue = cameraMovement.y * SpeedMulitiplier * deviceMultiplier;
 
-        targetY.Rotate(Vector3.up, cameraMovement.x * SpeedMulitiplier * deviceMultiplier);
-        //targetX.Rotate(Vector3.right, cameraMovement.y * SpeedMulitiplier * deviceMultiplier);
+        newRotationY = cameraMovement.x * SpeedMulitiplier * deviceMultiplier;
 
-        // Adjust the Y axis rotation based on input, and limit it within minYRotation and maxYRotation
-        float newRotationX = targetX.eulerAngles.x - cameraMovement.y * SpeedMulitiplier * deviceMultiplier;
+        
+        newRotationX = targetX.eulerAngles.x - cameraMovement.y * SpeedMulitiplier * deviceMultiplier;
         newRotationX = Mathf.Clamp(newRotationX > 180 ? newRotationX - 360 : newRotationX, -89, 89);
 
-        targetX.rotation = Quaternion.Euler(newRotationX, targetX.eulerAngles.y, targetX.eulerAngles.z);
+        //targetY.Rotate(Vector3.up, newRotationY);
+
 
     }
 
@@ -63,9 +92,6 @@ public class CameraManager : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-
-        freeLookCam.m_XAxis.m_InputAxisValue = 0f;
-        freeLookCam.m_YAxis.m_InputAxisValue = 0f;
     }
     void OnDisableMouseControlCamera()
     {

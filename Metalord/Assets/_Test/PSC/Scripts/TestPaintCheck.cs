@@ -19,7 +19,6 @@ public class TestPaintCheck : MonoBehaviour
     {
         Vector3 viewPos = Input.mousePosition;
 
-        Debug.Log(viewPos);
         texture = RTImage(cam);
         Color _color = texture.GetPixel((int)viewPos.x, (int)viewPos.y);
         Debug.Log(_color);

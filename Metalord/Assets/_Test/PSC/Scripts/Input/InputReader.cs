@@ -16,13 +16,15 @@ public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions
     public event UnityAction Interact = delegate { };
     public event UnityAction modeChange = delegate { };
 
-    public event UnityAction<bool> Jump = delegate { };
-    public event UnityAction<bool> Dash = delegate { };
-    public event UnityAction<bool> Pull = delegate { };
+    public event UnityAction<float> Jump = delegate { };
+    public event UnityAction<float> Run = delegate { };
+    public event UnityAction<float> Pull = delegate { };
 
     PlayerInputActions inputActions;
 
     public Vector3 Direction => inputActions.Player.Move.ReadValue<Vector2>();
+    public bool JumpKey => inputActions.Player.Jump.ReadValue<float>()==1f;
+    public bool RunKey => inputActions.Player.Run.ReadValue<float>() == 1f;
 
 
     private void OnEnable()
@@ -73,31 +75,13 @@ public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions
 
     public void OnJump(InputAction.CallbackContext context)
     {
-        switch (context.phase)
-        {
-            
-            case InputActionPhase.Started:
-                Jump.Invoke(true);
-                break;
-            case InputActionPhase.Canceled:
-                Jump.Invoke(false);
-                break;
-        }
-
+        Jump.Invoke(context.ReadValue<float>());
     }
 
 
     public void OnRun(InputAction.CallbackContext context)
     {
-        switch (context.phase)
-        {
-            case InputActionPhase.Started:
-                Dash.Invoke(true);
-                break;
-            case InputActionPhase.Canceled:
-                Dash.Invoke(false);
-                break;
-        }
+        Run.Invoke(context.ReadValue<float>());
     }
 
     public void OnPull(InputAction.CallbackContext context)
