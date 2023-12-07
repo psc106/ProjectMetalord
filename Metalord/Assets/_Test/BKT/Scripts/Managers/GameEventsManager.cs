@@ -16,11 +16,15 @@ public class GameEventsManager : MonoBehaviour
     private void Awake()
     {
         // 싱글턴 패턴 인스턴스가 존재할경우 파괴 아닐경우 instance 지정
-        if(instance != null)
+        if(instance == null)
         {
-            Destroy(gameObject);
+            instance = this;
         }
-        instance = this;
+        else if(instance != null)
+        {
+            Destroy(this.gameObject);
+        }
+        DontDestroyOnLoad(this.gameObject);
 
         coinEvents = new CoinEvents(); // 재화 이벤트 생성
         recordEvents = new RecordEvents(); // 도감 이벤트 생성

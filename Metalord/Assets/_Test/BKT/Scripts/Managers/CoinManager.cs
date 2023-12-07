@@ -22,12 +22,15 @@ public class CoinManager : MonoBehaviour
 
     private void Awake()
     {
-        if(instance != null)
+        if (instance == null)
         {
-            Destroy(gameObject);
+            instance = this;
         }
-        instance = this;
-
+        else if (instance != this)
+        {
+            Destroy(instance.gameObject);
+        }
+        DontDestroyOnLoad(this.gameObject);
         currentCoin = startCoin; // 시작시 코인 세팅
     }
 

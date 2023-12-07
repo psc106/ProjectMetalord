@@ -62,11 +62,15 @@ public class RecordManager : MonoBehaviour
 
     private void Awake()
     {
-        if (instance != null)
+        if (instance == null)
         {
-            Destroy(gameObject);
+            instance = this;
         }
-        instance = this;
+        else if(instance != null)
+        {
+            Destroy(instance.gameObject);
+        }
+        DontDestroyOnLoad(this.gameObject);
 
         // 도감 우측 정보창 게임오브젝트 가져오기
         //itemName = GameObject.Find("Text(Info_Name)");
