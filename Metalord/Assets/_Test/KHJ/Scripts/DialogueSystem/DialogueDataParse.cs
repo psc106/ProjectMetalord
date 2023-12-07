@@ -4,46 +4,33 @@ using UnityEngine;
 
 public class DialogueDataParse : MonoBehaviour
 {
-    [SerializeField][TextArea] private string[] dialogue;
-    [SerializeField] private Response[] responses;
+    public TextAsset csvFile = default;
 
-    //Get 프로퍼티 람다식으로 정의 
-    //public string[] Dialogue => dialogue;
-    public string[] Dialogue
+    public Dialogue[] ParseDialogue(TextAsset csvData)
     {
-        get { return dialogue; }
-    }
+        List<Dialogue> dialogueList = new List<Dialogue>();
+        //ParseDialogue(csvData);
+        //모든 값은 null값이 아니고 "" 값으로 들어감
+        string[] data = csvData.text.Split(new char[] { '\n' });
 
-    public bool HasResponses => Responses != null && Responses.Length > 0;
-    public Response[] Responses => responses;
-
-
-    public TextAsset csvData = default;
-    void Start()
-    {
-        //ParseDialogue("tutorial");
-        ParseDialogue(csvData);
-    }
-    public Dialogue[] ParseDialogue(TextAsset _csvData)//(string csvFileName)
-    {
-        List<Dialogue> dialogueList = new List<Dialogue> (); //대화 리스트 생성 
-        //TextAsset csvData = Resources.Load<TextAsset>(csvFileName);
-
-        string[] data = _csvData.text.Split(new char[] { '\n' }); //엔터기준 쪼갬
-
-        for (int i = 1; i < data.Length;)
+        for (int i = 1; i < data.Length - 1;)
         {
-            string[] row = data[i].Split(new char[] { ',' });  // 콤마 기준으로 쪼갬
-            
-            Dialogue _dialogue = new Dialogue ();  //새로운 대화 생성
-            
+            string[] row = data[i].Split(new char[] { ',' });
+            Dialogue _dialogue = new Dialogue();
+            //다이얼로그 클래스의 row[0] = ID, row[1] = 이름, row[2] = 대사, row[3] = 이동 대사 ID 번호
+            _dialogue.dialogueID = row[0];
             _dialogue.speakerName = row[1];
-
-            List<string> contextList = new List<string> ();
+            List<string> contextList = new List<string>();
             do
             {
                 contextList.Add(row[2]);
-                if (++i < data.Length)
+                if (row[3] != "")
+                {
+                    //Debug.Log("여기 들어오나요 ?");
+                    _dialogue.nextTextNum = row[3].ToString();
+                    //Debug.LogFormat("{0} <=== 이게 row3", _dialogue.nextTextNum);
+                }
+                if (++i < data.Length - 1)
                 {
                     row = data[i].Split(new char[] { ',' }); //data i번째의 string 들을 , 로 구분
                 }
@@ -52,11 +39,24 @@ public class DialogueDataParse : MonoBehaviour
                     break;
                 }
             }
-            while (row[0].ToString() == "");
+            while (row[0].ToString() == ""); //|| row[3].ToString() != "");
             _dialogue.contextes = contextList.ToArray();
-            
             dialogueList.Add(_dialogue);
         }
-        return dialogueList.ToArray ();
+        //Debug.Log(dialogueList.Count);
+        //각 헤더 설정해서 담기
+        //for (int i = 0; i < dialogueList.Count; i++)
+        //{
+        //    Debug.LogFormat("{0} <=== 이게 row0 ID", dialogueList[i].dialogueID);
+        //    Debug.LogFormat("{0} <=== 이게 row1 NAME", dialogueList[i].speakerName);
+        //    Debug.LogFormat("{0} <=== 이게 row2 CONTEXT", dialogueList[i].contextes);
+        //    Debug.LogFormat("{0} <=== 이게 row2 CONTEXT Length", dialogueList[i].contextes.Length);
+        //    for(int j = 0; j < dialogueList[i].contextes.Length; j++)
+        //    {
+        //        //Debug.LogFormat("{0} contextes 대화 내용들 ", dialogueList[i].contextes[j]);
+        //    }
+        //    Debug.LogFormat("{0} <=== 이게 row3 NEXTNUM", dialogueList[i].nextTextNum);
+        //}
+        return dialogueList.ToArray();
     }
 }
