@@ -8,11 +8,11 @@ using UnityEngine;
 /// </summary>
 public class RecordObjectInfo
 {
-    public int id { get; set; }
-    public string id_Description { get; set; }
-    public string item_Name { get; set; }
-    public int zone { get; set; } // 1 = 주방, 2= 거실, 3= 아기방
-    public bool obtained { get; set; }
-    public string description { get; set; }
-    public bool isSelected { get; set; }
+    public int id;
+    public string id_Description;
+    public string item_Name;
+    public int zone; // 1 = 주방, 2= 거실, 3= 아기방
+    public bool obtained;
+    public string description;
+    public bool isSelected;
 }

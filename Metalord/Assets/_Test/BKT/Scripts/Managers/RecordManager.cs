@@ -150,7 +150,7 @@ public class RecordManager : MonoBehaviour
             recordInfo.description = objectCSV[index]["Description"].ToString();
             recordInfo.isSelected = false;
 
-            recordObjectInfos[recordInfo.id] = recordInfo; // 도감 정보를 저장해서 Dictionary로 관리
+            recordObjectInfos[recordInfo.id] = recordInfo; // 도감 정보를 저장해서 Dictionary로 관리           
         }
     }
 

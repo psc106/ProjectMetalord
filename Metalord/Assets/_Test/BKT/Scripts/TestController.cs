@@ -34,6 +34,12 @@ public class TestController : MonoBehaviour
             settingUI.SetActive(isSettingUIVisible);
         }
 
+        // 환경설정창
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            //DataManager.instance.LoadData();
+        }
+
         if (Input.GetKeyDown(KeyCode.Escape))
         {           
             // ESC 키를 누르면 UI 끄기
