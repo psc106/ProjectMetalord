@@ -7,18 +7,13 @@ using UnityEngine.UI;
 
 public class QuestionListTest : MonoBehaviour
 {
-    //[SerializeField] private RectTransform responseBox;
-    //[SerializeField] private RectTransform responseButtonTemplete;
-    //[SerializeField] private RectTransform responseContainer;
-
-    //public DialogueDataParse testData = default;
-
     private DialogueUI dialogueUI;
 
     private List<GameObject> tempResponseButtons = new List<GameObject>();
 
+    public string[] questionArray = default;
+    
 
-    public List<string> questionList = default;//new List<string>();
     public Button[] content = default;
 
     int currentPage = 1, maxPage = 0, multiple = 0;
@@ -27,11 +22,11 @@ public class QuestionListTest : MonoBehaviour
     public Button nextButton = default;
     int nextBtnNum = -1, prevBtnNum = -2;
     
-
     void Start()
     {
         //dialogueUI = GetComponent<DialogueUI>();
         //testData.QuestionListParse();
+        
     }
 
     void Update()
@@ -59,14 +54,24 @@ public class QuestionListTest : MonoBehaviour
 
     public void UpdateQuestionList()
     {
-        //최대페이지
-        if (questionList.Count % content.Length == 0)
+        int questionCount = DialogueDBManager.instance.questionDic.Count;
+        questionArray = new string[questionCount];
+        for (int i = 0; i < questionCount; i++)
         {
-            maxPage = questionList.Count / content.Length;
+            //string context = DialogueDBManager.instance.questionDic[i];
+            //TODO 텍스트 바꿔주고 이벤트 연결해주면 됨  딱 2개임 
+            
+
+        }
+
+        //최대페이지
+        if (questionArray.Length % content.Length == 0)
+        {
+            maxPage = questionArray.Length / content.Length;
         }
         else
         {
-            maxPage = (questionList.Count / content.Length) + 1;
+            maxPage = (questionArray.Length / content.Length) + 1;
         }
 
         //이전 버튼활성화 관련
@@ -93,7 +98,7 @@ public class QuestionListTest : MonoBehaviour
         for(int i = 0; i < content.Length; i++)
         {
             //질문 내용 버튼 활성화 관련
-            if(multiple + 1 < questionList.Count )
+            if(multiple + 1 < questionArray.Length )
             {
                 content[i].interactable = true;
                 //content[i].transform.GetChild(0).GetComponent<TMP_Text>().text =  "Question string" 

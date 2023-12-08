@@ -17,7 +17,7 @@ public class DialogueDataParse : MonoBehaviour
             {
                 question.questionID = row[0];
                 question.questionContextes = row[1];
-                question.nextTextNum = row[2];
+                question.nextTextNum = row[2].Trim();
             }
             questionList.Add(question);
         }
@@ -44,7 +44,7 @@ public class DialogueDataParse : MonoBehaviour
                 if (row[3] != "")
                 {
                     //Debug.Log("여기 들어오나요 ?");
-                    _dialogue.nextTextNum = row[3].ToString();
+                    _dialogue.nextTextNum = row[3].Trim();
                     //Debug.LogFormat("{0} <=== 이게 row3", _dialogue.nextTextNum);
                 }
                 if (++i < data.Length - 1)

@@ -36,7 +36,7 @@ public class DialogueDBManager : MonoBehaviour
                 dialogueDic.Add(i + 1, dialogues[i]);
             }
 
-            // 질문 저장한걸로 필요한 헤더 리스트로 관리
+           
             for (int i = 1; i <= questionDic.Count; i++) 
             {
                 dialogueQuestions.Add(questionDic[i].questionContextes.ToString()); // 질문 스트링 저장 완료
@@ -45,9 +45,4 @@ public class DialogueDBManager : MonoBehaviour
             isFinish = true;
         }
     }
-
-    //private void Start()
-    //{
-    //    Debug.Log(dialogueDic[1].contextes.Length);
-    //}
 }

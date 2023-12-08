@@ -6,76 +6,98 @@ using UnityEngine;
 
 public class DialogueUI : MonoBehaviour
 {
+    public GameObject dialogueUI;
+    public GameObject questionUI;
+
+
     [SerializeField] private GameObject dialogueBox;
     [SerializeField] private TMP_Text dialogueText;
 
     private DialogueTypingEffect myTextEffect;
-
-    private Dialogue myDialogue;
+    private bool isSpeak = false;
+    public bool isResponse = false;
 
     void Start()
     {
+        isSpeak = false;
         myTextEffect = GetComponent<DialogueTypingEffect>();
-        //myTextEffect.Run("TEst TEST TEST TEST STESTSETS", dialogueText);
-        StartCoroutine(StepThroughDialogue(4));
+        CloseDialogueUI();
+        CloseTutoQuestion();
     }
-
-    void Update()
+    
+    public void ShowTutoDialogue(int keyNum)
     {
-        
+        OpenDialogueUI();
+        isResponse = true;
+        StartCoroutine(StepThroughDialogue(keyNum));
     }
 
+
+    public void ShowDialogue(int keyNum)
+    {
+        OpenDialogueUI();
+        StartCoroutine(StepThroughDialogue(keyNum));
+    }
     private IEnumerator StepThroughDialogue(int keyNum)
     {
-        if (keyNum == 0) 
+        if (keyNum == 0)
         {
             yield break;
         }
-        //TODO 변수에 DialogueDBManager.instance.dialogueDic[keyNum] 담아서 코드 보기 편하게 해야함
-
-        //do
-        while (true) 
+        while (true)
         {
             string id = DialogueDBManager.instance.dialogueDic[keyNum].dialogueID;
             string nextId = DialogueDBManager.instance.dialogueDic[keyNum].nextTextNum;
+            string[] contexteArray = DialogueDBManager.instance.dialogueDic[keyNum].contextes;
 
-            for (int i = 0; i < DialogueDBManager.instance.dialogueDic[keyNum].contextes.Length; i++)
+            for (int i = 0; i < contexteArray.Length; i++)
             {
+                isSpeak = true;
                 string dialogue = DialogueDBManager.instance.dialogueDic[keyNum].contextes[i];
                 yield return myTextEffect.Run(dialogue, dialogueText);
 
-                yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
+                yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.E));
+            }
+            
+            if(isResponse)
+            {
+                //TODO 추가적인 넣고싶은 기능 넣으면 될 듯
+                OpenTutoQuestion();
+                isResponse = false;
             }
 
-            if (DialogueDBManager.instance.dialogueDic[keyNum].nextTextNum.ToString() != "")
+            if (nextId != "")
             {
-                //Debug.LogFormat("{0}<<< 다음 번호로 넘어가기 위해서 그 값 확인", DialogueDBManager.instance.dialogueDic[keyNum].nextTextNum);
-                ////TODO 
-                //if (DialogueDBManager.instance.dialogueDic[keyNum].nextTextNum.ToString() == "")
-                //{
-                //    Debug.Log("부숴버리기");
-                //    break;
-                //}
-                Debug.LogFormat("{0}<<< 다음 번호로 넘어가기 위해서 그 값 파서 전 확인", DialogueDBManager.instance.dialogueDic[keyNum].nextTextNum);
-
-                Debug.LogFormat("{0} === 이게 파서 전 keynum", keyNum);
-                keyNum = int.Parse(DialogueDBManager.instance.dialogueDic[keyNum].nextTextNum);
-                Debug.LogFormat("{0}<<< 다음 번호로 넘어가기 위해서 그 값 파서 후 확인", DialogueDBManager.instance.dialogueDic[keyNum].nextTextNum);
-
-                Debug.LogFormat("{0} === 이게 파서 후 keynum", keyNum);
-
-                Debug.Log("여기 들어옴?");
+                keyNum = int.Parse(nextId);
             }
-            else if(DialogueDBManager.instance.dialogueDic[keyNum].nextTextNum.ToString() == "")
+            else if (nextId == "")
             {
+                isSpeak = false;
                 // TODO 대화창 닫고 플레이어 이동제한 해제
                 Debug.Log("여기온거면 끝난거임");
-                break;  //굳이 해줘야하나 ?
+                break;
             }
         }
         yield break;
-        //while (DialogueDBManager.instance.dialogueDic[keyNum].nextTextNum == "");
-        //Debug.Log("여기온거면 끝난거임real");
+    }
+
+
+    public void OpenDialogueUI()
+    {
+        dialogueUI.SetActive(true);
+    }
+    public void CloseDialogueUI() 
+    {
+        dialogueUI.SetActive(false);
+    }
+
+    public void  OpenTutoQuestion()
+    {
+        questionUI.SetActive(true);
+    }
+    public void CloseTutoQuestion()
+    {
+        questionUI.SetActive(false);
     }
 
 }
