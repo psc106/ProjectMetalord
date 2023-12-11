@@ -1,14 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class TitleSceneManager : MonoBehaviour
 {
+    [Header("Title Display")]
     [SerializeField] private GameObject anykeyDisplay; //최초 아무키 누르면 사라지는 디스플레이
     [SerializeField] private GameObject titleDisplay; // 타이틀 화면
     [SerializeField] private GameObject gameStartDisplay; // 게임 시작을 위한 화면
     [SerializeField] private GameObject settingDisplay; // 환경 설정을 위한 화면
     [SerializeField] private GameObject explainDisplay; // 게임 설명 화면
+
+    [Header("Volume Setting")]
+    [SerializeField] private TextMeshProUGUI volumeTextValue = null;
+    [SerializeField] private SliderJoint2D volumeSlider = null;
+    [SerializeField] private GameObject comfirmationPrompt = null;
 
     private bool isPushAnyKey = false;
 
