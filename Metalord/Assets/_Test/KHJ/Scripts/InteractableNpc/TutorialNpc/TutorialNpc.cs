@@ -2,9 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TutorialNpc : MonoBehaviour, IInteractNpc
+public class TutorialNpc : NpcBase, IInteractNpc
 {
-    public DialogueUI myDialogue;
+    //protected override void Awake()
+    //{
+    //    base.Awake();
+    //}
 
     public void InteractNpc()
     {
