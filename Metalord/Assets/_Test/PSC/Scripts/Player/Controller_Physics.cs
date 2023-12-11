@@ -60,6 +60,7 @@ public class Controller_Physics : MonoBehaviour
     public bool OnGround => groundContactCount > 0;
     public bool OnSteep => steepContactCount > 0;
     public bool OnClimb => climbContactCount > 0;
+    public bool isMove = false;
 
     int jumpPhase = 0;
     int stepsSinceLastGrounded = 0;
@@ -147,22 +148,17 @@ public class Controller_Physics : MonoBehaviour
 
         //입력값 변환
         input = Vector3.ClampMagnitude(input, 1);
-
-        UpdateAxis();
-        if (OnClimb)
+        if (input.magnitude != 0)
         {
-           // transform.rotation = Quaternion.Euler(climbNormal);
+            isMove |= true;
         }
 
+        UpdateAxis();
 
         desireJump |= reader.JumpKey;
         desireRun = reader.RunKey;
 
         //디버그
-        //        Debug.Log(OnGround + "/" + OnSteep + "/" + OnClimb);
-
-        //Debug.Log(input);
-        //Debug.Log(desireVelocity);
         Color color = new Color(0, 0, 0, 1);
         color.r = OnGround ? 1 : 0;
         color.g = OnSteep ? 1 : 0;
@@ -188,8 +184,6 @@ public class Controller_Physics : MonoBehaviour
         {
             moveMultiple = walkMultiple;
         }
-
-        Debug.Log(moveMultiple);
 
         //속도 계산
         AdjustVelocity();
@@ -324,9 +318,10 @@ public class Controller_Physics : MonoBehaviour
         }
         else if (OnSteep)
         {
-            jumpDirection = steepNormal;
+            jumpDirection = Vector3.zero;
             //jumpDirection = upAxis;
             jumpPhase = 0;
+            return;
         }
         else if (maxAirJumps > 0 &&jumpPhase <= maxAirJumps)
         {

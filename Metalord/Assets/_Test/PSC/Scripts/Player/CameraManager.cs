@@ -23,6 +23,9 @@ public class CameraManager : MonoBehaviour
     bool isUnLockPressed = false;
     bool cameraMovementLock = false;
 
+    float newRotationY;
+    float newRotationX;
+
 
     private void OnEnable()
     {
@@ -50,23 +53,66 @@ public class CameraManager : MonoBehaviour
         climbCamera.gameObject.SetActive(player.OnClimb);
         crossHair.gameObject.SetActive(!player.OnClimb);
 
-
-        //y축 변경
         if (player.OnClimb)
         {
-            Vector3 lookPoint = player.GetClimbNormal();
-            lookPoint.y = 0;
-            player.transform.LookAt(player.transform.position - lookPoint);
+            Vector3 currAngle = -player.GetClimbNormal();
+            currAngle.y = 0;
+            currAngle.Normalize();
+                        Quaternion rotation = Quaternion.LookRotation(currAngle);
+            //float anchor = Vector3.Angle(currAngle, Vector3.forward);
+            float anchor = rotation.eulerAngles.y;
+
+            if (anchor - 89 < 0)
+            {
+                if (newRotationY > 180)
+                {
+                    newRotationY = Mathf.Clamp(newRotationY, 360 + (anchor - 89), newRotationY);
+                }
+                else
+                {
+                    newRotationY = Mathf.Clamp(newRotationY, newRotationY, (anchor + 89));
+                }
+            }
+            else if (anchor + 89 > 360)
+            {
+                if (newRotationY < 180)
+                {
+                    newRotationY = Mathf.Clamp(newRotationY, newRotationY, anchor + 89 - 360);
+                }
+                else
+                {
+                    newRotationY = Mathf.Clamp(newRotationY, (anchor - 89), newRotationY);
+                }
+            }
+            else
+            {
+                newRotationY = Mathf.Clamp(newRotationY, (anchor - 89), (anchor + 89));
+            }
         }
-        else
+
+        Debug.Log(newRotationY);
+
+        Debug.Log(Quaternion.Angle(player.transform.rotation, Quaternion.Euler(0, newRotationY, 0)) + " / " + player.transform.rotation);
+        if (player.isMove)
         {
-            targetY.Rotate(Vector3.up, newRotationY);
+            player.isMove = false;
+            player.transform.rotation = Quaternion.Euler(0, newRotationY, 0);
         }
+        else if (Quaternion.Angle(player.transform.rotation, Quaternion.Euler(0, newRotationY, 0)) > 45)
+        {
+            player.transform.rotation = Quaternion.Euler(0, newRotationY, 0);
+        }
+
+
+
+        //targetY.Rotate(Vector3.up, newRotationY);
+
+        //y축 변경
         //x축 변경
-        targetX.rotation = Quaternion.Euler(newRotationX, targetX.eulerAngles.y, targetX.eulerAngles.z);
+        targetX.rotation = Quaternion.Euler(newRotationX, newRotationY, targetX.eulerAngles.z);
+
+
     }
-    float newRotationY;
-    float newRotationX;
 
     void OnLook(Vector2 cameraMovement, bool isDeviceMouse)
     {
@@ -75,16 +121,13 @@ public class CameraManager : MonoBehaviour
 
         float deviceMultiplier = isDeviceMouse ? Time.fixedDeltaTime : Time.deltaTime;
 
-        newRotationY = cameraMovement.x * SpeedMulitiplier * deviceMultiplier;
-
-        
+        newRotationY = targetX.eulerAngles.y + cameraMovement.x * SpeedMulitiplier * deviceMultiplier;
         newRotationX = targetX.eulerAngles.x - cameraMovement.y * SpeedMulitiplier * deviceMultiplier;
         newRotationX = Mathf.Clamp(newRotationX > 180 ? newRotationX - 360 : newRotationX, -89, 89);
 
-        //targetY.Rotate(Vector3.up, newRotationY);
-
 
     }
+
 
     void OnEnableMouseControlCamera()
     {
@@ -109,6 +152,5 @@ public class CameraManager : MonoBehaviour
         yield return new WaitForEndOfFrame();
         cameraMovementLock = false;
     }
-
 
 }
