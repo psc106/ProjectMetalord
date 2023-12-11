@@ -65,8 +65,12 @@ public class DialogueUI : MonoBehaviour
                 string dialogue = DialogueDBManager.instance.dialogueDic[keyNum].contextes[i];
                 dialogueBox.transform.GetChild(1).gameObject.transform.GetChild(0).gameObject.GetComponent<TMP_Text>().text =
                     DialogueDBManager.instance.dialogueDic[keyNum].speakerName.Trim();
-                yield return myTextEffect.Run(dialogue, dialogueText);
+                //yield return myTextEffect.Run(dialogue, dialogueText);
+                yield return RunTypingEffect(dialogue);
+                
+                dialogueText.text = dialogue;
 
+                yield return null;
                 yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.E));
             }
             
@@ -98,7 +102,18 @@ public class DialogueUI : MonoBehaviour
         }
         yield break;
     }
-
+    private IEnumerator RunTypingEffect(string dialouge)
+    {
+        myTextEffect.Run(dialouge, dialogueText);
+        while (myTextEffect.isTypingRunning)
+        {
+            yield return null;
+            if(Input.GetKeyDown(KeyCode.E))
+            {
+                myTextEffect.Stop();
+            }
+        }
+    }
 
     public void OpenDialogueUI()
     {

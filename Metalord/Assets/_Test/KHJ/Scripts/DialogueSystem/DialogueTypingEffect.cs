@@ -7,13 +7,26 @@ public class DialogueTypingEffect : MonoBehaviour
 {
     private float textSpeed = 10f;
 
-    public Coroutine Run(string textToType, TMP_Text textLabel)
+    public bool isTypingRunning {  get; private set; }
+
+    private Coroutine typingCoroutine;
+    public void Run(string textToType, TMP_Text textLabel)
     {
-        return StartCoroutine(WriteEffect(textToType, textLabel));
+        typingCoroutine = StartCoroutine(WriteEffect(textToType, textLabel));
+    }
+    public void Stop()
+    {
+        StopCoroutine(typingCoroutine);
+        isTypingRunning = false;
     }
 
+    //public Coroutine Run(string textToType, TMP_Text textLabel)
+    //{
+    //    return StartCoroutine(WriteEffect(textToType, textLabel));
+    //}
     public IEnumerator WriteEffect(string textToType, TMP_Text textLabel)
     {
+        isTypingRunning = true;
         textLabel.text = string.Empty;
 
         float duration = Time.deltaTime;
@@ -25,7 +38,10 @@ public class DialogueTypingEffect : MonoBehaviour
             charIndex = Mathf.Clamp(charIndex, 0, textToType.Length);
             textLabel.text = textToType.Substring(0, charIndex);
             yield return null;
+            //Debug.LogFormat("{0} <== This is chaiIndex ", charIndex);
         }
-        textLabel.text = textToType;
+
+        isTypingRunning = false;
+        //textLabel.text = textToType;
     }
 }
