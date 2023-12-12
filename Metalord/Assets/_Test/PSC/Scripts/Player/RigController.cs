@@ -9,20 +9,26 @@ public class RigController : MonoBehaviour
     [SerializeField]
     Controller_Physics player;
 
-    [SerializeField] Transform oriented;
-    [SerializeField] Transform headPoint;
-    [SerializeField] Transform legPoint;
+    [SerializeField] Transform startPoint;
+    [SerializeField] Transform cameraPoint;
+    [SerializeField] Transform target;
+    [SerializeField] LayerMask layer;
 
-    private void Awake()
-    {
-    }
+    [SerializeField] float range = 50;
+
     private void Start()
     {
-        headPoint.position = player.transform.position + (oriented.forward + Vector3.up) * 5;
+        cameraPoint = Camera.main.transform;
     }
     // Update is called once per frame
     void LateUpdate()
     {
-        headPoint.position = player.transform.position + (oriented.forward + Vector3.up) * 5;
+        target.position = cameraPoint.position + cameraPoint.forward * range;
+
+        RaycastHit hit;
+        if(Physics.Raycast(startPoint.position, target.position-startPoint.position, out hit, range, layer))
+        {
+            target.position = hit.point;
+        }
     }
 }

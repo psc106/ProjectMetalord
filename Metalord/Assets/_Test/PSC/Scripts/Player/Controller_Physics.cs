@@ -18,6 +18,8 @@ public class Controller_Physics : MonoBehaviour
     Transform playerInputSpace = default;
     [SerializeField]
     TrailRenderer trailRenderer;
+    [SerializeField]
+    Animator animator;
 
 
     Rigidbody connectedBody;
@@ -56,6 +58,7 @@ public class Controller_Physics : MonoBehaviour
     bool desireOutClimb = false;
     bool desireJump = false;
     bool desireRun = false;
+    bool multipleState;
 
     public bool OnGround => groundContactCount > 0;
     public bool OnSteep => steepContactCount > 0;
@@ -107,6 +110,10 @@ public class Controller_Physics : MonoBehaviour
     float maxClimbAngle = default;
 
 
+    private readonly int velocityXHash = Animator.StringToHash("VelocityX");
+    private readonly int velocityYHash = Animator.StringToHash("VelocityY");
+    private readonly int JumpTriggerHash = Animator.StringToHash("Jump");
+    private readonly int ClimbHash = Animator.StringToHash("OnClimb");
 
     private void OnValidate()
     {
@@ -138,13 +145,13 @@ public class Controller_Physics : MonoBehaviour
     }
 
 
-
     void Update()
     {
 
         input.x = reader.Direction.x;
         input.z = reader.Direction.y;
         input.y = 0;
+
 
         //입력값 변환
         input = Vector3.ClampMagnitude(input, 1);
@@ -158,6 +165,9 @@ public class Controller_Physics : MonoBehaviour
         desireJump |= reader.JumpKey;
         desireRun = reader.RunKey;
 
+        animator.SetFloat(velocityXHash, input.x * (desireRun ? 2 : 1));
+        animator.SetFloat(velocityYHash, input.z * (desireRun ? 2 : 1));
+
         //디버그
         Color color = new Color(0, 0, 0, 1);
         color.r = OnGround ? 1 : 0;
@@ -165,34 +175,25 @@ public class Controller_Physics : MonoBehaviour
         color.b = OnClimb ? 1 : 0;
 
         GetComponent<Renderer>().material.color = color;
+        multipleState = OnGround && OnSteep && OnClimb;
     }
 
-    bool test;
     private void FixedUpdate()
     {
-        test = OnGround && OnSteep && OnClimb;
-
-
         //상태 업데이트
         UpdateState();
-
-        if (desireRun && !OnClimb && stepsSinceLastGrounded==0)
-        {
-            moveMultiple = runMultiple;
-        }
-        else
-        {
-            moveMultiple = walkMultiple;
-        }
-
         //속도 계산
         AdjustVelocity();
         AdjustJump();
 
-        //등산중에 접촉면으로 끌어당김
-        if (OnClimb)
+        if (multipleState)
         {
-            velocity -= contactNormal * (maxClimbAcceleration * 0.95f * Time.deltaTime);
+            velocity += gravity * Time.deltaTime;
+        }
+        //등산중에 접촉면으로 끌어당김
+        else if ( OnClimb)
+        {
+            velocity -= contactNormal * (maxClimbAcceleration * 0.9f * Time.deltaTime);
         }
         //땅에 있을 경우 + 정지상태일 경우 그래비티 초기화
         else if (OnGround && velocity.sqrMagnitude < 0.01f)
@@ -273,7 +274,7 @@ public class Controller_Physics : MonoBehaviour
             zAxis = forwardAxis;
         }
         xAxis = ProjectDirectionOnPlane(xAxis, contactNormal);
-        if (test && input.z < 0)
+        if (multipleState && input.z < 0)
         {
             desireOutClimb = true;
             zAxis = forwardAxis;
@@ -336,6 +337,8 @@ public class Controller_Physics : MonoBehaviour
         {
             return;
         }
+
+        animator.SetTrigger(JumpTriggerHash);
 
         jumpDirection = (jumpDirection + upAxis).normalized;
 
@@ -424,6 +427,15 @@ public class Controller_Physics : MonoBehaviour
 
     private void UpdateState()
     {
+        if (!multipleState && OnClimb)
+        {
+            animator.SetBool(ClimbHash, true);
+        }
+        else
+        {
+            animator.SetBool(ClimbHash, false);
+        }
+
         //마지막 그라운드에서 몇 프레임이 지났는지 저장하기 위한 변수
         stepsSinceLastGrounded += 1;
         stepsSinceLastJump += 1;
@@ -462,6 +474,15 @@ public class Controller_Physics : MonoBehaviour
             }
         }
 
+
+        if (desireRun && !OnClimb && stepsSinceLastGrounded == 0 && input.z >= 0)
+        {
+            moveMultiple = runMultiple;
+        }
+        else
+        {
+            moveMultiple = walkMultiple;
+        }
     }
 
     void UpdateConnectionState()
@@ -496,6 +517,7 @@ public class Controller_Physics : MonoBehaviour
         {
             return false;
         }
+
         float speed = velocity.magnitude;
         //만약 현재 속도가 일정 속도 이상이라면
         if (speed > maxSnapSpeed)

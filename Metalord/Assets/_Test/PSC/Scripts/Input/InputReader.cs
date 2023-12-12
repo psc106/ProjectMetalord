@@ -18,13 +18,14 @@ public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions
 
     public event UnityAction<float> Jump = delegate { };
     public event UnityAction<float> Run = delegate { };
-    public event UnityAction<float> Pull = delegate { };
+    public event UnityAction<float> Fire = delegate { };
 
     PlayerInputActions inputActions;
 
     public Vector3 Direction => inputActions.Player.Move.ReadValue<Vector2>();
     public bool JumpKey => inputActions.Player.Jump.ReadValue<float>()==1f;
     public bool RunKey => inputActions.Player.Run.ReadValue<float>() == 1f;
+    public bool ShootKey => inputActions.Player.Run.ReadValue<float>() == 1f;
 
 
     private void OnEnable()
@@ -70,7 +71,7 @@ public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions
 
     public void OnFire(InputAction.CallbackContext context)
     {
-       // throw new System.NotImplementedException();
+        Fire.Invoke(context.ReadValue<float>());
     }
 
     public void OnJump(InputAction.CallbackContext context)
