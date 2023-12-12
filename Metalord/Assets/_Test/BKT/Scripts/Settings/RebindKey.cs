@@ -31,49 +31,18 @@ public class RebindKey : MonoBehaviour
     [SerializeField] private InputActionReference shootAction = null; // shoot 액션에 대한 참조
     [SerializeField] private InputActionReference pullAction = null; // pull 액션에 대한 참조
 
-    [SerializeField] private GameObject settingsButton = null; // 셋팅 버튼들 모아둔 게임오브젝트 
+    [SerializeField] private GameObject settingsButton = null; // 셋팅 버튼들 모아둔 게임오브젝트, 루트오브젝트로 정하여 하위 버튼 밑 텍스트 컴포넌트 가져옴
 
-    private TMP_Text forwardBindingText = null; // 전진 바인딩 표시 텍스트
-    private TMP_Text backBindingText = null; // 후진 바인딩 표시 텍스트
-    private TMP_Text rightBindingText = null; // 우측 바인딩 표시 텍스트
-    private TMP_Text leftBindingText = null; // 좌측 바인딩 표시 텍스트
-    private TMP_Text runBindingText = null; // 달리기 바인딩 표시 텍스트
-    private TMP_Text jumpBindingText = null; // 점프 바인딩 표시 텍스트
-    private TMP_Text shootBindingText = null; // 발사 바인딩 표시 텍스트
-    private TMP_Text pullBindingText = null; // 당기기 바인딩 표시 텍스트
-    private Button forwardButton = null; // 전진 버튼
-    private Button backButton = null; // 후진 버튼
-    private Button rightButton = null; // 우측 버튼 
-    private Button leftButton = null; // 좌측 버튼
-    private Button runButton = null; // 달리기 버튼
-    private Button jumpButton = null; // 점프 버튼
-    private Button shootButton = null; // 발사 버튼
-    private Button pullButton = null; //  당기기 버튼
-
+    private Dictionary<BindKey, TMP_Text> bindingTexts = new Dictionary<BindKey, TMP_Text>();
+    private Dictionary<BindKey, Button> actionButtons = new Dictionary<BindKey, Button>();
 
     private const string WAIT_INPUT_TEXT = "Waiting for input..."; // 입력 기다리는동안 표시될 텍스트
 
     private InputActionRebindingExtensions.RebindingOperation rebindingOperation; // 다시 바인딩
 
-    // Start is called before the first frame update
     void Start()
     {
-        forwardBindingText = settingsButton.transform.GetChild((int)BindKey.FORWARD).GetChild(0).GetComponent<TMP_Text>();
-        forwardButton = settingsButton.transform.GetChild((int)BindKey.FORWARD).GetComponent<Button>();
-        backBindingText = settingsButton.transform.GetChild((int)BindKey.BACK).GetChild(0).GetComponent<TMP_Text>();
-        backButton = settingsButton.transform.GetChild((int)BindKey.BACK).GetComponent<Button>();
-        rightBindingText = settingsButton.transform.GetChild((int)BindKey.RIGHT).GetChild(0).GetComponent<TMP_Text>();
-        rightButton = settingsButton.transform.GetChild((int)BindKey.RIGHT).GetComponent<Button>();
-        leftBindingText = settingsButton.transform.GetChild((int)BindKey.LEFT).GetChild(0).GetComponent<TMP_Text>();
-        leftButton = settingsButton.transform.GetChild((int)BindKey.LEFT).GetComponent<Button>();
-        runBindingText = settingsButton.transform.GetChild((int)BindKey.RUN).GetChild(0).GetComponent<TMP_Text>();
-        runButton = settingsButton.transform.GetChild((int)BindKey.RUN).GetComponent<Button>();
-        jumpBindingText = settingsButton.transform.GetChild((int)BindKey.JUMP).GetChild(0).GetComponent<TMP_Text>();
-        jumpButton = settingsButton.transform.GetChild((int)BindKey.JUMP).GetComponent<Button>();
-        shootBindingText = settingsButton.transform.GetChild((int)BindKey.SHOOT).GetChild(0).GetComponent<TMP_Text>();
-        shootButton = settingsButton.transform.GetChild((int)BindKey.SHOOT).GetComponent<Button>();
-        pullBindingText = settingsButton.transform.GetChild((int)BindKey.PULL).GetChild(0).GetComponent<TMP_Text>();
-        pullButton = settingsButton.transform.GetChild((int)BindKey.PULL).GetComponent<Button>();
+        CachingBindingTextAndButton(); // 시작시 버튼과 텍스트 캐싱
     }
 
     // Update is called once per frame
@@ -92,5 +61,27 @@ public class RebindKey : MonoBehaviour
     public void StartRebinding(string buttonName)
     {
         
+    }
+
+    /// <summary>
+    /// 텍스트 컴포넌트와 버튼 컴포넌트 캐싱하는 함수
+    /// 231212 배경택
+    /// </summary>
+    private void CachingBindingTextAndButton()
+    {
+        for (int i = 0; i < (int)BindKey.PULL+1; i++)
+        {
+            Debug.Log((BindKey)i);
+            BindKey currentKey = (BindKey)i;
+
+            TMP_Text bindingText = settingsButton.transform.GetChild(i).GetChild(0).GetComponent<TMP_Text>();
+            Button actionButton = settingsButton.transform.GetChild(i).GetComponent<Button>();
+
+            bindingTexts[currentKey] = bindingText;
+            actionButtons[currentKey] = actionButton;
+
+            Debug.Log(bindingTexts[currentKey].gameObject.name);
+            Debug.Log(actionButtons[currentKey].gameObject.name);
+        }
     }
 }
