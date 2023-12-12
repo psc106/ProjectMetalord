@@ -31,9 +31,6 @@ public class Controller_Physics : MonoBehaviour
 
     Vector3 velocity;
     Vector3 connectionVelocity;
-    //Vector3 velocity = Vector3.zero;
-    //Vector3 desireVelocity = Vector3.zero;
-    //Vector3 connectionVelocity = Vector3.zero;
 
     Vector3 upAxis;
     Vector3 rightAxis;
@@ -125,19 +122,6 @@ public class Controller_Physics : MonoBehaviour
 
     private void Awake()
     {
-        if (!rb)
-        {
-            rb = GetComponent<Rigidbody>();
-            if (!rb)
-            {
-                rb = GetComponentInChildren<Rigidbody>();
-                if (!rb)
-                {
-                    rb = gameObject.AddComponent<Rigidbody>();
-                    rb.constraints = RigidbodyConstraints.FreezeAll;
-                }
-            }
-        }
         rb.useGravity = false;
         OnValidate();
         BindHandler();
@@ -186,14 +170,14 @@ public class Controller_Physics : MonoBehaviour
         AdjustVelocity();
         AdjustJump();
 
-        if (multipleState)
+        if (isJump || multipleState)
         {
             velocity += gravity * Time.deltaTime;
         }
         //등산중에 접촉면으로 끌어당김
         else if ( OnClimb)
         {
-            velocity -= contactNormal * (maxClimbAcceleration * 0.9f * Time.deltaTime);
+            velocity -= contactNormal * (maxClimbAcceleration * 0.99f * Time.deltaTime);
         }
         //땅에 있을 경우 + 정지상태일 경우 그래비티 초기화
         else if (OnGround && velocity.sqrMagnitude < 0.01f)
@@ -273,6 +257,8 @@ public class Controller_Physics : MonoBehaviour
             xAxis = rightAxis;
             zAxis = forwardAxis;
         }
+
+
         xAxis = ProjectDirectionOnPlane(xAxis, contactNormal);
         if (multipleState && input.z < 0)
         {
@@ -305,12 +291,31 @@ public class Controller_Physics : MonoBehaviour
 
     }
 
+    bool isJump = false;
+    [SerializeField]
+    float jumpDuringTimer = 1.5f;
+
+    IEnumerator jumpDelay(float time)
+    {
+        yield return new WaitForSeconds(time);
+        isJump = false;
+    }
+
     void Jump(Vector3 gravity)
     {
         Vector3 jumpDirection;
         if (OnClimb)
         {
-            jumpDirection = contactNormal;
+            if (input.magnitude == 0 || input.z < 0)
+            {
+                jumpDirection = contactNormal;
+            }
+            else
+            {
+                Vector3 xAxis = ProjectDirectionOnPlane(Vector3.Cross(contactNormal, upAxis), contactNormal);
+                Vector3 zAxis = ProjectDirectionOnPlane(upAxis, contactNormal);
+                jumpDirection = (input.x * xAxis + input.z * zAxis).normalized;
+            }
         }
         else if (OnGround)
         {
@@ -338,6 +343,8 @@ public class Controller_Physics : MonoBehaviour
             return;
         }
 
+        isJump = true;
+        StartCoroutine(jumpDelay(jumpDuringTimer));
         animator.SetTrigger(JumpTriggerHash);
 
         jumpDirection = (jumpDirection + upAxis).normalized;

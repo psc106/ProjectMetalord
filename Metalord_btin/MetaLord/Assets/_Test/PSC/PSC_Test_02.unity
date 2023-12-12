@@ -256,6 +256,17 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 214843977}
   m_SourcePrefab: {fileID: 100100000, guid: 6656024becf3ab74c9f5091f10fb291a, type: 3}
+--- !u!114 &1314279603 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2281247576654416274, guid: 87662185c93c75d4baf62f5362925909, type: 3}
+  m_PrefabInstance: {fileID: 7847046047615073672}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70b342d8ce5c2fd48b8fa3147d48d1d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1454662717
 GameObject:
   m_ObjectHideFlags: 0
@@ -688,6 +699,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 743962208856113288, guid: 87662185c93c75d4baf62f5362925909, type: 3}
+      propertyPath: aimRig
+      value: 
+      objectReference: {fileID: 1314279603}
     - target: {fileID: 1495894723469854142, guid: 87662185c93c75d4baf62f5362925909, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
