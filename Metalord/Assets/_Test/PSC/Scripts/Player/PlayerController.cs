@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Windows;
+using UnityEngine.InputSystem;
 
 
 public class PlayerController : MonoBehaviour
@@ -9,6 +10,8 @@ public class PlayerController : MonoBehaviour
     //플레이어가 가진 값들
     [SerializeField]
     PlayerValue playerValue;
+
+    public PlayerInput playerInput;
 
     //기본 컴퍼넌트
     [SerializeField]

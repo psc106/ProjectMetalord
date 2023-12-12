@@ -32,7 +32,7 @@ public class SettingsManager : MonoBehaviour
 
     private void Start()
     {
-        InitResolutionOption(); //시작시 해상도 옵션 초기화
+        //InitResolutionOption(); //시작시 해상도 옵션 초기화
         
     }
 
