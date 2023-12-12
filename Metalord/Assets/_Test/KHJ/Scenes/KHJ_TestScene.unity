@@ -3826,6 +3826,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c30dba2c3f168894db5d87bb07e39b5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  testAsset: {fileID: 4900000, guid: 269b082d3e1bb1a4f9c9fde5f685e5fc, type: 3}
 --- !u!4 &832794844
 Transform:
   m_ObjectHideFlags: 0
@@ -3855,6 +3856,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogueCsv: {fileID: 4900000, guid: 4d551d7dd87429946a7baa369143a5d6, type: 3}
   questionCsv: {fileID: 4900000, guid: 3f3ed8ba245c8074ab3c3c5fad5babf0, type: 3}
+  dialogueStatusCsv: {fileID: 4900000, guid: 269b082d3e1bb1a4f9c9fde5f685e5fc, type: 3}
   dialogueQuestions: []
 --- !u!1 &833693550
 GameObject:

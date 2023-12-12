@@ -6,6 +6,6 @@ public class PrincessNpc : NpcBase, IInteractNpc
 {
     public void InteractNpc()
     {
-        myDialogue.ShowDialogue(17);
+        myDialogue.CheckStateDialogue(31, state);
     }
 }

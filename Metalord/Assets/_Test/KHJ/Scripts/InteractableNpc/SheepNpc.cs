@@ -11,6 +11,6 @@ public class SheepNpc : NpcBase, IInteractNpc
 
     public void InteractNpc()
     {
-        myDialogue.ShowDialogue(11);
+        myDialogue.CheckStateDialogue(13, state);
     }
 }

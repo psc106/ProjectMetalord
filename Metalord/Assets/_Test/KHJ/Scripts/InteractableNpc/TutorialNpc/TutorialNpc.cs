@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditorInternal;
 using UnityEngine;
 
 public class TutorialNpc : NpcBase, IInteractNpc
@@ -12,7 +13,7 @@ public class TutorialNpc : NpcBase, IInteractNpc
     public void InteractNpc()
     {
         Debug.Log("Interact 실행됨");
-        myDialogue.ShowTutoDialogue(1);
+        myDialogue.CheckStateTutorialDialogue(state);
     }
 
 }

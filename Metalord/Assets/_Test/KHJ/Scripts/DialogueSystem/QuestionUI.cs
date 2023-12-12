@@ -113,6 +113,7 @@ public class QuestionUI : MonoBehaviour
                 //Debug.Log(buttonCount);
                 int dialogueNum = j+1;
                 childButton.onClick.AddListener(() => dialogueUI.ShowDialogue(dialogueNum));
+                childButton.onClick.AddListener(() => InitPage());
                 childButton.onClick.AddListener(() => dialogueUI.CloseTutoQuestion());
                 childButton.onClick.AddListener(() => dialogueUI.ChangeResponeBoolValue(false));
                 //Debug.Log(coloumCount);
@@ -174,5 +175,16 @@ public class QuestionUI : MonoBehaviour
         //페이지 텍스트 갱신
         pageText.text = string.Format("{0}/{1}", currentPage, maxPage);
         //Debug.Log(currentPage);
+    }
+    public void InitPage()
+    {
+        //ClickPreviousPage();
+        for (int i = 0; i < pageList.Count; i++)
+        {
+            pageList[i].SetActive(false);
+        }
+        currentPage = 1;
+        pageList[currentPage - 1].SetActive(true);
+        pageText.text = string.Format("{0}/{1}", currentPage, maxPage);
     }
 }

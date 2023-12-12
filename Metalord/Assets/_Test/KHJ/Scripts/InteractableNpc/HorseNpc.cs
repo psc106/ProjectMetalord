@@ -6,7 +6,7 @@ public class HorseNpc : NpcBase, IInteractNpc
 {
     public void InteractNpc()
     {
-        myDialogue.ShowDialogue(15);
+        myDialogue.CheckStateDialogue(25, state);
     }
 }
 

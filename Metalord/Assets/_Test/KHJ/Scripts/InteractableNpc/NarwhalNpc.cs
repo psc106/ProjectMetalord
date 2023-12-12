@@ -6,7 +6,7 @@ public class NarwhalNpc : NpcBase, IInteractNpc
 {
     public void InteractNpc()
     {
-        myDialogue.ShowDialogue(16);
+        myDialogue.CheckStateDialogue(28, state);
     }
 }
 

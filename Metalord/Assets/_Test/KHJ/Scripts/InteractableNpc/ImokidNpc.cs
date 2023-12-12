@@ -6,7 +6,7 @@ public class ImokidNpc : NpcBase, IInteractNpc
 {
     public void InteractNpc()
     {
-        myDialogue.ShowDialogue(14);
+        myDialogue.CheckStateDialogue(22, state);
     }
 }
 

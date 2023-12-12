@@ -9,12 +9,17 @@ public class DialogueDBManager : MonoBehaviour
     [SerializeField] private TextAsset dialogueCsv;
     [SerializeField] private TextAsset questionCsv;
 
+    //12.12 HJ 추가
+    [SerializeField] private TextAsset dialogueStatusCsv;
+
     public Dictionary<int, Dialogue> dialogueDic = new Dictionary<int, Dialogue>();
     public Dictionary<int, DialogueQuestion> questionDic = new Dictionary<int, DialogueQuestion>();
-
     public List<string> dialogueQuestions = new List<string>();
-    
+
     public static bool isFinish = false;
+    //12.12 HJ 추가
+    public Dictionary<int, StatusDialogue> statusDialogueDic = new Dictionary<int, StatusDialogue>();
+
     private void Awake()
     {
         if (instance == null)
@@ -23,6 +28,8 @@ public class DialogueDBManager : MonoBehaviour
             DialogueDataParse dialogerParser = GetComponent<DialogueDataParse>();
             Dialogue[] dialogues = dialogerParser.ParseDialogue(dialogueCsv);
             DialogueQuestion[] questionArray = dialogerParser.ParseQuestionList(questionCsv);
+            //12.12 HJ추가  
+            StatusDialogue[] statusDialogues = dialogerParser.ParseStatusDialogue(dialogueStatusCsv);
 
             // 질문 딕셔너리 저장
             for (int i = 0; i < questionArray.Length; i++)
@@ -36,6 +43,11 @@ public class DialogueDBManager : MonoBehaviour
                 dialogueDic.Add(i + 1, dialogues[i]);
             }
 
+            // 상태 대화 대사 딕셔너리 형식으로 저장
+            for (int i = 0; i< statusDialogues.Length; i++)
+            {
+                statusDialogueDic.Add(i+1, statusDialogues[i]);
+            }
            
             for (int i = 1; i <= questionDic.Count; i++) 
             {
