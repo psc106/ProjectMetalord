@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 8243586537987088939}
   - component: {fileID: 2403676647265033938}
   m_Layer: 0
-  m_Name: SSC_Watergun_01
+  m_Name: SSC_WatergunModel01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
