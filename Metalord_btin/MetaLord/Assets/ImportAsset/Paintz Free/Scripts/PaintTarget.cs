@@ -169,6 +169,80 @@ public class PaintTarget : MonoBehaviour
         return Color.black;
     }
 
+    public static Color RayColor(RaycastHit hit)
+    {
+        PaintTarget paintTarget = hit.collider.gameObject.GetComponent<PaintTarget>();
+        if (!paintTarget) return Color.black;
+        if (!paintTarget.validTarget) return Color.black;
+        if (!paintTarget.bHasMeshCollider) return Color.black;
+
+        Renderer r = paintTarget.GetComponent<Renderer>();
+        if (!r) return Color.black;
+
+        RenderTexture rt = (RenderTexture)r.sharedMaterial.GetTexture("_SplatTex");
+        if (!rt) return Color.black;
+
+        UpdatePickColors(paintTarget, rt);
+
+        Texture2D tc = paintTarget.splatTexPick;
+        if (!tc) return Color.black;
+
+
+        int x = (int)(hit.textureCoord2.x * tc.width);
+        int y = (int)(hit.textureCoord2.y * tc.height);
+
+        Color pc = tc.GetPixel(x, y);
+
+        Color c1 = r.sharedMaterial.GetColor("_SplatColor1");
+        Color c2 = r.sharedMaterial.GetColor("_SplatColor2");
+
+        Color cc = Color.black;
+        if (pc.r > .5) cc = c1;
+        if (pc.g > .5) cc = c2;
+
+        return cc;
+    }
+
+    public static Color RayColor(Ray ray, float distance, LayerMask layer)
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, distance, layer))
+        {
+            PaintTarget paintTarget = hit.collider.gameObject.GetComponent<PaintTarget>();
+            if (!paintTarget) return Color.black;
+            if (!paintTarget.validTarget) return Color.black;
+            if (!paintTarget.bHasMeshCollider) return Color.black;
+
+            Renderer r = paintTarget.GetComponent<Renderer>();
+            if (!r) return Color.black;
+
+            RenderTexture rt = (RenderTexture)r.sharedMaterial.GetTexture("_SplatTex");
+            if (!rt) return Color.black;
+
+            UpdatePickColors(paintTarget, rt);
+
+            Texture2D tc = paintTarget.splatTexPick;
+            if (!tc) return Color.black;
+
+
+            int x = (int)(hit.textureCoord2.x * tc.width);
+            int y = (int)(hit.textureCoord2.y * tc.height);
+
+            Color pc = tc.GetPixel(x, y);
+
+            Color c1 = r.sharedMaterial.GetColor("_SplatColor1");
+            Color c2 = r.sharedMaterial.GetColor("_SplatColor2");
+
+            Color cc = Color.black;
+            if (pc.r > .5) cc = c1;
+            if (pc.g > .5) cc = c2;
+
+            return cc;
+        }
+
+        return Color.black;
+    }
+
     public static void PaintLine(Vector3 start, Vector3 end, Brush brush)
     {
         Ray ray = new Ray(start, (end - start).normalized);

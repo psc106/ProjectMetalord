@@ -17,6 +17,8 @@ public class Controller_Physics : MonoBehaviour
     [SerializeField]
     Transform playerInputSpace = default;
     [SerializeField]
+    Transform playerCenter = default;
+    [SerializeField]
     TrailRenderer trailRenderer;
     [SerializeField]
     Animator animator;
@@ -31,9 +33,6 @@ public class Controller_Physics : MonoBehaviour
 
     Vector3 velocity;
     Vector3 connectionVelocity;
-    //Vector3 velocity = Vector3.zero;
-    //Vector3 desireVelocity = Vector3.zero;
-    //Vector3 connectionVelocity = Vector3.zero;
 
     Vector3 upAxis;
     Vector3 rightAxis;
@@ -54,7 +53,7 @@ public class Controller_Physics : MonoBehaviour
     float currMouseSpeed = 0;
     float moveMultiple = default;
 
-    bool desireClimb = true;
+    bool desireClimb = false;
     bool desireOutClimb = false;
     bool desireJump = false;
     bool desireRun = false;
@@ -125,26 +124,19 @@ public class Controller_Physics : MonoBehaviour
 
     private void Awake()
     {
-        if (!rb)
-        {
-            rb = GetComponent<Rigidbody>();
-            if (!rb)
-            {
-                rb = GetComponentInChildren<Rigidbody>();
-                if (!rb)
-                {
-                    rb = gameObject.AddComponent<Rigidbody>();
-                    rb.constraints = RigidbodyConstraints.FreezeAll;
-                }
-            }
-        }
         rb.useGravity = false;
         OnValidate();
         BindHandler();
         gravity = CustomGravity.GetGravity(rb.position, out upAxis);
     }
 
+    [SerializeField] LayerMask colorCheckLayer;
 
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(playerCenter.position, playerCenter.forward);
+    }
     void Update()
     {
 
@@ -158,7 +150,12 @@ public class Controller_Physics : MonoBehaviour
         if (input.magnitude != 0)
         {
             isMove |= true;
+            Ray ray = new Ray(playerCenter.position+ playerCenter.forward, playerCenter.forward);
+            Color color = PaintTarget.RayColor(ray, 2, colorCheckLayer);
+            desireClimb = color != Color.black;
         }
+
+
 
         UpdateAxis();
 
@@ -169,12 +166,12 @@ public class Controller_Physics : MonoBehaviour
         animator.SetFloat(velocityYHash, input.z * (desireRun ? 2 : 1));
 
         //디버그
-        Color color = new Color(0, 0, 0, 1);
-        color.r = OnGround ? 1 : 0;
-        color.g = OnSteep ? 1 : 0;
-        color.b = OnClimb ? 1 : 0;
+        Color trailColor = new Color(0, 0, 0, 1);
+        trailColor.r = OnGround ? 1 : 0;
+        trailColor.g = OnSteep ? 1 : 0;
+        trailColor.b = OnClimb ? 1 : 0;
 
-        GetComponent<Renderer>().material.color = color;
+        GetComponent<Renderer>().material.color = trailColor;
         multipleState = OnGround && OnSteep && OnClimb;
     }
 
@@ -186,14 +183,14 @@ public class Controller_Physics : MonoBehaviour
         AdjustVelocity();
         AdjustJump();
 
-        if (multipleState)
+        if (isJump || multipleState)
         {
             velocity += gravity * Time.deltaTime;
         }
         //등산중에 접촉면으로 끌어당김
         else if ( OnClimb)
         {
-            velocity -= contactNormal * (maxClimbAcceleration * 0.9f * Time.deltaTime);
+            velocity -= contactNormal * (maxClimbAcceleration * 0.99f * Time.deltaTime);
         }
         //땅에 있을 경우 + 정지상태일 경우 그래비티 초기화
         else if (OnGround && velocity.sqrMagnitude < 0.01f)
@@ -273,6 +270,8 @@ public class Controller_Physics : MonoBehaviour
             xAxis = rightAxis;
             zAxis = forwardAxis;
         }
+
+
         xAxis = ProjectDirectionOnPlane(xAxis, contactNormal);
         if (multipleState && input.z < 0)
         {
@@ -305,12 +304,31 @@ public class Controller_Physics : MonoBehaviour
 
     }
 
+    bool isJump = false;
+    [SerializeField]
+    float jumpDuringTimer = 1.5f;
+
+    IEnumerator jumpDelay(float time)
+    {
+        yield return new WaitForSeconds(time);
+        isJump = false;
+    }
+
     void Jump(Vector3 gravity)
     {
         Vector3 jumpDirection;
         if (OnClimb)
         {
-            jumpDirection = contactNormal;
+            if (input.magnitude == 0 || input.z < 0)
+            {
+                jumpDirection = contactNormal;
+            }
+            else
+            {
+                Vector3 xAxis = ProjectDirectionOnPlane(Vector3.Cross(contactNormal, upAxis), contactNormal);
+                Vector3 zAxis = ProjectDirectionOnPlane(upAxis, contactNormal);
+                jumpDirection = (input.x * xAxis + input.z * zAxis).normalized;
+            }
         }
         else if (OnGround)
         {
@@ -338,6 +356,8 @@ public class Controller_Physics : MonoBehaviour
             return;
         }
 
+        isJump = true;
+        StartCoroutine(jumpDelay(OnClimb?jumpDuringTimer:0f));
         animator.SetTrigger(JumpTriggerHash);
 
         jumpDirection = (jumpDirection + upAxis).normalized;
@@ -385,6 +405,7 @@ public class Controller_Physics : MonoBehaviour
             }
             else
             {
+
                 if (upDot > -0.01f)
                 {
                     steepContactCount += 1;
