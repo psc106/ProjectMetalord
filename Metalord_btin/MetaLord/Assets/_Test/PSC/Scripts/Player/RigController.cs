@@ -43,4 +43,6 @@ public class RigController : MonoBehaviour
             aimTarget.position = hit.point;
         }
     }
+
+    
 }

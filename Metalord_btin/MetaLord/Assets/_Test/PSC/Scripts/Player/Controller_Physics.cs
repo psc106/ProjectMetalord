@@ -17,6 +17,8 @@ public class Controller_Physics : MonoBehaviour
     [SerializeField]
     Transform playerInputSpace = default;
     [SerializeField]
+    Transform playerCenter = default;
+    [SerializeField]
     TrailRenderer trailRenderer;
     [SerializeField]
     Animator animator;
@@ -51,7 +53,7 @@ public class Controller_Physics : MonoBehaviour
     float currMouseSpeed = 0;
     float moveMultiple = default;
 
-    bool desireClimb = true;
+    bool desireClimb = false;
     bool desireOutClimb = false;
     bool desireJump = false;
     bool desireRun = false;
@@ -128,7 +130,13 @@ public class Controller_Physics : MonoBehaviour
         gravity = CustomGravity.GetGravity(rb.position, out upAxis);
     }
 
+    [SerializeField] LayerMask colorCheckLayer;
 
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(playerCenter.position, playerCenter.forward);
+    }
     void Update()
     {
 
@@ -142,7 +150,12 @@ public class Controller_Physics : MonoBehaviour
         if (input.magnitude != 0)
         {
             isMove |= true;
+            Ray ray = new Ray(playerCenter.position+ playerCenter.forward, playerCenter.forward);
+            Color color = PaintTarget.RayColor(ray, 2, colorCheckLayer);
+            desireClimb = color != Color.black;
         }
+
+
 
         UpdateAxis();
 
@@ -153,12 +166,12 @@ public class Controller_Physics : MonoBehaviour
         animator.SetFloat(velocityYHash, input.z * (desireRun ? 2 : 1));
 
         //디버그
-        Color color = new Color(0, 0, 0, 1);
-        color.r = OnGround ? 1 : 0;
-        color.g = OnSteep ? 1 : 0;
-        color.b = OnClimb ? 1 : 0;
+        Color trailColor = new Color(0, 0, 0, 1);
+        trailColor.r = OnGround ? 1 : 0;
+        trailColor.g = OnSteep ? 1 : 0;
+        trailColor.b = OnClimb ? 1 : 0;
 
-        GetComponent<Renderer>().material.color = color;
+        GetComponent<Renderer>().material.color = trailColor;
         multipleState = OnGround && OnSteep && OnClimb;
     }
 
@@ -392,6 +405,7 @@ public class Controller_Physics : MonoBehaviour
             }
             else
             {
+
                 if (upDot > -0.01f)
                 {
                     steepContactCount += 1;

@@ -29,7 +29,6 @@ public class CameraManager : MonoBehaviour
 
     private void OnEnable()
     {
-        Debug.LogWarning("온");
         transform.parent = null;
 
         input.Look += OnLook;
@@ -43,7 +42,6 @@ public class CameraManager : MonoBehaviour
     }
     private void OnDisable()
     {
-        Debug.LogWarning("디서블");
         input.Look -= OnLook;
         input.EnableMouseControlCamera -= OnEnableMouseControlCamera;
         input.DisableMouseControlCamera -= OnDisableMouseControlCamera;
