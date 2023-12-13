@@ -22,6 +22,7 @@ public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions
 
     PlayerInputActions inputActions;
 
+    public Vector3 mouseMovement => inputActions.Player.Look.ReadValue<Vector2>();
     public Vector3 Direction => inputActions.Player.Move.ReadValue<Vector2>();
     public bool JumpKey => inputActions.Player.Jump.ReadValue<float>()==1f;
     public bool RunKey => inputActions.Player.Run.ReadValue<float>() == 1f;

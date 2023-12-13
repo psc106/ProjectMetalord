@@ -159,7 +159,6 @@ public class Controller_Physics : MonoBehaviour
             ray = new Ray(transform.position + playerCenter.forward, playerCenter.forward);
             color = PaintTarget.RayColor(ray, 2, colorCheckLayer);
             desireClimb |= color != Color.black;
-
         }*/
 
         UpdateAxis();

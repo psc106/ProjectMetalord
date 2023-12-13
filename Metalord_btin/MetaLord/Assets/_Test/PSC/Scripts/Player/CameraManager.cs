@@ -50,8 +50,17 @@ public class CameraManager : MonoBehaviour
 
     private void LateUpdate()
     {
+
+        if (input.mouseMovement.magnitude == 0) 
+        {
+            newRotationY = targetX.eulerAngles.y;
+            newRotationX = targetX.eulerAngles.x;
+            return;
+        }
+
         climbCamera.gameObject.SetActive(player.OnClimb);
         crossHair.gameObject.SetActive(!player.OnClimb);
+        //Vector2 cameraMovement = input.mouseMovement;
 
         if (player.OnClimb)
         {
@@ -87,12 +96,11 @@ public class CameraManager : MonoBehaviour
             {
                 newRotationY = Mathf.Clamp(newRotationY, (anchor - 89), (anchor + 89));
             }
-            player.transform.eulerAngles = new Vector3(0, newRotationY, 0);
+            targetY.transform.eulerAngles = new Vector3(0, newRotationY, 0);
         }
         else
         {
-
-            player.transform.eulerAngles = new Vector3(0, newRotationY, 0);
+            targetY.transform.eulerAngles = new Vector3(0, newRotationY, 0);
         }
 
         //y축 변경
@@ -103,14 +111,10 @@ public class CameraManager : MonoBehaviour
     void OnLook(Vector2 cameraMovement, bool isDeviceMouse)
     {
         if (cameraMovementLock) return;
-        if (isDeviceMouse && isUnLockPressed) return;
-
+        if (isUnLockPressed) return;
         newRotationY = targetX.eulerAngles.y + cameraMovement.x * SpeedMulitiplier * Time.deltaTime;
         newRotationX = targetX.eulerAngles.x - cameraMovement.y * SpeedMulitiplier * Time.deltaTime;
         newRotationX = Mathf.Clamp(newRotationX > 180 ? newRotationX - 360 : newRotationX, -89, 89);
-
-        Debug.Log(newRotationY);
-      
     }
 
 
