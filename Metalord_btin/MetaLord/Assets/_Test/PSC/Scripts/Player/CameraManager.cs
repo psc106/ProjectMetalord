@@ -18,7 +18,7 @@ public class CameraManager : MonoBehaviour
     CinemachineVirtualCamera climbCamera;
 
     [Header("Settings")]
-    [SerializeField, Range(0.5f, 3f)] float SpeedMulitiplier = 1f;
+    [SerializeField, Range(0.5f, 20f)] float SpeedMulitiplier = 1f;
 
     bool isUnLockPressed = false;
     bool cameraMovementLock = false;
@@ -29,6 +29,7 @@ public class CameraManager : MonoBehaviour
 
     private void OnEnable()
     {
+        Debug.LogWarning("온");
         transform.parent = null;
 
         input.Look += OnLook;
@@ -42,6 +43,7 @@ public class CameraManager : MonoBehaviour
     }
     private void OnDisable()
     {
+        Debug.LogWarning("디서블");
         input.Look -= OnLook;
         input.EnableMouseControlCamera -= OnEnableMouseControlCamera;
         input.DisableMouseControlCamera -= OnDisableMouseControlCamera;
@@ -52,13 +54,13 @@ public class CameraManager : MonoBehaviour
     {
         climbCamera.gameObject.SetActive(player.OnClimb);
         crossHair.gameObject.SetActive(!player.OnClimb);
+
         if (player.OnClimb)
         {
             Vector3 currAngle = -player.GetClimbNormal();
             currAngle.y = 0;
             currAngle.Normalize();
             Quaternion rotation = Quaternion.LookRotation(currAngle);
-            //float anchor = Vector3.Angle(currAngle, Vector3.forward);
             float anchor = rotation.eulerAngles.y;
 
             if (anchor - 89 < 0)
@@ -95,11 +97,6 @@ public class CameraManager : MonoBehaviour
             player.transform.eulerAngles = new Vector3(0, newRotationY, 0);
         }
 
-        /*   if (Quaternion.Angle(player.transform.rotation, Quaternion.Euler(0, newRotationY, 0))>45)
-           {
-               newRotationY = player.transform.eulerAngles.y;
-           }*/
-
         //y축 변경
         //x축 변경
         targetX.rotation = Quaternion.Euler(newRotationX, newRotationY, targetX.eulerAngles.z);
@@ -109,7 +106,6 @@ public class CameraManager : MonoBehaviour
     {
         if (cameraMovementLock) return;
         if (isDeviceMouse && isUnLockPressed) return;
-
 
         newRotationY = targetX.eulerAngles.y + cameraMovement.x * SpeedMulitiplier * Time.deltaTime;
         newRotationX = targetX.eulerAngles.x - cameraMovement.y * SpeedMulitiplier * Time.deltaTime;

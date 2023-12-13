@@ -344,7 +344,7 @@ public class Controller_Physics : MonoBehaviour
         }
 
         isJump = true;
-        StartCoroutine(jumpDelay(jumpDuringTimer));
+        StartCoroutine(jumpDelay(OnClimb?jumpDuringTimer:0f));
         animator.SetTrigger(JumpTriggerHash);
 
         jumpDirection = (jumpDirection + upAxis).normalized;
