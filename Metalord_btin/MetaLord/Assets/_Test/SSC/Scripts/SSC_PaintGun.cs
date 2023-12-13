@@ -9,7 +9,7 @@ public class SSC_PaintGun : MonoBehaviour
     [SerializeField] private Brush brush;
     [SerializeField] private SSC_GunState gun;
 
-    [Range(0.025f, 1f)] public float attackSpeed;
+    [Range(0.1f, 1f)] public float attackSpeed;
 
     float timeCheck = 0f;
     float autotimeCheck = 0f;

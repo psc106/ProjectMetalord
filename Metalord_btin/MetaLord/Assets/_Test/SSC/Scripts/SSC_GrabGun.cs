@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using UnityEngine;
 
 public class SSC_GrabGun : MonoBehaviour
@@ -34,7 +35,9 @@ public class SSC_GrabGun : MonoBehaviour
                     grabLine.enabled = true;                
                     objTrans = hitInfo.transform;
                     objRigid = hitInfo.rigidbody;
-                    //objRigid.isKinematic = false;
+                    objRigid.isKinematic = false;
+                    objRigid.constraints = RigidbodyConstraints.FreezeRotation;
+
                     grabPos.position = hitInfo.point;
 
                     hitPos = hitInfo.point - objTrans.position;
