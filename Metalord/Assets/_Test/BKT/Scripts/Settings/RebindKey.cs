@@ -58,9 +58,29 @@ public class RebindKey : MonoBehaviour
         //TODO 따로 외부 파일에 저장하는거 구현
     }
 
-    public void StartRebinding(string buttonName)
+    public void StartRebinding(int bindKeyNum)
     {
-        
+        jumpAction.action.Disable();
+
+        bindingTexts[(BindKey)bindKeyNum].text = WAIT_INPUT_TEXT;
+        rebindingOperation = jumpAction.action.PerformInteractiveRebinding()
+       .OnMatchWaitForAnother(0.1f)
+       .OnComplete((operation) => RebindComplete())
+       .Start();
+
+    }
+
+    private void RebindComplete()
+    {
+        int bindingIndex = jumpAction.action.GetBindingIndexForControl(jumpAction.action.controls[0]);
+
+        bindingTexts[(BindKey)5].text = InputControlPath.ToHumanReadableString(
+            jumpAction.action.bindings[bindingIndex].effectivePath,
+            InputControlPath.HumanReadableStringOptions.OmitDevice);
+
+        rebindingOperation.Dispose();
+        jumpAction.action.Enable();
+
     }
 
     /// <summary>
