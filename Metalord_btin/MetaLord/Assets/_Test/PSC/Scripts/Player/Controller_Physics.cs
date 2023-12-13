@@ -1,7 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class Controller_Physics : MonoBehaviour
 {
@@ -11,6 +9,8 @@ public class Controller_Physics : MonoBehaviour
     LayerMask stairMask = -1;
     [SerializeField]
     LayerMask climbMask = -1;
+    [SerializeField] 
+    LayerMask colorCheckLayer = -1;
 
     [SerializeField]
     Rigidbody rb;
@@ -67,6 +67,7 @@ public class Controller_Physics : MonoBehaviour
     int jumpPhase = 0;
     int stepsSinceLastGrounded = 0;
     int stepsSinceLastJump = 0;
+    int stepsSinceLastClimb = 0;
 
 
     int groundContactCount = 0;
@@ -130,12 +131,13 @@ public class Controller_Physics : MonoBehaviour
         gravity = CustomGravity.GetGravity(rb.position, out upAxis);
     }
 
-    [SerializeField] LayerMask colorCheckLayer;
 
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawLine(playerCenter.position, playerCenter.forward);
+        Gizmos.DrawSphere(playerCenter.position, 1.25f);
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawSphere(playerCenter.position - upAxis*2.5f, 1.25f);
     }
     void Update()
     {
@@ -147,15 +149,18 @@ public class Controller_Physics : MonoBehaviour
 
         //입력값 변환
         input = Vector3.ClampMagnitude(input, 1);
-        if (input.magnitude != 0)
+        isMove |= (input.magnitude != 0);
+        /*if (isMove)
         {
-            isMove |= true;
             Ray ray = new Ray(playerCenter.position+ playerCenter.forward, playerCenter.forward);
             Color color = PaintTarget.RayColor(ray, 2, colorCheckLayer);
             desireClimb = color != Color.black;
-        }
 
+            ray = new Ray(transform.position + playerCenter.forward, playerCenter.forward);
+            color = PaintTarget.RayColor(ray, 2, colorCheckLayer);
+            desireClimb |= color != Color.black;
 
+        }*/
 
         UpdateAxis();
 
@@ -185,26 +190,31 @@ public class Controller_Physics : MonoBehaviour
 
         if (isJump || multipleState)
         {
+            Debug.Log("점프, 복합");
             velocity += gravity * Time.deltaTime;
         }
         //등산중에 접촉면으로 끌어당김
         else if ( OnClimb)
         {
+            Debug.Log("등산");
             velocity -= contactNormal * (maxClimbAcceleration * 0.99f * Time.deltaTime);
-        }
-        //땅에 있을 경우 + 정지상태일 경우 그래비티 초기화
-        else if (OnGround && velocity.sqrMagnitude < 0.01f)
-        {
-            velocity += contactNormal * (Vector3.Dot(gravity, contactNormal) * Time.deltaTime);
         }
         //땅에 있을 경우 + 이동 상태 일 경우 중력+접촉면으로 끌어당김 동시에 적용
         else if (desireClimb && OnGround)
         {
+            Debug.Log("지상, 등산");
             velocity += (gravity - contactNormal * maxClimbAcceleration * 0.9f) * Time.deltaTime;
+        }
+        //땅에 있을 경우 + 정지상태일 경우 그래비티 초기화
+        else if (OnGround && velocity.sqrMagnitude < 0.01f)
+        {
+            Debug.Log("지상, 정지");
+            velocity += contactNormal * (Vector3.Dot(gravity, contactNormal) * Time.deltaTime);
         }
         //그외 중력 적용
         else
         {
+            Debug.Log("그외");
             velocity += gravity * Time.deltaTime;
         }
 
@@ -391,8 +401,15 @@ public class Controller_Physics : MonoBehaviour
         //모든 contact를 검사하여 일정 각도 이상의 평면을 모두 저장한다.
         for (int i = 0; i < collision.contactCount; i++)
         {
+
+
             Vector3 normal = collision.GetContact(i).normal;
             float upDot = Vector3.Dot(upAxis, normal);
+
+            Ray ray = new Ray(collision.contacts[i].point+normal, -normal);
+            Color color = PaintTarget.RayColor(ray, 1.5f, colorCheckLayer);
+            desireClimb |= color != Color.black;
+            Debug.Log(desireClimb);
 
             //onGround |= normal.y >= minGroundDotProduct;
 
@@ -444,22 +461,18 @@ public class Controller_Physics : MonoBehaviour
         connectionVelocity = Vector3.zero;
         previousConnectedBody = connectedBody;
         connectedBody = null;
+
+        desireClimb = false;
     }
 
     private void UpdateState()
     {
-        if (!multipleState && OnClimb)
-        {
-            animator.SetBool(ClimbHash, true);
-        }
-        else
-        {
-            animator.SetBool(ClimbHash, false);
-        }
+        animator.SetBool(ClimbHash, !multipleState && OnClimb);
 
         //마지막 그라운드에서 몇 프레임이 지났는지 저장하기 위한 변수
         stepsSinceLastGrounded += 1;
         stepsSinceLastJump += 1;
+        stepsSinceLastClimb += 1;
         velocity = rb.velocity;
 
 
@@ -493,6 +506,11 @@ public class Controller_Physics : MonoBehaviour
             {
                 UpdateConnectionState();
             }
+        }
+
+        if (stepsSinceLastClimb < 2)
+        {
+            desireClimb = true;
         }
 
 
@@ -609,6 +627,7 @@ public class Controller_Physics : MonoBehaviour
                 }
             }
             groundContactCount = 1;
+            stepsSinceLastClimb = 0;
             contactNormal = climbNormal;
             return true;
         }

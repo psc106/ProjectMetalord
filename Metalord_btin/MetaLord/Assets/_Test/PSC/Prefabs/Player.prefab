@@ -241,7 +241,7 @@ MonoBehaviour:
   maxAirMoveSpeed: 10
   maxClimbSpeed: 8
   maxAcceleration: 100
-  maxAirAcceleration: 0
+  maxAirAcceleration: 30
   maxClimbAcceleration: 100
   maxSnapSpeed: 100
   maxAirJumps: 0
