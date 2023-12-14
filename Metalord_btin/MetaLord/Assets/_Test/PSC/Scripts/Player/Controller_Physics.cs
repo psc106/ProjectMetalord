@@ -23,6 +23,7 @@ public class Controller_Physics : MonoBehaviour
     [SerializeField]
     Animator animator;
 
+    RaycastHit[] groundHits = new RaycastHit[1];
 
     Rigidbody connectedBody;
     Rigidbody previousConnectedBody;
@@ -58,6 +59,7 @@ public class Controller_Physics : MonoBehaviour
     bool desireJump = false;
     bool desireRun = false;
     bool multipleState;
+    public static bool stopState { get; private set; }
 
     public bool OnGround => groundContactCount > 0;
     public bool OnSteep => steepContactCount > 0;
@@ -141,6 +143,8 @@ public class Controller_Physics : MonoBehaviour
     }
     void Update()
     {
+        if (stopState) return;
+
 
         input.x = reader.Direction.x;
         input.z = reader.Direction.y;
@@ -159,7 +163,6 @@ public class Controller_Physics : MonoBehaviour
             ray = new Ray(transform.position + playerCenter.forward, playerCenter.forward);
             color = PaintTarget.RayColor(ray, 2, colorCheckLayer);
             desireClimb |= color != Color.black;
-
         }*/
 
         UpdateAxis();
@@ -182,6 +185,8 @@ public class Controller_Physics : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (stopState) return;
+
         //상태 업데이트
         UpdateState();
         //속도 계산
@@ -190,31 +195,26 @@ public class Controller_Physics : MonoBehaviour
 
         if (isJump || multipleState)
         {
-            //Debug.Log("점프, 복합");
             velocity += gravity * Time.deltaTime;
         }
         //등산중에 접촉면으로 끌어당김
         else if ( OnClimb)
         {
-            //Debug.Log("등산");
             velocity -= contactNormal * (maxClimbAcceleration * 0.99f * Time.deltaTime);
         }
         //땅에 있을 경우 + 이동 상태 일 경우 중력+접촉면으로 끌어당김 동시에 적용
         else if (desireClimb && OnGround)
         {
-            //Debug.Log("지상, 등산");
             velocity += (gravity - contactNormal * maxClimbAcceleration * 0.9f) * Time.deltaTime;
         }
-        //땅에 있을 경우 + 정지상태일 경우 그래비티 초기화
+        //땅에 있을 경우 + 정지상태일 경우 밀려나지않는 상태
         else if (OnGround && velocity.sqrMagnitude < 0.01f)
         {
-            //Debug.Log("지상, 정지");
             velocity += contactNormal * (Vector3.Dot(gravity, contactNormal) * Time.deltaTime);
         }
         //그외 중력 적용
         else
         {
-            //Debug.Log("그외");
             velocity += gravity * Time.deltaTime;
         }
 
@@ -316,7 +316,7 @@ public class Controller_Physics : MonoBehaviour
 
     bool isJump = false;
     [SerializeField]
-    float jumpDuringTimer = 1.5f;
+    float jumpDuringTimer = 2f;
 
     IEnumerator jumpDelay(float time)
     {
@@ -337,7 +337,8 @@ public class Controller_Physics : MonoBehaviour
             {
                 Vector3 xAxis = ProjectDirectionOnPlane(Vector3.Cross(contactNormal, upAxis), contactNormal);
                 Vector3 zAxis = ProjectDirectionOnPlane(upAxis, contactNormal);
-                jumpDirection = (input.x * xAxis + input.z * zAxis).normalized;
+                jumpDirection = (input.x * xAxis * 2 + input.z * zAxis).normalized;
+                velocity = Vector3.zero;
             }
         }
         else if (OnGround)
@@ -408,10 +409,8 @@ public class Controller_Physics : MonoBehaviour
 
             Ray ray = new Ray(collision.contacts[i].point+normal, -normal);
             Color color = PaintTarget.RayColor(ray, 1.5f, colorCheckLayer);
-            desireClimb |= color != Color.black;
-            //Debug.Log(desireClimb);
-
-            //onGround |= normal.y >= minGroundDotProduct;
+            bool climbColor = color != Color.black;
+            desireClimb |= climbColor;
 
             //cos에서 y값은 1->-1로 가므로 높을수록 각도는 낮은 각도
             if (upDot >= minDot)
@@ -432,7 +431,7 @@ public class Controller_Physics : MonoBehaviour
                         connectedBody = collision.rigidbody;
                     }
                 }
-                if(desireClimb && upDot >= minClimbDotProduct && (climbMask & (1<<layer)) != 0)
+                if(climbColor && upDot >= minClimbDotProduct && (climbMask & (1<<layer)) != 0)
                 {
                     climbContactCount += 1;
                     climbNormal += normal;
@@ -565,32 +564,32 @@ public class Controller_Physics : MonoBehaviour
         }
 
         //땅으로 레이를 쐈을 때 hit되지않을 경우
-        if (!Physics.Raycast(rb.position, -upAxis, out RaycastHit hit, probeDistance, probeMask))
+        if (Physics.RaycastNonAlloc(rb.position, -upAxis, groundHits, probeDistance, probeMask)==0)
         {
             return false;
         }
 
-        float upDot = Vector3.Dot(upAxis, hit.normal);
+        float upDot = Vector3.Dot(upAxis, groundHits[0].normal);
         //hit한 곳이 유효하지 않은 경사일경우(maxSlopeAngle을 넘길경우)
-        if (upDot < GetMinDot(hit.collider.gameObject.layer))
+        if (upDot < GetMinDot(groundHits[0].collider.gameObject.layer))
         {
             return false;
         }
 
         //1프레임까지는 붙어있다고 판단.
         groundContactCount = 1;
-        contactNormal = hit.normal;
+        contactNormal = groundHits[0].normal;
 
-        float dot = Vector3.Dot(velocity, hit.normal);
+        float dot = Vector3.Dot(velocity, groundHits[0].normal);
 
         //만약 velocity가 바닥을 향하고 있다면 더 느려지는 경우가 있기 때문에 이 경우를 제외한다.
         if (dot > 0f)
         {
             //velocity를 사영하여 각도를 바꾸고 magnitude를 곱해서 동일한 힘을 준다.
-            velocity = (velocity - hit.normal * dot).normalized * speed;
+            velocity = (velocity - groundHits[0].normal * dot).normalized * speed;
         }
 
-        connectedBody = hit.rigidbody;
+        connectedBody = groundHits[0].rigidbody;
         return true;
     }
 
@@ -653,6 +652,14 @@ public class Controller_Physics : MonoBehaviour
         //방향 - 법선*내적 -> 방향으로 적용되는 가감된 힘의 크기
         return (direction - normal*Vector3.Dot(direction, normal)).normalized;
     }
+
+
+
+    public static void SwitchCameraLock(bool check)
+    {
+        stopState = check;
+    }
+
 
     #region 바인딩 함수
 

@@ -16,8 +16,8 @@ TagManager:
   - NPC
   - StaticObject
   - MovedObject
-  - 
-  - 
+  - CatchObject
+  - NonInteractObject
   - 
   - 
   - 

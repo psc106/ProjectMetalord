@@ -40,6 +40,10 @@ public class PaintTarget : MonoBehaviour
     private RenderTexture splatTexAlt;
     public Texture2D splatTexPick;
 
+    // 12.13 SSC
+    // 페인트 초기화시 컬러값 초기화로 돌릴 origin값 저장 필드 추가
+    Texture2D originTex;
+
     private bool bPickDirty = true;
     private bool validTarget = false;
     private bool bHasMeshCollider = false;
@@ -65,6 +69,14 @@ public class PaintTarget : MonoBehaviour
     private static Texture2D Tex4;
 
     private static GameObject splatObject;
+
+
+    // 12.13 SSC
+    // 페인트 초기화시 컬러값 초기화로 돌릴 origin값 저장 필드 추가
+    private void Awake()
+    {        
+        originTex = splatTexPick;
+    }
 
     public static Color CursorColor()
     {
@@ -250,9 +262,9 @@ public class PaintTarget : MonoBehaviour
         PaintRaycast(ray, brush);
     }
 
-    public static void PaintRay(Ray ray, Brush brush)
+    public static void PaintRay(Ray ray, Brush brush, float range, bool multiple = true)
     {
-        PaintRaycast(ray, brush);
+        PaintRaycast(ray, brush, range, multiple);
     }
 
     public static void PaintCursor(Brush brush)
@@ -267,14 +279,14 @@ public class PaintTarget : MonoBehaviour
         PaintRaycast(ray, brush);
     }
 
-    private static void PaintRaycast(Ray ray, Brush brush, bool multi = true)
+    private static void PaintRaycast(Ray ray, Brush brush, float range = 100, bool multi = true)
     {
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 100))
+        if (Physics.Raycast(ray, out hit, range))
         {
             if (multi)
             {
-                RaycastHit[] hits = Physics.SphereCastAll(hit.point, brush.splatScale , ray.direction);
+                RaycastHit[] hits = Physics.SphereCastAll(hit.point, brush.splatScale, ray.direction);
                 for (int h=0; h < hits.Length; h++)
                 {
                     PaintTarget paintTarget = hits[h].collider.gameObject.GetComponent<PaintTarget>();
@@ -304,7 +316,6 @@ public class PaintTarget : MonoBehaviour
             splatObject.name = "splatObject";
             splatObject.hideFlags = HideFlags.HideInHierarchy;
         }
-
         splatObject.transform.position = point;
 
         Vector3 leftVec = Vector3.Cross(normal, Vector3.up);
@@ -335,6 +346,10 @@ public class PaintTarget : MonoBehaviour
         {
             if (!target.validTarget) continue;
             target.ClearPaint();
+
+            // 12.13 SSC
+            // 페인트 초기화시 컬러값 초기화로 돌릴 origin값 저장 필드 추가
+            target.splatTexPick = target.originTex;
         }
     }
 
@@ -520,6 +535,8 @@ public class PaintTarget : MonoBehaviour
 
     public void ClearPaint()
     {
+        m_Splats.Clear();
+        splatTexPick = null;
         if (setupComplete)
         {
             CommandBuffer cb = new CommandBuffer();
