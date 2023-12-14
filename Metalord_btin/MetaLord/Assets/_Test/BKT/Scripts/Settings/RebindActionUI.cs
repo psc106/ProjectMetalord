@@ -26,7 +26,7 @@ namespace UnityEngine.InputSystem.Samples.RebindUI // InputSystem 예제 네임�
         /// <summary>
         /// 다시 바인딩할 액션에 대한 참조입니다.
         /// </summary>
-        private InputAction actionReference // 바인딩할 입력 액션에 대한 참조
+        public InputAction actionReference // 바인딩할 입력 액션에 대한 참조
         {
             get => m_Action; // 액션을 가져옵니다.
             set // 액션을 설정합니다.
