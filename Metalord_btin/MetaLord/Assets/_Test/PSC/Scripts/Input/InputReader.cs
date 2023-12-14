@@ -20,7 +20,7 @@ public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions
     public event UnityAction<float> Run = delegate { };
     public event UnityAction<float> Fire = delegate { };
 
-    PlayerInputActions inputActions;
+    public PlayerInputActions inputActions;
 
     public Vector3 Direction => inputActions.Player.Move.ReadValue<Vector2>();
     public bool JumpKey => inputActions.Player.Jump.ReadValue<float>()==1f;
