@@ -9,8 +9,11 @@ public class SSC_GrabGun : MonoBehaviour
     [SerializeField] private Transform grabPos;
     [SerializeField] private Transform grabLimit;
 
+    MeshCollider childColid;
+
     Transform objTrans;
-    Rigidbody objRigid; 
+    Rigidbody objRigid;
+    SSC_GarbObj targetObj;
 
     public Transform lineStart;            
     public LineRenderer grabLine;
@@ -31,11 +34,17 @@ public class SSC_GrabGun : MonoBehaviour
                 if (Physics.Raycast(ray, 100f, grabObj) == true)
                 {
                     Physics.Raycast(ray, out hitInfo);
+                    Debug.Log(hitInfo.transform.name);
+                    targetObj = hitInfo.transform.GetComponent<SSC_GarbObj>();
 
+                    //childColid = hitInfo.transform.GetChild(0).transform.GetComponent<MeshCollider>();
+                    //childColid.enabled = false;
                     grabLine.enabled = true;                
                     objTrans = hitInfo.transform;
-                    objRigid = hitInfo.rigidbody;
-                    objRigid.isKinematic = false;
+                    objRigid = hitInfo.rigidbody;                                        
+                    objRigid.useGravity = false;
+                    //objRigid.isKinematic = false;
+                    targetObj.ChangedState(false);
                     objRigid.constraints = RigidbodyConstraints.FreezeRotation;
 
                     grabPos.position = hitInfo.point;
@@ -71,11 +80,9 @@ public class SSC_GrabGun : MonoBehaviour
                 grabPos.transform.position -= resultPos.normalized * t * 5f;                
                 
             }
-
-            objRigid.useGravity = false;
+            
             DrawLine();
-
-            //Vector3 currentPos = objTrans.position + hitPos;
+            
             Vector3 moveVec = Vector3.Lerp(objTrans.position, grabPos.position, Time.deltaTime * 2f);
             objTrans.position = moveVec;
         }
@@ -91,9 +98,13 @@ public class SSC_GrabGun : MonoBehaviour
 
     void ClearObj()
     {
-        grabLine.enabled = false;                
+        //targetObj.ChangedState(false);
+        //childColid.enabled = true;
+        targetObj = null;
+        grabLine.enabled = false;        
+        
         objRigid.useGravity = true;
         objTrans = null;
-        objRigid = null;
+        //objRigid = null;
     }
 }

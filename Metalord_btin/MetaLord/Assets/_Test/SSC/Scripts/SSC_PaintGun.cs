@@ -70,7 +70,6 @@ public class SSC_PaintGun : MonoBehaviour
             PaintTarget.ClearAllPaint();
             gun.UpdateState(gun.MaxAmmo, GunState.READY);
         }
-
     }
 
     /// <summary>
