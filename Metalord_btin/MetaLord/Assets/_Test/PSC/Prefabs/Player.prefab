@@ -209,7 +209,7 @@ MonoBehaviour:
   playerInputSpace: {fileID: 5467668828909890017}
   playerCenter: {fileID: 6677764962144662948}
   trailRenderer: {fileID: 5076636948133282176}
-  animator: {fileID: 5853579623595851346}
+  animator: {fileID: 1084481118672713895}
   isMove: 0
   jumpHeight: 7.5
   probeDistance: 1
@@ -892,8 +892,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9046867367910495862}
-  - component: {fileID: 5853579623595851346}
-  - component: {fileID: 650778271744489224}
+  - component: {fileID: 1084481118672713895}
+  - component: {fileID: 9100464433599015345}
   m_Layer: 6
   m_Name: Body
   m_TagString: Untagged
@@ -919,7 +919,7 @@ Transform:
   - {fileID: 5751559535079285339}
   m_Father: {fileID: 1495894723469854142}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &5853579623595851346
+--- !u!95 &1084481118672713895
 Animator:
   serializedVersion: 5
   m_ObjectHideFlags: 0
@@ -940,7 +940,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &650778271744489224
+--- !u!114 &9100464433599015345
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3663,7 +3663,7 @@ MonoBehaviour:
     splatTexture: {fileID: 0}
     splatsX: 1
     splatsY: 1
-    splatIndex: -1
+    splatIndex: 0
     splatScale: 10
     splatRandomScaleMin: 1
     splatRandomScaleMax: 1
@@ -3672,8 +3672,12 @@ MonoBehaviour:
     splatChannel: 0
   gun: {fileID: 6798630036274658337}
   input: {fileID: 11400000, guid: 75abd6246b51f9e48a0d52dae45fab3f, type: 2}
+  gunLayer:
+    serializedVersion: 2
+    m_Bits: 1975
   attackSpeed: 0.1
-  autoTime: 1
+  autoTime: 0.5
+  range: 50
 --- !u!114 &480958339823211343
 MonoBehaviour:
   m_ObjectHideFlags: 0

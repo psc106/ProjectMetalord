@@ -7,12 +7,16 @@ public class SSC_PaintGun : MonoBehaviour
     [SerializeField] private SSC_GunState gun;
     [SerializeField] private InputReader input;
 
+    [SerializeField] private LayerMask gunLayer = -1;
     [Range(0.1f, 1f)] public float attackSpeed;
+
+    [SerializeField, Range(0, 1)]
+    float autoTime = 1f;
+    [SerializeField, Range(1, 100)]
+    float range = 50f;
 
     float timeCheck = 0f;
     float autotimeCheck = 0f;
-    [SerializeField, Range(0, 1)]
-    float autoTime = 1f;
 
     int normalShot = -10;
     int autoShot = -5;
@@ -80,9 +84,9 @@ public class SSC_PaintGun : MonoBehaviour
         Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
         RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, 100))
+        if (Physics.Raycast(ray, out hit, range, gunLayer))
         {
-            PaintTarget.PaintRay(ray, brush);
+            PaintTarget.PaintRay(ray, brush, range);
 
             gun.UpdateAmmo(normalShot);
 
@@ -107,9 +111,9 @@ public class SSC_PaintGun : MonoBehaviour
             Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
             RaycastHit hit;
 
-            if (Physics.Raycast(ray, out hit, 100))
+            if (Physics.Raycast(ray, out hit, range, gunLayer))
             {
-                PaintTarget.PaintRay(ray, brush);
+                PaintTarget.PaintRay(ray, brush, range);
 
                 gun.UpdateAmmo(autoShot);
 
