@@ -3,31 +3,34 @@ using UnityEngine;
 
 public class Controller_Physics : MonoBehaviour
 {
+    [Header("LayerMask")]
     [SerializeField]
-    LayerMask probeMask = -1;
+    LayerMask groundMask = -1;
     [SerializeField]
-    LayerMask stairMask = -1;
+    LayerMask objectMask = -1;
     [SerializeField]
     LayerMask climbMask = -1;
     [SerializeField] 
     LayerMask colorCheckLayer = -1;
 
+    [Header("Component")]
     [SerializeField]
     Rigidbody rb;
     [SerializeField]
     Transform playerInputSpace = default;
     [SerializeField]
     Transform playerCenter = default;
-    [SerializeField]
-    TrailRenderer trailRenderer;
+    //[SerializeField]
+    //TrailRenderer trailRenderer;
     [SerializeField]
     Animator animator;
+
+    #region Private Reference
 
     RaycastHit[] groundHits = new RaycastHit[1];
 
     Rigidbody connectedBody;
     Rigidbody previousConnectedBody;
-
 
     Vector3 input = Vector3.zero;
     Vector3 inputMouse = Vector3.zero;
@@ -47,37 +50,48 @@ public class Controller_Physics : MonoBehaviour
     Vector3 steepNormal;
     Vector3 climbNormal;
     Vector3 lastClimbNormal;
+    #endregion
 
+    #region Private Value
     float minGroundDotProduct;
     float minObjectDotProduct;
     float minClimbDotProduct;
-    float currMouseSpeed = 0;
+    //float currMouseSpeed = 0;
     float moveMultiple = default;
 
     bool desireClimb = false;
-    bool desireOutClimb = false;
+    //bool desireOutClimb = false;
     bool desireJump = false;
     bool desireRun = false;
     bool multipleState;
-    public static bool stopState { get; private set; }
 
-    public bool OnGround => groundContactCount > 0;
-    public bool OnSteep => steepContactCount > 0;
-    public bool OnClimb => climbContactCount > 0;
-    public bool isMove = false;
-
+    bool isJump = false;
     int jumpPhase = 0;
     int stepsSinceLastGrounded = 0;
     int stepsSinceLastJump = 0;
     int stepsSinceLastClimb = 0;
 
-
     int groundContactCount = 0;
     int steepContactCount = 0;
     int climbContactCount = 0;
 
+    int catchObject;
+
+    #endregion
+
+    public bool isMove { get; private set; }
+    public static bool stopState { get; private set; }
+    public bool OnGround => groundContactCount > 0;
+    public bool OnSteep => steepContactCount > 0;
+    public bool OnClimb => climbContactCount > 0;
+
+
+    [Header("Player Setting")]
     [SerializeField, Range(0, 100f)]
     float jumpHeight = default;
+    [SerializeField]
+    float jumpDuringTimer = 2f;
+
     [SerializeField, Min(0f)]
     float probeDistance = default;
     [SerializeField, Range(1, 10)]
@@ -87,8 +101,8 @@ public class Controller_Physics : MonoBehaviour
 
     [SerializeField, Range(0, 100)]
     float maxMoveSpeed = default;
-    [SerializeField, Range(0, 100)]
-    float maxAirMoveSpeed = default;
+    //[SerializeField, Range(0, 100)]
+    //float maxAirMoveSpeed = default;
     [SerializeField, Range(0,100f)]
     float maxClimbSpeed = default;
 
@@ -112,66 +126,50 @@ public class Controller_Physics : MonoBehaviour
     float maxClimbAngle = default;
 
 
+    #region Animator Hash
     private readonly int velocityXHash = Animator.StringToHash("VelocityX");
     private readonly int velocityYHash = Animator.StringToHash("VelocityY");
     private readonly int JumpTriggerHash = Animator.StringToHash("Jump");
     private readonly int ClimbHash = Animator.StringToHash("OnClimb");
+    #endregion
 
+    //에디터에서 처리
     private void OnValidate()
     {
         minGroundDotProduct = Mathf.Cos(maxGroundAngle * Mathf.Deg2Rad);
         minObjectDotProduct = Mathf.Cos(maxObjectAngle * Mathf.Deg2Rad);
         minClimbDotProduct = Mathf.Cos(maxClimbAngle * Mathf.Deg2Rad);
-
+        catchObject = LayerMask.NameToLayer("CatchObject");
     }
 
     private void Awake()
     {
-        rb.useGravity = false;
         OnValidate();
         BindHandler();
+        rb.useGravity = false;
         gravity = CustomGravity.GetGravity(rb.position, out upAxis);
     }
 
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawSphere(playerCenter.position, 1.25f);
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawSphere(playerCenter.position - upAxis*2.5f, 1.25f);
-    }
     void Update()
     {
+        //대화나 메뉴에서 stop시킴
         if (stopState) return;
-
 
         input.x = reader.Direction.x;
         input.z = reader.Direction.y;
         input.y = 0;
 
-
         //입력값 변환
         input = Vector3.ClampMagnitude(input, 1);
         isMove |= (input.magnitude != 0);
-        /*if (isMove)
-        {
-            Ray ray = new Ray(playerCenter.position+ playerCenter.forward, playerCenter.forward);
-            Color color = PaintTarget.RayColor(ray, 2, colorCheckLayer);
-            desireClimb = color != Color.black;
-
-            ray = new Ray(transform.position + playerCenter.forward, playerCenter.forward);
-            color = PaintTarget.RayColor(ray, 2, colorCheckLayer);
-            desireClimb |= color != Color.black;
-        }*/
-
-        UpdateAxis();
 
         desireJump |= reader.JumpKey;
         desireRun = reader.RunKey;
 
-        animator.SetFloat(velocityXHash, input.x * (desireRun ? 2 : 1));
-        animator.SetFloat(velocityYHash, input.z * (desireRun ? 2 : 1));
+        UpdateAnimationParameter();
+        UpdateAxis();
+
+        multipleState = OnGround && OnSteep && OnClimb;
 
         //디버그
         Color trailColor = new Color(0, 0, 0, 1);
@@ -180,45 +178,52 @@ public class Controller_Physics : MonoBehaviour
         trailColor.b = OnClimb ? 1 : 0;
 
         GetComponent<Renderer>().material.color = trailColor;
-        multipleState = OnGround && OnSteep && OnClimb;
     }
 
     private void FixedUpdate()
     {
+        //대화나 메뉴에서 stop시킴
         if (stopState) return;
 
         //상태 업데이트
         UpdateState();
         //속도 계산
         AdjustVelocity();
+        //점프 계산
         AdjustJump();
 
         if (isJump || multipleState)
         {
+            //Debug.Log("점프, 복합");
+            //일반 중력만 적용
             velocity += gravity * Time.deltaTime;
         }
-        //등산중에 접촉면으로 끌어당김
         else if ( OnClimb)
         {
+            //Debug.Log("등산");
+            //등산중에 접촉면으로 끌어당김
             velocity -= contactNormal * (maxClimbAcceleration * 0.99f * Time.deltaTime);
         }
-        //땅에 있을 경우 + 이동 상태 일 경우 중력+접촉면으로 끌어당김 동시에 적용
         else if (desireClimb && OnGround)
         {
+            //Debug.Log("지상, 등산");
+            //땅에 있을 경우 + 이동 상태 일 경우 중력+접촉면으로 끌어당김 동시에 적용
             velocity += (gravity - contactNormal * maxClimbAcceleration * 0.9f) * Time.deltaTime;
         }
-        //땅에 있을 경우 + 정지상태일 경우 밀려나지않는 상태
         else if (OnGround && velocity.sqrMagnitude < 0.01f)
         {
+            //Debug.Log("지상, 정지");
+            //땅에 있을 경우 + 정지상태일 경우 밀려나지않는 상태
             velocity += contactNormal * (Vector3.Dot(gravity, contactNormal) * Time.deltaTime);
         }
-        //그외 중력 적용
         else
         {
+            //Debug.Log("그외");
+            //일반 중력 적용
             velocity += gravity * Time.deltaTime;
         }
 
-        //이동 
+        //속도 적용
         rb.velocity = velocity;
 
         //상태 초기화
@@ -228,6 +233,7 @@ public class Controller_Physics : MonoBehaviour
 
     private void AdjustJump()
     {
+        //점프 키 눌렀을 경우만
         if (desireJump)
         {
             desireJump = false;
@@ -238,6 +244,11 @@ public class Controller_Physics : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        if(collision.collider.gameObject.layer == catchObject)
+        {
+            Debug.Log("아이템 겟");
+            Destroy(collision.collider.gameObject);
+        }
         EvaluateCollision(collision);
     }
 
@@ -249,13 +260,16 @@ public class Controller_Physics : MonoBehaviour
 
     void AdjustVelocity()
     {
-        desireOutClimb = false;
+        //땅이 아닐 경우 + 인풋이 없을 경우
         if (!OnGround && input.magnitude == 0)
         {
+            //해당 함수를 실행하지않는다.
             return;
         }
+        //땅일 경우 + 인풋이 없을 경우
         else if (OnGround && input.magnitude == 0)
         {
+            //정지 상태를 유지한다.
             velocity = Vector3.zero;
             return;
         }
@@ -263,41 +277,50 @@ public class Controller_Physics : MonoBehaviour
         float acceleration;
         float speed;
 
-        //기준이 되는 축을 해당 각도로 올린다.
         Vector3 xAxis;
         Vector3 zAxis;
+
+        //상태에 따라 가속도, 최고속도, 좌우/앞뒤 축을 재 조정한다.
         if (OnClimb)
         {
             acceleration = maxClimbAcceleration;
             speed = maxClimbSpeed;
+            //등산 상태일 경우 접촉표면과 upaxis의 법선 벡터가 좌/우 축이 된다.
             xAxis = Vector3.Cross(contactNormal, upAxis);
+            //등산 상태일 경우 앞/뒤 -> 위/아래로 구현한다.
             zAxis = upAxis;
         }
         else
         {
             acceleration = OnGround ? maxAcceleration : maxAirAcceleration;
             speed = OnGround && desireClimb? maxClimbSpeed: maxMoveSpeed;
+            //기본 상태일 경우 플레이어의 좌/우 측을 따른다.
             xAxis = rightAxis;
+            //기본 상태일 경우 플레이어의 앞/뒤 축을 따른다.
             zAxis = forwardAxis;
         }
 
-
+        //x축과 접촉표면의 사영 벡터를 사용한다.
         xAxis = ProjectDirectionOnPlane(xAxis, contactNormal);
+
+        //멀티상태(땅 상태+등산 상태)일 경우 + 뒤로 갈 경우 
         if (multipleState && input.z < 0)
         {
-            desireOutClimb = true;
+            //z축을 앞/뒤로 변경하여 벗어나기 쉬운 상태로 만들어준다.
+            //desireOutClimb = true;
             zAxis = forwardAxis;
         }
+
+        //그외의 경우, Z축과 접촉표면의 사영 벡터를 사용한다.
         else
         {
             zAxis = ProjectDirectionOnPlane(zAxis, contactNormal);
         }
 
-        // Debug.Log(xAxis + "/" + zAxis);
-
+        //만약 connection 플랫폼이 존재할 경우 해당 속도만큼 속도에 영향을 받는다.
         Vector3 relativeVelocity = velocity - connectionVelocity;
 
-        //이동 방향을 현재 기울기에 따라 힘 조절한다. 
+        //이동 방향을 현재 기울기에 따라 힘 조절한다.
         float currX = Vector3.Dot(relativeVelocity, xAxis);
         float currZ = Vector3.Dot(relativeVelocity, zAxis);
 
@@ -314,45 +337,51 @@ public class Controller_Physics : MonoBehaviour
 
     }
 
-    bool isJump = false;
-    [SerializeField]
-    float jumpDuringTimer = 2f;
-
-    IEnumerator jumpDelay(float time)
-    {
-        yield return new WaitForSeconds(time);
-        isJump = false;
-    }
 
     void Jump(Vector3 gravity)
     {
         Vector3 jumpDirection;
+
+        //등산 상태일 경우
         if (OnClimb)
         {
+            //인풋없거나 뒤로 점프할 경우
             if (input.magnitude == 0 || input.z < 0)
             {
+                //점프 방향을 접촉 표면과 같게 한다.
                 jumpDirection = contactNormal;
             }
+
+            //인풋이 있을 경우
             else
             {
+                //해당 입력 방향으로 좌우/상하를 바꾼다.
                 Vector3 xAxis = ProjectDirectionOnPlane(Vector3.Cross(contactNormal, upAxis), contactNormal);
                 Vector3 zAxis = ProjectDirectionOnPlane(upAxis, contactNormal);
                 jumpDirection = (input.x * xAxis * 2 + input.z * zAxis).normalized;
+
+                //이전 속도를 초기화한다.
                 velocity = Vector3.zero;
             }
         }
+
+        //땅에 있을 경우
         else if (OnGround)
         {
-            //jumpDirection = contactNormal;
+            //위쪽으로 점프
             jumpDirection = upAxis;
         }
+
+        //등산상태x 경사상태o
         else if (OnSteep)
         {
+            //점프 불가
             jumpDirection = Vector3.zero;
-            //jumpDirection = upAxis;
             jumpPhase = 0;
             return;
         }
+
+        //연속 점프 가능할경우(현재 사용 안함)
         else if (maxAirJumps > 0 &&jumpPhase <= maxAirJumps)
         {
             if (jumpPhase == 0)
@@ -360,27 +389,36 @@ public class Controller_Physics : MonoBehaviour
                 jumpPhase = 1;
             }
             jumpDirection = contactNormal;
-            //jumpDirection = upAxis;
         }
+
+        //그외
         else
         {
+            //점프 못함
             return;
         }
 
+        //점프 상태
         isJump = true;
-        StartCoroutine(jumpDelay(OnClimb?jumpDuringTimer:0f));
+        //등산 딜레이
+        StartCoroutine(climbDelay(OnClimb?jumpDuringTimer:0f));
+        //점프 애니메이션
         animator.SetTrigger(JumpTriggerHash);
 
+        //점프 방향에 추가적인 upAxis 추가
         jumpDirection = (jumpDirection + upAxis).normalized;
 
-
+        //점프 프레임 초기화
         stepsSinceLastJump = 0;
+        //점프 횟수 추가
         jumpPhase += 1;
 
         //Root(-2*g*h) = 점프 속도
         float jumpSpeed = Mathf.Sqrt(2f * gravity.magnitude * jumpHeight);
 
+        //이전 속도
         float alignSpeed = Vector3.Dot(velocity, jumpDirection);
+
         //계산전에 항상 이전 속도를 뺀다.
         //만약 이전 속도가 점프속도보다 빠를경우를 대비하여 0으로 빠르게 떨어질 경우 잠깐 멈추게 만든다.
         if (alignSpeed > 0f)
@@ -388,40 +426,56 @@ public class Controller_Physics : MonoBehaviour
             jumpSpeed = Mathf.Max(jumpSpeed - alignSpeed, 0f);
         }
 
+        //점프 적용
         velocity += jumpDirection * jumpSpeed;
         
     }
 
+    IEnumerator climbDelay(float time)
+    {
+        yield return new WaitForSeconds(time);
+        isJump = false;
+    }
 
     void EvaluateCollision(Collision collision)
     {
-        //여기서 현재 평면이 이동 가능한 절벽인지 체크?
+        //여기서 현재 평면이 이동 가능한 절벽인지 체크
 
         int layer = collision.gameObject.layer;
+
+        //현재 충돌한 오브젝트의 최소 각도를 가져온다.
         float minDot = GetMinDot(layer);
+
         //모든 contact를 검사하여 일정 각도 이상의 평면을 모두 저장한다.
         for (int i = 0; i < collision.contactCount; i++)
         {
-
-
+            //접촉 표면을 가져온다.
             Vector3 normal = collision.GetContact(i).normal;
+            //접촉 표면의 각도를 가져온다.(내적)
             float upDot = Vector3.Dot(upAxis, normal);
 
+            //접촉 표면의 색을 가져와서 판단한다.
+            //하나라도 색이 다를 경우 접착제 붙인 상태
             Ray ray = new Ray(collision.contacts[i].point+normal, -normal);
             Color color = PaintTarget.RayColor(ray, 1.5f, colorCheckLayer);
-            bool climbColor = color != Color.black;
-            desireClimb |= climbColor;
+            bool isColoredWall = color != Color.black;
+            desireClimb |= isColoredWall;
 
             //cos에서 y값은 1->-1로 가므로 높을수록 각도는 낮은 각도
+
+            //만약 접촉 표면의 각도가 최소 각도를 만족할 경우
             if (upDot >= minDot)
             {
+                //땅에 있다고 판단
                 groundContactCount += 1;
                 contactNormal += normal;
+
+                //collision의 rigidbody를 연결
                 connectedBody = collision.rigidbody;
             }
             else
             {
-
+                //내적이 예각(90도 이상)일 경우
                 if (upDot > -0.01f)
                 {
                     steepContactCount += 1;
@@ -431,7 +485,9 @@ public class Controller_Physics : MonoBehaviour
                         connectedBody = collision.rigidbody;
                     }
                 }
-                if(climbColor && upDot >= minClimbDotProduct && (climbMask & (1<<layer)) != 0)
+
+                //색칠된 곳이고 등산 가능한 각도+등산 가능한 레이어 일 경우
+                if(isColoredWall && upDot >= minClimbDotProduct && (climbMask & (1<<layer)) != 0)
                 {
                     climbContactCount += 1;
                     climbNormal += normal;
@@ -446,7 +502,7 @@ public class Controller_Physics : MonoBehaviour
     private void ClearState()
     {
         //매 프레임 마다 초기화한다.(FixedUpdate의 마지막)
-        //행동(fixedUpdate)->초기화(fixedUpdate)->입력(update)->충돌처리(oncollision)->...
+        //[프레임 시작]->행동(fixedUpdate)->초기화(fixedUpdate)->입력(update)->충돌처리(oncollision)->[프레임 시작]->행동(fixedUpdate)->초기화(fixedUpdate)->...
         //땅
         groundContactCount = 0;
         contactNormal = Vector3.zero;
@@ -466,26 +522,30 @@ public class Controller_Physics : MonoBehaviour
 
     private void UpdateState()
     {
+        // 지상<->등산 애니메이션 결정
         animator.SetBool(ClimbHash, !multipleState && OnClimb);
 
         //마지막 그라운드에서 몇 프레임이 지났는지 저장하기 위한 변수
         stepsSinceLastGrounded += 1;
         stepsSinceLastJump += 1;
         stepsSinceLastClimb += 1;
+
+        //플레이어 속도 초기화
         velocity = rb.velocity;
 
-
-        //확실히 땅이거나, 땅에 붙어있을 경우
+        //확실히 땅이거나, 땅에 붙어있을 경우, 등산 상태인 경우, 경사면이 중복되어 있을 경우
         if (CheckClimbing() || OnGround || SnapToGround() || CheckSteepContacts())
         {
-            //그라운드 변수 초기화
-            //점프 횟수 초기화
-            //만약 땅에 1개 이상 밟고 잇을 경우 단위 벡터로 초기화
+            //마지막 그라운드 프레임 초기화
             stepsSinceLastGrounded = 0;
+
             if (stepsSinceLastJump > 1)
             {
+                //점프 횟수 초기화
                 jumpPhase = 0;
             }
+
+            //만약 땅에 1개 이상 밟고 잇을 경우 단위 벡터로 contact 위치 일반화
             if (groundContactCount > 1)
             {
                 contactNormal.Normalize();
@@ -499,20 +559,25 @@ public class Controller_Physics : MonoBehaviour
             contactNormal = upAxis;
         }
 
+        //만약 움직이는 플랫폼을 쓸경우
         if (connectedBody)
         {
+            //키네마틱이나, 플레이어의 mass보다 단위가 큰 플랫폼일 경우
             if (connectedBody.isKinematic || connectedBody.mass >= rb.mass)
             {
+                //플레이어 상태 변경
                 UpdateConnectionState();
             }
         }
 
+        //마지막 climb에서 2프레임 지나기전일 경우
         if (stepsSinceLastClimb < 2)
         {
+            //등산 가능 상태를 유지한다.
             desireClimb = true;
         }
 
-
+        //등산 상태, 점프 상태, 뒤로 이동을 제외한 경우 달리기 가능
         if (desireRun && !OnClimb && stepsSinceLastGrounded == 0 && input.z >= 0)
         {
             moveMultiple = runMultiple;
@@ -523,8 +588,10 @@ public class Controller_Physics : MonoBehaviour
         }
     }
 
+    //연결된 플랫폼이 있을 경우
     void UpdateConnectionState()
     {
+        //해당 플랫폼의 속도를 플레이어의 속도에 적용하기 위해 이를 가져온다.
         if (connectedBody == previousConnectedBody)
         {
             Vector3 connectionMovement = connectedBody.transform.TransformPoint(connectionLocalPosition) - connectionWorldPosition;
@@ -535,6 +602,7 @@ public class Controller_Physics : MonoBehaviour
 
     }
 
+    //플레이어의 축을 변경한다(앞뒤/좌우)
     void UpdateAxis()
     {
         if (playerInputSpace)
@@ -548,40 +616,48 @@ public class Controller_Physics : MonoBehaviour
             forwardAxis = ProjectDirectionOnPlane(Vector3.forward, upAxis);
         }
     }
+
+    //애니메이션의 파라미터를 추가한다.
+    private void UpdateAnimationParameter()
+    {
+        animator.SetFloat(velocityXHash, input.x * (desireRun ? 2 : 1));
+        animator.SetFloat(velocityYHash, input.z * (desireRun ? 2 : 1));
+    }
+
+    //땅을 벗어날 경우 특정상황에서 땅에 붙이기 위한 기능
     bool SnapToGround()
     {
-        //만약 땅에서 벗어나고 2프레임 이상 진행 됐을경우
+        //다음의 경우 그냥 땅을 벗어난다.
+        //1. 만약 땅에서 벗어나고 2프레임 이상 진행 됐을경우
         if (stepsSinceLastGrounded > 1 || stepsSinceLastJump <= 2)
         {
             return false;
         }
 
         float speed = velocity.magnitude;
-        //만약 현재 속도가 일정 속도 이상이라면
+        //2. 만약 현재 속도가 일정 속도 이상이라면
         if (speed > maxSnapSpeed)
         {
             return false;
         }
 
-        //땅으로 레이를 쐈을 때 hit되지않을 경우
-        if (Physics.RaycastNonAlloc(rb.position, -upAxis, groundHits, probeDistance, probeMask)==0)
+        //3. 땅으로 레이를 쐈을 때 hit되지않을 경우
+        if (Physics.RaycastNonAlloc(rb.position, -upAxis, groundHits, probeDistance, groundMask)==0)
         {
             return false;
         }
 
         float upDot = Vector3.Dot(upAxis, groundHits[0].normal);
-        //hit한 곳이 유효하지 않은 경사일경우(maxSlopeAngle을 넘길경우)
+        //4. hit한 곳이 유효하지 않은 경사일경우(maxSlopeAngle을 넘길경우)
         if (upDot < GetMinDot(groundHits[0].collider.gameObject.layer))
         {
             return false;
         }
 
-        //1프레임까지는 붙어있다고 판단.
+        //그 외에는 땅에 붙어있다고 가정한다.
         groundContactCount = 1;
         contactNormal = groundHits[0].normal;
-
         float dot = Vector3.Dot(velocity, groundHits[0].normal);
-
         //만약 velocity가 바닥을 향하고 있다면 더 느려지는 경우가 있기 때문에 이 경우를 제외한다.
         if (dot > 0f)
         {
@@ -589,6 +665,7 @@ public class Controller_Physics : MonoBehaviour
             velocity = (velocity - groundHits[0].normal * dot).normalized * speed;
         }
 
+        //연결 플랫폼을 변경
         connectedBody = groundHits[0].rigidbody;
         return true;
     }
@@ -612,8 +689,11 @@ public class Controller_Physics : MonoBehaviour
         return false;
     }
 
+
     bool CheckClimbing()
     {
+        //만약 가파른 경사를 2개 이상 얻고있다면
+        //가상의 경사를 만든다.
         if (OnClimb)
         {
             if(climbContactCount > 1)
@@ -640,16 +720,20 @@ public class Controller_Physics : MonoBehaviour
 
     float GetMinDot(int layer)
     {
-        return (stairMask & (1 << layer)) == 0 ? minGroundDotProduct : minObjectDotProduct;
+        //n만큼 비트 이동한 것과 비교하여 1이 검출되지않는다면 지형 / 그외 오브젝트
+        return (objectMask & (1 << layer)) == 0 ? minGroundDotProduct : minObjectDotProduct;
     }
+
     Vector3 ProjectOnContactPlane(Vector3 vector)
     {
         //vector를 normal의 각도 만큼 Projection 한다.
         return vector - contactNormal * Vector3.Dot(vector, contactNormal);
     }
+
+
     Vector3 ProjectDirectionOnPlane(Vector3 direction, Vector3 normal)
     {
-        //방향 - 법선*내적 -> 방향으로 적용되는 가감된 힘의 크기
+        //방향 - 법선*내적 -> 방향으로 적용되는 가감된 힘의 크기(사영벡터)
         return (direction - normal*Vector3.Dot(direction, normal)).normalized;
     }
 
