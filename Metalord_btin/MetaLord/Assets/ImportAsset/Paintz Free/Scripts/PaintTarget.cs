@@ -250,9 +250,6 @@ public class PaintTarget : MonoBehaviour
             if (pc.r > .5) cc = c1;
             if (pc.g > .5) cc = c2;
 
-            Debug.LogError(pc);
-            Debug.LogError(tc);
-            Debug.LogError(cc);
             return cc;
         }
 

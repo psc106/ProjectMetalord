@@ -20,8 +20,6 @@ public class Controller_Physics : MonoBehaviour
     Transform playerInputSpace = default;
     [SerializeField]
     Transform playerCenter = default;
-    [SerializeField]
-    LineRenderer line = default;
     //[SerializeField]
     //TrailRenderer trailRenderer;
     [SerializeField]
@@ -146,7 +144,6 @@ public class Controller_Physics : MonoBehaviour
 
     private void Awake()
     {
-        line.positionCount = 10;
         gravity = CustomGravity.GetGravity(rb.position, out upAxis);
 
         minGroundDotProduct = Mathf.Cos(maxGroundAngle * Mathf.Deg2Rad);
@@ -249,14 +246,28 @@ public class Controller_Physics : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+
+        if (other.gameObject.layer == catchObject)
+        {
+            Debug.Log("아이템 겟");
+            Destroy(other.gameObject);
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+
+        if (other.gameObject.layer == catchObject)
+        {
+            Debug.Log("아이템 겟");
+            Destroy(other.gameObject);
+        }
+    }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.collider.gameObject.layer == catchObject)
-        {
-            Debug.Log("아이템 겟");
-            Destroy(collision.collider.gameObject);
-        }
         EvaluateCollision(collision);
     }
 
@@ -445,8 +456,6 @@ public class Controller_Physics : MonoBehaviour
         isJump = false;
     }
 
-    [SerializeField]
-    GameObject g;
     void EvaluateCollision(Collision collision)
     {
         //여기서 현재 평면이 이동 가능한 절벽인지 체크
@@ -463,10 +472,7 @@ public class Controller_Physics : MonoBehaviour
             Vector3 normal = collision.GetContact(i).normal;
             //접촉 표면의 각도를 가져온다.(내적)
             float upDot = Vector3.Dot(upAxis, normal);
-
-
-            g.transform.position = collision.contacts[i].point;
-            g.transform.forward = collision.contacts[i].normal;
+;
 
             //접촉 표면의 색을 가져와서 판단한다.
             //하나라도 색이 다를 경우 접착제 붙인 상태
