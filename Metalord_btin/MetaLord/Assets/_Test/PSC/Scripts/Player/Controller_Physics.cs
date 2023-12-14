@@ -210,7 +210,7 @@ public class Controller_Physics : MonoBehaviour
            // Debug.Log("지상, 등산");
             velocity += (gravity - contactNormal * maxClimbAcceleration * 0.9f) * Time.deltaTime;
         }
-        //땅에 있을 경우 + 정지상태일 경우 그래비티 초기화
+        //땅에 있을 경우 + 정지상태일 경우 밀려나지않는 상태
         else if (OnGround && velocity.sqrMagnitude < 0.01f)
         {
            // Debug.Log("지상, 정지");

@@ -250,9 +250,9 @@ public class PaintTarget : MonoBehaviour
         PaintRaycast(ray, brush);
     }
 
-    public static void PaintRay(Ray ray, Brush brush)
+    public static void PaintRay(Ray ray, Brush brush, float range, bool multiple = true)
     {
-        PaintRaycast(ray, brush);
+        PaintRaycast(ray, brush, range, multiple);
     }
 
     public static void PaintCursor(Brush brush)
@@ -267,14 +267,14 @@ public class PaintTarget : MonoBehaviour
         PaintRaycast(ray, brush);
     }
 
-    private static void PaintRaycast(Ray ray, Brush brush, bool multi = true)
+    private static void PaintRaycast(Ray ray, Brush brush, float range = 100, bool multi = true)
     {
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 100))
+        if (Physics.Raycast(ray, out hit, range))
         {
             if (multi)
             {
-                RaycastHit[] hits = Physics.SphereCastAll(hit.point, brush.splatScale , ray.direction);
+                RaycastHit[] hits = Physics.SphereCastAll(hit.point, brush.splatScale, ray.direction);
                 for (int h=0; h < hits.Length; h++)
                 {
                     PaintTarget paintTarget = hits[h].collider.gameObject.GetComponent<PaintTarget>();
@@ -304,7 +304,6 @@ public class PaintTarget : MonoBehaviour
             splatObject.name = "splatObject";
             splatObject.hideFlags = HideFlags.HideInHierarchy;
         }
-
         splatObject.transform.position = point;
 
         Vector3 leftVec = Vector3.Cross(normal, Vector3.up);
@@ -520,6 +519,8 @@ public class PaintTarget : MonoBehaviour
 
     public void ClearPaint()
     {
+        m_Splats.Clear();
+        splatTexPick = null;
         if (setupComplete)
         {
             CommandBuffer cb = new CommandBuffer();
