@@ -416,10 +416,6 @@ public class Controller_Physics : MonoBehaviour
             Color color = PaintTarget.RayColor(ray, 1.5f, colorCheckLayer);
             bool climbColor = color != Color.black;
             desireClimb |= climbColor;
-            Debug.LogError(color);
-           // Debug.Log(desireClimb);
-
-            //onGround |= normal.y >= minGroundDotProduct;
 
             //cos에서 y값은 1->-1로 가므로 높을수록 각도는 낮은 각도
             if (upDot >= minDot)

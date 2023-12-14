@@ -16,8 +16,17 @@ public class SSC_GunState : MonoBehaviour
     [SerializeField] private Image AmmoGauge;
     [SerializeField] private SSC_PaintGun paintMode;
     [SerializeField] private SSC_GrabGun grabMode;
+    [SerializeField] private Controller_Physics player;
+    [SerializeField] private MeshRenderer gunRenderer;
+    [SerializeField] private GameObject backGun;
 
     [HideInInspector] public GunState state;
+
+    public bool CanFire
+    {
+        get { return !player.OnClimb; }
+        private set { }
+    }
 
     int maxAmmo = 200;
     public int MaxAmmo
@@ -46,6 +55,17 @@ public class SSC_GunState : MonoBehaviour
 
     private void Update()
     {
+        if (CanFire)
+        {
+            gunRenderer.enabled = true;
+            backGun.SetActive(false);
+        }
+        else
+        {
+            gunRenderer.enabled = false;
+            backGun.SetActive(true);
+        }
+
         if(Input.GetKeyDown(KeyCode.Q))
         {
             grabMode.enabled = false;
