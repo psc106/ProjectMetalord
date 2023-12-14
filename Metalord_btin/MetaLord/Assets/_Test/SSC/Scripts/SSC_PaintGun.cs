@@ -36,6 +36,11 @@ public class SSC_PaintGun : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(Input.GetKeyDown(KeyCode.T))
+        {
+            Debug.Log(PaintTarget.CursorColor());
+        }
+
         if (!gun.CanFire)
         {
             fireStart = false;
@@ -88,7 +93,7 @@ public class SSC_PaintGun : MonoBehaviour
         {
             PaintTarget.PaintRay(ray, brush, range);
 
-            gun.UpdateAmmo(normalShot);
+            gun.UpdateState(normalShot);
 
             if (gun.Ammo <= 0)
             {
@@ -115,7 +120,7 @@ public class SSC_PaintGun : MonoBehaviour
             {
                 PaintTarget.PaintRay(ray, brush, range);
 
-                gun.UpdateAmmo(autoShot);
+                gun.UpdateState(autoShot);
 
                 if (gun.Ammo <= 0)
                 {                    

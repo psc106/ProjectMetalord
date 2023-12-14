@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using Unity.VisualScripting;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class SSC_GrabGun : MonoBehaviour
@@ -8,19 +10,16 @@ public class SSC_GrabGun : MonoBehaviour
     [SerializeField] private LayerMask grabObj;
     [SerializeField] private Transform grabPos;
     [SerializeField] private Transform grabLimit;
-
-    MeshCollider childColid;
-
+    
+    GameObject followObj;
     Transform objTrans;
     Rigidbody objRigid;
-    SSC_GarbObj targetObj;
+    SSC_GrabObj targetObj;
 
     public Transform lineStart;            
     public LineRenderer grabLine;
 
-    bool isGrab = false;
-
-    Vector3 hitPos;
+    bool isGrab = false;   
 
     void Update()
     {
@@ -34,25 +33,10 @@ public class SSC_GrabGun : MonoBehaviour
                 if (Physics.Raycast(ray, 100f, grabObj) == true)
                 {
                     Physics.Raycast(ray, out hitInfo);
-                    Debug.Log(hitInfo.transform.name);
-                    targetObj = hitInfo.transform.GetComponent<SSC_GarbObj>();
 
-                    //childColid = hitInfo.transform.GetChild(0).transform.GetComponent<MeshCollider>();
-                    //childColid.enabled = false;
-                    grabLine.enabled = true;                
-                    objTrans = hitInfo.transform;
-                    objRigid = hitInfo.rigidbody;                                        
-                    objRigid.useGravity = false;
-                    //objRigid.isKinematic = false;
-                    targetObj.ChangedState(false);
-                    objRigid.constraints = RigidbodyConstraints.FreezeRotation;
-
-                    grabPos.position = hitInfo.point;
-
-                    hitPos = hitInfo.point - objTrans.position;
-                    isGrab = true;
+                    InitGrabobj(hitInfo);
                 }
-                
+
                 return;
             }        
 
@@ -65,46 +49,63 @@ public class SSC_GrabGun : MonoBehaviour
         }
 
         if (objTrans != null)
-        {            
-            float t = Input.GetAxisRaw("Mouse ScrollWheel");   
-            
-            if(t < 0f)
-            {                
-                if(Vector3.Distance(grabPos.position, grabLimit.position) <= 10f)
-                {
-                    return;
-                }
-
-                Vector3 resultPos = grabLimit.position - grabPos.position;
-
-                grabPos.transform.position -= resultPos.normalized * t * 5f;                
-                
-            }
-            
-            DrawLine();
-            
-            Vector3 moveVec = Vector3.Lerp(objTrans.position, grabPos.position, Time.deltaTime * 2f);
-            objTrans.position = moveVec;
+        {                        
+            DragObj();            
         }
 
     }
 
-    void DrawLine()
+    void InitGrabobj(RaycastHit hitObj)
     {
-        Vector3 resultPos = objTrans.position + hitPos;             
+        followObj = new GameObject();
+        followObj.transform.position = hitObj.point;
+        hitObj.transform.parent = followObj.transform;
+
+        targetObj = hitObj.transform.GetComponent<SSC_GrabObj>();
+        MeshCollider targetColid = hitObj.transform.GetComponent<MeshCollider>();
+        targetColid.convex = true;
+        hitObj.transform.AddComponent<Rigidbody>();
+        grabLine.enabled = true;
+        objTrans = hitObj.transform;
+        objRigid = hitObj.rigidbody;
+        grabPos.position = hitObj.point;
+        targetObj.ChangedState(false);        
+        
+        isGrab = true;
+    }
+
+    void DragObj()
+    {
+        float t = Input.GetAxisRaw("Mouse ScrollWheel");
+
+        if (t < 0f)
+        {
+            if (Vector3.Distance(grabPos.position, grabLimit.position) <= 10f)
+            {
+                return;
+            }
+
+            Vector3 resultPos = grabLimit.position - grabPos.position;
+
+            grabPos.transform.position -= resultPos.normalized * t * 5f;
+
+        }
+
         grabLine.SetPosition(0, lineStart.position);
-        grabLine.SetPosition(1, objTrans.position);
+        grabLine.SetPosition(1, followObj.transform.position);
+
+        Vector3 moveVec = Vector3.Lerp(followObj.transform.position, grabPos.position, Time.deltaTime * 2f);
+        followObj.transform.position = moveVec;            
     }
 
     void ClearObj()
     {
-        //targetObj.ChangedState(false);
-        //childColid.enabled = true;
-        targetObj = null;
-        grabLine.enabled = false;        
-        
+        targetObj.transform.parent = null;
+        Destroy(followObj);
         objRigid.useGravity = true;
+        targetObj = null;
+        grabLine.enabled = false;                       
         objTrans = null;
-        //objRigid = null;
+        objRigid = null;
     }
 }
