@@ -27,7 +27,7 @@ public class Controller_Physics : MonoBehaviour
 
     #region Private Reference
 
-    RaycastHit[] groundHits = new RaycastHit[1];
+    RaycastHit groundHit;
 
     Rigidbody connectedBody;
     Rigidbody previousConnectedBody;
@@ -144,10 +144,15 @@ public class Controller_Physics : MonoBehaviour
 
     private void Awake()
     {
-        OnValidate();
+        gravity = CustomGravity.GetGravity(rb.position, out upAxis);
+
+        minGroundDotProduct = Mathf.Cos(maxGroundAngle * Mathf.Deg2Rad);
+        minObjectDotProduct = Mathf.Cos(maxObjectAngle * Mathf.Deg2Rad);
+        minClimbDotProduct = Mathf.Cos(maxClimbAngle * Mathf.Deg2Rad);
+        catchObject = LayerMask.NameToLayer("CatchObject");
+
         BindHandler();
         rb.useGravity = false;
-        gravity = CustomGravity.GetGravity(rb.position, out upAxis);
     }
 
     void Update()
@@ -241,14 +246,28 @@ public class Controller_Physics : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+
+        if (other.gameObject.layer == catchObject)
+        {
+            Debug.Log("아이템 겟");
+            Destroy(other.gameObject);
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+
+        if (other.gameObject.layer == catchObject)
+        {
+            Debug.Log("아이템 겟");
+            Destroy(other.gameObject);
+        }
+    }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.collider.gameObject.layer == catchObject)
-        {
-            Debug.Log("아이템 겟");
-            Destroy(collision.collider.gameObject);
-        }
         EvaluateCollision(collision);
     }
 
@@ -453,6 +472,7 @@ public class Controller_Physics : MonoBehaviour
             Vector3 normal = collision.GetContact(i).normal;
             //접촉 표면의 각도를 가져온다.(내적)
             float upDot = Vector3.Dot(upAxis, normal);
+;
 
             //접촉 표면의 색을 가져와서 판단한다.
             //하나라도 색이 다를 경우 접착제 붙인 상태
@@ -642,31 +662,31 @@ public class Controller_Physics : MonoBehaviour
         }
 
         //3. 땅으로 레이를 쐈을 때 hit되지않을 경우
-        if (Physics.RaycastNonAlloc(rb.position, -upAxis, groundHits, probeDistance, groundMask)==0)
+        if (!Physics.Raycast(rb.position, -upAxis, out groundHit, probeDistance, groundMask))
         {
             return false;
         }
 
-        float upDot = Vector3.Dot(upAxis, groundHits[0].normal);
+        float upDot = Vector3.Dot(upAxis, groundHit.normal);
         //4. hit한 곳이 유효하지 않은 경사일경우(maxSlopeAngle을 넘길경우)
-        if (upDot < GetMinDot(groundHits[0].collider.gameObject.layer))
+        if (upDot < GetMinDot(groundHit.collider.gameObject.layer))
         {
             return false;
         }
 
         //그 외에는 땅에 붙어있다고 가정한다.
         groundContactCount = 1;
-        contactNormal = groundHits[0].normal;
-        float dot = Vector3.Dot(velocity, groundHits[0].normal);
+        contactNormal = groundHit.normal;
+        float dot = Vector3.Dot(velocity, groundHit.normal);
         //만약 velocity가 바닥을 향하고 있다면 더 느려지는 경우가 있기 때문에 이 경우를 제외한다.
         if (dot > 0f)
         {
             //velocity를 사영하여 각도를 바꾸고 magnitude를 곱해서 동일한 힘을 준다.
-            velocity = (velocity - groundHits[0].normal * dot).normalized * speed;
+            velocity = (velocity - groundHit.normal * dot).normalized * speed;
         }
 
         //연결 플랫폼을 변경
-        connectedBody = groundHits[0].rigidbody;
+        connectedBody = groundHit.rigidbody;
         return true;
     }
 
