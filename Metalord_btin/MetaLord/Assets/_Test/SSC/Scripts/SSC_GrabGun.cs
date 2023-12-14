@@ -10,9 +10,7 @@ public class SSC_GrabGun : MonoBehaviour
     [SerializeField] private LayerMask grabObj;
     [SerializeField] private Transform grabPos;
     [SerializeField] private Transform grabLimit;
-
-    MeshCollider childColid;
-
+    
     GameObject followObj;
     Transform objTrans;
     Rigidbody objRigid;
@@ -21,9 +19,7 @@ public class SSC_GrabGun : MonoBehaviour
     public Transform lineStart;            
     public LineRenderer grabLine;
 
-    bool isGrab = false;
-
-    Vector3 hitPos;
+    bool isGrab = false;   
 
     void Update()
     {
@@ -66,17 +62,15 @@ public class SSC_GrabGun : MonoBehaviour
         hitObj.transform.parent = followObj.transform;
 
         targetObj = hitObj.transform.GetComponent<SSC_GrabObj>();
-        childColid = hitObj.transform.GetComponent<MeshCollider>();
-        childColid.convex = true;
+        MeshCollider targetColid = hitObj.transform.GetComponent<MeshCollider>();
+        targetColid.convex = true;
         hitObj.transform.AddComponent<Rigidbody>();
         grabLine.enabled = true;
         objTrans = hitObj.transform;
         objRigid = hitObj.rigidbody;
-        this.targetObj.ChangedState(false);
-        objRigid.constraints = RigidbodyConstraints.FreezeRotation;
         grabPos.position = hitObj.point;
-
-        hitPos = hitObj.point - objTrans.position;
+        targetObj.ChangedState(false);        
+        
         isGrab = true;
     }
 
@@ -98,7 +92,7 @@ public class SSC_GrabGun : MonoBehaviour
         }
 
         grabLine.SetPosition(0, lineStart.position);
-        grabLine.SetPosition(1, followObj.transform.position);        
+        grabLine.SetPosition(1, followObj.transform.position);
 
         Vector3 moveVec = Vector3.Lerp(followObj.transform.position, grabPos.position, Time.deltaTime * 2f);
         followObj.transform.position = moveVec;            

@@ -7,12 +7,11 @@ public class SSC_GrabObj : MonoBehaviour
 {
     bool isGrabed = false;
     Rigidbody myRigid;
-    MeshCollider childColid;
+    MeshCollider myColid;
 
     private void Awake()
-    {
-        //myRigid = GetComponent<Rigidbody>();
-        childColid = GetComponent<MeshCollider>();
+    {        
+        myColid = GetComponent<MeshCollider>();
     }
 
     private void FixedUpdate()
@@ -21,7 +20,7 @@ public class SSC_GrabObj : MonoBehaviour
         {
             if(myRigid != null && myRigid.IsSleeping())
             {
-                childColid.convex = false;
+                myColid.convex = false;
                 Destroy(myRigid);
                 isGrabed = false;
             }
@@ -31,7 +30,9 @@ public class SSC_GrabObj : MonoBehaviour
     public void ChangedState(bool _ChangedRigid)
     {        
         myRigid = GetComponent<Rigidbody>();
+        myColid.convex = true;
         myRigid.useGravity = false;
+        myRigid.constraints = RigidbodyConstraints.FreezeRotation;
         isGrabed = true;
 
         if(myRigid.isKinematic == true)
@@ -40,4 +41,5 @@ public class SSC_GrabObj : MonoBehaviour
         }
 
     }
+    
 }
