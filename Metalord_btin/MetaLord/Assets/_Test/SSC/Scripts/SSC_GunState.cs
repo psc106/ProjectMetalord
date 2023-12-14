@@ -87,7 +87,7 @@ public class SSC_GunState : MonoBehaviour
         AmmoGauge.fillAmount = (float)Ammo / (float)MaxAmmo;
     }
 
-    public void UpdateAmmo(int ammoValue)
+    public void UpdateState(int ammoValue)
     {
         Ammo += ammoValue;
         AmmoText.text = MaxAmmo + " / " + Ammo;
