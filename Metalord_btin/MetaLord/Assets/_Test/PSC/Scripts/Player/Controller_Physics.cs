@@ -195,31 +195,31 @@ public class Controller_Physics : MonoBehaviour
 
         if (isJump || multipleState)
         {
-            Debug.Log("점프, 복합");
+          //  Debug.Log("점프, 복합");
             velocity += gravity * Time.deltaTime;
         }
         //등산중에 접촉면으로 끌어당김
         else if ( OnClimb)
         {
-            Debug.Log("등산");
+          //  Debug.Log("등산");
             velocity -= contactNormal * (maxClimbAcceleration * 0.99f * Time.deltaTime);
         }
         //땅에 있을 경우 + 이동 상태 일 경우 중력+접촉면으로 끌어당김 동시에 적용
         else if (desireClimb && OnGround)
         {
-            Debug.Log("지상, 등산");
+           // Debug.Log("지상, 등산");
             velocity += (gravity - contactNormal * maxClimbAcceleration * 0.9f) * Time.deltaTime;
         }
         //땅에 있을 경우 + 정지상태일 경우 그래비티 초기화
         else if (OnGround && velocity.sqrMagnitude < 0.01f)
         {
-            Debug.Log("지상, 정지");
+           // Debug.Log("지상, 정지");
             velocity += contactNormal * (Vector3.Dot(gravity, contactNormal) * Time.deltaTime);
         }
         //그외 중력 적용
         else
         {
-            Debug.Log("그외");
+           // Debug.Log("그외");
             velocity += gravity * Time.deltaTime;
         }
 
@@ -416,7 +416,8 @@ public class Controller_Physics : MonoBehaviour
             Color color = PaintTarget.RayColor(ray, 1.5f, colorCheckLayer);
             bool climbColor = color != Color.black;
             desireClimb |= climbColor;
-            Debug.Log(desireClimb);
+            Debug.LogError(color);
+           // Debug.Log(desireClimb);
 
             //onGround |= normal.y >= minGroundDotProduct;
 
