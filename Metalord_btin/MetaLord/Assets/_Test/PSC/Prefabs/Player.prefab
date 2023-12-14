@@ -193,12 +193,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41598f0179e87114d8dc12e81524c7ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  probeMask:
+  groundMask:
     serializedVersion: 2
-    m_Bits: 1975
-  stairMask:
+    m_Bits: 4294967295
+  objectMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 4294967295
   climbMask:
     serializedVersion: 2
     m_Bits: 1921
@@ -208,15 +208,13 @@ MonoBehaviour:
   rb: {fileID: 3785254182038594230}
   playerInputSpace: {fileID: 5467668828909890017}
   playerCenter: {fileID: 6677764962144662948}
-  trailRenderer: {fileID: 5076636948133282176}
-  animator: {fileID: 1084481118672713895}
-  isMove: 0
+  animator: {fileID: 6381496018623211574}
   jumpHeight: 7.5
+  jumpDuringTimer: 1.5
   probeDistance: 1
   runMultiple: 1.5
   walkMultiple: 1
   maxMoveSpeed: 15
-  maxAirMoveSpeed: 10
   maxClimbSpeed: 8
   maxAcceleration: 100
   maxAirAcceleration: 10
@@ -226,7 +224,6 @@ MonoBehaviour:
   maxGroundAngle: 45
   maxObjectAngle: 45
   maxClimbAngle: 135
-  jumpDuringTimer: 1.5
   reader: {fileID: 11400000, guid: 75abd6246b51f9e48a0d52dae45fab3f, type: 2}
 --- !u!114 &743962208856113288
 MonoBehaviour:
@@ -637,8 +634,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 719308979689676731}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0.000000009837095, w: 1}
-  m_LocalPosition: {x: 0.2249995, y: 0.31010133, z: -1.2499986}
+  m_LocalRotation: {x: -0, y: -0, z: -0.000000009837094, w: 1}
+  m_LocalPosition: {x: 0.22500001, y: 0.31010133, z: -1.25}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -892,8 +889,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9046867367910495862}
-  - component: {fileID: 1084481118672713895}
-  - component: {fileID: 9100464433599015345}
+  - component: {fileID: 6381496018623211574}
+  - component: {fileID: 758703813887018688}
   m_Layer: 6
   m_Name: Body
   m_TagString: Untagged
@@ -919,7 +916,7 @@ Transform:
   - {fileID: 5751559535079285339}
   m_Father: {fileID: 1495894723469854142}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &1084481118672713895
+--- !u!95 &6381496018623211574
 Animator:
   serializedVersion: 5
   m_ObjectHideFlags: 0
@@ -940,7 +937,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &9100464433599015345
+--- !u!114 &758703813887018688
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2867,8 +2864,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5842208960856677968}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0.000000009837095, w: 1}
-  m_LocalPosition: {x: 0.2249995, y: 0.31010133, z: -1.2499986}
+  m_LocalRotation: {x: -0, y: -0, z: -0.000000009837094, w: 1}
+  m_LocalPosition: {x: 0.22500001, y: 0.31010133, z: -1.25}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
