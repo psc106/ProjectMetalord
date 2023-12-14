@@ -15,10 +15,18 @@ namespace UnityEngine.InputSystem.Samples.RebindUI // InputSystem 예제 네임�
     /// </summary>
     public class RebindActionUI : MonoBehaviour // 액션 재바인딩을 위한 UI 컴포넌트 클래스
     {
+        private void Start()
+        {
+            actionReference = PSC_READER.inputActions.Player.Move;
+            Debug.LogError(actionReference.bindings[2].path);
+        }
+
+
+        public InputReader PSC_READER;
         /// <summary>
         /// 다시 바인딩할 액션에 대한 참조입니다.
         /// </summary>
-        public InputActionReference actionReference // 바인딩할 입력 액션에 대한 참조
+        public InputAction actionReference // 바인딩할 입력 액션에 대한 참조
         {
             get => m_Action; // 액션을 가져옵니다.
             set // 액션을 설정합니다.
@@ -165,7 +173,7 @@ namespace UnityEngine.InputSystem.Samples.RebindUI // InputSystem 예제 네임�
         {
             bindingIndex = -1; // 초기화
 
-            action = m_Action?.action; // 액션 설정
+            action = m_Action; // 액션 설정
             if (action == null) // 액션이 없는 경우
                 return false; // 실패 반환
 
@@ -194,7 +202,7 @@ namespace UnityEngine.InputSystem.Samples.RebindUI // InputSystem 예제 네임�
             var controlPath = default(string); // 컨트롤 경로 초기화
 
             // 액션에서 디스플레이 문자열 가져오기.
-            var action = m_Action?.action; // 액션 가져오기
+            var action = m_Action; // 액션 가져오기
             if (action != null) // 액션이 있는 경우
             {
                 var bindingIndex = action.bindings.IndexOf(x => x.id.ToString() == m_BindingId); // 바인딩 인덱스 찾기
@@ -356,7 +364,7 @@ namespace UnityEngine.InputSystem.Samples.RebindUI // InputSystem 예제 네임�
             for (var i = 0; i < s_RebindActionUIs.Count; ++i) // 반복문을 통해 모든 RebindActionUI를 확인합니다.
             {
                 var component = s_RebindActionUIs[i]; // 현재 RebindActionUI를 가져옵니다.
-                var referencedAction = component.actionReference?.action; // 참조된 액션을 가져옵니다.
+                var referencedAction = component.actionReference; // 참조된 액션을 가져옵니다.
                 if (referencedAction == null) // 액션이 없으면
                     continue; // 다음으로 넘어갑니다.
 
@@ -370,7 +378,7 @@ namespace UnityEngine.InputSystem.Samples.RebindUI // InputSystem 예제 네임�
 
         [Tooltip("UI에서 다시 바인딩될 액션에 대한 참조입니다.")]
         [SerializeField] // 시리얼라이즈된 필드로 Inspector 창에서 수정 가능합니다.
-        private InputActionReference m_Action; // UI에서 다시 바인딩될 액션에 대한 참조
+        private InputAction m_Action; // UI에서 다시 바인딩될 액션에 대한 참조
 
         [SerializeField]
         private string m_BindingId;
@@ -422,7 +430,7 @@ namespace UnityEngine.InputSystem.Samples.RebindUI // InputSystem 예제 네임�
         {
             if (m_ActionLabel != null) // 액션 레이블이 null이 아닌 경우
             {
-                var action = m_Action?.action; // 액션 참조를 가져옵니다.
+                var action = m_Action; // 액션 참조를 가져옵니다.
                 m_ActionLabel.text = action != null ? action.name : string.Empty; // 액션 이름을 텍스트로 설정합니다.
             }
         }

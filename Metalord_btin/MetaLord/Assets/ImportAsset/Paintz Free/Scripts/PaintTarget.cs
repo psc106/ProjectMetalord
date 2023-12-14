@@ -40,6 +40,10 @@ public class PaintTarget : MonoBehaviour
     private RenderTexture splatTexAlt;
     public Texture2D splatTexPick;
 
+    // 12.13 SSC
+    // 페인트 초기화시 컬러값 초기화로 돌릴 origin값 저장 필드 추가
+    Texture2D originTex;
+
     private bool bPickDirty = true;
     private bool validTarget = false;
     private bool bHasMeshCollider = false;
@@ -65,6 +69,14 @@ public class PaintTarget : MonoBehaviour
     private static Texture2D Tex4;
 
     private static GameObject splatObject;
+
+
+    // 12.13 SSC
+    // 페인트 초기화시 컬러값 초기화로 돌릴 origin값 저장 필드 추가
+    private void Awake()
+    {        
+        originTex = splatTexPick;
+    }
 
     public static Color CursorColor()
     {
@@ -334,6 +346,10 @@ public class PaintTarget : MonoBehaviour
         {
             if (!target.validTarget) continue;
             target.ClearPaint();
+
+            // 12.13 SSC
+            // 페인트 초기화시 컬러값 초기화로 돌릴 origin값 저장 필드 추가
+            target.splatTexPick = target.originTex;
         }
     }
 
