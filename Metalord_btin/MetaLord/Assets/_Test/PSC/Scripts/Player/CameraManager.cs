@@ -21,14 +21,14 @@ public class CameraManager : MonoBehaviour
     [SerializeField, Range(0.5f, 20f)] float SpeedMulitiplier = 1f;
 
     bool isUnLockPressed = false;
-    bool cameraMovementLock = false;
+    static public bool cameraMovementLock { get; private set; }
 
     float newRotationY;
     float newRotationX;
 
-
     private void OnEnable()
     {
+        cameraMovementLock = false;
         transform.parent = null;
 
         input.Look += OnLook;
@@ -50,8 +50,18 @@ public class CameraManager : MonoBehaviour
 
     private void LateUpdate()
     {
+
+        if (cameraMovementLock) return;
+
+        if (input.mouseMovement.magnitude == 0) 
+        {
+            newRotationY = targetX.eulerAngles.y;
+            newRotationX = targetX.eulerAngles.x;
+            return;
+        }
         climbCamera.gameObject.SetActive(player.OnClimb);
         crossHair.gameObject.SetActive(!player.OnClimb);
+        //Vector2 cameraMovement = input.mouseMovement;
 
         if (player.OnClimb)
         {
@@ -87,35 +97,29 @@ public class CameraManager : MonoBehaviour
             {
                 newRotationY = Mathf.Clamp(newRotationY, (anchor - 89), (anchor + 89));
             }
-            player.transform.eulerAngles = new Vector3(0, newRotationY, 0);
         }
-        else
-        {
-
-            player.transform.eulerAngles = new Vector3(0, newRotationY, 0);
-        }
+        targetY.transform.eulerAngles = new Vector3(0, newRotationY, 0);
+        //targetY.transform.eulerAngles = new Vector3(0, Mathf.Lerp(targetY.transform.eulerAngles.y, newRotationY, 15 * Time.deltaTime), 0);
 
         //y축 변경
         //x축 변경
+        //targetX.rotation = Quaternion.Euler(newRotationX, Mathf.Lerp(targetX.eulerAngles.y, newRotationY, 15 * Time.deltaTime), targetX.eulerAngles.z);
         targetX.rotation = Quaternion.Euler(newRotationX, newRotationY, targetX.eulerAngles.z);
     }
 
     void OnLook(Vector2 cameraMovement, bool isDeviceMouse)
     {
         if (cameraMovementLock) return;
-        if (isDeviceMouse && isUnLockPressed) return;
-
+        if (isUnLockPressed) return;
         newRotationY = targetX.eulerAngles.y + cameraMovement.x * SpeedMulitiplier * Time.deltaTime;
         newRotationX = targetX.eulerAngles.x - cameraMovement.y * SpeedMulitiplier * Time.deltaTime;
         newRotationX = Mathf.Clamp(newRotationX > 180 ? newRotationX - 360 : newRotationX, -89, 89);
-
-        Debug.Log(newRotationY);
-      
     }
 
 
     void OnEnableMouseControlCamera()
     {
+        if (cameraMovementLock) return;
         isUnLockPressed = true;
 
         Cursor.lockState = CursorLockMode.None;
@@ -123,19 +127,20 @@ public class CameraManager : MonoBehaviour
     }
     void OnDisableMouseControlCamera()
     {
+        if (cameraMovementLock) return;
         isUnLockPressed = false;
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        StartCoroutine(DisableMouseForFrame());
     }
 
-    IEnumerator DisableMouseForFrame()
+    public static void SwitchCameraLock(bool check)
     {
-        cameraMovementLock = true;
-        yield return new WaitForEndOfFrame();
-        cameraMovementLock = false;
+        cameraMovementLock = check;
+        if(check) Cursor.lockState = CursorLockMode.None;
+        else Cursor.lockState = CursorLockMode.Locked;
     }
+
 
 }

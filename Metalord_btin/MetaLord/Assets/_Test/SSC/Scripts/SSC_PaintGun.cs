@@ -1,18 +1,17 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem.HID;
 
 public class SSC_PaintGun : MonoBehaviour
 {
     [SerializeField] private Brush brush;
     [SerializeField] private SSC_GunState gun;
+    [SerializeField] private InputReader input;
 
     [Range(0.1f, 1f)] public float attackSpeed;
 
     float timeCheck = 0f;
     float autotimeCheck = 0f;
+    [SerializeField, Range(0, 1)]
     float autoTime = 1f;
 
     int normalShot = -10;
@@ -33,28 +32,35 @@ public class SSC_PaintGun : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!gun.CanFire)
+        {
+            fireStart = false;
+            autotimeCheck = 0f;
+            return;
+        }
+
         // 마우스 클릭에서 손을 떼면 사격 중지.
-        if(Input.GetMouseButtonUp(0))
+        if(!input.ShootKey)
         {
             fireStart = false;
             autotimeCheck = 0f;
         }
 
         // 일정시간동안 사격키 입력상태라면 연사모드
-        if(autotimeCheck > autoTime && gun.state == GunState.READY)
+        else if(autotimeCheck > autoTime && gun.state == GunState.READY)
         {
             AutoFire();
             return;
         }
 
         // 사격을 시작 == 마우스버튼 누른시점동안
-        if(fireStart == true)
+        else if(fireStart == true)
         {
-            autotimeCheck += Time.deltaTime;            
+            autotimeCheck += Time.deltaTime;
             return;
         }
 
-        if(Input.GetMouseButtonDown(0) && gun.state == GunState.READY)
+        else if(input.ShootKey && gun.state == GunState.READY)
         {            
             NormalFire();
         }
