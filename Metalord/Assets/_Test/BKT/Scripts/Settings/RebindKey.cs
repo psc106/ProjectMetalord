@@ -23,7 +23,7 @@ enum BindKey
 /// </summary>
 public class RebindKey : MonoBehaviour
 {
-    [SerializeField] private PlayerController playerController = null; // 플레이어 컨트롤러
+    //[SerializeField] private PlayerController playerController = null; // 플레이어 컨트롤러
 
     [SerializeField] private InputActionReference moveAction = null; // Move 액션에 대한 참조
     [SerializeField] private InputActionReference jumpAction = null; // jump 액션에 대한 참조
@@ -53,8 +53,8 @@ public class RebindKey : MonoBehaviour
 
     public void SaveKey()
     {
-        string keyRebinds = playerController.playerInput.actions.SaveBindingOverridesAsJson();
-        Debug.Log(keyRebinds);
+        //string keyRebinds = playerController.playerInput.actions.SaveBindingOverridesAsJson();
+        //Debug.Log(keyRebinds);
         //TODO 따로 외부 파일에 저장하는거 구현
     }
 
