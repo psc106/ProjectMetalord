@@ -22,10 +22,10 @@ public class SSC_GunState : MonoBehaviour
 
     [HideInInspector] public GunState state;
 
-    public Vector3 GetPlayerCenter()
-    {
-        return player.GetPlayerCenter();
-    }
+    //public Vector3 GetPlayerCenter()
+    //{
+    //    return player.GetPlayerCenter();
+    //}
 
     public bool CanFire
     {

@@ -19,7 +19,7 @@ public class NpcBase : MonoBehaviour
 
     protected virtual void Awake()
     {
-        myDialogue = GameObject.Find("TutorialDialogueCanvas").GetComponent<DialogueUI>();
+        myDialogue = GameObject.Find("DialogueCanvas").GetComponent<DialogueUI>();
         state = npcState.normal;                
     }
 
