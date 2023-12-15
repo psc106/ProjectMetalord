@@ -32,7 +32,7 @@ public class DialogueUI : MonoBehaviour
     [Header("TextSound")]
     //12.15 사운드 작업을 위한 추가
     private AudioSource myAduio = default;
-    public AudioClip textSound = default;
+    private AudioClip textSound = default;
 
     
 
@@ -102,7 +102,7 @@ public class DialogueUI : MonoBehaviour
                 {
                     CloseDialogueUI();
                     //플레이어 움직임 다시 제어 // TODO 캐릭터 움직임 제어
-                    testPlayer.isMove = true;
+                    //testPlayer.isMove = true;
                 }
                 break;
             }

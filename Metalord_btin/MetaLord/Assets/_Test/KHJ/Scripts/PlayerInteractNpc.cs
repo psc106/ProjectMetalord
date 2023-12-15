@@ -27,11 +27,10 @@ public class PlayerInteractNpc : MonoBehaviour
     {
         //IInteractableObject interObj =other.GetComponent<IInteractableObject>();
         //interObj?.Interact(); 
-        if (other.CompareTag("Finish"))
-        {
+        
             playerInteract = other.GetComponent<IInteractNpc>();
             isInteract = true;
-        }
+        
 
     }
 
@@ -39,11 +38,10 @@ public class PlayerInteractNpc : MonoBehaviour
     {
         //IInteractableObject interObj = other.GetComponent<IInteractableObject>();
         //interObj?.InteractOut();
-        if (other.CompareTag("Finish"))
-        {
+        
             playerInteract = null;
             isInteract = false;
-        }
+        
     }
     public void PushE()
     {
