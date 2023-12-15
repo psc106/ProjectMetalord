@@ -1,11 +1,16 @@
 using System;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class SSC_PaintGun : MonoBehaviour
 {
     [SerializeField] private Brush brush;
     [SerializeField] private SSC_GunState gun;
     [SerializeField] private InputReader input;
+    [SerializeField] private Transform checkPos;
+    [SerializeField] private Transform startPoint;
+    [SerializeField] private Transform aimTarget;
+
 
     [SerializeField] private LayerMask gunLayer = -1;
     [Range(0.1f, 1f)] public float attackSpeed;
@@ -31,6 +36,23 @@ public class SSC_PaintGun : MonoBehaviour
             brush.splatsX = 4;
             brush.splatsY = 4;
         }
+    }
+
+    private void OnDrawGizmos()
+    {
+        //Gizmos.color = Color.yellow;
+        //Vector3 dir = Vector3.zero;
+        //dir = Camera.main.transform.forward +
+        //    Camera.main.transform.TransformDirection(dir);
+
+        //Gizmos.DrawLine(GetOriginPos(), Camera.main.transform.forward);
+
+        //Gizmos.color = Color.red;
+        //Gizmos.DrawLine(startPoint.position, Camera.main.transform.position + Camera.main.transform.forward * range);
+
+
+        //Gizmos.color = Color.blue;
+        //Gizmos.DrawLine(Camera.main.transform.position, Camera.main.transform.position + Camera.main.transform.forward * range);
     }
 
     // Update is called once per frame
@@ -86,18 +108,57 @@ public class SSC_PaintGun : MonoBehaviour
     /// </summary>
     private void NormalFire()
     {
-        Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+        Vector3 dir = Vector3.zero;
+        dir = Camera.main.transform.forward +
+            Camera.main.transform.TransformDirection(dir);
+
+        Ray ray = new Ray(GetOriginPos(), dir);
         RaycastHit hit;
+
+        Ray checkRay = new Ray(checkPos.position, dir);
+        RaycastHit checkHit;
+
+        if(Physics.Raycast(checkRay, out checkHit, range, gunLayer))
+        {
+            float checkDistance = Vector3.Distance(checkPos.position, checkHit.point);
+            //Debug.Log($"시작지점 거리 : {checkDistance}");
+
+            if (checkDistance <= 4f)
+            {
+                Ray muzzleRay = new Ray(checkPos.position, dir);
+
+                PaintTarget.PaintRay(muzzleRay, brush, range);
+
+                gun.UpdateState(normalShot);
+
+                if (gun.Ammo <= 0)
+                {
+                    gun.UpdateState(0, GunState.EMPTY);
+                }
+
+                fireStart = true;
+                return;
+            }
+        }
 
         if (Physics.Raycast(ray, out hit, range, gunLayer))
         {
-            PaintTarget.PaintRay(ray, brush, range);
+            Ray muzzleRay = new Ray(startPoint.position, hit.point - startPoint.position);
+
+            float rangePos = Vector3.Distance(GetOriginPos(), hit.point);
+
+            PaintTarget.PaintRay(muzzleRay, brush, range);
 
             gun.UpdateState(normalShot);
 
             if (gun.Ammo <= 0)
             {
                 gun.UpdateState(0, GunState.EMPTY);
+            }
+
+            if(hit.transform.GetComponent<NpcBase>() != null)
+            {
+                hit.transform.GetComponent<NpcBase>().ChangedState(npcState.glued);
             }
 
             fireStart = true;
@@ -113,22 +174,45 @@ public class SSC_PaintGun : MonoBehaviour
 
         if(timeCheck >= attackSpeed)
         {
-            Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+            Vector3 dir = Vector3.zero;
+            dir = Camera.main.transform.forward +
+                Camera.main.transform.TransformDirection(dir);
+
+            Ray ray = new Ray(GetOriginPos(), dir);
             RaycastHit hit;
 
             if (Physics.Raycast(ray, out hit, range, gunLayer))
             {
-                PaintTarget.PaintRay(ray, brush, range);
+                Ray muzzleRay = new Ray(startPoint.position, hit.point - startPoint.position);
+
+                PaintTarget.PaintRay(muzzleRay, brush, range);
 
                 gun.UpdateState(autoShot);
 
                 if (gun.Ammo <= 0)
-                {                    
-                    gun.UpdateState(0, GunState.EMPTY);                    
+                {
+                    gun.UpdateState(0, GunState.EMPTY);
                 }
-                
+
                 timeCheck = 0f;        
             }
+            
         }
     }
+
+    /// <summary>
+    /// 카메라와 플레이어의 축을 동일선상에 놓아주는 메소드
+    /// </summary>
+    /// <returns>카메라의 정면 방향 + 플레이어의 수직선상 </returns>
+    Vector3 GetOriginPos()
+    {
+        Vector3 origin = Vector3.zero;
+
+        origin = Camera.main.transform.position +
+            Camera.main.transform.forward *
+            Vector3.Distance(Camera.main.transform.position, startPoint.position);
+
+        return origin;
+    }
+
 }
