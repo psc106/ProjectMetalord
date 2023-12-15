@@ -24,6 +24,12 @@ public class SSC_GunState : MonoBehaviour
 
     public bool CanFire
     {
+        get { return player.CanFire; }
+        private set { }
+    }
+
+    public bool CanReload
+    {
         get { return !player.OnClimb; }
         private set { }
     }

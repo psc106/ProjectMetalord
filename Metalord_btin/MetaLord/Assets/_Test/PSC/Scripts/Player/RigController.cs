@@ -26,8 +26,8 @@ public class RigController : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
-        aimRig.weight = player.OnClimb ? 0 : 1;
-        rotateRig.weight = player.OnClimb ? 1 : 0;
+        aimRig.weight = player.OnClimb && !player.OnMultipleState ? 0 : 1;
+        rotateRig.weight = player.OnClimb && !player.OnMultipleState ? 1 : 0;
 
         if (player.OnClimb)
         {
@@ -40,6 +40,4 @@ public class RigController : MonoBehaviour
             aimTarget.position = hit.point;
         }
     }
-
-    
 }
