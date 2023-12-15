@@ -63,6 +63,12 @@ public class SSC_PaintGun : MonoBehaviour
             Debug.Log(PaintTarget.CursorColor());
         }
 
+        if (Input.GetKeyDown(KeyCode.R) && gun.CanReload)
+        {
+            PaintTarget.ClearAllPaint();
+            gun.UpdateState(gun.MaxAmmo, GunState.READY);
+        }
+
         if (!gun.CanFire)
         {
             fireStart = false;
@@ -96,11 +102,6 @@ public class SSC_PaintGun : MonoBehaviour
             NormalFire();
         }
 
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            PaintTarget.ClearAllPaint();
-            gun.UpdateState(gun.MaxAmmo, GunState.READY);
-        }
     }
 
     /// <summary>

@@ -46,6 +46,12 @@ public class CameraManager : MonoBehaviour
 
     }
 
+    private void Update()
+    {
+        climbCamera.gameObject.SetActive(player.OnClimb);
+        crossHair.gameObject.SetActive(!player.OnClimb);
+    }
+
     private void LateUpdate()
     {
 
@@ -57,8 +63,6 @@ public class CameraManager : MonoBehaviour
             newRotationX = targetX.eulerAngles.x;
             return;
         }
-        climbCamera.gameObject.SetActive(player.OnClimb);
-        crossHair.gameObject.SetActive(!player.OnClimb);
         //Vector2 cameraMovement = input.mouseMovement;
 
         if (player.OnClimb)
