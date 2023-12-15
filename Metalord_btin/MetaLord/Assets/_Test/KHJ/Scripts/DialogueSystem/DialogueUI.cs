@@ -29,8 +29,17 @@ public class DialogueUI : MonoBehaviour
     private DialogueTypingEffect myTextEffect;
     public bool isResponse = false;
 
+    [Header("TextSound")]
+    //12.15 사운드 작업을 위한 추가
+    private AudioSource myAduio = default;
+    public AudioClip textSound = default;
+
+    
+
     void Start()
     {
+        myAduio = GetComponent<AudioSource>();
+        myAduio.clip = textSound;
         myTextEffect = GetComponent<DialogueTypingEffect>();
         CloseDialogueUI();
         CloseTutoQuestion();
@@ -104,7 +113,7 @@ public class DialogueUI : MonoBehaviour
     }
     private IEnumerator RunTypingEffect(string dialouge)
     {
-        myTextEffect.Run(dialouge, dialogueText);
+        myTextEffect.Run(dialouge, dialogueText, myAduio, 1); //매직넘버 톤리스트 결정하는거임
         while (myTextEffect.isTypingRunning)
         {
             yield return null;
@@ -157,6 +166,8 @@ public class DialogueUI : MonoBehaviour
                 dialogueBox.transform.GetChild(1).gameObject.transform.GetChild(0).gameObject.GetComponent<TMP_Text>().text =
                     DialogueDBManager.instance.statusDialogueDic[keyNum].speakerName.Trim();
                 //yield return myTextEffect.Run(dialogue, dialogueText);
+                Debug.Log(dialogue);
+               
                 yield return RunTypingEffect(dialogue);
 
                 dialogueText.text = dialogue;
@@ -248,4 +259,6 @@ public class DialogueUI : MonoBehaviour
             ShowStateTutorialDialogue(1); // 토끼 첫번째 대사 
         }
     }
+
+   
 }
