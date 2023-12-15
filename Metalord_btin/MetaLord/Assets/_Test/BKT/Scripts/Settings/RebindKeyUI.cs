@@ -65,6 +65,18 @@ public class RebindKeyUI : MonoBehaviour
 
     }
 
+    private void OnEnable()
+    {
+        GameEventsManager.instance.resetEvents.onResetAllBindings += ChangeDisplayText; // 전체 리셋이벤트에 화면텍스트 변경함수 할당
+    }
+
+    private void OnDisable()
+    {
+        RebindOperation?.Dispose(); // Rebind 작업이 존재할 경우 해제
+        RebindOperation = null; //  Rebind 작업을 null로 초기화
+        GameEventsManager.instance.resetEvents.onResetAllBindings -= ChangeDisplayText; // 전체 리셋이벤트에 화면텍스트 변경함수 해제
+    }
+
     // 바인딩 버튼을 누를때 호출되는 버튼
     public void OnClickBindingButton()
     {
@@ -174,11 +186,5 @@ public class RebindKeyUI : MonoBehaviour
         return false; // 중복된 키가 없을 경우 false를 반환합니다.
     }
 
-    private void OnDisable()
-    {
-        RebindOperation?.Dispose(); // Rebind 작업이 존재할 경우 해제
-        RebindOperation = null; //  Rebind 작업을 null로 초기화
-    }
-
-
+    
 }

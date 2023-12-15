@@ -5663,6 +5663,7 @@ GameObject:
   - component: {fileID: 475826779}
   - component: {fileID: 475826778}
   - component: {fileID: 475826777}
+  - component: {fileID: 475826780}
   m_Layer: 5
   m_Name: Button(Reset)
   m_TagString: Untagged
@@ -5734,9 +5735,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 847900993}
-        m_TargetAssemblyTypeName: TitleSceneManager, Assembly-CSharp
-        m_MethodName: backTitle
+      - m_Target: {fileID: 475826780}
+        m_TargetAssemblyTypeName: ResetKeyBindings, Assembly-CSharp
+        m_MethodName: ResetAllBindings
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5784,6 +5785,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 475826775}
   m_CullTransparentMesh: 1
+--- !u!114 &475826780
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 475826775}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13c8b72ab152543c09b5a6fb62f214f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inputReader: {fileID: 11400000, guid: 75abd6246b51f9e48a0d52dae45fab3f, type: 2}
 --- !u!1 &476080715
 GameObject:
   m_ObjectHideFlags: 0
@@ -5802,7 +5816,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &476080716
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8798,7 +8812,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &807982236
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9182,7 +9196,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &847900993
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9197,12 +9211,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   anykeyDisplay: {fileID: 476080715}
   titleDisplay: {fileID: 2085047059}
-  gameStartDisplay: {fileID: 181971297}
-  settingDisplay: {fileID: 1424160203}
-  explainDisplay: {fileID: 885866246}
-  volumeTextValue: {fileID: 0}
-  volumeSlider: {fileID: 0}
-  comfirmationPrompt: {fileID: 0}
 --- !u!4 &847900994
 Transform:
   m_ObjectHideFlags: 0
@@ -18222,7 +18230,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1880742617
 MonoBehaviour:
   m_ObjectHideFlags: 0
