@@ -30,43 +30,43 @@ public class TitleSceneManager : MonoBehaviour
         }
     }
 
-    // 시작 버튼 누를 시
-    public void onStartButton()
-    {
-        titleDisplay.SetActive(false);
-        gameStartDisplay.SetActive(true);
-    }
-
-    // 환경설정 버튼 누를 시
-    public void onSettingsButton()
-    {
-        titleDisplay.SetActive(false);
-        settingDisplay.SetActive(true);
-    }
-
-    // 설명 버튼 누를 시
-    public void onExplainButton()
-    {
-        titleDisplay.SetActive(false);
-        explainDisplay.SetActive(true);
-
-    }
-
     // 나가기 버튼 게임 종료
     public void onExitButton()
     {
         Application.Quit();
     }
 
-    // 타이틀화면으로 돌아가기
-    public void backTitle()
-    {
-        // 타이틀 화면 On
-        titleDisplay.SetActive(true);
+    //// 시작 버튼 누를 시
+    //public void onStartButton()
+    //{
+    //    titleDisplay.SetActive(false);
+    //    gameStartDisplay.SetActive(true);
+    //}
 
-        // 나머지 화면 Off
-        gameStartDisplay.SetActive(false);
-        settingDisplay.SetActive(false);
-        explainDisplay.SetActive(false);
-    }
+    //// 환경설정 버튼 누를 시
+    //public void onSettingsButton()
+    //{
+    //    titleDisplay.SetActive(false);
+    //    settingDisplay.SetActive(true);
+    //}
+
+    //// 설명 버튼 누를 시
+    //public void onExplainButton()
+    //{
+    //    titleDisplay.SetActive(false);
+    //    explainDisplay.SetActive(true);
+
+    //}
+
+    //// 타이틀화면으로 돌아가기
+    //public void backTitle()
+    //{
+    //    // 타이틀 화면 On
+    //    titleDisplay.SetActive(true);
+
+    //    // 나머지 화면 Off
+    //    gameStartDisplay.SetActive(false);
+    //    settingDisplay.SetActive(false);
+    //    explainDisplay.SetActive(false);
+    //}
 }
