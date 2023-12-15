@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 
 public class Controller_Physics : MonoBehaviour
 {
@@ -50,6 +51,8 @@ public class Controller_Physics : MonoBehaviour
     Vector3 steepNormal;
     Vector3 climbNormal;
     Vector3 lastClimbNormal;
+
+    Coroutine fireDelay = null;
     #endregion
 
     #region Private Value
@@ -66,6 +69,8 @@ public class Controller_Physics : MonoBehaviour
     bool multipleState;
 
     bool isJump = false;
+    bool canFire = false;
+
     int jumpPhase = 0;
     int stepsSinceLastGrounded = 0;
     int stepsSinceLastJump = 0;
@@ -81,16 +86,21 @@ public class Controller_Physics : MonoBehaviour
 
     public bool isMove { get; private set; }
     public static bool stopState { get; private set; }
+    public bool CanFire => canFire && !OnClimb;
+    public bool OnMultipleState => multipleState;
     public bool OnGround => groundContactCount > 0;
     public bool OnSteep => steepContactCount > 0;
     public bool OnClimb => climbContactCount > 0;
 
 
+
     [Header("Player Setting")]
     [SerializeField, Range(0, 100f)]
     float jumpHeight = default;
-    [SerializeField]
+    [SerializeField, Range(0, 10)]
     float jumpDuringTimer = 2f;
+    [SerializeField, Range(0, 10)]
+    float fireDuringTime = 1f;
 
     [SerializeField, Min(0f)]
     float probeDistance = default;
@@ -126,11 +136,46 @@ public class Controller_Physics : MonoBehaviour
     float maxClimbAngle = default;
 
 
+    [Header("RigController")]
+    [SerializeField] Transform startPoint;
+    [SerializeField] Transform cameraPoint;
+    [SerializeField] Transform aimTarget;
+    [SerializeField] Transform rotateTarget;
+    [SerializeField] LayerMask aimLayer = -1;
+
+    [SerializeField] float range = 50;
+
+    [SerializeField] Rig aimRig;
+    [SerializeField] Rig rotateRig;
+
+    RaycastHit aimHit;
+
+    // Update is called once per frame
+    void LateUpdate()
+    {
+        aimRig.weight = OnClimb && !OnMultipleState ? 0 : 1;
+        rotateRig.weight = OnClimb && !OnMultipleState ? 1 : 0;
+
+        if (OnClimb)
+        {
+            rotateTarget.rotation = Quaternion.LookRotation(-GetClimbNormal());
+        }
+
+        aimTarget.position = cameraPoint.position + cameraPoint.forward * range;
+        if (Physics.Raycast(startPoint.position, aimTarget.position - startPoint.position, out aimHit, range, aimLayer))
+        {
+            aimTarget.position = aimHit.point;
+        }
+    }
+
     #region Animator Hash
-    private readonly int velocityXHash = Animator.StringToHash("VelocityX");
-    private readonly int velocityYHash = Animator.StringToHash("VelocityY");
+    private readonly int VelocityXHash = Animator.StringToHash("VelocityX");
+    private readonly int VelocityYHash = Animator.StringToHash("VelocityY");
     private readonly int JumpTriggerHash = Animator.StringToHash("Jump");
-    private readonly int ClimbHash = Animator.StringToHash("OnClimb");
+    private readonly int ClimbTriggerHash = Animator.StringToHash("OnClimb");
+    private readonly int ReloadTriggerHash = Animator.StringToHash("Reload");
+    private readonly int EquipStateHash = Animator.StringToHash("EquipState");
+    private readonly int EquipTriggerHash = Animator.StringToHash("EquipTrigger");
     #endregion
 
     //에디터에서 처리
@@ -144,15 +189,16 @@ public class Controller_Physics : MonoBehaviour
 
     private void Awake()
     {
-        gravity = CustomGravity.GetGravity(rb.position, out upAxis);
-
-        minGroundDotProduct = Mathf.Cos(maxGroundAngle * Mathf.Deg2Rad);
-        minObjectDotProduct = Mathf.Cos(maxObjectAngle * Mathf.Deg2Rad);
-        minClimbDotProduct = Mathf.Cos(maxClimbAngle * Mathf.Deg2Rad);
-        catchObject = LayerMask.NameToLayer("CatchObject");
+        cameraPoint = Camera.main.transform;
+        gravity = CustomGravity.GetGravity(rb.position, out upAxis); 
+        
+        OnValidate();
 
         BindHandler();
         rb.useGravity = false;
+
+        canFire = false;
+        fireDelay = StartCoroutine(fireDelayRoutine(fireDuringTime));
     }
 
     void Update()
@@ -171,10 +217,10 @@ public class Controller_Physics : MonoBehaviour
         desireJump |= reader.JumpKey;
         desireRun = reader.RunKey;
 
+        multipleState = OnGround && OnSteep && OnClimb;
+
         UpdateAnimationParameter();
         UpdateAxis();
-
-        multipleState = OnGround && OnSteep && OnClimb;
 
         //디버그
         Color trailColor = new Color(0, 0, 0, 1);
@@ -196,6 +242,12 @@ public class Controller_Physics : MonoBehaviour
         AdjustVelocity();
         //점프 계산
         AdjustJump();
+
+        //점프 상태일 경우 2배의 그래비티 적용
+        if (!isJump && !OnGround)
+        {
+            velocity += gravity * Time.deltaTime;
+        }
 
         if (isJump || multipleState)
         {
@@ -256,15 +308,6 @@ public class Controller_Physics : MonoBehaviour
         }
     }
 
-    private void OnTriggerStay(Collider other)
-    {
-
-        if (other.gameObject.layer == catchObject)
-        {
-            Debug.Log("아이템 겟");
-            Destroy(other.gameObject);
-        }
-    }
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -279,6 +322,10 @@ public class Controller_Physics : MonoBehaviour
 
     void AdjustVelocity()
     {
+        if(!OnGround && isJump)
+        {
+            return;
+        }
         //땅이 아닐 경우 + 인풋이 없을 경우
         if (!OnGround && input.magnitude == 0)
         {
@@ -420,7 +467,7 @@ public class Controller_Physics : MonoBehaviour
         //점프 상태
         isJump = true;
         //등산 딜레이
-        StartCoroutine(climbDelay(OnClimb?jumpDuringTimer:0f));
+        StartCoroutine(climbDelayRoutine(OnClimb?jumpDuringTimer:0f));
         //점프 애니메이션
         animator.SetTrigger(JumpTriggerHash);
 
@@ -447,10 +494,14 @@ public class Controller_Physics : MonoBehaviour
 
         //점프 적용
         velocity += jumpDirection * jumpSpeed;
-        
     }
 
-    IEnumerator climbDelay(float time)
+    IEnumerator fireDelayRoutine(float time)
+    {
+        yield return new WaitForSeconds(time);
+        if(stepsSinceLastClimb>1) canFire = true;
+    }
+    IEnumerator climbDelayRoutine(float time)
     {
         yield return new WaitForSeconds(time);
         isJump = false;
@@ -507,7 +558,7 @@ public class Controller_Physics : MonoBehaviour
                 }
 
                 //색칠된 곳이고 등산 가능한 각도+등산 가능한 레이어 일 경우
-                if(isColoredWall && upDot >= minClimbDotProduct && (climbMask & (1<<layer)) != 0)
+                if(isColoredWall && upDot >= minClimbDotProduct && (climbMask & (1<<layer)) != 0 && !isJump)
                 {
                     climbContactCount += 1;
                     climbNormal += normal;
@@ -540,10 +591,11 @@ public class Controller_Physics : MonoBehaviour
         desireClimb = false;
     }
 
+
     private void UpdateState()
     {
         // 지상<->등산 애니메이션 결정
-        animator.SetBool(ClimbHash, !multipleState && OnClimb);
+        animator.SetBool(ClimbTriggerHash, !multipleState && OnClimb);
 
         //마지막 그라운드에서 몇 프레임이 지났는지 저장하기 위한 변수
         stepsSinceLastGrounded += 1;
@@ -558,6 +610,7 @@ public class Controller_Physics : MonoBehaviour
         {
             //마지막 그라운드 프레임 초기화
             stepsSinceLastGrounded = 0;
+
 
             if (stepsSinceLastJump > 1)
             {
@@ -590,11 +643,21 @@ public class Controller_Physics : MonoBehaviour
             }
         }
 
-        //마지막 climb에서 2프레임 지나기전일 경우
-        if (stepsSinceLastClimb < 2)
+        //마지막 climb에서 1프레임 지나기전일 경우
+        if (stepsSinceLastClimb == 1)
         {
+            if (fireDelay != null) StopCoroutine(fireDelay);
+            canFire = false;
+            fireDelay = StartCoroutine(fireDelayRoutine(fireDuringTime));
+
             //등산 가능 상태를 유지한다.
             desireClimb = true;
+        }
+
+        else if (!OnClimb && OnGround)
+        {
+            canFire = true;
+            isJump = false;
         }
 
         //등산 상태, 점프 상태, 뒤로 이동을 제외한 경우 달리기 가능
@@ -640,8 +703,9 @@ public class Controller_Physics : MonoBehaviour
     //애니메이션의 파라미터를 추가한다.
     private void UpdateAnimationParameter()
     {
-        animator.SetFloat(velocityXHash, input.x * (desireRun ? 2 : 1));
-        animator.SetFloat(velocityYHash, input.z * (desireRun ? 2 : 1));
+        animator.SetFloat(VelocityXHash, input.x * (desireRun ? 2 : 1));
+        animator.SetFloat(VelocityYHash, input.z * (desireRun ? 2 : 1));
+        animator.SetBool(EquipStateHash, !multipleState && OnClimb);
     }
 
     //땅을 벗어날 경우 특정상황에서 땅에 붙이기 위한 기능
