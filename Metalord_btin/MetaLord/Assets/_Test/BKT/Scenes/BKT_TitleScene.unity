@@ -6605,9 +6605,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   musicSource: {fileID: 1438478332}
   SFXSource: {fileID: 594591148}
-  background: {fileID: 8300000, guid: 77e14a044efb3484995cb7faefc6d63d, type: 3}
-  getcoin: {fileID: 8300000, guid: 040841458f5764d04ae1f1f5a604a03d, type: 3}
-  jump: {fileID: 8300000, guid: 9c78ef46ea96744feb8650305abf59af, type: 3}
+  clip_Background: {fileID: 0}
+  clip_Getcoin: {fileID: 0}
+  clip_Jump: {fileID: 0}
 --- !u!1 &589089385
 GameObject:
   m_ObjectHideFlags: 0
@@ -14837,7 +14837,7 @@ AudioSource:
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0

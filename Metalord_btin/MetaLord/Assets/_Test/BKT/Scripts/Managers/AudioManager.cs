@@ -26,20 +26,26 @@ public class AudioManager : MonoBehaviour
     // 최초 음악 시작 시점
     public void PlayBackGroundMusic()
     {
-        musicSource.clip = clip_Background;
-        musicSource.Play();
+        if(clip_Background != null)
+        {
+            musicSource.clip = clip_Background;
+            musicSource.Play();
+        }
+        else Debug.Log("오디오 파일이 없습니다.");
     }
 
     // 배경 음악 변경시
     public void ChangeBackGroundMusic(AudioClip clip)
     {
-        musicSource.clip = clip;
+        if(clip != null) musicSource.clip = clip;
+        else Debug.Log("오디오 파일이 없습니다.");
     }
 
     // 효과음 실행시
     public void PlaySFX(AudioClip clip)
     {
-        SFXSource.PlayOneShot(clip);
+        if (clip != null) SFXSource.PlayOneShot(clip);
+        else Debug.Log("오디오 파일이 없습니다.");
     }
 
 
