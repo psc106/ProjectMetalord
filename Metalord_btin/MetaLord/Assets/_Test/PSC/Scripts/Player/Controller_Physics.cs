@@ -197,6 +197,12 @@ public class Controller_Physics : MonoBehaviour
         //점프 계산
         AdjustJump();
 
+        //점프 상태일 경우 2배의 그래비티 적용
+        if (!OnGround)
+        {
+            velocity += gravity * Time.deltaTime;
+        }
+
         if (isJump || multipleState)
         {
             //Debug.Log("점프, 복합");
@@ -256,15 +262,6 @@ public class Controller_Physics : MonoBehaviour
         }
     }
 
-    private void OnTriggerStay(Collider other)
-    {
-
-        if (other.gameObject.layer == catchObject)
-        {
-            Debug.Log("아이템 겟");
-            Destroy(other.gameObject);
-        }
-    }
 
     private void OnCollisionEnter(Collision collision)
     {
