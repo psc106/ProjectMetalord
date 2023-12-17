@@ -20,6 +20,8 @@ public class SSC_PaintGun : MonoBehaviour
     [SerializeField, Range(1, 100)]
     float range = 50f;
 
+    float rangeLimit = 4f;
+
     float timeCheck = 0f;
     float autotimeCheck = 0f;
 
@@ -40,19 +42,7 @@ public class SSC_PaintGun : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        //Gizmos.color = Color.yellow;
-        //Vector3 dir = Vector3.zero;
-        //dir = Camera.main.transform.forward +
-        //    Camera.main.transform.TransformDirection(dir);
-
-        //Gizmos.DrawLine(GetOriginPos(), Camera.main.transform.forward);
-
-        //Gizmos.color = Color.red;
-        //Gizmos.DrawLine(startPoint.position, Camera.main.transform.position + Camera.main.transform.forward * range);
-
-
-        //Gizmos.color = Color.blue;
-        //Gizmos.DrawLine(Camera.main.transform.position, Camera.main.transform.position + Camera.main.transform.forward * range);
+        //CheckGizmo();
     }
 
     // Update is called once per frame
@@ -109,61 +99,34 @@ public class SSC_PaintGun : MonoBehaviour
     /// </summary>
     private void NormalFire()
     {
-        Vector3 dir = Vector3.zero;
-        dir = Camera.main.transform.forward +
-            Camera.main.transform.TransformDirection(dir);
-
-        Ray ray = new Ray(GetOriginPos(), dir);
+        Ray ray = new Ray(GetOriginPos(), CheckDir());
+        Ray checkRay = new Ray(checkPos.position, CheckDir());        
         RaycastHit hit;
 
-        Ray checkRay = new Ray(checkPos.position, dir);
-        RaycastHit checkHit;
-
-        if(Physics.Raycast(checkRay, out checkHit, range, gunLayer))
+        // 정면 오브젝트와 설정한 rangeLimit 값 거리 이하일 때
+        if(Physics.Raycast(checkRay, out hit, range, gunLayer))
         {
-            float checkDistance = Vector3.Distance(checkPos.position, checkHit.point);
-            //Debug.Log($"시작지점 거리 : {checkDistance}");
+            float checkDistance = Vector3.Distance(checkPos.position, hit.point);
 
-            if (checkDistance <= 4f)
+            if (checkDistance <= rangeLimit)
             {
-                Ray muzzleRay = new Ray(checkPos.position, dir);
-
-                PaintTarget.PaintRay(muzzleRay, brush, range);
-
-                gun.UpdateState(normalShot);
-
-                if (gun.Ammo <= 0)
-                {
-                    gun.UpdateState(0, GunState.EMPTY);
-                }
+                UsedAmmo(checkRay, normalShot);
 
                 fireStart = true;
                 return;
             }
         }
 
+        // 일반적인 상황의 사격
         if (Physics.Raycast(ray, out hit, range, gunLayer))
         {
             Ray muzzleRay = new Ray(startPoint.position, hit.point - startPoint.position);
 
-            float rangePos = Vector3.Distance(GetOriginPos(), hit.point);
-
-            PaintTarget.PaintRay(muzzleRay, brush, range);
-
-            gun.UpdateState(normalShot);
-
-            if (gun.Ammo <= 0)
-            {
-                gun.UpdateState(0, GunState.EMPTY);
-            }
-
-            if(hit.transform.GetComponent<NpcBase>() != null)
-            {
-                hit.transform.GetComponent<NpcBase>().ChangedState(npcState.glued);
-            }
+            UsedAmmo(muzzleRay, normalShot);
 
             fireStart = true;
         }
+        
     }
 
     /// <summary>
@@ -173,27 +136,38 @@ public class SSC_PaintGun : MonoBehaviour
     {
         timeCheck += Time.deltaTime;
 
-        if(timeCheck >= attackSpeed)
+        if (timeCheck >= attackSpeed)
         {
-            Vector3 dir = Vector3.zero;
-            dir = Camera.main.transform.forward +
-                Camera.main.transform.TransformDirection(dir);
+            Ray ray = new Ray(GetOriginPos(), CheckDir());
+            Ray checkRay = new Ray(checkPos.position, CheckDir());
+            RaycastHit hit;
 
-            Ray ray = new Ray(GetOriginPos(), dir);
+            if (Physics.Raycast(checkRay, out hit, range, gunLayer))
+            {
+                float checkDistance = Vector3.Distance(checkPos.position, hit.point);
+
+                if (checkDistance <= rangeLimit)
+                {
+                    UsedAmmo(checkRay, autoShot);
+                    
+                    timeCheck = 0f;
+                    return;
+                }                                
+
+            }
+
+        }
+
+        if (timeCheck >= attackSpeed)
+        {
+            Ray ray = new Ray(GetOriginPos(), CheckDir());
             RaycastHit hit;
 
             if (Physics.Raycast(ray, out hit, range, gunLayer))
             {
                 Ray muzzleRay = new Ray(startPoint.position, hit.point - startPoint.position);
 
-                PaintTarget.PaintRay(muzzleRay, brush, range);
-
-                gun.UpdateState(autoShot);
-
-                if (gun.Ammo <= 0)
-                {
-                    gun.UpdateState(0, GunState.EMPTY);
-                }
+                UsedAmmo(muzzleRay, autoShot);
 
                 timeCheck = 0f;        
             }
@@ -215,5 +189,52 @@ public class SSC_PaintGun : MonoBehaviour
 
         return origin;
     }
+    /// <summary>
+    /// GetOriginPos()를 통해 얻은 축에서 카메라의 Ray방향을 얻어낼 메소드
+    /// </summary>
+    /// <returns></returns>
+    Vector3 CheckDir()
+    {
+        Vector3 dir = Vector3.zero;
+        dir = Camera.main.transform.forward +
+            Camera.main.transform.TransformDirection(dir);
 
+        return dir;
+    }
+
+    /// <summary>
+    /// 전달받은 Ray 위치에 PaintTarget.PaintRay() 실행
+    /// <para>
+    /// 이후 전달받은 _ammo값만큼 GunState에 소모값 요청
+    /// </para>
+    /// </summary>
+    /// <param name="_ray"></param>
+    /// <param name="_ammo"></param>
+    void UsedAmmo(Ray _ray, int _ammo)
+    {
+        PaintTarget.PaintRay(_ray, brush, range);
+
+        gun.UpdateState(_ammo);
+
+        if (gun.Ammo <= 0)
+        {
+            gun.UpdateState(0, GunState.EMPTY);
+        }
+    }
+
+    void CheckGizmo()
+    {
+        //Gizmos.color = Color.yellow;
+        //Vector3 dir = Vector3.zero;
+        //dir = CheckDir();     
+
+        //Gizmos.DrawLine(GetOriginPos(), Camera.main.transform.forward);
+
+        //Gizmos.color = Color.red;
+        //Gizmos.DrawLine(startPoint.position, Camera.main.transform.position + Camera.main.transform.forward * range);
+
+
+        //Gizmos.color = Color.blue;
+        //Gizmos.DrawLine(Camera.main.transform.position, Camera.main.transform.position + Camera.main.transform.forward * range);
+    }
 }
