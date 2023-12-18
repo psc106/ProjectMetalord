@@ -9,4 +9,11 @@ public class GameStartDisplay : MonoBehaviour
     {
         SceneManager.LoadScene("BKT_TestScene");
     }
+
+    public void LoadGame()
+    {
+        //TODO 저장정보 불러오기 함수
+
+        Debug.Log("아직 저장 정보가 없습니다.");
+    }
 }

@@ -16,7 +16,7 @@ public class CoinManager : MonoBehaviour
 
     [SerializeField] private int startCoin = 10; // 시작 코인
 
-    public int currentCoin { get; private set; }
+    public int currentCoin = 0;
 
     private void Awake()
     {
@@ -33,10 +33,9 @@ public class CoinManager : MonoBehaviour
     }
 
     private void OnEnable()
-    {
-        Debug.Log(GameEventsManager.instance);
+    {       
         //GameEventsManager.instance.coinEvents.onUseCoin += UseCoin;
-        GameEventsManager.instance.coinEvents.ChangeCoin(currentCoin); // 코인 먹을 경우 코인 변경
+        //GameEventsManager.instance.coinEvents.ChangeCoin(currentCoin); // 코인 먹을 경우 코인 변경
     }
 
     private void OnDisable()
