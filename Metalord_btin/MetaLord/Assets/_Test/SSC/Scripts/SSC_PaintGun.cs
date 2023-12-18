@@ -51,7 +51,7 @@ public class SSC_PaintGun : MonoBehaviour
         Ray normalRay = new Ray(GetOriginPos(), CheckDir());
         Ray checkRay = new Ray(checkPos.position, CheckDir());
 
-        // ·¹ÀÌÁöÁ¡ ÄÃ·¯ Ã¼Å© Å×½ºÆ®¿ë
+        // ë ˆì´ì§€ì  ì»¬ëŸ¬ ì²´í¬ í…ŒìŠ¤íŠ¸ìš©
         if (Input.GetKeyDown(KeyCode.T))
         {
             Debug.Log(PaintTarget.CursorColor());
@@ -70,21 +70,21 @@ public class SSC_PaintGun : MonoBehaviour
             return;
         }
 
-        // ¸¶¿ì½º Å¬¸¯¿¡¼­ ¼ÕÀ» ¶¼¸é »ç°İ ÁßÁö.
+        // ë§ˆìš°ìŠ¤ í´ë¦­ì—ì„œ ì†ì„ ë–¼ë©´ ì‚¬ê²© ì¤‘ì§€.
         if(!input.ShootKey)
         {
             fireStart = false;
             autotimeCheck = 0f;
         }
 
-        // ÀÏÁ¤½Ã°£µ¿¾È »ç°İÅ° ÀÔ·Â»óÅÂ¶ó¸é ¿¬»ç¸ğµå
+        // ì¼ì •ì‹œê°„ë™ì•ˆ ì‚¬ê²©í‚¤ ì…ë ¥ìƒíƒœë¼ë©´ ì—°ì‚¬ëª¨ë“œ
         else if(autotimeCheck > autoTime && gun.state == GunState.READY)
         {
             AutoFire(normalRay, checkRay);
             return;
         }
 
-        // »ç°İÀ» ½ÃÀÛ == ¸¶¿ì½º¹öÆ° ´©¸¥½ÃÁ¡µ¿¾È
+        // ì‚¬ê²©ì„ ì‹œì‘ == ë§ˆìš°ìŠ¤ë²„íŠ¼ ëˆ„ë¥¸ì‹œì ë™ì•ˆ
         else if(fireStart == true)
         {
             autotimeCheck += Time.deltaTime;
@@ -99,13 +99,13 @@ public class SSC_PaintGun : MonoBehaviour
     }
 
     /// <summary>
-    /// ´Ü¹ß ¸Ş¼Òµå
+    /// ë‹¨ë°œ ë©”ì†Œë“œ
     /// </summary>
     private void NormalFire(Ray normalRay, Ray checkRay)
     {     
         RaycastHit hit;
 
-        // Á¤¸é ¿ÀºêÁ§Æ®¿Í ¼³Á¤ÇÑ rangeLimit °ª °Å¸® ÀÌÇÏÀÏ ¶§
+        // ì •ë©´ ì˜¤ë¸Œì íŠ¸ì™€ ì„¤ì •í•œ rangeLimit ê°’ ê±°ë¦¬ ì´í•˜ì¼ ë•Œ
         if(Physics.Raycast(checkRay, out hit, range, gunLayer))
         {
             float checkDistance = Vector3.Distance(checkPos.position, hit.point);
@@ -119,7 +119,7 @@ public class SSC_PaintGun : MonoBehaviour
             }
         }
 
-        // ÀÏ¹İÀûÀÎ »óÈ²ÀÇ »ç°İ
+        // ì¼ë°˜ì ì¸ ìƒí™©ì˜ ì‚¬ê²©
         if (Physics.Raycast(normalRay, out hit, range, gunLayer))
         {
             Ray muzzleRay = new Ray(startPoint.position, hit.point - startPoint.position);
@@ -132,7 +132,7 @@ public class SSC_PaintGun : MonoBehaviour
     }
 
     /// <summary>
-    /// ¿¬»ç ¸Ş¼Òµå
+    /// ì—°ì‚¬ ë©”ì†Œë“œ
     /// </summary>
     private void AutoFire(Ray normalRay, Ray checkRay)
     {
@@ -169,9 +169,9 @@ public class SSC_PaintGun : MonoBehaviour
     }
 
     /// <summary>
-    /// Ä«¸Ş¶ó¿Í ÇÃ·¹ÀÌ¾îÀÇ ÃàÀ» µ¿ÀÏ¼±»ó¿¡ ³õ¾ÆÁÖ´Â ¸Ş¼Òµå
+    /// ì¹´ë©”ë¼ì™€ í”Œë ˆì´ì–´ì˜ ì¶•ì„ ë™ì¼ì„ ìƒì— ë†“ì•„ì£¼ëŠ” ë©”ì†Œë“œ
     /// </summary>
-    /// <returns>Ä«¸Ş¶óÀÇ Á¤¸é ¹æÇâ + ÇÃ·¹ÀÌ¾îÀÇ ¼öÁ÷¼±»ó </returns>
+    /// <returns>ì¹´ë©”ë¼ì˜ ì •ë©´ ë°©í–¥ + í”Œë ˆì´ì–´ì˜ ìˆ˜ì§ì„ ìƒ </returns>
     Vector3 GetOriginPos()
     {
         Vector3 origin = Vector3.zero;
@@ -183,7 +183,7 @@ public class SSC_PaintGun : MonoBehaviour
         return origin;
     }
     /// <summary>
-    /// GetOriginPos()¸¦ ÅëÇØ ¾òÀº Ãà¿¡¼­ Ä«¸Ş¶óÀÇ Ray¹æÇâÀ» ¾ò¾î³¾ ¸Ş¼Òµå
+    /// GetOriginPos()ë¥¼ í†µí•´ ì–»ì€ ì¶•ì—ì„œ ì¹´ë©”ë¼ì˜ Rayë°©í–¥ì„ ì–»ì–´ë‚¼ ë©”ì†Œë“œ
     /// </summary>
     /// <returns></returns>
     Vector3 CheckDir()
@@ -196,9 +196,9 @@ public class SSC_PaintGun : MonoBehaviour
     }
 
     /// <summary>
-    /// Àü´Ş¹ŞÀº Ray À§Ä¡¿¡ PaintTarget.PaintRay() ½ÇÇà
+    /// ì „ë‹¬ë°›ì€ Ray ìœ„ì¹˜ì— PaintTarget.PaintRay() ì‹¤í–‰
     /// <para>
-    /// ÀÌÈÄ Àü´Ş¹ŞÀº _ammo°ª¸¸Å­ GunState¿¡ ¼Ò¸ğ°ª ¿äÃ»
+    /// ì´í›„ ì „ë‹¬ë°›ì€ _ammoê°’ë§Œí¼ GunStateì— ì†Œëª¨ê°’ ìš”ì²­
     /// </para>
     /// </summary>
     /// <param name="_ray"></param>
