@@ -43,7 +43,7 @@ public class SSC_GrabGun : MonoBehaviour
                 return;
             }
 
-            if(state.Ammo < -grabAmmo)
+            if(state.Ammo < -grabAmmo || !state.CanFire)
             {
                 return;
             }
@@ -113,7 +113,7 @@ public class SSC_GrabGun : MonoBehaviour
         state.UpdateState(grabAmmo);
     }
 
-    void CancelObj()
+    public void CancelObj()
     {
         targetObj = null;
         grabLine.enabled = false;

@@ -57,12 +57,6 @@ public class SSC_PaintGun : MonoBehaviour
             Debug.Log(PaintTarget.CursorColor());
         }
 
-        //if (Input.GetKeyDown(KeyCode.R) && gun.CanReload)
-        //{
-        //    PaintTarget.ClearAllPaint();
-        //    gun.UpdateState(gun.MaxAmmo, GunState.READY);
-        //}
-
         if (!gun.CanFire)
         {
             fireStart = false;
@@ -78,7 +72,7 @@ public class SSC_PaintGun : MonoBehaviour
         }
 
         // 일정시간동안 사격키 입력상태라면 연사모드
-        else if(autotimeCheck > autoTime && gun.state == GunState.READY)
+        else if(autotimeCheck > autoTime && gun.CanFire)
         {
             AutoFire(normalRay, checkRay);
             return;
@@ -91,7 +85,7 @@ public class SSC_PaintGun : MonoBehaviour
             return;
         }
 
-        else if(input.ShootKey && gun.state == GunState.READY)
+        else if(input.ShootKey && gun.CanFire)
         {            
             NormalFire(normalRay, checkRay);
         }

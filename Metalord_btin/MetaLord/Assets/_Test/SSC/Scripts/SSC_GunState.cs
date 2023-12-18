@@ -1,5 +1,5 @@
+using System;
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,6 +8,7 @@ public enum GunState
 {
     READY,
     EMPTY,
+    RELOADING
 }
 
 public class SSC_GunState : MonoBehaviour
@@ -19,7 +20,9 @@ public class SSC_GunState : MonoBehaviour
     [SerializeField] private Controller_Physics player;
     [SerializeField] private MeshRenderer gunRenderer;
     [SerializeField] private GameObject backGun;
+    [SerializeField] private AnimationCurve reloadCurve;
 
+    float reloadTime = 4.5f;
     [HideInInspector] public GunState state;
 
     //public Vector3 GetPlayerCenter()
@@ -29,7 +32,15 @@ public class SSC_GunState : MonoBehaviour
 
     public bool CanFire
     {
-        get { return player.CanFire; }
+        get 
+        {
+            if(state != GunState.READY)
+            {
+                return false;
+            }
+
+            return player.CanFire;
+        }
         private set { }
     }
 
@@ -75,23 +86,26 @@ public class SSC_GunState : MonoBehaviour
     private void Update()
     {
 
-        if (Input.GetKeyDown(KeyCode.R) && CanReload)
+        if (Input.GetKeyDown(KeyCode.R) && CanReload && state != GunState.RELOADING)
         {
             player.PlayReloadAnimation();
-            state = GunState.EMPTY;
+            state = GunState.RELOADING;
             PaintTarget.ClearAllPaint();
             StartCoroutine(ReloadingAmmo());
             //UpdateState(MaxAmmo, GunState.READY);
         }
 
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
+        if (Input.GetKeyDown(KeyCode.Q) &&
+            !grabMode.OnGrab
+            && state != GunState.RELOADING)
+        {            
             grabMode.enabled = false;
             paintMode.enabled = true;
         }
 
-        if(Input.GetKeyDown(KeyCode.E))
-        {
+        if(Input.GetKeyDown(KeyCode.E) &&
+            state != GunState.RELOADING)
+        {            
             paintMode.enabled = false;
             grabMode.enabled = true;
         }
@@ -114,17 +128,18 @@ public class SSC_GunState : MonoBehaviour
 
     IEnumerator ReloadingAmmo()
     {
-        while(Ammo != maxAmmo)
-        {
-            int ammoValue = (int)Mathf.Lerp(Ammo, maxAmmo, 0.1f);
-            Debug.Log(ammoValue - Ammo);
-            UpdateState(ammoValue - Ammo);
-            yield return new WaitForSeconds(Time.deltaTime * 2.5f);
+        float timeCheck = 0f;
+        float t = 0f;
 
-            if (Ammo >= 191)
-            {
-                Ammo = maxAmmo;
-            }
+        while (timeCheck <= reloadTime)
+        {
+            t = timeCheck / reloadTime;                        
+
+            int ammoValue = (int)Mathf.Lerp(Ammo, maxAmmo, reloadCurve.Evaluate(t));            
+            UpdateState(ammoValue - Ammo);            
+            yield return null;
+
+            timeCheck += Time.deltaTime;
         }
 
         UpdateState(maxAmmo, GunState.READY);
