@@ -74,19 +74,10 @@ public class SSC_GunState : MonoBehaviour
 
     private void Update()
     {
-        if (CanFire)
-        {
-            gunRenderer.enabled = true;
-            backGun.SetActive(false);
-        }
-        else
-        {
-            gunRenderer.enabled = false;
-            backGun.SetActive(true);
-        }
 
         if (Input.GetKeyDown(KeyCode.R) && CanReload)
         {
+            player.PlayReloadAnimation();
             state = GunState.EMPTY;
             PaintTarget.ClearAllPaint();
             StartCoroutine(ReloadingAmmo());

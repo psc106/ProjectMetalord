@@ -22,14 +22,22 @@ public class AnimationEventsController : MonoBehaviour
 
     private void OnEnable()
     {
+        reloadStart += player.PlayReloadAnimation;
+        reloadEnd += player.EndReloadAnimation;
     }
 
     private void OnDisable()
     {
-        
+        reloadStart += player.PlayReloadAnimation;
+        reloadEnd += player.EndReloadAnimation;
     }
 
-    public enum animationList
+    public void PlayAnimation(AnimationList listNum)
+    {
+        animationEvents[(int)listNum].Invoke();
+    }
+
+    public enum AnimationList
     {
         reloadStart=0, reloadEnd=1
     }

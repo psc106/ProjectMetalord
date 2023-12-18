@@ -25,6 +25,10 @@ public class Controller_Physics : MonoBehaviour
     //TrailRenderer trailRenderer;
     [SerializeField]
     Animator animator;
+    [SerializeField]
+    MeshRenderer frontGunRender;
+    [SerializeField]
+    MeshRenderer backGunRender;
 
     #region Private Reference
 
@@ -71,6 +75,8 @@ public class Controller_Physics : MonoBehaviour
     bool isJump = false;
     bool canFire = false;
 
+    bool playingReloadAnimation = false;
+
     int jumpPhase = 0;
     int stepsSinceLastGrounded = 0;
     int stepsSinceLastJump = 0;
@@ -87,7 +93,7 @@ public class Controller_Physics : MonoBehaviour
     public bool isMove { get; private set; }
     public static bool stopState { get; private set; }
     public bool CanFire => canFire && CanReload;
-    public bool CanReload => canFire && !OnClimb;
+    public bool CanReload => !playingReloadAnimation && !OnClimb;
     public bool OnMultipleState => multipleState;
     public bool OnGround => groundContactCount > 0;
     public bool OnSteep => steepContactCount > 0;
@@ -270,12 +276,38 @@ public class Controller_Physics : MonoBehaviour
         ClearState();
     }
 
-    bool canReload;
+
+    public void PlayReloadAnimation()
+    {
+        playingReloadAnimation = true;
+        aimRig.weight = 0;
+        animator.SetTrigger(ReloadTriggerHash);
+    }
+    public void EndReloadAnimation()
+    {
+        playingReloadAnimation = false;
+        aimRig.weight = 1;
+    }
 
     void LateUpdate()
     {
-        aimRig.weight = OnClimb && !OnMultipleState ? 0 : 1;
-        rotateRig.weight = OnClimb && !OnMultipleState ? 1 : 0;
+
+        if (CanFire || playingReloadAnimation)
+        {
+            frontGunRender.enabled = true;
+            backGunRender.enabled = (false);
+        }
+        else
+        {
+            frontGunRender.enabled = false;
+            backGunRender.enabled = (true);
+        }
+
+        if (!playingReloadAnimation)
+        {
+            aimRig.weight = OnClimb && !OnMultipleState ? 0 : 1;
+            rotateRig.weight = OnClimb && !OnMultipleState ? 1 : 0;
+        }
 
         if (OnClimb)
         {
