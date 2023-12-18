@@ -120,6 +120,7 @@ public class DialogueUI : MonoBehaviour
             if(Input.GetKeyDown(KeyCode.E))
             {
                 myTextEffect.Stop();
+                myTextEffect.fadeImgae.SetActive(true);
             }
         }
     }
@@ -166,14 +167,19 @@ public class DialogueUI : MonoBehaviour
                 dialogueBox.transform.GetChild(1).gameObject.transform.GetChild(0).gameObject.GetComponent<TMP_Text>().text =
                     DialogueDBManager.instance.statusDialogueDic[keyNum].speakerName.Trim();
                 //yield return myTextEffect.Run(dialogue, dialogueText);
-                Debug.Log(dialogue);
+                //Debug.Log(dialogue);
                
                 yield return RunTypingEffect(dialogue);
 
                 dialogueText.text = dialogue;
+                myTextEffect.fadeImgae.SetActive(true);
 
                 yield return null;
+                Debug.Log("E키 누르기 전인데 실행될려나?");
+
                 yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.E));
+                Debug.Log("E키 누른뒤인데 작동 안하나?");
+                myTextEffect.fadeImgae.SetActive(false);
             }
 
             if (isResponse)
@@ -191,6 +197,7 @@ public class DialogueUI : MonoBehaviour
                 // TODO 대화창 닫고 플레이어 이동제한 해제
                 Debug.Log("여기온거면 끝난거임");
                 yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.E));
+                myTextEffect.fadeImgae.SetActive(false);
                 if (isResponse == false)
                 {
                     CloseDialogueUI();

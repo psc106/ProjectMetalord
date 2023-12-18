@@ -112,7 +112,7 @@ public class QuestionUI : MonoBehaviour
                 //Debug.LogFormat("{0}<==이게 multiple값", multiple);
                 //Debug.Log(buttonCount);
                 int dialogueNum = j+1;
-                childButton.onClick.AddListener(() => dialogueUI.ShowDialogue(dialogueNum));
+                childButton.onClick.AddListener(() => dialogueUI.ShowStateDialogue(dialogueNum));
                 childButton.onClick.AddListener(() => InitPage());
                 childButton.onClick.AddListener(() => dialogueUI.CloseTutoQuestion());
                 childButton.onClick.AddListener(() => dialogueUI.ChangeResponeBoolValue(false));

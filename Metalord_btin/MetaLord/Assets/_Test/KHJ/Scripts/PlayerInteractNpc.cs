@@ -8,6 +8,8 @@ public class PlayerInteractNpc : MonoBehaviour
     public bool isInteract = false;
     IInteractNpc playerInteract = null;
     public bool isMove = true;
+
+    public GameObject test;
     // Start is called before the first frame update
     void Start()
     {
@@ -50,7 +52,9 @@ public class PlayerInteractNpc : MonoBehaviour
             isMove = false;
             isInteract = false;
             Debug.Log("플레이어 E 키누르기 ");
+
             playerInteract.InteractNpc();
+            test.SetActive(false);
         }
     }
 }
