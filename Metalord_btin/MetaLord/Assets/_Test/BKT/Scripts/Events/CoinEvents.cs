@@ -12,7 +12,7 @@ public class CoinEvents
         Debug.Log("CoinEvents 생성");
     }
 
-    // 코인 얻었을때 호출되는 이벤트 
+    // 코인 얻었을때 호출되는 이벤트
     public event Action<int> onChangeCoin;
     public void ChangeCoin(int coin)
     {

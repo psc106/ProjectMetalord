@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine;
 
 
+// TODO 셋팅요소 개별(오디오, 디스플레이 등)로 클래스 하나씩 만들어서 관리할수있도록 제작예정
 /// <summary>
 /// 환경설정 매니저
 /// 231211_배경택
