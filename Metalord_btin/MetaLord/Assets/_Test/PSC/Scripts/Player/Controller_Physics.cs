@@ -151,22 +151,22 @@ public class Controller_Physics : MonoBehaviour
     RaycastHit aimHit;
 
     // Update is called once per frame
-    void LateUpdate()
-    {
-        aimRig.weight = OnClimb && !OnMultipleState ? 0 : 1;
-        rotateRig.weight = OnClimb && !OnMultipleState ? 1 : 0;
+    //void LateUpdate()
+    //{
+    //    aimRig.weight = OnClimb && !OnMultipleState ? 0 : 1;
+    //    rotateRig.weight = OnClimb && !OnMultipleState ? 1 : 0;
 
-        if (OnClimb)
-        {
-            rotateTarget.rotation = Quaternion.LookRotation(-GetClimbNormal());
-        }
+    //    if (OnClimb)
+    //    {
+    //        rotateTarget.rotation = Quaternion.LookRotation(-GetClimbNormal());
+    //    }
 
-        aimTarget.position = cameraPoint.position + cameraPoint.forward * range;
-        if (Physics.Raycast(startPoint.position, aimTarget.position - startPoint.position, out aimHit, range, aimLayer))
-        {
-            aimTarget.position = aimHit.point;
-        }
-    }
+    //    aimTarget.position = cameraPoint.position + cameraPoint.forward * range;
+    //    if (Physics.Raycast(startPoint.position, aimTarget.position - startPoint.position, out aimHit, range, aimLayer))
+    //    {
+    //        aimTarget.position = aimHit.point;
+    //    }
+    //}
 
     #region Animator Hash
     private readonly int VelocityXHash = Animator.StringToHash("VelocityX");
