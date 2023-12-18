@@ -86,7 +86,8 @@ public class Controller_Physics : MonoBehaviour
 
     public bool isMove { get; private set; }
     public static bool stopState { get; private set; }
-    public bool CanFire => canFire && !OnClimb;
+    public bool CanFire => canFire && CanReload;
+    public bool CanReload => canFire && !OnClimb;
     public bool OnMultipleState => multipleState;
     public bool OnGround => groundContactCount > 0;
     public bool OnSteep => steepContactCount > 0;
@@ -149,24 +150,6 @@ public class Controller_Physics : MonoBehaviour
     [SerializeField] Rig rotateRig;
 
     RaycastHit aimHit;
-
-    // Update is called once per frame
-    void LateUpdate()
-    {
-        aimRig.weight = OnClimb && !OnMultipleState ? 0 : 1;
-        rotateRig.weight = OnClimb && !OnMultipleState ? 1 : 0;
-
-        if (OnClimb)
-        {
-            rotateTarget.rotation = Quaternion.LookRotation(-GetClimbNormal());
-        }
-
-        aimTarget.position = cameraPoint.position + cameraPoint.forward * range;
-        if (Physics.Raycast(startPoint.position, aimTarget.position - startPoint.position, out aimHit, range, aimLayer))
-        {
-            aimTarget.position = aimHit.point;
-        }
-    }
 
     #region Animator Hash
     private readonly int VelocityXHash = Animator.StringToHash("VelocityX");
@@ -287,6 +270,24 @@ public class Controller_Physics : MonoBehaviour
         ClearState();
     }
 
+    bool canReload;
+
+    void LateUpdate()
+    {
+        aimRig.weight = OnClimb && !OnMultipleState ? 0 : 1;
+        rotateRig.weight = OnClimb && !OnMultipleState ? 1 : 0;
+
+        if (OnClimb)
+        {
+            rotateTarget.rotation = Quaternion.LookRotation(-GetClimbNormal());
+        }
+
+        aimTarget.position = cameraPoint.position + cameraPoint.forward * range;
+        if (Physics.Raycast(startPoint.position, aimTarget.position - startPoint.position, out aimHit, range, aimLayer))
+        {
+            aimTarget.position = aimHit.point;
+        }
+    }
 
     private void AdjustJump()
     {

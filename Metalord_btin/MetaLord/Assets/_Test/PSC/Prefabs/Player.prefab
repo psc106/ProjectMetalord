@@ -122,7 +122,6 @@ GameObject:
   - component: {fileID: 1495894723469854142}
   - component: {fileID: 3785254182038594230}
   - component: {fileID: 3742653360604592892}
-  - component: {fileID: 743962208856113288}
   - component: {fileID: 5076636948133282176}
   - component: {fileID: 2987880109812575175}
   m_Layer: 6
@@ -225,40 +224,17 @@ MonoBehaviour:
   maxGroundAngle: 45
   maxObjectAngle: 45
   maxClimbAngle: 135
-  startPoint: {fileID: 0}
-  cameraPoint: {fileID: 0}
-  aimTarget: {fileID: 0}
-  rotateTarget: {fileID: 0}
-  aimLayer:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  range: 50
-  aimRig: {fileID: 0}
-  rotateRig: {fileID: 0}
-  reader: {fileID: 11400000, guid: 75abd6246b51f9e48a0d52dae45fab3f, type: 2}
---- !u!114 &743962208856113288
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 283528363170913266}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67c6abc9fae2ffb4d8f170b7ddd985b0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  player: {fileID: 3742653360604592892}
   startPoint: {fileID: 8282372781614362592}
   cameraPoint: {fileID: 0}
   aimTarget: {fileID: 8203518221037570998}
   rotateTarget: {fileID: 3799336809635674005}
-  layer:
+  aimLayer:
     serializedVersion: 2
     m_Bits: 1975
   range: 50
   aimRig: {fileID: 2281247576654416274}
   rotateRig: {fileID: 2299312033654190962}
+  reader: {fileID: 11400000, guid: 75abd6246b51f9e48a0d52dae45fab3f, type: 2}
 --- !u!96 &5076636948133282176
 TrailRenderer:
   serializedVersion: 3
@@ -631,6 +607,7 @@ GameObject:
   - component: {fileID: 628159790893909599}
   - component: {fileID: 8991101328027722670}
   - component: {fileID: 7836118759154600285}
+  - component: {fileID: 3851096260639383482}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -754,6 +731,102 @@ AudioSource:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 719308979689676731}
   m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 3aa945a196eb585429e5afb6fcff3ea2, type: 3}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!82 &3851096260639383482
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 719308979689676731}
+  m_Enabled: 0
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 3aa945a196eb585429e5afb6fcff3ea2, type: 3}
@@ -999,6 +1072,7 @@ GameObject:
   - component: {fileID: 9046867367910495862}
   - component: {fileID: 6381496018623211574}
   - component: {fileID: 758703813887018688}
+  - component: {fileID: 4625419014250143221}
   m_Layer: 6
   m_Name: Body
   m_TagString: Untagged
@@ -1040,7 +1114,13 @@ Animator:
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
-  m_WarningMessage: 
+  m_WarningMessage: "\nBinding warning: Some generic clip(s) animate transforms that
+    are already bound by a Humanoid avatar. These transforms can only be changed
+    by Humanoid clips.\n\tTransform 'mixamorig:Hips'\n\tTransform 'mixamorig:LeftFoot'\n\tTransform
+    'mixamorig:LeftHandIndex1'\n\tTransform 'mixamorig:Spine1'\n\tTransform 'mixamorig:LeftToeBase'\n\tTransform
+    'mixamorig:RightArm'\n\tTransform 'mixamorig:LeftLeg'\n\tTransform 'mixamorig:LeftShoulder'\n\tTransform
+    'mixamorig:RightHandIndex3'\n\tTransform 'mixamorig:RightFoot'\n\tand more ...\n\tFrom
+    animation clip 'Reload'"
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
@@ -1071,6 +1151,19 @@ MonoBehaviour:
       position: {x: 0, y: 0, z: 0}
       rotation: {x: 0, y: 0, z: 0}
     m_Visible: 1
+--- !u!114 &4625419014250143221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1199355990540363051}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfc877f00f9d4d245af9b36c1eaadcb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 0}
 --- !u!1 &1531375818547296690
 GameObject:
   m_ObjectHideFlags: 0
@@ -3657,7 +3750,7 @@ GameObject:
   - component: {fileID: 6798630036274658337}
   - component: {fileID: 7495584123684662292}
   - component: {fileID: 480958339823211343}
-  - component: {fileID: 186013750317030104}
+  - component: {fileID: 8216285429928566931}
   m_Layer: 12
   m_Name: Watergun_01
   m_TagString: Untagged
@@ -3778,6 +3871,9 @@ MonoBehaviour:
     splatChannel: 0
   gun: {fileID: 6798630036274658337}
   input: {fileID: 11400000, guid: 75abd6246b51f9e48a0d52dae45fab3f, type: 2}
+  checkPos: {fileID: 7900184379219393653}
+  startPoint: {fileID: 6677764962144662948}
+  aimTarget: {fileID: 8203518221037570998}
   gunLayer:
     serializedVersion: 2
     m_Bits: 1975
@@ -3802,8 +3898,8 @@ MonoBehaviour:
   grabPos: {fileID: 364788840478490789}
   grabLimit: {fileID: 439279876887703734}
   lineStart: {fileID: 4739398431066812062}
-  grabLine: {fileID: 186013750317030104}
---- !u!120 &186013750317030104
+  grabLine: {fileID: 8216285429928566931}
+--- !u!120 &8216285429928566931
 LineRenderer:
   serializedVersion: 2
   m_ObjectHideFlags: 0
