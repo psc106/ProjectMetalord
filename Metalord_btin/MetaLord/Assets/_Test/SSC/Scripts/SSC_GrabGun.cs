@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class SSC_GrabGun : MonoBehaviour
 {    
-
+     
     Rigidbody targetRigid;
     [Range(1f, 100f), SerializeField] private float range;
     [SerializeField] private LayerMask MovedObject;
