@@ -48,16 +48,20 @@ public class SSC_PaintGun : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.T))
+        Ray normalRay = new Ray(GetOriginPos(), CheckDir());
+        Ray checkRay = new Ray(checkPos.position, CheckDir());
+
+        // 레이지점 컬러 체크 테스트용
+        if (Input.GetKeyDown(KeyCode.T))
         {
             Debug.Log(PaintTarget.CursorColor());
         }
 
-        if (Input.GetKeyDown(KeyCode.R) && gun.CanReload)
-        {
-            PaintTarget.ClearAllPaint();
-            gun.UpdateState(gun.MaxAmmo, GunState.READY);
-        }
+        //if (Input.GetKeyDown(KeyCode.R) && gun.CanReload)
+        //{
+        //    PaintTarget.ClearAllPaint();
+        //    gun.UpdateState(gun.MaxAmmo, GunState.READY);
+        //}
 
         if (!gun.CanFire)
         {
@@ -76,7 +80,7 @@ public class SSC_PaintGun : MonoBehaviour
         // 일정시간동안 사격키 입력상태라면 연사모드
         else if(autotimeCheck > autoTime && gun.state == GunState.READY)
         {
-            AutoFire();
+            AutoFire(normalRay, checkRay);
             return;
         }
 
@@ -89,7 +93,7 @@ public class SSC_PaintGun : MonoBehaviour
 
         else if(input.ShootKey && gun.state == GunState.READY)
         {            
-            NormalFire();
+            NormalFire(normalRay, checkRay);
         }
 
     }
@@ -97,10 +101,8 @@ public class SSC_PaintGun : MonoBehaviour
     /// <summary>
     /// 단발 메소드
     /// </summary>
-    private void NormalFire()
-    {
-        Ray ray = new Ray(GetOriginPos(), CheckDir());
-        Ray checkRay = new Ray(checkPos.position, CheckDir());        
+    private void NormalFire(Ray normalRay, Ray checkRay)
+    {     
         RaycastHit hit;
 
         // 정면 오브젝트와 설정한 rangeLimit 값 거리 이하일 때
@@ -118,7 +120,7 @@ public class SSC_PaintGun : MonoBehaviour
         }
 
         // 일반적인 상황의 사격
-        if (Physics.Raycast(ray, out hit, range, gunLayer))
+        if (Physics.Raycast(normalRay, out hit, range, gunLayer))
         {
             Ray muzzleRay = new Ray(startPoint.position, hit.point - startPoint.position);
 
@@ -132,16 +134,13 @@ public class SSC_PaintGun : MonoBehaviour
     /// <summary>
     /// 연사 메소드
     /// </summary>
-    private void AutoFire()
+    private void AutoFire(Ray normalRay, Ray checkRay)
     {
         timeCheck += Time.deltaTime;
+        RaycastHit hit;
 
         if (timeCheck >= attackSpeed)
         {
-            Ray ray = new Ray(GetOriginPos(), CheckDir());
-            Ray checkRay = new Ray(checkPos.position, CheckDir());
-            RaycastHit hit;
-
             if (Physics.Raycast(checkRay, out hit, range, gunLayer))
             {
                 float checkDistance = Vector3.Distance(checkPos.position, hit.point);
@@ -153,25 +152,19 @@ public class SSC_PaintGun : MonoBehaviour
                     timeCheck = 0f;
                     return;
                 }                                
-
             }
-
         }
 
         if (timeCheck >= attackSpeed)
-        {
-            Ray ray = new Ray(GetOriginPos(), CheckDir());
-            RaycastHit hit;
-
-            if (Physics.Raycast(ray, out hit, range, gunLayer))
+        {                        
+            if (Physics.Raycast(normalRay, out hit, range, gunLayer))
             {
                 Ray muzzleRay = new Ray(startPoint.position, hit.point - startPoint.position);
 
                 UsedAmmo(muzzleRay, autoShot);
 
                 timeCheck = 0f;        
-            }
-            
+            }            
         }
     }
 

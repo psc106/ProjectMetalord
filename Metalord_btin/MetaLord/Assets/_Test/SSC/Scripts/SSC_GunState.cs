@@ -35,7 +35,15 @@ public class SSC_GunState : MonoBehaviour
 
     public bool CanReload
     {
-        get { return !player.OnClimb; }
+        get 
+        { 
+            if(grabMode.OnGrab)
+            {
+                return !grabMode.OnGrab;
+            }
+
+            return !player.OnClimb; 
+        }
         private set { }
     }
 
@@ -77,7 +85,15 @@ public class SSC_GunState : MonoBehaviour
             backGun.SetActive(true);
         }
 
-        if(Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown(KeyCode.R) && CanReload)
+        {
+            state = GunState.EMPTY;
+            PaintTarget.ClearAllPaint();
+            StartCoroutine(ReloadingAmmo());
+            //UpdateState(MaxAmmo, GunState.READY);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Q))
         {
             grabMode.enabled = false;
             paintMode.enabled = true;
@@ -92,7 +108,7 @@ public class SSC_GunState : MonoBehaviour
 
     public void UpdateState(int ammoValue, GunState updatedState)
     {
-        ammo = ammoValue;
+        Ammo = ammoValue;
         state = updatedState;
         AmmoText.text = MaxAmmo + " / " + Ammo;
         AmmoGauge.fillAmount = (float)Ammo / (float)MaxAmmo;
@@ -103,6 +119,24 @@ public class SSC_GunState : MonoBehaviour
         Ammo += ammoValue;
         AmmoText.text = MaxAmmo + " / " + Ammo;
         AmmoGauge.fillAmount = (float)Ammo / (float)MaxAmmo;
+    }
+
+    IEnumerator ReloadingAmmo()
+    {
+        while(Ammo != maxAmmo)
+        {
+            int ammoValue = (int)Mathf.Lerp(Ammo, maxAmmo, 0.1f);
+            Debug.Log(ammoValue - Ammo);
+            UpdateState(ammoValue - Ammo);
+            yield return new WaitForSeconds(Time.deltaTime * 2.5f);
+
+            if (Ammo >= 191)
+            {
+                Ammo = maxAmmo;
+            }
+        }
+
+        UpdateState(maxAmmo, GunState.READY);
     }
 
 }
