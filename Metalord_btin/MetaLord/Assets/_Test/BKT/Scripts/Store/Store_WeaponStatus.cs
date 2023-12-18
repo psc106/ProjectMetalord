@@ -7,8 +7,20 @@ using UnityEngine;
 /// </summary>
 public class Store_WeaponStatus : StoreObject
 {
-    
 
-    
+    [SerializeField] int[] stepCoin;
+    [SerializeField] int[] stepSkillStatus;
 
+    private int stepPointer;
+
+    private void Awake()
+    {
+        stepPointer = 0;
+    }
+
+    protected override void BuyStoreObject()
+    {
+        price = stepCoin[stepPointer];
+        base.BuyStoreObject();
+    }
 }
