@@ -85,30 +85,44 @@ public class SSC_GunState : MonoBehaviour
 
     private void Update()
     {
-
-        if (Input.GetKeyDown(KeyCode.R) && CanReload && state != GunState.RELOADING)
+        // 장전        
+        if (Input.GetKeyDown(KeyCode.R))
         {
-            player.PlayReloadAnimation();
-            state = GunState.RELOADING;
-            PaintTarget.ClearAllPaint();
-            StartCoroutine(ReloadingAmmo());
-            //UpdateState(MaxAmmo, GunState.READY);
+            Reloading();
         }
 
-        if (Input.GetKeyDown(KeyCode.Q) &&
-            !grabMode.OnGrab
-            && state != GunState.RELOADING)
+        // 1번키 누르면 페인트건
+        if (Input.GetKeyDown(KeyCode.Alpha1))
         {            
-            grabMode.enabled = false;
-            paintMode.enabled = true;
+            SwapPaintGun();
         }
 
-        if(Input.GetKeyDown(KeyCode.E) &&
-            state != GunState.RELOADING)
-        {            
-            paintMode.enabled = false;
-            grabMode.enabled = true;
+        // 2번키 누르면 그랩건
+        if(Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            SwapGrabGun();
         }
+    }
+    public void SwapPaintGun()
+    {
+        if (grabMode.OnGrab || state == GunState.RELOADING)
+        {
+            return;
+        }
+
+        grabMode.enabled = false;
+        paintMode.enabled = true;
+    }
+
+    private void SwapGrabGun()
+    {
+        if (state == GunState.RELOADING)
+        {
+            return;
+        }
+
+        paintMode.enabled = false;
+        grabMode.enabled = true;
     }
 
     public void UpdateState(int ammoValue, GunState updatedState)
@@ -124,6 +138,19 @@ public class SSC_GunState : MonoBehaviour
         Ammo += ammoValue;
         AmmoText.text = MaxAmmo + " / " + Ammo;
         AmmoGauge.fillAmount = (float)Ammo / (float)MaxAmmo;
+    }
+
+    public void Reloading()
+    {
+        if (!CanReload && state == GunState.RELOADING)
+        {
+            return;
+        }
+
+        player.PlayReloadAnimation();
+        state = GunState.RELOADING;
+        PaintTarget.ClearAllPaint();
+        StartCoroutine(ReloadingAmmo());
     }
 
     IEnumerator ReloadingAmmo()

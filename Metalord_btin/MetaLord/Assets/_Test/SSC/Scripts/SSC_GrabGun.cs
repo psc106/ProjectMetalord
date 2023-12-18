@@ -34,37 +34,42 @@ public class SSC_GrabGun : MonoBehaviour
         Ray ray = new Ray(GetOriginPos(), CheckDir());        
 
         if (Input.GetMouseButtonDown(0))
-        {            
-            RaycastHit hitInfo;
-
-            if (targetRigid)
-            {
-                CancelObj();
-                return;
-            }
-
-            if(state.Ammo < -grabAmmo || !state.CanFire)
-            {
-                return;
-            }
-
-            if (Physics.Raycast(ray, out hitInfo, range, MovedObject))
-            {
-                float distanceCheck = Vector3.Distance(startPoint.position, hitInfo.point);
-                float distanceCheck2 = Vector3.Distance(startPoint.position, hitInfo.transform.position);                
-
-                if(distanceCheck <= rangeLimit ||
-                    distanceCheck2 <= rangeLimit
-                   )
-                {
-                    return;
-                }
-
-                OnGrab = true;
-                FollowingObj(hitInfo);
-            }
+        {
+            GrabbingObj(ray);
         }
 
+    }
+
+    public void GrabbingObj(Ray ray)
+    {
+        RaycastHit hitInfo;
+
+        if (targetRigid)
+        {
+            CancelObj();
+            return;
+        }
+
+        if (state.Ammo < -grabAmmo || !state.CanFire)
+        {
+            return;
+        }
+
+        if (Physics.Raycast(ray, out hitInfo, range, MovedObject))
+        {
+            float distanceCheck = Vector3.Distance(startPoint.position, hitInfo.point);
+            float distanceCheck2 = Vector3.Distance(startPoint.position, hitInfo.transform.position);
+
+            if (distanceCheck <= rangeLimit ||
+                distanceCheck2 <= rangeLimit
+               )
+            {
+                return;
+            }
+
+            OnGrab = true;
+            FollowingObj(hitInfo);
+        }
     }
 
     private void FixedUpdate()
