@@ -162,6 +162,14 @@ public class Controller_Physics : MonoBehaviour
 
     RaycastHit aimHit;
 
+    //231219 배경택
+    [Header("UI 상점, 도감, 환경설정")]
+    [SerializeField] GameObject storeUI; // 상점 UI 오브젝트
+    [SerializeField] GameObject recordUI; // 도감 UI 오브젝트
+    [SerializeField] GameObject settingsUI; // 환경설정 UI 오브젝트
+    private bool canInput = true; // 입력 가능여부
+    private const float INPUT_DELAYTIME = 0.1f; // 입력 후 대기 시간
+
     #region Animator Hash
     private readonly int VelocityXHash = Animator.StringToHash("VelocityX");
     private readonly int VelocityYHash = Animator.StringToHash("VelocityY");
@@ -172,6 +180,7 @@ public class Controller_Physics : MonoBehaviour
     private readonly int EquipTriggerHash = Animator.StringToHash("EquipTrigger");
     private readonly int ClimbWaitHash = Animator.StringToHash("ClimbWait");
     #endregion
+
 
     //에디터에서 처리
     private void OnValidate()
@@ -224,6 +233,76 @@ public class Controller_Physics : MonoBehaviour
         trailColor.b = OnClimb ? 1 : 0;
 
         GetComponent<Renderer>().material.color = trailColor;
+
+        #region 상점, 도감, 환경설정 키 누를경우 _ 231219 배경택
+        if (canInput)
+        {
+            if (reader.StoreKey) // 상점 키 누를 경우 _231219 배경택
+            {
+                if (storeUI.activeSelf == true) storeUI.SetActive(false); // 중복 버튼을 누를경우 꺼짐
+                else
+                {
+                    storeUI.SetActive(true);
+                    recordUI.SetActive(false);
+                    settingsUI.SetActive(false);
+                }
+
+                StartCoroutine(DelayInput());
+            }
+
+            if (reader.RecordKey) // 도감 키 누를 경우 _231219 배경택
+            {
+                if (recordUI.activeSelf == true) recordUI.SetActive(false); // 중복 버튼을 누를경우 꺼짐
+                else
+                {
+                    recordUI.SetActive(true);
+                    storeUI.SetActive(false);
+                    settingsUI.SetActive(false);
+                }
+
+                StartCoroutine(DelayInput());
+
+            }
+
+            if (!storeUI.activeSelf && !recordUI.activeSelf && reader.SettingsKey) //설정 키 누를 경우 _231219 배경택
+            {
+                if (settingsUI.activeSelf == true) settingsUI.SetActive(false); // 중복 버튼을 누를경우 꺼짐
+                else
+                {
+                    settingsUI.SetActive(true);
+                    recordUI.SetActive(false);
+                    storeUI.SetActive(false);
+                }
+
+                StartCoroutine(DelayInput());
+
+            }
+
+            if (Input.GetKeyDown(KeyCode.Escape)) // 그냥 ESC키 누를경우 꺼짐 (환경설정키가 ESC로 되어있음에 따라 환경설정키는 조건에서 제외)
+            {
+                if (storeUI.activeSelf == true)
+                {
+                    storeUI.SetActive(false);
+                }
+
+                if (recordUI.activeSelf == true)
+                {
+                    recordUI.SetActive(false);
+                }
+                
+                StartCoroutine(DelayInput());
+            }
+        }
+        #endregion
+
+    }
+
+    // 입력 대기시간 코루틴
+    IEnumerator DelayInput()
+    {
+        canInput = false; // 입력 불가
+        yield return new WaitForSeconds(INPUT_DELAYTIME); // 대기시간
+        canInput = true; // 입력 가능
     }
 
     private void FixedUpdate()
@@ -914,8 +993,7 @@ public class Controller_Physics : MonoBehaviour
     }
 
     #region 바인딩 함수
-
-    //인풋 시스템 리더
+    [Header("인풋 시스템 리더")] //인풋 시스템 리더
     [SerializeField]
     InputReader reader;
 

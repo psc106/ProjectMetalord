@@ -1,7 +1,12 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Metalord_btin/MetaLord/Assets/_Test/PSC/Scripts/Player/Animation/Behaviour.meta
 guid: 61fb140b5cd9cf34297d57a71a0ad7bc
 folderAsset: yes
 DefaultImporter:
+========
+guid: 28937c76d7f424d6b9902b425affaad0
+PrefabImporter:
+>>>>>>>> 37002036407cae639641ce153b148c03dd146fde:Metalord_btin/MetaLord/Assets/_Test/BKT/Prefabs/Canvases.prefab.meta
   externalObjects: {}
   userData: 
   assetBundleName: 
