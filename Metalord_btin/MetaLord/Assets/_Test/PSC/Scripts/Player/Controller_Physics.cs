@@ -13,6 +13,8 @@ public class Controller_Physics : MonoBehaviour
     LayerMask climbMask = -1;
     [SerializeField] 
     LayerMask colorCheckLayer = -1;
+    [SerializeField] 
+    LayerMask aimLayer = -1;
 
     [Header("Component")]
     [SerializeField]
@@ -27,6 +29,8 @@ public class Controller_Physics : MonoBehaviour
     Animator animator;
     [SerializeField]
     MeshRenderer frontGunRender;
+    [SerializeField]
+    MeshRenderer handGunRender;
     [SerializeField]
     MeshRenderer backGunRender;
 
@@ -76,6 +80,7 @@ public class Controller_Physics : MonoBehaviour
     bool canFire = false;
 
     bool playingReloadAnimation = false;
+    bool playingEquipAnimation = false;
 
     int jumpPhase = 0;
     int stepsSinceLastGrounded = 0;
@@ -146,11 +151,11 @@ public class Controller_Physics : MonoBehaviour
     [Header("RigController")]
     [SerializeField] Transform startPoint;
     [SerializeField] Transform cameraPoint;
+
     [SerializeField] Transform aimTarget;
     [SerializeField] Transform rotateTarget;
-    [SerializeField] LayerMask aimLayer = -1;
 
-    [SerializeField] float range = 50;
+    [SerializeField] float aimRange = 50;
 
     [SerializeField] Rig aimRig;
     [SerializeField] Rig rotateRig;
@@ -173,6 +178,7 @@ public class Controller_Physics : MonoBehaviour
     private readonly int ReloadTriggerHash = Animator.StringToHash("Reload");
     private readonly int EquipStateHash = Animator.StringToHash("EquipState");
     private readonly int EquipTriggerHash = Animator.StringToHash("EquipTrigger");
+    private readonly int ClimbWaitHash = Animator.StringToHash("ClimbWait");
     #endregion
 
 
@@ -356,57 +362,29 @@ public class Controller_Physics : MonoBehaviour
     }
 
 
-    public void PlayReloadAnimation()
-    {
-        playingReloadAnimation = true;
-        aimRig.weight = 0;
-        animator.SetTrigger(ReloadTriggerHash);
-    }
-    public void EndReloadAnimation()
-    {
-        playingReloadAnimation = false;
-        aimRig.weight = 1;
-    }
 
     void LateUpdate()
     {
 
-        if (CanFire || playingReloadAnimation)
+        if (playingReloadAnimation)
         {
             frontGunRender.enabled = true;
             backGunRender.enabled = (false);
         }
-        else
-        {
-            frontGunRender.enabled = false;
-            backGunRender.enabled = (true);
-        }
 
-        if (!playingReloadAnimation)
-        {
-            aimRig.weight = OnClimb && !OnMultipleState ? 0 : 1;
-            rotateRig.weight = OnClimb && !OnMultipleState ? 1 : 0;
-        }
+
+        aimRig.weight = OnClimb && !OnMultipleState ? 0 : 1;
+        rotateRig.weight = OnClimb && !OnMultipleState ? 1 : 0;
 
         if (OnClimb)
         {
             rotateTarget.rotation = Quaternion.LookRotation(-GetClimbNormal());
         }
 
-        aimTarget.position = cameraPoint.position + cameraPoint.forward * range;
-        if (Physics.Raycast(startPoint.position, aimTarget.position - startPoint.position, out aimHit, range, aimLayer))
+        aimTarget.position = cameraPoint.position + cameraPoint.forward * aimRange;
+        if (Physics.Raycast(startPoint.position, aimTarget.position - startPoint.position, out aimHit, aimRange, aimLayer))
         {
             aimTarget.position = aimHit.point;
-        }
-    }
-
-    private void AdjustJump()
-    {
-        //점프 키 눌렀을 경우만
-        if (desireJump)
-        {
-            desireJump = false;
-            Jump(gravity);
         }
     }
 
@@ -515,6 +493,15 @@ public class Controller_Physics : MonoBehaviour
 
     }
 
+    private void AdjustJump()
+    {
+        //점프 키 눌렀을 경우만
+        if (desireJump)
+        {
+            desireJump = false;
+            Jump(gravity);
+        }
+    }
 
     void Jump(Vector3 gravity)
     {
@@ -582,6 +569,7 @@ public class Controller_Physics : MonoBehaviour
         StartCoroutine(climbDelayRoutine(OnClimb?jumpDuringTimer:0f));
         //점프 애니메이션
         animator.SetTrigger(JumpTriggerHash);
+        animator.SetBool(ClimbWaitHash, true);
 
         //점프 방향에 추가적인 upAxis 추가
         jumpDirection = (jumpDirection + upAxis).normalized;
@@ -617,6 +605,7 @@ public class Controller_Physics : MonoBehaviour
     {
         yield return new WaitForSeconds(time);
         isJump = false;
+        animator.SetBool(ClimbWaitHash, false);
     }
 
     void EvaluateCollision(Collision collision)
@@ -703,11 +692,16 @@ public class Controller_Physics : MonoBehaviour
         desireClimb = false;
     }
 
+    public enum PlayerState
+    {
+        ground, climb ,air
+    }
 
     private void UpdateState()
     {
         // 지상<->등산 애니메이션 결정
         animator.SetBool(ClimbTriggerHash, !multipleState && OnClimb);
+
 
         //마지막 그라운드에서 몇 프레임이 지났는지 저장하기 위한 변수
         stepsSinceLastGrounded += 1;
@@ -939,7 +933,64 @@ public class Controller_Physics : MonoBehaviour
     {
         stopState = check;
     }
+    public void PlayReloadAnimation()
+    {
+        playingReloadAnimation = true;
+        aimRig.weight = 0;
+        animator.SetTrigger(ReloadTriggerHash);
+    }
+    public void EndReloadAnimation()
+    {
+        playingReloadAnimation = false;
+        aimRig.weight = 1;
+    }
 
+    public bool onUnequip = false;
+
+    public void PlayUnEquipAnimation()
+    {
+        handGunRender.enabled = true;
+        frontGunRender.enabled = false;
+        backGunRender.enabled = (false);
+
+        playingEquipAnimation = true;
+        aimRig.weight = 0;
+        animator.SetTrigger(EquipTriggerHash);
+    }
+    public void EndUnEquipAnimation()
+    {
+        handGunRender.enabled = false;
+        frontGunRender.enabled = false;
+        backGunRender.enabled = (true);
+
+        playingEquipAnimation = false;
+        aimRig.weight = 1;
+
+    }
+    public void PlayEquipAnimation()
+    {
+        handGunRender.enabled = false;
+        frontGunRender.enabled = true;
+        backGunRender.enabled = (false);
+
+        aimRig.weight = 1;
+        //handGunRender.enabled = true;
+        //frontGunRender.enabled = false;
+        //backGunRender.enabled = (false);
+
+        //playingEquipAnimation = true;
+        //aimRig.weight = 0;
+        //animator.SetTrigger(EquipTriggerHash);
+    }
+    public void EndEquipAnimation()
+    {
+        handGunRender.enabled = false;
+        frontGunRender.enabled = true;
+        backGunRender.enabled = (false);
+
+        playingEquipAnimation = false;
+        aimRig.weight = 1;
+    }
 
     #region 바인딩 함수
     [Header("인풋 시스템 리더")] //인풋 시스템 리더

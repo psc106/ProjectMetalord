@@ -8,28 +8,32 @@ public class AnimationEventsController : MonoBehaviour
     [SerializeField]
     Controller_Physics player;
 
-    UnityAction reloadStart;
     UnityAction reloadEnd;
+    UnityAction unequipEnd;
+    UnityAction equipEnd;
 
     UnityAction[] animationEvents;
 
     private void Start()
     {
-        animationEvents = new UnityAction[2];
-        animationEvents[0] = reloadStart;
-        animationEvents[1] = reloadEnd;
+        animationEvents = new UnityAction[3];
+        animationEvents[0] = reloadEnd;
+        animationEvents[1] = unequipEnd;
+        animationEvents[2] = equipEnd;
     }
 
     private void OnEnable()
     {
-        reloadStart += player.PlayReloadAnimation;
         reloadEnd += player.EndReloadAnimation;
+        unequipEnd += player.EndUnEquipAnimation;
+        equipEnd += player.EndEquipAnimation;
     }
 
     private void OnDisable()
     {
-        reloadStart += player.PlayReloadAnimation;
-        reloadEnd += player.EndReloadAnimation;
+        reloadEnd -= player.EndReloadAnimation;
+        unequipEnd -= player.EndUnEquipAnimation;
+        equipEnd -= player.EndEquipAnimation;
     }
 
     public void PlayAnimation(AnimationList listNum)
@@ -39,6 +43,6 @@ public class AnimationEventsController : MonoBehaviour
 
     public enum AnimationList
     {
-        reloadStart=0, reloadEnd=1
+        reloadEnd=0, unequipEnd = 1, equipEnd = 2
     }
 }

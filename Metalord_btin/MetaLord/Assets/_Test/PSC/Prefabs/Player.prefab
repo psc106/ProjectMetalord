@@ -1,5 +1,88 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &129204935332980344
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2137476224708589441}
+  - component: {fileID: 7544202420146983785}
+  - component: {fileID: 378431335789592413}
+  m_Layer: 12
+  m_Name: Watergun_HandsRender
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2137476224708589441
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 129204935332980344}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.6369437, y: 0.046736293, z: -0.058230866, w: 0.7672859}
+  m_LocalPosition: {x: 0.0325, y: 0.0545, z: -0.0072}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4894591659568629506}
+  m_LocalEulerAnglesHint: {x: 79.382, y: -0.765, z: -9.315}
+--- !u!33 &7544202420146983785
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 129204935332980344}
+  m_Mesh: {fileID: -108820181053827955, guid: fe631df27b0e25d46b3ff6bf2f5ae69e, type: 3}
+--- !u!23 &378431335789592413
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 129204935332980344}
+  m_Enabled: 0
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 472395e881ac00a49b898cb7149329ed, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &155095879085575155
 GameObject:
   m_ObjectHideFlags: 0
@@ -204,11 +287,15 @@ MonoBehaviour:
   colorCheckLayer:
     serializedVersion: 2
     m_Bits: 1975
+  aimLayer:
+    serializedVersion: 2
+    m_Bits: 1975
   rb: {fileID: 3785254182038594230}
   playerInputSpace: {fileID: 5467668828909890017}
   playerCenter: {fileID: 6677764962144662948}
   animator: {fileID: 6381496018623211574}
   frontGunRender: {fileID: 3782273591382764777}
+  handGunRender: {fileID: 378431335789592413}
   backGunRender: {fileID: 4838373344311464730}
   jumpHeight: 7.5
   jumpDuringTimer: 1
@@ -230,12 +317,10 @@ MonoBehaviour:
   cameraPoint: {fileID: 0}
   aimTarget: {fileID: 8203518221037570998}
   rotateTarget: {fileID: 3799336809635674005}
-  aimLayer:
-    serializedVersion: 2
-    m_Bits: 1975
-  range: 50
+  aimRange: 50
   aimRig: {fileID: 2281247576654416274}
   rotateRig: {fileID: 2299312033654190962}
+  onUnequip: 0
   reader: {fileID: 11400000, guid: 75abd6246b51f9e48a0d52dae45fab3f, type: 2}
 --- !u!96 &5076636948133282176
 TrailRenderer:
@@ -628,7 +713,7 @@ Transform:
   m_GameObject: {fileID: 719308979689676731}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0.000000009837094, w: 1}
-  m_LocalPosition: {x: 0.22500081, y: 0.31010133, z: -0.9126946}
+  m_LocalPosition: {x: 0.22500215, y: 0.31010133, z: -0.9176901}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1310,7 +1395,12 @@ Animator:
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
-  m_WarningMessage: 
+  m_WarningMessage: "\nBinding warning: Some generic clip(s) animate transforms that
+    are already bound by a Humanoid avatar. These transforms can only be changed
+    by Humanoid clips.\n\tTransform 'mixamorig:RightArm'\n\tTransform 'mixamorig:LeftArm'\n\tTransform
+    'mixamorig:RightHand'\n\tTransform 'mixamorig:Hips'\n\tTransform 'mixamorig:LeftForeArm'\n\tTransform
+    'mixamorig:Spine2'\n\tTransform 'mixamorig:RightForeArm'\n\tTransform 'mixamorig:Neck'\n\tTransform
+    'mixamorig:Spine'\n\tTransform 'mixamorig:LeftHand'\n\tand more ..."
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
@@ -2305,9 +2395,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1983
   IgnoreTag: 
-  CameraRadius: 0.2
-  DampingIntoCollision: 0.2
-  DampingFromCollision: 0.2
+  CameraRadius: 0.1
+  DampingIntoCollision: 0
+  DampingFromCollision: 0
 --- !u!1 &3491734157653045044
 GameObject:
   m_ObjectHideFlags: 0
@@ -2878,9 +2968,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1665
   IgnoreTag: 
-  CameraRadius: 0.2
-  DampingIntoCollision: 0.2
-  DampingFromCollision: 0.2
+  CameraRadius: 0.1
+  DampingIntoCollision: 0
+  DampingFromCollision: 0
 --- !u!1 &5072088612485448992
 GameObject:
   m_ObjectHideFlags: 0
@@ -3256,7 +3346,7 @@ Transform:
   m_GameObject: {fileID: 5842208960856677968}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0.000000009837094, w: 1}
-  m_LocalPosition: {x: 0.22500081, y: 0.31010133, z: -0.9126946}
+  m_LocalPosition: {x: 0.22500215, y: 0.31010133, z: -0.9176901}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3563,6 +3653,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6181461817692552937}
+  - {fileID: 2137476224708589441}
   m_Father: {fileID: 5036859664829052109}
   m_LocalEulerAnglesHint: {x: -10.771, y: -4.521, z: 28.362}
 --- !u!1 &6474713014092150132
@@ -3756,7 +3847,7 @@ GameObject:
   - component: {fileID: 8290519499995815744}
   - component: {fileID: 4838373344311464730}
   m_Layer: 12
-  m_Name: Watergun_OnlyRender
+  m_Name: Watergun_BackRender
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3770,13 +3861,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6965213186463046493}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.3359883, y: 0.64306146, z: -0.37403378, w: 0.5776526}
-  m_LocalPosition: {x: -0.1163, y: 0.0302, z: -0.0028}
+  m_LocalRotation: {x: 0.34345958, y: 0.29333618, z: 0.8306229, w: -0.32566106}
+  m_LocalPosition: {x: -0.0774, y: -0.0321, z: -0.0779}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7900184379219393653}
-  m_LocalEulerAnglesHint: {x: 60.368, y: 96.134, z: 0}
+  m_LocalEulerAnglesHint: {x: -45.317, y: 32.664, z: 208.869}
 --- !u!33 &8290519499995815744
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -3792,7 +3883,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6965213186463046493}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -3942,7 +4033,7 @@ GameObject:
   - component: {fileID: 1669183892189733819}
   - component: {fileID: 1637722241099862447}
   m_Layer: 12
-  m_Name: Watergun_01
+  m_Name: Watergun_Front
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
