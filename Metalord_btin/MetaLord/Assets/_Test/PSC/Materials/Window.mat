@@ -74,6 +74,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _Alpha: 1
+    - _AlphaDefault: 0
     - _BumpPower: 1
     - _BumpScale: 1
     - _Cutoff: 0.5
@@ -88,6 +89,7 @@ Material:
     - _Parallax: 0.02
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
+    - _SplatColorIntensity: 0.5
     - _SplatEdgeBump: 1
     - _SplatEdgeBumpWidth: 1
     - _SplatGlossiness: 0.8
