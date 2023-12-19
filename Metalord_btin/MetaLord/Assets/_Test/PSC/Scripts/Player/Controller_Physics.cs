@@ -208,7 +208,11 @@ public class Controller_Physics : MonoBehaviour
     void Update()
     {
         //대화나 메뉴에서 stop시킴
-        if (stopState) return;
+        if (stopState)
+        {
+            rb.velocity += gravity * Time.deltaTime;
+            return;
+        }
 
         input.x = reader.Direction.x;
         input.z = reader.Direction.y;
@@ -308,8 +312,11 @@ public class Controller_Physics : MonoBehaviour
     private void FixedUpdate()
     {
         //대화나 메뉴에서 stop시킴
-        if (stopState) return;
-
+        if (stopState)
+        {
+            rb.velocity += gravity * Time.deltaTime;
+            return;
+        }
         //상태 업데이트
         UpdateState();
         //속도 계산
@@ -931,6 +938,10 @@ public class Controller_Physics : MonoBehaviour
 
     public static void SwitchCameraLock(bool check)
     {
+        if (stopState)
+        {
+            FindObjectOfType<Controller_Physics>().rb.velocity = Vector3.zero;
+        }
         stopState = check;
     }
     public void PlayReloadAnimation()
