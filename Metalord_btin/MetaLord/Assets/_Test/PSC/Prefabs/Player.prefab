@@ -207,6 +207,7 @@ GameObject:
   - component: {fileID: 3742653360604592892}
   - component: {fileID: 5076636948133282176}
   - component: {fileID: 2987880109812575175}
+  - component: {fileID: 6292005060344193909}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -320,6 +321,9 @@ MonoBehaviour:
   aimRange: 50
   aimRig: {fileID: 2281247576654416274}
   rotateRig: {fileID: 2299312033654190962}
+  storeUI: {fileID: 0}
+  recordUI: {fileID: 0}
+  settingsUI: {fileID: 0}
   onUnequip: 0
   reader: {fileID: 11400000, guid: 75abd6246b51f9e48a0d52dae45fab3f, type: 2}
 --- !u!96 &5076636948133282176
@@ -479,6 +483,19 @@ MonoBehaviour:
   - {fileID: 8787431113633873642}
   - {fileID: 8282372781614362592}
   - {fileID: 7900184379219393653}
+--- !u!114 &6292005060344193909
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 283528363170913266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8139710424e6d91499a42a6f0cf83e21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isInteract: 0
 --- !u!1 &310817492942052211
 GameObject:
   m_ObjectHideFlags: 0
@@ -713,7 +730,7 @@ Transform:
   m_GameObject: {fileID: 719308979689676731}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0.000000009837094, w: 1}
-  m_LocalPosition: {x: 0.22500215, y: 0.31010133, z: -0.9176901}
+  m_LocalPosition: {x: 0.2249987, y: 0.31010133, z: -1.2499983}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1395,12 +1412,7 @@ Animator:
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
-  m_WarningMessage: "\nBinding warning: Some generic clip(s) animate transforms that
-    are already bound by a Humanoid avatar. These transforms can only be changed
-    by Humanoid clips.\n\tTransform 'mixamorig:RightArm'\n\tTransform 'mixamorig:LeftArm'\n\tTransform
-    'mixamorig:RightHand'\n\tTransform 'mixamorig:Hips'\n\tTransform 'mixamorig:LeftForeArm'\n\tTransform
-    'mixamorig:Spine2'\n\tTransform 'mixamorig:RightForeArm'\n\tTransform 'mixamorig:Neck'\n\tTransform
-    'mixamorig:Spine'\n\tTransform 'mixamorig:LeftHand'\n\tand more ..."
+  m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
@@ -3346,7 +3358,7 @@ Transform:
   m_GameObject: {fileID: 5842208960856677968}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0.000000009837094, w: 1}
-  m_LocalPosition: {x: 0.22500215, y: 0.31010133, z: -0.9176901}
+  m_LocalPosition: {x: 0.2249987, y: 0.31010133, z: -1.2499983}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4032,6 +4044,7 @@ GameObject:
   - component: {fileID: 7495584123684662292}
   - component: {fileID: 1669183892189733819}
   - component: {fileID: 1637722241099862447}
+  - component: {fileID: 7381759805318663902}
   m_Layer: 12
   m_Name: Watergun_Front
   m_TagString: Untagged
@@ -4123,9 +4136,16 @@ MonoBehaviour:
   AmmoGauge: {fileID: 4875576917903876993}
   paintMode: {fileID: 7495584123684662292}
   grabMode: {fileID: 1669183892189733819}
+  bondMode: {fileID: 7381759805318663902}
   player: {fileID: 3742653360604592892}
   gunRenderer: {fileID: 3782273591382764777}
   backGun: {fileID: 6965213186463046493}
+  reloadCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   state: 0
 --- !u!114 &7495584123684662292
 MonoBehaviour:
@@ -4152,9 +4172,9 @@ MonoBehaviour:
     splatChannel: 0
   gun: {fileID: 6798630036274658337}
   input: {fileID: 11400000, guid: 75abd6246b51f9e48a0d52dae45fab3f, type: 2}
+  aimTarget: {fileID: 8203518221037570998}
   checkPos: {fileID: 7900184379219393653}
   startPoint: {fileID: 6677764962144662948}
-  aimTarget: {fileID: 8203518221037570998}
   gunLayer:
     serializedVersion: 2
     m_Bits: 1975
@@ -4287,6 +4307,35 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
+--- !u!114 &7381759805318663902
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7224486885945868048}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72356db50a30c7242ab4c76f5a5afabb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  brush:
+    splatTexture: {fileID: 0}
+    splatsX: 1
+    splatsY: 1
+    splatIndex: -1
+    splatScale: 10
+    splatRandomScaleMin: 1
+    splatRandomScaleMax: 1
+    splatRotation: 0
+    splatRandomRotation: 180
+    splatChannel: 1
+  gun: {fileID: 6798630036274658337}
+  checkPos: {fileID: 7900184379219393653}
+  startPoint: {fileID: 6677764962144662948}
+  gunLayer:
+    serializedVersion: 2
+    m_Bits: 1975
 --- !u!1 &7232609396906643999
 GameObject:
   m_ObjectHideFlags: 0
@@ -4628,7 +4677,7 @@ GameObject:
   - component: {fileID: 435200467944626946}
   m_Layer: 6
   m_Name: BodyCollider
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5134,6 +5183,10 @@ PrefabInstance:
     - target: {fileID: 376977193092245121, guid: 0ed45fffd3e6f3f438f0c3bcc8eca14f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4398790067660641932, guid: 0ed45fffd3e6f3f438f0c3bcc8eca14f, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -91.1001
       objectReference: {fileID: 0}
     - target: {fileID: 6438985154237231367, guid: 0ed45fffd3e6f3f438f0c3bcc8eca14f, type: 3}
       propertyPath: m_Name
