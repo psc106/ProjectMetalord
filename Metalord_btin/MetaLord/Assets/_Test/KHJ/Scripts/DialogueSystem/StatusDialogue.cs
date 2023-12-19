@@ -15,6 +15,9 @@ public class StatusDialogue
     public string nextTextNum; //다음 대사 내용 ID
     
     public string currentStatus; //현재 NPC 상태
+
+    //12.19 추가 : 음성 관련
+    public string voice; //NPC 목소리 
 }
 
 

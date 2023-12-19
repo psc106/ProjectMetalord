@@ -5,11 +5,11 @@ using UnityEngine;
 
 public class DialogueDataParse : MonoBehaviour
 {
-    public TextAsset testAsset;
-    private void Start()
-    {
-        ParseStatusDialogue(testAsset);
-    }
+    //public TextAsset testAsset;
+    //private void Start()
+    //{
+    //    ParseStatusDialogue(testAsset);
+    //}
 
     public DialogueQuestion[] ParseQuestionList(TextAsset questionCsvData)
     {
@@ -30,60 +30,60 @@ public class DialogueDataParse : MonoBehaviour
         }
         return questionList.ToArray();
     }
-    public Dialogue[] ParseDialogue(TextAsset csvData)
-    {
-        List<Dialogue> dialogueList = new List<Dialogue>();
-        //ParseDialogue(csvData);
-        //모든 값은 null값이 아니고 "" 값으로 들어감
-        string[] data = csvData.text.Split(new char[] { '\n' });
+    //public Dialogue[] ParseDialogue(TextAsset csvData) //TODO 삭제 예정
+    //{
+    //    List<Dialogue> dialogueList = new List<Dialogue>();
+    //    //ParseDialogue(csvData);
+    //    //모든 값은 null값이 아니고 "" 값으로 들어감
+    //    string[] data = csvData.text.Split(new char[] { '\n' });
 
-        for (int i = 1; i < data.Length - 1;)
-        {
-            string[] row = data[i].Split(new char[] { ',' });
-            Dialogue _dialogue = new Dialogue();
-            //다이얼로그 클래스의 row[0] = ID, row[1] = 이름, row[2] = 대사, row[3] = 이동 대사 ID 번호
-            //23.12.12 추가사항 row[4] 에 특수한 상태에 따라 다른 내용을 이곳에 합칠 수 있음
-            _dialogue.dialogueID = row[0];
-            _dialogue.speakerName = row[1];
-            List<string> contextList = new List<string>();
-            do
-            {
-                contextList.Add(row[2]);
-                if (row[3] != "")
-                {
-                    //Debug.Log("여기 들어오나요 ?");
-                    _dialogue.nextTextNum = row[3].Trim();
-                    //Debug.LogFormat("{0} <=== 이게 row3", _dialogue.nextTextNum);
-                }
-                if (++i < data.Length - 1)
-                {
-                    row = data[i].Split(new char[] { ',' }); //data i번째의 string 들을 , 로 구분
-                }
-                else
-                {
-                    break;
-                }
-            }
-            while (row[0].ToString() == ""); //|| row[3].ToString() != "");
-            _dialogue.contextes = contextList.ToArray();
-            dialogueList.Add(_dialogue);
-        }
-        //Debug.Log(dialogueList.Count);
-        //각 헤더 설정해서 담기
-        //for (int i = 0; i < dialogueList.Count; i++)
-        //{
-        //    Debug.LogFormat("{0} <=== 이게 row0 ID", dialogueList[i].dialogueID);
-        //    Debug.LogFormat("{0} <=== 이게 row1 NAME", dialogueList[i].speakerName);
-        //    Debug.LogFormat("{0} <=== 이게 row2 CONTEXT", dialogueList[i].contextes);
-        //    Debug.LogFormat("{0} <=== 이게 row2 CONTEXT Length", dialogueList[i].contextes.Length);
-        //    for(int j = 0; j < dialogueList[i].contextes.Length; j++)
-        //    {
-        //        //Debug.LogFormat("{0} contextes 대화 내용들 ", dialogueList[i].contextes[j]);
-        //    }
-        //    Debug.LogFormat("{0} <=== 이게 row3 NEXTNUM", dialogueList[i].nextTextNum);
-        //}
-        return dialogueList.ToArray();
-    }
+    //    for (int i = 1; i < data.Length - 1;)
+    //    {
+    //        string[] row = data[i].Split(new char[] { ',' });
+    //        Dialogue _dialogue = new Dialogue();
+    //        //다이얼로그 클래스의 row[0] = ID, row[1] = 이름, row[2] = 대사, row[3] = 이동 대사 ID 번호
+    //        //23.12.12 추가사항 row[4] 에 특수한 상태에 따라 다른 내용을 이곳에 합칠 수 있음
+    //        _dialogue.dialogueID = row[0];
+    //        _dialogue.speakerName = row[1];
+    //        List<string> contextList = new List<string>();
+    //        do
+    //        {
+    //            contextList.Add(row[2]);
+    //            if (row[3] != "")
+    //            {
+    //                //Debug.Log("여기 들어오나요 ?");
+    //                _dialogue.nextTextNum = row[3].Trim();
+    //                //Debug.LogFormat("{0} <=== 이게 row3", _dialogue.nextTextNum);
+    //            }
+    //            if (++i < data.Length - 1)
+    //            {
+    //                row = data[i].Split(new char[] { ',' }); //data i번째의 string 들을 , 로 구분
+    //            }
+    //            else
+    //            {
+    //                break;
+    //            }
+    //        }
+    //        while (row[0].ToString() == ""); //|| row[3].ToString() != "");
+    //        _dialogue.contextes = contextList.ToArray();
+    //        dialogueList.Add(_dialogue);
+    //    }
+    //    //Debug.Log(dialogueList.Count);
+    //    //각 헤더 설정해서 담기
+    //    //for (int i = 0; i < dialogueList.Count; i++)
+    //    //{
+    //    //    Debug.LogFormat("{0} <=== 이게 row0 ID", dialogueList[i].dialogueID);
+    //    //    Debug.LogFormat("{0} <=== 이게 row1 NAME", dialogueList[i].speakerName);
+    //    //    Debug.LogFormat("{0} <=== 이게 row2 CONTEXT", dialogueList[i].contextes);
+    //    //    Debug.LogFormat("{0} <=== 이게 row2 CONTEXT Length", dialogueList[i].contextes.Length);
+    //    //    for(int j = 0; j < dialogueList[i].contextes.Length; j++)
+    //    //    {
+    //    //        //Debug.LogFormat("{0} contextes 대화 내용들 ", dialogueList[i].contextes[j]);
+    //    //    }
+    //    //    Debug.LogFormat("{0} <=== 이게 row3 NEXTNUM", dialogueList[i].nextTextNum);
+    //    //}
+    //    return dialogueList.ToArray();
+    //}
     public StatusDialogue[] ParseStatusDialogue(TextAsset csvData)
     {
         List<StatusDialogue> statusDialogueList = new List<StatusDialogue>();
@@ -102,6 +102,7 @@ public class DialogueDataParse : MonoBehaviour
             _statusDialogue.dialogueID = row[0].Trim();
             _statusDialogue.speakerName = row[1].Trim();
             _statusDialogue.currentStatus = row[4].Trim();
+            _statusDialogue.voice = row[5].Trim();
             List<string> contextList = new List<string>();
             do
             {
