@@ -7,7 +7,8 @@ using UnityEngine;
 public class DialogueUI : MonoBehaviour
 {
     #region 다이얼로그 매직넘버 관련 ID
-    // ShowDialogue
+    // TODO 수정 예정
+    //ShowDialogue
     // 01 ~ 12 : 튜토리얼 토끼
     // 13 ~ 15 : 양
     // 16 ~ 18 : 꿀벌
@@ -18,7 +19,7 @@ public class DialogueUI : MonoBehaviour
     // 31 ~ 33 : 공주
     // 34 ~ 36 : 모험가
     #endregion
-    public PlayerInteractNpc testPlayer;
+ 
 
     public GameObject dialogueUI;
     public GameObject questionUI;
@@ -207,6 +208,7 @@ public class DialogueUI : MonoBehaviour
                     CloseDialogueUI();
                     //플레이어 움직임 다시 제어
                     //testPlayer.isMove = true;
+                    Controller_Physics.SwitchCameraLock(false);
                 }
                 break;
             }

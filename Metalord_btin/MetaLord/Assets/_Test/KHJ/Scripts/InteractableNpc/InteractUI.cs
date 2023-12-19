@@ -18,12 +18,18 @@ public class InteractUI : MonoBehaviour
     
     private void OnTriggerEnter(Collider other)
     {
-        StartCoroutine(FadeInImage());
+        if (other.CompareTag("Player"))
+        {
+            StartCoroutine(FadeInImage());
+        }
     }
     private void OnTriggerExit(Collider other)
     {
+        if (other.CompareTag("Player"))
+        {
+            StartCoroutine(FadeOutImage());
+        }
         Debug.Log("나갔는데 실행됨?");
-        StartCoroutine(FadeOutImage());
     }
 
    
