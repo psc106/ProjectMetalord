@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -35,12 +33,12 @@ public class SSC_GrabGun : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            GrabbingObj(ray);
+            GrabObj(ray);
         }
 
     }
 
-    public void GrabbingObj(Ray ray)
+    public void GrabObj(Ray ray)
     {
         RaycastHit hitInfo;
 
@@ -84,7 +82,12 @@ public class SSC_GrabGun : MonoBehaviour
             }            
 
             Vector3 dir = (pickupPoint.position - followPos) - targetRigid.position;
-            float mag = dir.magnitude;
+            float mag = dir.magnitude;            
+
+            if(mag >= 2f)
+            {
+                mag = 2f;
+            }
 
             grabLine.enabled = true;
             grabLine.SetPosition(0, startPoint.position);
@@ -125,6 +128,15 @@ public class SSC_GrabGun : MonoBehaviour
         targetRigid.constraints = RigidbodyConstraints.None;
         targetRigid.useGravity = true;
         targetRigid.velocity = Vector3.zero;
+        targetRigid = null;
+        OnGrab = false;
+        state.UpdateState(-grabAmmo);
+    }
+
+    public void CancleGrab()
+    {
+        targetObj = null;
+        grabLine.enabled = false;
         targetRigid = null;
         OnGrab = false;
         state.UpdateState(-grabAmmo);

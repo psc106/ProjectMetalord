@@ -1,16 +1,16 @@
 using System;
 using UnityEngine;
-using UnityEngine.UIElements;
+
 
 public class SSC_PaintGun : MonoBehaviour
 {
     [SerializeField] private Brush brush;
     [SerializeField] private SSC_GunState gun;
     [SerializeField] private InputReader input;
-    [SerializeField] private Transform checkPos;
-    [SerializeField] private Transform startPoint;
     [SerializeField] private Transform aimTarget;
 
+    [SerializeField] private Transform checkPos;
+    [SerializeField] private Transform startPoint;
 
     [SerializeField] private LayerMask gunLayer = -1;
     [Range(0.1f, 1f)] public float attackSpeed;
@@ -38,11 +38,6 @@ public class SSC_PaintGun : MonoBehaviour
             brush.splatsX = 4;
             brush.splatsY = 4;
         }
-    }
-
-    private void OnDrawGizmos()
-    {
-        //CheckGizmo();
     }
 
     // Update is called once per frame
