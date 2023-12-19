@@ -103,4 +103,19 @@ public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions
     {
        // throw new System.NotImplementedException();
     }
+
+    public void OnStore(InputAction.CallbackContext context)
+    {
+        //throw new System.NotImplementedException();
+    }
+
+    public void OnRecord(InputAction.CallbackContext context)
+    {
+        //throw new System.NotImplementedException();
+    }
+
+    public void OnSettings(InputAction.CallbackContext context)
+    {
+        //throw new System.NotImplementedException();
+    }
 }
