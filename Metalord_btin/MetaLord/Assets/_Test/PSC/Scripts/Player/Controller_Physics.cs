@@ -970,6 +970,9 @@ public class Controller_Physics : MonoBehaviour
     }
     public void EndUnEquipAnimation()
     {
+        Debug.Log("등에매기");
+
+        if (!OnClimb) return;
         handGunRender.enabled = false;
         frontGunRender.enabled = false;
         backGunRender.enabled = (true);
@@ -980,6 +983,8 @@ public class Controller_Physics : MonoBehaviour
     }
     public void PlayEquipAnimation()
     {
+        Debug.Log("앞에들기");
+
         handGunRender.enabled = false;
         frontGunRender.enabled = true;
         backGunRender.enabled = (false);
