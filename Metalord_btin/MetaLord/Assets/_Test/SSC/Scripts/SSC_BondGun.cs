@@ -1,3 +1,5 @@
+using Unity.VisualScripting;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 public class SSC_BondGun : MonoBehaviour
@@ -47,6 +49,7 @@ public class SSC_BondGun : MonoBehaviour
 
             if (hit.transform.GetComponent<SSC_BondObj>() != null)
             {
+                //hit.transform.GetComponent<SSC_BondObj>().myRigid.AddComponent<Rigidbody>();
                 SSC_GunState.AddBondList(hit.transform.GetComponent<SSC_BondObj>());                
             }
 

@@ -7,6 +7,8 @@ public class SSC_BondObj : MonoBehaviour
     MeshCollider myColider;        
     public LayerMask layerMask;
 
+    [HideInInspector] public Rigidbody myRigid;
+
     private void Awake()
     {
         grab = FindAnyObjectByType<SSC_GrabGun>();       
@@ -39,13 +41,14 @@ public class SSC_BondObj : MonoBehaviour
         }
     }
 
-    private void FixedUpdate()
+    void FixedUpdate()
     {
-        if(transform.GetComponent<Rigidbody>() != null)
+        if(myRigid)
         {
-            if(transform.GetComponent<Rigidbody>().IsSleeping())
+            if(myRigid.IsSleeping())
             {
-                Destroy(transform.GetComponent<Rigidbody>());
+                Destroy(myRigid);
+                myRigid = null;
                 myColider.convex = false;
             }
         }
@@ -58,7 +61,9 @@ public class SSC_BondObj : MonoBehaviour
             transform.parent = null;
             myColider.convex = true;
 
-            transform.AddComponent<Rigidbody>().useGravity = true;
+            myRigid = transform.AddComponent<Rigidbody>();
+            myRigid.useGravity = true;
+            //transform.AddComponent<Rigidbody>().useGravity = true;
         }
     }
 }
