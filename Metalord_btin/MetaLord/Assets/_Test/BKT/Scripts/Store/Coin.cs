@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 코인 스크립트
+/// 231219 배경택
+/// </summary>
 public class Coin : MonoBehaviour
 {
     [SerializeField] private CoinType mytype; // 인스펙터창에서 코인 타입 선택

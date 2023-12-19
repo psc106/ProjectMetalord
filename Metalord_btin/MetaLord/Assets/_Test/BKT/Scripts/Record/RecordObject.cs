@@ -12,20 +12,12 @@ public class RecordObject : MonoBehaviour,IPointerDownHandler
     private void Awake()
     {
         GameEventsManager.instance.recordEvents.onSelectRecord += CheckSelected; // 선택여부 체크 추가
-    }
-
-    private void OnEnable()
-    {
         GameEventsManager.instance.recordEvents.onChangeRecord += ReflectInfo; // 도감 변경알림시 갖고있는 정보 반영 추가
-    }
-
-    private void OnDisable()
-    {
-        GameEventsManager.instance.recordEvents.onChangeRecord -= ReflectInfo; // 도감 변경알림시 갖고있는 정보 반영 해제
     }
 
     private void OnDestroy()
     {
+        GameEventsManager.instance.recordEvents.onChangeRecord -= ReflectInfo; // 도감 변경알림시 갖고있는 정보 반영 해제
         GameEventsManager.instance.recordEvents.onSelectRecord -= CheckSelected; // 선택여부 체크 해제
     }
 
