@@ -13,6 +13,7 @@ public class GameEventsManager : MonoBehaviour
     public CoinEvents coinEvents; // 재화 이벤트
     public RecordEvents recordEvents; // 도감 이벤트
     public ResetEvents resetEvents; // 초기화 이벤트
+    public UIEvents uiEvents; // UI 이벤트
 
     private void Awake()
     {
@@ -30,5 +31,6 @@ public class GameEventsManager : MonoBehaviour
         coinEvents = new CoinEvents(); // 재화 이벤트 생성
         recordEvents = new RecordEvents(); // 도감 이벤트 생성
         resetEvents = new ResetEvents();
+        uiEvents = new UIEvents(); // UI 이벤트
     }
 }

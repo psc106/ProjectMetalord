@@ -18,6 +18,10 @@ public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions
     public event UnityAction<float> Run = delegate { };
     public event UnityAction<float> Fire = delegate { };
 
+    public event UnityAction<float> Store = delegate { }; // 231219 배경택
+    public event UnityAction<float> Record = delegate { }; // 231219 배경택
+    public event UnityAction<float> Settings = delegate { }; // 231219 배경택
+
     public PlayerInputActions inputActions;
 
     public Vector3 mouseMovement => inputActions.Player.Look.ReadValue<Vector2>();
@@ -25,6 +29,9 @@ public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions
     public bool JumpKey => inputActions.Player.Jump.ReadValue<float>()==1f;
     public bool RunKey => inputActions.Player.Run.ReadValue<float>() == 1f;
     public bool ShootKey => inputActions.Player.Fire.ReadValue<float>() == 1f;
+    public bool StoreKey => inputActions.Player.Store.ReadValue<float>() == 1f; // 231219 배경택
+    public bool RecordKey => inputActions.Player.Record.ReadValue<float>() == 1f; //231219 배경택
+    public bool SettingsKey => inputActions.Player.Settings.ReadValue<float>() == 1f; //231219 배경택
 
 
     private void OnEnable()
@@ -104,18 +111,18 @@ public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions
        // throw new System.NotImplementedException();
     }
 
-    public void OnStore(InputAction.CallbackContext context)
+    public void OnStore(InputAction.CallbackContext context) // 231219 배경택
     {
-        //throw new System.NotImplementedException();
+        Store.Invoke(context.ReadValue<float>());
     }
 
-    public void OnRecord(InputAction.CallbackContext context)
+    public void OnRecord(InputAction.CallbackContext context) // 231219 배경택
     {
-        //throw new System.NotImplementedException();
+        Record.Invoke(context.ReadValue<float>());
     }
 
-    public void OnSettings(InputAction.CallbackContext context)
+    public void OnSettings(InputAction.CallbackContext context) // 231219 배경택
     {
-        //throw new System.NotImplementedException();
+        Settings.Invoke(context.ReadValue<float>());
     }
 }

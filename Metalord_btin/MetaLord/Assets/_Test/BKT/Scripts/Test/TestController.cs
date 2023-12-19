@@ -18,13 +18,13 @@ public class TestController : MonoBehaviour
 
     void Update()
     {
-        // 수집 도감
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            // E 키를 누르면 UI를 켜기 or 끄기
-            isRecordUIVisible = !isRecordUIVisible;
-            recordUI.SetActive(isRecordUIVisible);
-        }
+        //// 수집 도감
+        //if (Input.GetKeyDown(KeyCode.E))
+        //{
+        //    // E 키를 누르면 UI를 켜기 or 끄기
+        //    isRecordUIVisible = !isRecordUIVisible;
+        //    recordUI.SetActive(isRecordUIVisible);
+        //}
 
         // 환경설정창
         //if (Input.GetKeyDown(KeyCode.W))
