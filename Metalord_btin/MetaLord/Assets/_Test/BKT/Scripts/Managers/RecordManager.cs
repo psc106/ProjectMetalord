@@ -201,7 +201,8 @@ public class RecordManager : MonoBehaviour
             int tempIndex = infoIndex / PAGE_FULL_ITEMCOUNT; 
 
             GameObject recordObject = Instantiate(itemUIObjectPrefab, pageList[tempIndex].transform);
-            recordObject.GetComponent<RecordObject>().recordInfo = _recordObjectInfos[infoIndex+1];
+            recordObject.GetComponent<RecordObject>().recordInfo = _recordObjectInfos[Utility.GetRecordId(infoIndex)];
+            
         }
     }
 
@@ -231,7 +232,7 @@ public class RecordManager : MonoBehaviour
         for(int i = 1; i < recordObjectInfos.Count; i++)
         {
             if(selectedId == i) continue;
-            recordObjectInfos[i].isSelected = false;
+            recordObjectInfos[Utility.GetRecordId(i)].isSelected = false;
         }
 
         if (checkRecordInfoId == recordObjectInfos[selectedId].id) // 중복으로 같은 아이디값이 들어올 경우
@@ -335,23 +336,23 @@ public class RecordManager : MonoBehaviour
         if (gotSortIndex == 1) check = true; // 획득된 상태
         else if (gotSortIndex == 2) check = false; //획득되지 않은 상태
 
-        for (int i = 1; i < recordObjectInfos.Count+1; i++) // Dictionary ID값이 1부터 시작하기때문에 i값이 1~Count+1로 설정
+        for (int i = 0; i < recordObjectInfos.Count; i++)
         {
-            if (recordObjectInfos[i].obtained == check && recordObjectInfos[i].zone == zoneSortIndex)
+            if (recordObjectInfos[Utility.GetRecordId(i)].obtained == check && recordObjectInfos[Utility.GetRecordId(i)].zone == zoneSortIndex)
             {
-                tempRecordObjectInfos.Add(recordObjectInfos[i]);
+                tempRecordObjectInfos.Add(recordObjectInfos[Utility.GetRecordId(i)]);
             }
-            else if(recordObjectInfos[i].obtained == check && zoneSortIndex == 0)
+            else if(recordObjectInfos[Utility.GetRecordId(i)].obtained == check && zoneSortIndex == 0)
             {
-                tempRecordObjectInfos.Add(recordObjectInfos[i]);
+                tempRecordObjectInfos.Add(recordObjectInfos[Utility.GetRecordId(i)]);
             }
-            else if(gotSortIndex == 0 && recordObjectInfos[i].zone == zoneSortIndex)
+            else if(gotSortIndex == 0 && recordObjectInfos[Utility.GetRecordId(i)].zone == zoneSortIndex)
             {
-                tempRecordObjectInfos.Add(recordObjectInfos[i]);
+                tempRecordObjectInfos.Add(recordObjectInfos[Utility.GetRecordId(i)]);
             }
             else if(gotSortIndex == 0 && zoneSortIndex == 0)
             {
-                tempRecordObjectInfos.Add(recordObjectInfos[i]);
+                tempRecordObjectInfos.Add(recordObjectInfos[Utility.GetRecordId(i)]);
             }
         }
 
