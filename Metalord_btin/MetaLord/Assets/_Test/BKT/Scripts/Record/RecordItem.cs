@@ -8,14 +8,14 @@ using UnityEngine;
 /// </summary>
 public class RecordItem : MonoBehaviour
 {
-    [SerializeField] int id = 1;
+    [SerializeField] RecordList recordItem;
 
     private void OnTriggerEnter(Collider other)
     {
         if(other.tag == "Player")
         {
-            GameEventsManager.instance.recordEvents.GetRecordItem(id);
-            Debug.Log("Touch" + id);
+            GameEventsManager.instance.recordEvents.GetRecordItem((int)recordItem);
+            Debug.Log($"수집품 ID : {(int)recordItem}, 이름 : {recordItem}");
             Destroy(this.gameObject);
         }
     }
