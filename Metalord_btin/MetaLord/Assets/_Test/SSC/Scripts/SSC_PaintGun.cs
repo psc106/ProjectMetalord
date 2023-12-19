@@ -1,16 +1,16 @@
 using System;
 using UnityEngine;
-using UnityEngine.UIElements;
+
 
 public class SSC_PaintGun : MonoBehaviour
 {
     [SerializeField] private Brush brush;
     [SerializeField] private SSC_GunState gun;
     [SerializeField] private InputReader input;
-    [SerializeField] private Transform checkPos;
-    [SerializeField] private Transform startPoint;
     [SerializeField] private Transform aimTarget;
 
+    [SerializeField] private Transform checkPos;
+    [SerializeField] private Transform startPoint;
 
     [SerializeField] private LayerMask gunLayer = -1;
     [Range(0.1f, 1f)] public float attackSpeed;
@@ -40,11 +40,6 @@ public class SSC_PaintGun : MonoBehaviour
         }
     }
 
-    private void OnDrawGizmos()
-    {
-        //CheckGizmo();
-    }
-
     // Update is called once per frame
     void Update()
     {
@@ -56,12 +51,6 @@ public class SSC_PaintGun : MonoBehaviour
         {
             Debug.Log(PaintTarget.CursorColor());
         }
-
-        //if (Input.GetKeyDown(KeyCode.R) && gun.CanReload)
-        //{
-        //    PaintTarget.ClearAllPaint();
-        //    gun.UpdateState(gun.MaxAmmo, GunState.READY);
-        //}
 
         if (!gun.CanFire)
         {
@@ -78,7 +67,7 @@ public class SSC_PaintGun : MonoBehaviour
         }
 
         // 일정시간동안 사격키 입력상태라면 연사모드
-        else if(autotimeCheck > autoTime && gun.state == GunState.READY)
+        else if(autotimeCheck > autoTime && gun.CanFire)
         {
             AutoFire(normalRay, checkRay);
             return;
@@ -91,7 +80,7 @@ public class SSC_PaintGun : MonoBehaviour
             return;
         }
 
-        else if(input.ShootKey && gun.state == GunState.READY)
+        else if(input.ShootKey && gun.CanFire)
         {            
             NormalFire(normalRay, checkRay);
         }

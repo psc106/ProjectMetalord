@@ -8,6 +8,7 @@ public enum GunState
 {
     READY,
     EMPTY,
+    RELOADING
 }
 
 public class SSC_GunState : MonoBehaviour
@@ -16,11 +17,17 @@ public class SSC_GunState : MonoBehaviour
     [SerializeField] private Image AmmoGauge;
     [SerializeField] private SSC_PaintGun paintMode;
     [SerializeField] private SSC_GrabGun grabMode;
+    [SerializeField] private SSC_BondGun bondMode;
     [SerializeField] private Controller_Physics player;
     [SerializeField] private MeshRenderer gunRenderer;
     [SerializeField] private GameObject backGun;
+    [SerializeField] private AnimationCurve reloadCurve;
 
+    float reloadTime = 4.5f;
     [HideInInspector] public GunState state;
+    [HideInInspector] public static List<PaintTarget> paintList = new List<PaintTarget>();
+    [HideInInspector] public static List<SSC_BondObj> bondList = new List<SSC_BondObj>();
+
 
     //public Vector3 GetPlayerCenter()
     //{
@@ -29,7 +36,15 @@ public class SSC_GunState : MonoBehaviour
 
     public bool CanFire
     {
-        get { return player.CanFire; }
+        get 
+        {
+            if(state != GunState.READY)
+            {
+                return false;
+            }
+
+            return player.CanFire;
+        }
         private set { }
     }
 
@@ -64,6 +79,7 @@ public class SSC_GunState : MonoBehaviour
     void Start()
     {
         grabMode.enabled = false;
+        bondMode.enabled = false;
         paintMode.enabled = true;
 
         Ammo = MaxAmmo;
@@ -74,27 +90,69 @@ public class SSC_GunState : MonoBehaviour
 
     private void Update()
     {
-
-        if (Input.GetKeyDown(KeyCode.R) && CanReload)
+        // 장전        
+        if (Input.GetKeyDown(KeyCode.R))
         {
-            player.PlayReloadAnimation();
-            state = GunState.EMPTY;
-            PaintTarget.ClearAllPaint();
-            StartCoroutine(ReloadingAmmo());
-            //UpdateState(MaxAmmo, GunState.READY);
+            Reloading();
         }
 
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            grabMode.enabled = false;
-            paintMode.enabled = true;
+        // 1번키 누르면 페인트건
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {            
+            SwapPaintGun();
         }
 
-        if(Input.GetKeyDown(KeyCode.E))
+        // 2번키 누르면 그랩건
+        if(Input.GetKeyDown(KeyCode.Alpha2))
         {
-            paintMode.enabled = false;
-            grabMode.enabled = true;
+            SwapGrabGun();
         }
+
+        // 3번키 누르면 본드건
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            SwapBondGun();
+        }
+
+        if(Input.GetKeyDown(KeyCode.Q))
+        {
+            Debug.Log($"본드 리스트 수 : {bondList.Count}");
+        }
+    }
+    public void SwapPaintGun()
+    {
+        if (grabMode.OnGrab || state == GunState.RELOADING)
+        {
+            return;
+        }
+
+        grabMode.enabled = false;
+        bondMode.enabled = false;
+        paintMode.enabled = true;
+    }
+
+    private void SwapGrabGun()
+    {
+        if (state == GunState.RELOADING)
+        {
+            return;
+        }
+
+        paintMode.enabled = false;
+        bondMode.enabled = false;
+        grabMode.enabled = true;
+    }
+
+    public void SwapBondGun()
+    {
+        if (grabMode.OnGrab || state == GunState.RELOADING)
+        {
+            return;
+        }
+
+        paintMode.enabled = false;
+        grabMode.enabled = false;
+        bondMode.enabled = true;
     }
 
     public void UpdateState(int ammoValue, GunState updatedState)
@@ -112,22 +170,74 @@ public class SSC_GunState : MonoBehaviour
         AmmoGauge.fillAmount = (float)Ammo / (float)MaxAmmo;
     }
 
+    public void Reloading()
+    {
+        if (!CanReload || state == GunState.RELOADING)
+        {
+            return;
+        }
+
+        player.PlayReloadAnimation();
+        state = GunState.RELOADING;
+        ClearBondList();
+        PaintTarget.ClearAllPaint();
+        StartCoroutine(ReloadingAmmo());
+    }
+
     IEnumerator ReloadingAmmo()
     {
-        while(Ammo != maxAmmo)
-        {
-            int ammoValue = (int)Mathf.Lerp(Ammo, maxAmmo, 0.1f);
-            Debug.Log(ammoValue - Ammo);
-            UpdateState(ammoValue - Ammo);
-            yield return new WaitForSeconds(Time.deltaTime * 2.5f);
+        float timeCheck = 0f;
+        float x = 0f;
 
-            if (Ammo >= 191)
-            {
-                Ammo = maxAmmo;
-            }
+        while (timeCheck <= reloadTime)
+        {
+            x = timeCheck / reloadTime;                        
+
+            int ammoValue = (int)Mathf.Lerp(Ammo, maxAmmo, x < 0.5 ? 16 * x * x * x * x * x : 1 - Mathf.Pow(-2 * x + 2, 5) / 2);            
+            UpdateState(ammoValue - Ammo);  
+            
+            yield return null;
+            timeCheck += Time.deltaTime;
+
         }
 
         UpdateState(maxAmmo, GunState.READY);
+    }
+
+    public static void AddBondList(SSC_BondObj obj)
+    {        
+        for(int i = 0; i < bondList.Count; i++)
+        {
+            if (bondList[i] == obj)
+            {
+                return;
+            }
+        }
+
+        bondList.Add(obj);
+    }
+
+    public static void AddPaintList(PaintTarget obj)
+    {
+        for (int i = 0; i < paintList.Count; i++)
+        {
+            if (paintList[i] == obj)
+            {
+                return;
+            }
+        }
+
+        paintList.Add(obj);
+    }
+
+    void ClearBondList()
+    {        
+        for(int i = 0; i < bondList.Count; i++)
+        {
+            bondList[i].CelarBond();
+        }
+
+        bondList.Clear();
     }
 
 }
