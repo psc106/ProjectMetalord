@@ -92,7 +92,7 @@ public class DialogueTypingEffect : MonoBehaviour
 
     private AudioClip ChooseRandomSound(int toneNumber)
     {
-        AudioClip myClip = default;
+        AudioClip myClip;
         if (toneNumber == 0)
         {
             randomNumber = UnityEngine.Random.Range(0, boldTone.Length);

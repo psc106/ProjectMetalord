@@ -7,21 +7,15 @@ using UnityEngine;
 using UnityEngine.UI;
 public class InteractUI : MonoBehaviour
 {
-    public GameObject interactPanel = default;
+   
     //private TMP_Text interactText = default;
-    public float fadeTime = 0f;
+    private readonly float fadeTime = 1f;
     public Image fadeImage = default;
 
 
     bool isFadeIn = false;
     bool isFadeOut = false;
     
-    private void Start()
-    {
-        interactPanel.SetActive(false);
-    }
-
-   
     private void OnTriggerEnter(Collider other)
     {
         StartCoroutine(FadeInImage());
