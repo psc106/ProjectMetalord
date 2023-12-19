@@ -33,7 +33,7 @@ public class RecordManager : MonoBehaviour
 
     private string s_zone; // 지역저장을 위한 임시변수
 
-    private const int PAGE_FULL_ITEMCOUNT = 3; // 한페이지에 몇개의 아이템을 표시할 것인지
+    private const int PAGE_FULL_ITEMCOUNT = 6; // 한페이지에 몇개의 아이템을 표시할 것인지
 
     // 우측 도감 설명 초기화 텍스트
     private const string RESET_NAME = "Not Select";
