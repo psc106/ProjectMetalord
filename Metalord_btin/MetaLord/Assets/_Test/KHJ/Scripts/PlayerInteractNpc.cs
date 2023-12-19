@@ -4,20 +4,10 @@ using UnityEngine;
 
 public class PlayerInteractNpc : MonoBehaviour
 {
-    //npc »óÈ£ÀÛ¿ë°ü·Ã
+    //npc ìƒí˜¸ì‘ìš©ê´€ë ¨
     public bool isInteract = false;
     IInteractNpc playerInteract = null;
-    public bool isMove = true;
-
-    public GameObject test;
-    // Start is called before the first frame update
-    void Start()
-    {
-        isMove = true;
-        isInteract = false;
-    }
-
-    // Update is called once per frame
+    
     void Update()
     {
         if (isInteract)
@@ -27,34 +17,32 @@ public class PlayerInteractNpc : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        //IInteractableObject interObj =other.GetComponent<IInteractableObject>();
-        //interObj?.Interact(); 
-        
+        if(other.gameObject.layer == LayerMask.NameToLayer("NPC"))
+        {
             playerInteract = other.GetComponent<IInteractNpc>();
             isInteract = true;
-        
-
+        }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        //IInteractableObject interObj = other.GetComponent<IInteractableObject>();
-        //interObj?.InteractOut();
-        
+       
+        if (other.gameObject.layer == LayerMask.NameToLayer("NPC"))
+        {
             playerInteract = null;
             isInteract = false;
-        
+        }
     }
     public void PushE()
     {
         if (playerInteract != null && Input.GetKeyDown(KeyCode.E))
         {
-            isMove = false;
             isInteract = false;
-            Debug.Log("ÇÃ·¹ÀÌ¾î E Å°´©¸£±â ");
+            Debug.Log("í”Œë ˆì´ì–´ E í‚¤ëˆ„ë¥´ê¸° ");
 
             playerInteract.InteractNpc();
-            test.SetActive(false);
+            Controller_Physics.SwitchCameraLock(true); //í”Œë ˆì´ì–´ ì›€ì§ì„ ë° ì¹´ë©”ë¼ ì •ì§€
+            //test.SetActive(false);
         }
     }
 }
