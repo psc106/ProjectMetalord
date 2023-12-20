@@ -96,8 +96,17 @@ public class SSC_PaintGun : MonoBehaviour
     {
         if (gun.checkSuccessRay)
         {
+            if(gun.hit.transform.GetComponent<NpcBase>() != null)
+            {
+                gun.hit.transform.GetComponent<BoxCollider>().enabled = false;
+                gun.hit.transform.GetComponent<NpcBase>().ChangedState(npcState.glued);
+                SSC_GunState.AddBondList(gun.hit.transform.GetComponent<NpcBase>());
+            }
+
             Ray muzzleRay = new Ray(gun.startPoint, gun.hit.point - gun.startPoint);
             UsedAmmo(muzzleRay, normalShot);
+            Debug.Log(gun.hit.transform.name);
+            gun.hit.transform.GetComponent<BoxCollider>().enabled = true;
 
             fireStart = true;
         }

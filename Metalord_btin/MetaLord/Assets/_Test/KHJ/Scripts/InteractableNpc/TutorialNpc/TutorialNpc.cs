@@ -13,5 +13,9 @@ public class TutorialNpc : NpcBase, IInteractNpc
         Debug.Log("Interact 실행됨");
         myDialogue.CheckStateTutorialDialogue(state);
     }
+    //public void ChangeNpcState(npcState _change)
+    //{
+    //    state = _change;
+    //}
 
 }

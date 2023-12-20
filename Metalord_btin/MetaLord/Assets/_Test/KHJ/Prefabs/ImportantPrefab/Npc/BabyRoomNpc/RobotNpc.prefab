@@ -169,12 +169,12 @@ GameObject:
   - component: {fileID: 2266919057797899660}
   - component: {fileID: 4775857003603152579}
   - component: {fileID: 1703002671303681941}
+  - component: {fileID: 2134855242190559499}
   - component: {fileID: 5988054032281480398}
-  - component: {fileID: 6639493989044963525}
   - component: {fileID: 8483387767562261999}
   - component: {fileID: 2628098286680635745}
   - component: {fileID: 8188170708419323887}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: RobotNpc
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -252,6 +252,27 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &2134855242190559499
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3491564715385927114}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.36, y: 0.33, z: -0.21}
+  m_Center: {x: 0, y: 0.16, z: 0.1}
 --- !u!64 &5988054032281480398
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -274,27 +295,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -4539036462715047737, guid: eebb15f72e9eaec4fa9397983d0d6c98, type: 3}
---- !u!135 &6639493989044963525
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3491564715385927114}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 0.33
-  m_Center: {x: 0, y: 0.28880998, z: 0.0009277314}
 --- !u!114 &8483387767562261999
 MonoBehaviour:
   m_ObjectHideFlags: 0

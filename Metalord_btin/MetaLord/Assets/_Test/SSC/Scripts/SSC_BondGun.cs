@@ -41,20 +41,47 @@ public class SSC_BondGun : MonoBehaviour
             return;
         }
 
-        RaycastHit hit;
-
-        if (Physics.Raycast(normalRay, out hit, range, gunLayer))
+        if (gun.checkSuccessRay)
         {
-            Ray muzzleRay = new Ray(startPoint.position, hit.point - startPoint.position);
-
-            if (hit.transform.GetComponent<SSC_BondObj>() != null)
+            if (gun.hit.transform.GetComponent<NpcBase>() != null)
             {
-                //hit.transform.GetComponent<SSC_BondObj>().myRigid.AddComponent<Rigidbody>();
-                SSC_GunState.AddBondList(hit.transform.GetComponent<SSC_BondObj>());                
+                gun.hit.transform.GetComponent<BoxCollider>().enabled = false;                
             }
 
+            if (gun.hit.transform.GetComponent<SSC_BondObj>() != null)
+            {
+                //hit.transform.GetComponent<SSC_BondObj>().myRigid.AddComponent<Rigidbody>();
+                SSC_GunState.AddBondList(gun.hit.transform.GetComponent<SSC_BondObj>());
+            }
+
+            Ray muzzleRay = new Ray(gun.startPoint, gun.hit.point - gun.startPoint);
             UsedAmmo(muzzleRay, bondAmmo);
-        }     
+
+            gun.hit.transform.GetComponent<BoxCollider>().enabled = true;
+            
+        }
+
+        // hit;
+
+        //if (Physics.Raycast(normalRay, out hit, range, gunLayer))
+        //{
+        //    Ray muzzleRay = new Ray(startPoint.position, hit.point - startPoint.position);
+
+        //    if (hit.transform.GetComponent<SSC_BondObj>() != null)
+        //    {
+        //        //hit.transform.GetComponent<SSC_BondObj>().myRigid.AddComponent<Rigidbody>();
+        //        SSC_GunState.AddBondList(hit.transform.GetComponent<SSC_BondObj>());                
+        //    }
+
+        //    if (gun.hit.transform.GetComponent<NpcBase>() != null)
+        //    {
+        //        gun.hit.collider.enabled = false;                
+        //    }
+
+        //    UsedAmmo(muzzleRay, bondAmmo);
+
+        //    gun.hit.collider.enabled = true;
+        //}     
     }
 
     void UsedAmmo(Ray _ray, int _ammo)

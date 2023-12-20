@@ -29,6 +29,8 @@ public class SSC_GunState : MonoBehaviour
     [HideInInspector] public GunState state;
     [HideInInspector] public static List<PaintTarget> paintList = new List<PaintTarget>();
     [HideInInspector] public static List<SSC_BondObj> bondList = new List<SSC_BondObj>();
+    [HideInInspector] public static List<NpcBase> npcList = new List<NpcBase>();
+
 
 
     //public Vector3 GetPlayerCenter()
@@ -95,6 +97,13 @@ public class SSC_GunState : MonoBehaviour
         //레이캐스트 업데이트
         UpdateRaycast();
 
+        if(Input.GetKeyDown(KeyCode.L))
+        {
+            if(hit.transform.GetComponent<NpcBase>() != null)
+            {
+                hit.transform.GetComponent<NpcBase>().PrintState();
+            }
+        }
 
         // 장전        
         if (Input.GetKeyDown(KeyCode.R))
@@ -286,6 +295,7 @@ public class SSC_GunState : MonoBehaviour
         player.PlayReloadAnimation();
         state = GunState.RELOADING;
         ClearBondList();
+        ClearNpcList();
         PaintTarget.ClearAllPaint();
         StartCoroutine(ReloadingAmmo());
     }
@@ -321,6 +331,29 @@ public class SSC_GunState : MonoBehaviour
         }
 
         bondList.Add(obj);
+    }
+
+    public static void AddBondList(NpcBase obj)
+    {
+        for (int i = 0; i < npcList.Count; i++)
+        {
+            if (npcList[i] == obj)
+            {
+                return;
+            }
+        }
+
+        npcList.Add(obj);
+    }
+
+    void ClearNpcList()
+    {
+        for (int i = 0; i < npcList.Count; i++)
+        {
+            npcList[i].ChangedState(npcState.normal);
+        }
+
+        npcList.Clear();
     }
 
     public static void AddPaintList(PaintTarget obj)

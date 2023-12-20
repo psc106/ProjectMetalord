@@ -11,12 +11,12 @@ GameObject:
   - component: {fileID: 4208122371503013546}
   - component: {fileID: 5985997623150112681}
   - component: {fileID: 745293711835141536}
-  - component: {fileID: 692808885318871486}
   - component: {fileID: 6773046664397870340}
+  - component: {fileID: 692808885318871486}
   - component: {fileID: 8337649906800620282}
   - component: {fileID: 1580330006859474208}
   - component: {fileID: 410666043207146335}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: SheepNpc
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -89,6 +89,27 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &6773046664397870340
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 477451153861566170}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.31852397, y: 0.43406025, z: 0.4727531}
+  m_Center: {x: 0.31, y: 0.051867798, z: -0.24}
 --- !u!64 &692808885318871486
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -111,27 +132,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 5112654487281405845, guid: 8d61902f9d9b00d48bd788cbc265a961, type: 3}
---- !u!65 &6773046664397870340
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 477451153861566170}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.31852397, y: 0.43406025, z: 0.4727531}
-  m_Center: {x: 0.31, y: 0.051867798, z: -0.24}
 --- !u!114 &8337649906800620282
 MonoBehaviour:
   m_ObjectHideFlags: 0

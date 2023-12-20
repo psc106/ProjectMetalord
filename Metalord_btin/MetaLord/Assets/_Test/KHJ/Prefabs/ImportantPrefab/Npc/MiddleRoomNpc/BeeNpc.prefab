@@ -188,12 +188,12 @@ GameObject:
   - component: {fileID: 9001803395639632936}
   - component: {fileID: 2853917513556030150}
   - component: {fileID: 509058647995485898}
+  - component: {fileID: 4109092652244796837}
   - component: {fileID: 2829666601689883593}
-  - component: {fileID: 7236339341894192339}
   - component: {fileID: 29759510932080361}
   - component: {fileID: 8765222856210531335}
   - component: {fileID: 7497749117217417900}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BeeNpc
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -266,6 +266,27 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &4109092652244796837
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7006533252895142986}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.91, y: 0.53, z: 0.52}
+  m_Center: {x: 0, y: -0.2, z: 0.1}
 --- !u!64 &2829666601689883593
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -288,27 +309,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -105928711701079186, guid: 1fee88f06248c8b4eb3e5aef4a14fc2c, type: 3}
---- !u!135 &7236339341894192339
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7006533252895142986}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 0.6
-  m_Center: {x: -4.7375527e-16, y: 0.13335216, z: -0.0047404324}
 --- !u!114 &29759510932080361
 MonoBehaviour:
   m_ObjectHideFlags: 0

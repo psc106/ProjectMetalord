@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 7838676413211617397}
   - component: {fileID: 2664752205201854499}
   - component: {fileID: 2505919871813975352}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: SnowGirlNpc
   m_TagString: Untagged
   m_Icon: {fileID: 0}
