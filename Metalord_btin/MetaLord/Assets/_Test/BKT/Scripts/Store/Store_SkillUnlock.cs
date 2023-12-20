@@ -27,13 +27,17 @@ public class Store_SkillUnlock : StoreObject
     private void Awake()
     {
         // 스킬 정보 입력할 게임 오브젝트 캐싱
-        nameObject = transform.GetChild(NAME_INDEX).GetComponent<TMP_Text>();
-        costObject = transform.GetChild(COST_INDEX).GetComponent<TMP_Text>();
-        explainObject = transform.GetChild(EXPLAIN_INDEX).GetComponent<TMP_Text>();
+        //nameObject = transform.GetChild(NAME_INDEX).GetComponent<TMP_Text>();
+        //costObject = transform.GetChild(COST_INDEX).GetComponent<TMP_Text>();
+        //explainObject = transform.GetChild(EXPLAIN_INDEX).GetComponent<TMP_Text>();
+
+        nameObject = Utility.FindChildObj(this.gameObject, "Text(Name)").GetComponent<TMP_Text>();
+        costObject = Utility.FindChildObj(this.gameObject, "Text(Cost)").GetComponent<TMP_Text>();
+        explainObject = Utility.FindChildObj(this.gameObject, "Text(Explain)").GetComponent<TMP_Text>();
 
         // 스킬 정보 입력
         nameObject.text = skillName;
-        costObject.text = cost.ToString();
+        costObject.text = cost.ToString() + "개";
         explainObject.text = skillExplain;
 
         // 금액에 코스트 반영
