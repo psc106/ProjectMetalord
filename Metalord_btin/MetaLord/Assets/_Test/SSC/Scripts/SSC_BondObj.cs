@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class SSC_BondObj : MonoBehaviour
 {
-    SSC_GrabGun grab;
+    GrabGun grab;
     MeshCollider myColider;        
     public LayerMask layerMask;
 
@@ -11,7 +11,7 @@ public class SSC_BondObj : MonoBehaviour
 
     private void Awake()
     {
-        grab = FindAnyObjectByType<SSC_GrabGun>();       
+        grab = FindAnyObjectByType<GrabGun>();       
         myColider = GetComponent<MeshCollider>();
     }
 
@@ -29,7 +29,7 @@ public class SSC_BondObj : MonoBehaviour
                 PaintTarget.RayColor(ray) == Color.red)
             {
                 transform.parent = hit.transform;
-                SSC_GunState.AddBondList(this);
+                GunStateController.AddList(this);
 
                 if (transform.GetComponent<Rigidbody>() != null)
                 {
