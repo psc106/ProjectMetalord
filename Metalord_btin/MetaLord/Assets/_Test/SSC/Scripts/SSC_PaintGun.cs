@@ -43,15 +43,18 @@ public class SSC_PaintGun : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Ray normalRay = new Ray(GetOriginPos(), CheckDir());
-        Ray checkRay = new Ray(checkPos.position, CheckDir());
-
         // 레이지점 컬러 체크 테스트용
         if (Input.GetKeyDown(KeyCode.T))
         {
             Debug.Log(PaintTarget.CursorColor());
         }
 
+        Shoot();
+
+    }
+
+    public void Shoot()
+    {
         if (!gun.CanFire)
         {
             fireStart = false;
@@ -60,104 +63,67 @@ public class SSC_PaintGun : MonoBehaviour
         }
 
         // 마우스 클릭에서 손을 떼면 사격 중지.
-        if(!input.ShootKey)
+        if (!input.ShootKey)
         {
             fireStart = false;
             autotimeCheck = 0f;
         }
 
         // 일정시간동안 사격키 입력상태라면 연사모드
-        else if(autotimeCheck > autoTime && gun.CanFire)
+        else if (autotimeCheck > autoTime && gun.CanFire)
         {
-            AutoFire(normalRay, checkRay);
+            AutoFire();
             return;
         }
 
         // 사격을 시작 == 마우스버튼 누른시점동안
-        else if(fireStart == true)
+        else if (fireStart == true)
         {
             autotimeCheck += Time.deltaTime;
             return;
         }
 
-        else if(input.ShootKey && gun.CanFire)
-        {            
-            NormalFire(normalRay, checkRay);
+        else if (input.ShootKey && gun.CanFire)
+        {
+            NormalFire();
         }
-
     }
 
     /// <summary>
     /// 단발 메소드
     /// </summary>
-    private void NormalFire(Ray normalRay, Ray checkRay)
-    {     
-        RaycastHit hit;
-
-        // 정면 오브젝트와 설정한 rangeLimit 값 거리 이하일 때
-        if(Physics.Raycast(checkRay, out hit, range, gunLayer))
+    private void NormalFire()
+    {
+        if (gun.checkSuccessRay)
         {
-            float checkDistance = Vector3.Distance(checkPos.position, hit.point);
-
-            if (checkDistance <= rangeLimit)
-            {
-                UsedAmmo(checkRay, normalShot);
-
-                fireStart = true;
-                return;
-            }
-        }
-
-        // 일반적인 상황의 사격
-        if (Physics.Raycast(normalRay, out hit, range, gunLayer))
-        {
-            Ray muzzleRay = new Ray(startPoint.position, hit.point - startPoint.position);
-
+            Ray muzzleRay = new Ray(gun.startPoint, gun.hit.point - gun.startPoint);
             UsedAmmo(muzzleRay, normalShot);
 
             fireStart = true;
         }
-        
     }
 
     /// <summary>
     /// 연사 메소드
     /// </summary>
-    private void AutoFire(Ray normalRay, Ray checkRay)
+    private void AutoFire()
     {
         timeCheck += Time.deltaTime;
-        RaycastHit hit;
 
         if (timeCheck >= attackSpeed)
         {
-            if (Physics.Raycast(checkRay, out hit, range, gunLayer))
+            if (gun.checkSuccessRay)
             {
-                float checkDistance = Vector3.Distance(checkPos.position, hit.point);
+                Ray muzzleRay = new Ray(gun.startPoint, gun.hit.point - gun.startPoint);
+                UsedAmmo(muzzleRay, autoShot);
 
-                if (checkDistance <= rangeLimit)
-                {
-                    UsedAmmo(checkRay, autoShot);
-                    
-                    timeCheck = 0f;
-                    return;
-                }                                
+                timeCheck = 0f;
             }
         }
 
-        if (timeCheck >= attackSpeed)
-        {                        
-            if (Physics.Raycast(normalRay, out hit, range, gunLayer))
-            {
-                Ray muzzleRay = new Ray(startPoint.position, hit.point - startPoint.position);
-
-                UsedAmmo(muzzleRay, autoShot);
-
-                timeCheck = 0f;        
-            }            
-        }
     }
 
-    /// <summary>
+   /* /// <summary>
     /// 카메라와 플레이어의 축을 동일선상에 놓아주는 메소드
     /// </summary>
     /// <returns>카메라의 정면 방향 + 플레이어의 수직선상 </returns>
@@ -182,7 +148,7 @@ public class SSC_PaintGun : MonoBehaviour
             Camera.main.transform.TransformDirection(dir);
 
         return dir;
-    }
+    }*/
 
     /// <summary>
     /// 전달받은 Ray 위치에 PaintTarget.PaintRay() 실행
