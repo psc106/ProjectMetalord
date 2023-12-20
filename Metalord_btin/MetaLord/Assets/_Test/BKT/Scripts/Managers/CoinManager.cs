@@ -26,16 +26,6 @@ public class CoinManager : MonoBehaviour
         currentCoin = startCoin; // 시작시 코인 세팅
     }
 
-    private void OnEnable()
-    {       
-        
-    }
-
-    private void OnDisable()
-    {
-        
-    }
-
     private void Start()
     {
         GameEventsManager.instance.coinEvents.ChangeCoin(currentCoin); // 시작시 코인 변경 알림

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: e831cf76d8dce435f956cb00fe0b5c38
+guid: b6694ae237e9a4872a51fac6580913df
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -139,10 +139,10 @@ TextureImporter:
       name: Can_Upgrade_0
       rect:
         serializedVersion: 2
-        x: 20
-        y: 11
-        width: 761
-        height: 698
+        x: 11
+        y: 15
+        width: 755
+        height: 693
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -150,8 +150,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 219678409f3e94195b4cad04f101c487
-      internalID: -141546299
+      spriteID: 2bc28aac373b7416eaab1bd7a2d5794e
+      internalID: -832146395
       vertices: []
       indices: 
       edges: []
@@ -159,7 +159,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 67e48085c682f49318d569e1a10e7ba8
+    spriteID: 52db66aa6b47d4f3ea9d3b3d75c84919
     internalID: 0
     vertices: []
     indices: 
@@ -167,7 +167,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Can_Upgrade_0: -141546299
+      Can_Upgrade_0: -832146395
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

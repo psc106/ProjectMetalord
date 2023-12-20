@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 30e5a0c83beba4719a29db89f2984b01
+guid: 1497ac4c44c1342e198645ec2e05e0ef
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -139,19 +139,19 @@ TextureImporter:
       name: Can_Unlock_0
       rect:
         serializedVersion: 2
-        x: 20
-        y: 19
-        width: 1230
-        height: 580
+        x: 21
+        y: 22
+        width: 1071
+        height: 509
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e6efdf183e1464543acf91464f4a8f83
-      internalID: 833371998
+      spriteID: 058f3e99b45234d9091cafef79f951bd
+      internalID: 175616852
       vertices: []
       indices: 
       edges: []
@@ -159,7 +159,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 131f2cb02e6664442912ffb081f5c2ac
+    spriteID: 88f4f57a47d5c492da0b1d420894a5e6
     internalID: 0
     vertices: []
     indices: 
@@ -167,7 +167,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Can_Unlock_0: 833371998
+      Can_Unlock_0: 175616852
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
