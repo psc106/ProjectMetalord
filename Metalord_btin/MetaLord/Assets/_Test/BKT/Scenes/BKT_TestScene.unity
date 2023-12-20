@@ -6985,7 +6985,7 @@ MonoBehaviour:
   m_Value: 0
   m_Options:
     m_Options:
-    - m_Text: "\uD68D\uB4DD \uC5EC\uBD80"
+    - m_Text: "\uC804\uCCB4"
       m_Image: {fileID: 0}
     - m_Text: "\uD68D\uB4DD"
       m_Image: {fileID: 0}
@@ -9335,7 +9335,7 @@ GameObject:
   - component: {fileID: 1207185284}
   - component: {fileID: 1207185283}
   m_Layer: 5
-  m_Name: Label
+  m_Name: Label(SortGot)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9380,7 +9380,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uC9C0\uC5ED"
+  m_text: "\uC804\uCCB4"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 4174f808920964a6582d1de17fe7d164, type: 2}
   m_sharedMaterial: {fileID: -211913636756029541, guid: 4174f808920964a6582d1de17fe7d164, type: 2}
@@ -9841,10 +9841,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9775e896ae76b43e88f5402047608230, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pagePanel: {fileID: 486882631}
-  itemName: {fileID: 969136977}
-  zone: {fileID: 1574439050}
-  description: {fileID: 1152684026}
+  recordCanvas: {fileID: 2073395642}
 --- !u!1 &1319199958
 GameObject:
   m_ObjectHideFlags: 0
@@ -13276,7 +13273,7 @@ GameObject:
   - component: {fileID: 1743603688}
   - component: {fileID: 1743603687}
   m_Layer: 5
-  m_Name: Label
+  m_Name: Label(SortZone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13321,7 +13318,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uD68D\uB4DD \uC5EC\uBD80"
+  m_text: "\uC804\uCCB4"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 4174f808920964a6582d1de17fe7d164, type: 2}
   m_sharedMaterial: {fileID: -211913636756029541, guid: 4174f808920964a6582d1de17fe7d164, type: 2}
@@ -13348,7 +13345,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36.3
+  m_fontSize: 55.9
   m_fontSizeBase: 14
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -14305,7 +14302,7 @@ MonoBehaviour:
   m_Value: 0
   m_Options:
     m_Options:
-    - m_Text: "\uC9C0\uC5ED"
+    - m_Text: "\uC804\uCCB4"
       m_Image: {fileID: 0}
     - m_Text: "\uBD80\uC5CC"
       m_Image: {fileID: 0}
@@ -15562,6 +15559,7 @@ GameObject:
   - component: {fileID: 2073395645}
   - component: {fileID: 2073395644}
   - component: {fileID: 2073395643}
+  - component: {fileID: 2073395647}
   m_Layer: 5
   m_Name: RecordCanvas
   m_TagString: Untagged
@@ -15652,6 +15650,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &2073395647
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2073395642}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71705efdf577e44ba807d31ab04e8c46, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  labelSortGot: {fileID: 1207185281}
+  labelSortZone: {fileID: 1743603685}
 --- !u!1 &2094025730
 GameObject:
   m_ObjectHideFlags: 0
