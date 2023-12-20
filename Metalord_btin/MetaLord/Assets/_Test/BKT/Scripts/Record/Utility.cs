@@ -75,3 +75,12 @@ public enum RecordList
     LightSaber = 305,
     TechDeck = 306,
 }
+
+/// <summary>
+/// 코인 타입
+/// </summary>
+public enum CoinType
+{
+    SMALL_COIN,
+    BIG_COIN
+}
