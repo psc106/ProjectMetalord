@@ -68,7 +68,7 @@ public class RecordObject : MonoBehaviour,IPointerDownHandler
     /// <summary>
     /// 체크표시 비활성화
     /// </summary>
-    private void InActiveChecking()
+    public void InActiveChecking()
     {
         recordInfo.isSelected = false;
         transform.GetChild(2).gameObject.SetActive(false);
@@ -92,5 +92,6 @@ public class RecordObject : MonoBehaviour,IPointerDownHandler
     public void OnPointerDown(PointerEventData eventData)
     {
         GameEventsManager.instance.recordEvents.SelectRecord(recordInfo.id);
+        RecordManager.instance.SelectObject(this); // 게임매니저에 내 오브젝트 저장
     }
 }

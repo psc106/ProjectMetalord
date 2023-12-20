@@ -21,6 +21,8 @@ public class RecordManager : MonoBehaviour
     private GameObject itemName; //페이지 우측 이름 text
     private GameObject zone; //페이지 우측 지역 text
     private GameObject description; //페이지 우측 설명 text
+    private GameObject labelSortGot;
+    private GameObject labelSortZone;
 
     private GameObject itemUIObjectPrefab; // 복사하여 생성할 프리펩
     private GameObject pagePrefab; // 복사하여 생성할 프리펩
@@ -30,6 +32,8 @@ public class RecordManager : MonoBehaviour
     private Dictionary<int,RecordObjectInfo> recordObjectInfos; // 도감 정보 전체가 저장된 원본
 
     private List<RecordObjectInfo> tempRecordObjectInfos; // 정렬에 맞춰 변경될 도감 정보 배열
+
+    private RecordObject selectedObject;
 
     private int zoneSortIndex;
     private int gotSortIndex;
@@ -81,6 +85,10 @@ public class RecordManager : MonoBehaviour
         zone = Utility.FindChildObj(recordCanvas, "Text(Info_Zone)");
         description = Utility.FindChildObj(recordCanvas, "Text(Info_Description)");
         pagePanel = Utility.FindChildObj(recordCanvas, "RecordPagePanel");
+        //labelSortGot = Utility.FindChildObj(recordCanvas, "Label(SortGot)");
+        //labelSortZone = Utility.FindChildObj(recordCanvas, "Label(SortZone)");
+        labelSortGot = Utility.FindChildObj(recordCanvas, "Sort(Got)");
+        labelSortZone = Utility.FindChildObj(recordCanvas, "Sort(Zone)");
 
         itemUIObjectPrefab = Resources.Load<GameObject>("Prefabs/Object_ForRecordObject");
         pagePrefab = Resources.Load<GameObject>("Prefabs/Object_ForPage");
@@ -99,6 +107,7 @@ public class RecordManager : MonoBehaviour
         InputCSVFileToInfo(); // 초기화 레코드 정보 저장
         MakePage(objectCSV.Count); //초기화 페이지 수 계산
         MakeRecordObject(recordObjectInfos); //초기화 도감 오브젝트 구성
+        ResetRecord();
     }
 
     private void OnEnable()
@@ -363,5 +372,33 @@ public class RecordManager : MonoBehaviour
         // 임시 리스트를 매개변수로 페이지와 오브젝트 생성
         MakePage(tempRecordObjectInfos.Count);
         MakeRecordObject(tempRecordObjectInfos);
+    }
+
+    /// <summary>
+    /// 도감을 리셋하는 함수
+    /// 231220 배경택
+    /// </summary>
+    public void ResetRecord()
+    {
+        SortGot(0);
+        SortZone(0);
+
+        //labelSortGot.GetComponent<TMP_Text>().text = "획득 여부";
+        //labelSortZone.GetComponent<TMP_Text>().text = "지역";
+        labelSortZone.GetComponent<TMP_Dropdown>().captionText.text = "지역";
+        labelSortGot.GetComponent<TMP_Dropdown>().captionText.text = "획득 여부";
+
+        if(selectedObject != null) selectedObject.InActiveChecking(); // 선택표시 비활성화
+        DeleteRecordInfo();
+    }
+
+    /// <summary>
+    /// 선택된 오브젝트를 기억하는 함수
+    /// 231220 배경택
+    /// </summary>
+    /// <param name="_selectedObject"></param>
+    public void SelectObject(RecordObject _selectedObject)
+    {
+        selectedObject = _selectedObject;
     }
 }
