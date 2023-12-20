@@ -19,7 +19,8 @@ public class DialogueUI : MonoBehaviour
     // 31 ~ 33 : 공주
     // 34 ~ 36 : 모험가
     #endregion
- 
+
+    public PlayerInteractNpc playerInteract;
 
     public GameObject dialogueUI;
     public GameObject questionUI;
@@ -180,10 +181,10 @@ public class DialogueUI : MonoBehaviour
                 myTextEffect.fadeImgae.SetActive(true);
 
                 yield return null;
-                Debug.Log("E키 누르기 전인데 실행될려나?");
+                //Debug.Log("E키 누르기 전인데 실행될려나?");
 
                 yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.E));
-                Debug.Log("E키 누른뒤인데 작동 안하나?");
+                //Debug.Log("E키 누른뒤인데 작동 안하나?");
                 myTextEffect.fadeImgae.SetActive(false);
             }
 
@@ -195,6 +196,7 @@ public class DialogueUI : MonoBehaviour
 
             if (nextId != "" && nextId != null)
             {
+                Debug.LogFormat("{0}<== 여기가 nextId에 값이 들어있을때인데 무슨 값이죠?", nextId);
                 keyNum = int.Parse(nextId);
             }
             else if (nextId == "" || nextId == null)
@@ -208,6 +210,7 @@ public class DialogueUI : MonoBehaviour
                     CloseDialogueUI();
                     //플레이어 움직임 다시 제어
                     //testPlayer.isMove = true;
+                    playerInteract.isInteract = true; //다시 대화할 수 있게끔
                     Controller_Physics.SwitchCameraLock(false);
                 }
                 break;
