@@ -57,8 +57,11 @@ public class SSC_BondGun : MonoBehaviour
             Ray muzzleRay = new Ray(gun.startPoint, gun.hit.point - gun.startPoint);
             UsedAmmo(muzzleRay, bondAmmo);
 
-            gun.hit.transform.GetComponent<BoxCollider>().enabled = true;
-            
+            if (gun.hit.transform.GetComponent<NpcBase>() != null)
+            {
+                gun.hit.transform.GetComponent<BoxCollider>().enabled = true;
+            }
+
         }
 
         // hit;

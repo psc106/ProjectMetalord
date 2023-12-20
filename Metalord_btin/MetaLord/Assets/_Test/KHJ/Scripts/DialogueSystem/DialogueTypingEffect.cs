@@ -58,7 +58,7 @@ public class DialogueTypingEffect : MonoBehaviour
             //Debug.LogFormat("{0} <== This is chaiIndex ", charIndex);
         }
         isTypingRunning = false;
-        Debug.Log("Áö±Ý writeEffect ¾ðÁ¦ µÇ´Â°ÅÁö?");
+        Debug.Log("ì§€ê¸ˆ writeEffect ì–¸ì œ ë˜ëŠ”ê±°ì§€?");
         fadeImgae.SetActive(true);
         //textLabel.text = textToType;
     }
@@ -71,7 +71,7 @@ public class DialogueTypingEffect : MonoBehaviour
         {
             //string[] row = testText[i].Split(new char[] { ' ' });
             //Debug.Log(temporaryText[i].Length);
-            //Debug.LogFormat("{0} <=== ÅØ½ºÆ®", temporaryText[i]);
+            //Debug.LogFormat("{0} <=== í…ìŠ¤íŠ¸", temporaryText[i]);
             for (int j = 0; j < temporaryText[i].Length; j++)
             {
                 myAudioClip = ChooseRandomSound(toneNumber);
@@ -82,7 +82,7 @@ public class DialogueTypingEffect : MonoBehaviour
         }
         //for (int i = 0;  i < textToType.Length; i++)
         //{
-        //    Debug.LogFormat("{0} <== ÅØ½ºÆ® ±æÀÌ", textToType.Length);
+        //    Debug.LogFormat("{0} <== í…ìŠ¤íŠ¸ ê¸¸ì´", textToType.Length);
         //    myAudioClip = ChooseRandomSound(toneNumber);
         //    myAduio.PlayOneShot(myAudioClip);
         //    yield return new WaitForSeconds(0.085f);
