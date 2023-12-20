@@ -33,6 +33,8 @@ public class Controller_Physics : MonoBehaviour
     MeshRenderer handGunRender;
     [SerializeField]
     MeshRenderer backGunRender;
+    [SerializeField]
+    CameraManager cameraManager;
 
     #region Private Reference
 
@@ -522,6 +524,9 @@ public class Controller_Physics : MonoBehaviour
             {
                 //점프 방향을 접촉 표면과 같게 한다.
                 jumpDirection = contactNormal;
+                cameraManager.UpdateFixedAngle();
+                cameraManager.PlayBlendCameraRoutine();
+                cameraManager.ChangePriorityCamera(CameraType.Climb, 1);
             }
 
             //인풋이 있을 경우
@@ -690,6 +695,7 @@ public class Controller_Physics : MonoBehaviour
         steepNormal = Vector3.zero;
         //등산가능
         climbContactCount = 0;
+        previousClimbNormal = climbNormal;
         climbNormal = Vector3.zero;
 
         connectionVelocity = Vector3.zero;
@@ -915,6 +921,12 @@ public class Controller_Physics : MonoBehaviour
         return climbNormal;
     }
 
+    Vector3 previousClimbNormal;
+    public Vector3 GetPreviousClimbNormal()
+    {
+        return previousClimbNormal;
+    }
+
     float GetMinDot(int layer)
     {
         //n만큼 비트 이동한 것과 비교하여 1이 검출되지않는다면 지형 / 그외 오브젝트
@@ -944,6 +956,10 @@ public class Controller_Physics : MonoBehaviour
         }
         stopState = check;
     }
+
+
+
+    #region 애니메이션 이벤트
     public void PlayReloadAnimation()
     {
         playingReloadAnimation = true;
@@ -1007,6 +1023,8 @@ public class Controller_Physics : MonoBehaviour
         playingEquipAnimation = false;
         aimRig.weight = 1;
     }
+
+    #endregion
 
     #region 바인딩 함수
     [Header("인풋 시스템 리더")] //인풋 시스템 리더
