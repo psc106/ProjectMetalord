@@ -127,3 +127,9 @@ public enum GunMode
     Grab,
     Bond,
 }
+
+public enum UpgradeCategory
+{
+    Range,
+    Amount
+}

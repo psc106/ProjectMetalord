@@ -130,12 +130,14 @@ public class GunStateController : MonoBehaviour
 
     private void OnEnable()
     {
-        GameEventsManager.instance.coinEvents.onUseCoin += GunModeUnlock;
+        GameEventsManager.instance.coinEvents.onUnlockGunMode += GunModeUnlock;
+        GameEventsManager.instance.coinEvents.onUpgradeGun += UpgradeGun;
     }
 
     private void OnDisable()
     {
-        GameEventsManager.instance.coinEvents.onUseCoin -= GunModeUnlock;
+        GameEventsManager.instance.coinEvents.onUnlockGunMode -= GunModeUnlock;
+        GameEventsManager.instance.coinEvents.onUpgradeGun -= UpgradeGun;
     }
 
     void Start()
@@ -193,7 +195,9 @@ public class GunStateController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            Debug.Log($"본드 리스트 수 : {bondList.Count}");
+            Debug.Log($"현재 레인지 값 : {range}");
+            Debug.Log($"현재 총량 :  { MaxAmmo}");
+            //Debug.Log($"본드 리스트 수 : {bondList.Count}");
         }
     }
 
@@ -466,6 +470,19 @@ public class GunStateController : MonoBehaviour
                 break;
             case GunMode.Bond:
                 usedBondGun = true;
+                break;
+        }
+    }
+
+    public void UpgradeGun(UpgradeCategory _category, int _value)
+    {
+        switch (_category)
+        {
+            case UpgradeCategory.Range:
+                range += _value;
+                break;
+            case UpgradeCategory.Amount:
+                MaxAmmo += _value;
                 break;
         }
     }
