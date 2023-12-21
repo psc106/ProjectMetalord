@@ -6,7 +6,8 @@ public class BearNpc : NpcBase, IInteractNpc
 {
     public void InteractNpc()
     {
-        // °õ 37
+        // ê³° 37
         myDialogue.CheckStateDialogue(37, state);
     }
+
 }
