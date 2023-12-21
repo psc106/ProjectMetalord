@@ -56,6 +56,6 @@ public class Store_SkillUnlock : StoreObject
         base.BuyStoreObject();
 
 
-        GameEventsManager.instance.coinEvents.UseCoin(gunMode);        
+        GameEventsManager.instance.coinEvents.UnlockGunMode(gunMode);        
     }
 }

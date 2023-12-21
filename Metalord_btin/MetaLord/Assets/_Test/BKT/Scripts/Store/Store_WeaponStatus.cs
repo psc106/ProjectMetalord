@@ -65,6 +65,7 @@ public class Store_WeaponStatus : StoreObject
             ReflectCost(stepIndex);
             ReflectStepImage(stepIndex);
             ReflectCostText(stepIndex);
+            GameEventsManager.instance.coinEvents.UpgradeGun(stepIncreaseAmount[stepIndex]); // 건 업그레이드에 전달
             stepIndex += 1;
         }
         else
