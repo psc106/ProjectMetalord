@@ -196,8 +196,6 @@ public class GunStateController : MonoBehaviour
         Ray checkRay = new Ray(startPlayerPos, direction);
         Ray defaultRay = new Ray(startPlayerPos, endPos- startPlayerPos);
 
-        crossHair.rectTransform.anchoredPosition = Vector2.zero;
-
         // 일반적인 상황의 사격
         if (Physics.Raycast(normalRay, out hit, range, gunLayer))
         {
@@ -266,7 +264,11 @@ public class GunStateController : MonoBehaviour
                 //something
             }
         }
-        
+
+        if (crossHair.rectTransform.anchoredPosition != Vector2.zero)
+        {
+            crossHair.rectTransform.anchoredPosition = Vector2.zero;
+        }
         checkSuccessRay = false;
         crossHair.color = Color.red;
 
