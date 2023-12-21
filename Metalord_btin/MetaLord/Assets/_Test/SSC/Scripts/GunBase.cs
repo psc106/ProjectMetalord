@@ -24,6 +24,17 @@ abstract public class GunBase : MonoBehaviour
             brush.splatScale = 10;
         }
     }
+
+    protected void PaintingNpc(Ray muzzleRay, int paintAmmo)
+    {
+        state.targetNpc = state.hit.transform.GetComponent<NpcBase>();
+        BoxCollider interactZone = state.targetNpc.GetComponent<BoxCollider>();
+        interactZone.enabled = false;
+        UsedAmmo(muzzleRay, paintAmmo);
+        state.targetNpc.ChangedState(npcState.glued);
+        GunStateController.AddList(state.targetNpc);
+        interactZone.enabled = true;
+    }
     
     protected void UsedAmmo(Ray _ray, int _ammo)
     {

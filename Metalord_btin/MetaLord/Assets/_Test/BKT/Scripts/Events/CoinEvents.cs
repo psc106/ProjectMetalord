@@ -22,14 +22,13 @@ public class CoinEvents
         }
     }
 
-    // 코인 사용시 호출되는 이벤트
-    // TODO 이벤트 발생시, 아이템 구매되도록 _ 이쪽에서 이벤트 처리 하지 않을 수 있음
-    //public event Action onUseCoin;
-    //public void UseCoin()
-    //{
-    //    if(onUseCoin != null)
-    //    {
-    //        onUseCoin();
-    //    }
-    //}
+    //코인 사용시 호출되는 이벤트
+    public event Action<GunMode> onUseCoin;
+    public void UseCoin(GunMode gunMode)
+    {
+        if (onUseCoin != null)
+        {
+            onUseCoin(gunMode);
+        }
+    }
 }

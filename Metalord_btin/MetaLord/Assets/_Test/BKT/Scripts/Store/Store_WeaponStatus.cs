@@ -33,8 +33,10 @@ public class Store_WeaponStatus : StoreObject
     [SerializeField] int[] stepIncreaseAmount = new int[MAX_STEP]; // 단계별 증가량
 
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
+
         stepIndex = 0;
 
         // 스킬 정보 입력할 게임 오브젝트 캐싱

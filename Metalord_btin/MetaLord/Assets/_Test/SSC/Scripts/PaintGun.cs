@@ -66,16 +66,6 @@ public class PaintGun : GunBase
             return;
         }
 
-        //if(state.checkSuccessRay)
-        //{
-        //    //if(CheckCanFire() == true)
-        //    //{
-        //    //    Ray muzzleRay = new Ray(state.startPoint, state.hit.point - state.startPoint);
-        //    //    UsedAmmo(muzzleRay, normalShot);            
-
-        //    //}
-
-        //}
         if (!state.CanFire)
         {
             fireStart = false;
@@ -131,7 +121,14 @@ public class PaintGun : GunBase
                 return;
             }
 
-            UsedAmmo(muzzleRay, paintAmmo);
+            if(state.hit.transform.GetComponent<NpcBase>() != null)
+            {
+                PaintingNpc(muzzleRay, paintAmmo);
+            }
+            else
+            {
+                UsedAmmo(muzzleRay, paintAmmo);
+            }
 
             fireStart = true;
         }
@@ -146,7 +143,15 @@ public class PaintGun : GunBase
             if (state.checkSuccessRay)
             {
                 Ray muzzleRay = new Ray(state.startPoint, state.hit.point - state.startPoint);
-                UsedAmmo(muzzleRay, autoShot);
+
+                if (state.hit.transform.GetComponent<NpcBase>() != null)
+                {
+                    PaintingNpc(muzzleRay, autoShot);                                        
+                }
+                else
+                {
+                    UsedAmmo(muzzleRay, autoShot);
+                }
 
                 timeCheck = 0f;
             }

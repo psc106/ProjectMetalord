@@ -100,7 +100,9 @@ public class Controller_Physics : MonoBehaviour
     public bool isMove { get; private set; }
     public static bool stopState { get; private set; }
     public bool CanFire => canFire && CanReload;
-    public bool CanReload => !playingReloadAnimation && !OnClimb;
+
+    // 12.21 SSC : NPC 대화중(stopState) 사격, 재장전 방지 위해 CanReload => !stopState 추가
+    public bool CanReload => !playingReloadAnimation && !OnClimb && !stopState;
     public bool OnMultipleState => multipleState;
     public bool OnGround => groundContactCount > 0;
     public bool OnSteep => steepContactCount > 0;
@@ -170,7 +172,7 @@ public class Controller_Physics : MonoBehaviour
     [SerializeField] GameObject recordUI; // 도감 UI 오브젝트
     [SerializeField] GameObject settingsUI; // 환경설정 UI 오브젝트
     private bool canInput = true; // 입력 가능여부
-    private const float INPUT_DELAYTIME = 0.1f; // 입력 후 대기 시간
+    private const float INPUT_DELAYTIME = 0.3f; // 입력 후 대기 시간
 
     #region Animator Hash
     private readonly int VelocityXHash = Animator.StringToHash("VelocityX");

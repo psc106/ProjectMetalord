@@ -57,9 +57,11 @@ public class GunStateController : MonoBehaviour
     [HideInInspector]
     public bool minDistance = false;
 
+    [HideInInspector] public NpcBase targetNpc = null;
     [HideInInspector] public GunState state;
     [HideInInspector] public static List<PaintTarget> paintList = new List<PaintTarget>();
     [HideInInspector] public static List<SSC_BondObj> bondList = new List<SSC_BondObj>();
+    [HideInInspector] public static List<NpcBase> npcList = new List<NpcBase>();
 
 
     //public Vector3 GetPlayerCenter()
@@ -90,7 +92,7 @@ public class GunStateController : MonoBehaviour
                 return !currentMode.OnGrab;
             }
 
-            return !player.OnClimb;
+            return player.CanReload;
         }
         private set { }
     }
@@ -360,6 +362,7 @@ public class GunStateController : MonoBehaviour
         player.PlayReloadAnimation();
         state = GunState.RELOADING;
         ClearBondList();
+        ClearNpcList();
         PaintTarget.ClearAllPaint();
         StartCoroutine(ReloadingAmmo());
     }
@@ -410,6 +413,19 @@ public class GunStateController : MonoBehaviour
         paintList.Add(obj);
     }
 
+    public static void AddList(NpcBase obj)
+    {
+        for (int i = 0; i < npcList.Count; i++)
+        {
+            if (npcList[i] == obj)
+            {
+                return;
+            }
+        }
+
+        npcList.Add(obj);
+    }
+
     void ClearBondList()
     {
         for (int i = 0; i < bondList.Count; i++)
@@ -418,5 +434,20 @@ public class GunStateController : MonoBehaviour
         }
 
         bondList.Clear();
+    }
+
+    void ClearNpcList()
+    {
+        for (int i = 0; i < npcList.Count; i++)
+        {
+            npcList[i].ChangedState(npcState.normal);
+        }
+
+        bondList.Clear();
+    }
+
+    public void GrabUnlock()
+    {
+
     }
 }

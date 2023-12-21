@@ -74,6 +74,36 @@ public enum GunSoundList
 
 public enum NpcSoundList
 {
+    lowTone01 =0,
+    lowTone02 = 1,
+    lowTone03 = 2,
+    lowTone04 = 3,
+    lowTone05 = 4,
+    lowTone06 = 5,
+    lowTone07 = 6,
+    lowTone08 = 7,
+    lowTone09 = 8,
+    lowTone10 = 9,
+    middleTone01 = 10,
+    middleTone02 = 11,
+    middleTone03 = 12,
+    middleTone04 = 13,
+    middleTone05 = 14,
+    middleTone06 = 15,
+    middleTone07 = 16,
+    middleTone08 = 17,
+    middleTone09 = 18,
+    middleTone10 = 19,
+    highTone01 = 20,
+    highTone02 = 21,
+    highTone03 = 22,
+    highTone04 = 23,
+    highTone05 = 24,
+    highTone06 = 25,
+    highTone07 = 26,
+    highTone08 = 27,
+    highTone09 = 28,
+    highTone10 = 29
 }
 
 public enum UISoundList

@@ -12,6 +12,7 @@ public class InteractUI : MonoBehaviour
     private readonly float fadeTime = 1f;
     public Image fadeImage = default;
 
+    public bool isShowInteractUI = false;
 
     bool isFadeIn = false;
     bool isFadeOut = false;

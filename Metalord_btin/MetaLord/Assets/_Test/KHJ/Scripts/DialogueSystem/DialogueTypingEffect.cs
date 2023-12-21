@@ -74,8 +74,9 @@ public class DialogueTypingEffect : MonoBehaviour
             //Debug.LogFormat("{0} <=== 텍스트", temporaryText[i]);
             for (int j = 0; j < temporaryText[i].Length; j++)
             {
-                myAudioClip = ChooseRandomSound(toneNumber);
-                myAduio.PlayOneShot(myAudioClip);
+                //myAudioClip = ChooseRandomSound(toneNumber);
+                //myAduio.PlayOneShot(myAudioClip);
+                PlayNpcSound(toneNumber);
                 yield return new WaitForSeconds(0.085f);
             }
             yield return new WaitForSeconds(0.1f);
@@ -89,7 +90,29 @@ public class DialogueTypingEffect : MonoBehaviour
         //}
     }
 
+    private void PlayNpcSound(int toneNumber)
+    {
+        if(toneNumber == 0)
+        {
+            randomNumber = UnityEngine.Random.Range(0, boldTone.Length);
+            
+        }
+        else if( toneNumber == 1) 
+        {
+            randomNumber = 10 + UnityEngine.Random.Range(0, middleTone.Length);
+        }
+        else
+        {
+            randomNumber = 20 + UnityEngine.Random.Range(0, highTone.Length);
+        }
+        SoundManager.instance.PlaySound(GroupList.Npc, randomNumber);
+    }
 
+    private void Test()
+    {
+        int id = (int)NpcSoundList.lowTone01;
+        SoundManager.instance.PlaySound(GroupList.Npc, id);
+    }
     private AudioClip ChooseRandomSound(int toneNumber)
     {
         AudioClip myClip;
