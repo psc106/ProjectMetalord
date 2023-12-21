@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1254211525158810479}
   - component: {fileID: 5205437251495188115}
   - component: {fileID: 3771279733296348294}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: AdventurersHorse
   m_TagString: Untagged
   m_Icon: {fileID: 0}
