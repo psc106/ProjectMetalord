@@ -12,6 +12,7 @@ public class Store_WeaponStatus : StoreObject
 {
     [Header("스킬 정보")]
     [SerializeField] private string skillName;
+    [SerializeField] private UpgradeCategory upgradeCategory;
 
     [Header("업그레이드 이미지")]
     [SerializeField] private Sprite stackOn;
@@ -65,7 +66,7 @@ public class Store_WeaponStatus : StoreObject
             ReflectCost(stepIndex);
             ReflectStepImage(stepIndex);
             ReflectCostText(stepIndex);
-            GameEventsManager.instance.coinEvents.UpgradeGun(stepIncreaseAmount[stepIndex]); // 건 업그레이드에 전달
+            GameEventsManager.instance.coinEvents.UpgradeGun(upgradeCategory,stepIncreaseAmount[stepIndex]); // 건 업그레이드에 전달
             stepIndex += 1;
         }
         else
