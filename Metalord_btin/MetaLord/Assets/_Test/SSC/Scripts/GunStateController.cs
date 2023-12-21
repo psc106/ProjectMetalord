@@ -2,8 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
-using UnityEditor.SceneManagement;
+using Unity.VisualScripting.Dependencies.Sqlite;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 public enum GunState_TODO
@@ -18,14 +20,10 @@ public class GunStateController : MonoBehaviour
     GunBase[] mode = new GunBase[3];
     GunBase currentMode;
     
-    [SerializeField] private TextMeshProUGUI AmmoText;
-    [SerializeField] private Image AmmoGauge;
     [SerializeField] private Controller_Physics player;
-    [SerializeField] private AnimationCurve reloadCurve;
     [SerializeField] private Image crossHair;
     [SerializeField] private Transform crossHairRect;
     [SerializeField] private Transform startPos;
-
     public InputReader input;    
     public Transform checkPos;
     public Transform pickupPoint;
@@ -34,6 +32,15 @@ public class GunStateController : MonoBehaviour
     public Transform AimTarget;
     public LayerMask gunLayer;
 
+    [Header("도구 UI")]
+    [SerializeField] private TextMeshProUGUI[] ModeText = new TextMeshProUGUI[3];
+    [SerializeField] private TextMeshProUGUI AmmoText;
+    [SerializeField] private Image AmmoGauge;
+    [SerializeField] private Color[] ModeColor = new Color[3];
+    public int CloseUp_FontSize = 32;
+    public int CloseOff_FontSize = 27;
+    [SerializeField] private AnimationCurve reloadCurve;
+
     [Header("도구 스텟")]
     [Range(0, 500)]
     public float range;
@@ -41,6 +48,8 @@ public class GunStateController : MonoBehaviour
     float minRange;
     [SerializeField, Range(0, 10)]
     float reloadTime = 3f;
+    [Range(0.1f, 3f)]
+    public float AutoInitTime = 1f;
     [Range(0.01f, 1)]
     public float fireRate = 0.1f;
     [SerializeField, Range(0, 1000)]
@@ -52,12 +61,12 @@ public class GunStateController : MonoBehaviour
     public RaycastHit hit;
     [HideInInspector]
     public bool checkSuccessRay = false;
-
     [HideInInspector]
     public bool minDistance = false;
 
     bool usedGrabGun = false;
     bool usedBondGun = false;
+    Color originColor = Color.white;
 
     [HideInInspector] public NpcBase targetNpc = null;
     [HideInInspector] public GunState state;
@@ -120,7 +129,7 @@ public class GunStateController : MonoBehaviour
 
         for (int i = 0; i < mode.Length; i++)
         {
-            mode[i].hideFlags = HideFlags.HideInInspector;
+            mode[i].hideFlags = HideFlags.HideInInspector;            
         }
 
         currentMode = mode[(int)GunMode.Paint];
@@ -138,6 +147,21 @@ public class GunStateController : MonoBehaviour
     {
         Ammo = MaxAmmo;
         AmmoText.text = MaxAmmo + " / " + Ammo;
+
+        for(int i = 0; i < ModeText.Length; i++)
+        {
+            if (ModeText[i] == ModeText[(int)GunMode.Paint])
+            {
+                ModeText[i].color = ModeColor[(int)GunMode.Paint];
+                AmmoGauge.color = ModeColor[(int)GunMode.Paint];
+                ModeText[i].fontSize = CloseUp_FontSize;
+
+                continue;
+            }
+
+            ModeText[i].color = originColor;
+            ModeText[i].fontSize = CloseOff_FontSize;
+        }
 
         state = GunState.READY;
     }
@@ -166,19 +190,22 @@ public class GunStateController : MonoBehaviour
         // 1번키 누르면 페인트건
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            SwapPaintGun();
+            SwapGunMode(GunMode.Paint);
+            //SwapPaintGun();
         }
 
         // 2번키 누르면 그랩건
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            SwapGrabGun();
+            SwapGunMode(GunMode.Grab);
+            //SwapGrabGun();
         }
 
         // 3번키 누르면 본드건
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
-            SwapBondGun();
+            SwapGunMode(GunMode.Bond);
+            //SwapBondGun();
         }
 
         if (Input.GetKeyDown(KeyCode.Q))
@@ -311,49 +338,6 @@ public class GunStateController : MonoBehaviour
         return dir;
     }
 
-    public void SwapPaintGun()
-    {
-        if(state == GunState.RELOADING || currentMode.OnGrab || currentMode == mode[(int)GunMode.Paint])
-        {
-            return;
-        }
-
-        int id = (int)GunSoundList.ChangeMod;
-        SoundManager.instance.PlaySound(GroupList.Gun, id);
-
-        currentMode = mode[(int)GunMode.Paint];
-        SwapLayer();
-
-    }
-
-    private void SwapGrabGun()
-    {
-        if (state == GunState.RELOADING || !usedGrabGun || currentMode == mode[(int)GunMode.Grab])
-        {
-            return;
-        }
-        
-        int id = (int)GunSoundList.ChangeMod;
-        SoundManager.instance.PlaySound(GroupList.Gun, id);
-
-        currentMode = mode[(int)GunMode.Grab];        
-        SwapLayer();
-    }
-
-    public void SwapBondGun()
-    {
-        if (state == GunState.RELOADING || currentMode.OnGrab || !usedBondGun || currentMode == mode[(int)GunMode.Bond])
-        {
-            return;
-        }
-        
-        int id = (int)GunSoundList.ChangeMod;
-        SoundManager.instance.PlaySound(GroupList.Gun, id);
-
-        currentMode = mode[(int)GunMode.Bond];        
-        SwapLayer();
-    }
-
     public void UpdateState(int ammoValue, GunState updatedState)
     {
         Ammo = ammoValue;
@@ -379,6 +363,7 @@ public class GunStateController : MonoBehaviour
         player.PlayReloadAnimation();
         int id = (int)GunSoundList.Reload;
         SoundManager.instance.PlaySound(GroupList.Gun, id);
+
         state = GunState.RELOADING;
         ClearBondList();
         ClearNpcList();
@@ -388,18 +373,20 @@ public class GunStateController : MonoBehaviour
 
     IEnumerator ReloadingAmmo()
     {
+        float currentAmmo = Ammo;
+
         float timeCheck = 0f;
         float t = 0f;
 
         while (timeCheck <= reloadTime)
         {
+            timeCheck += Time.deltaTime;
             t = timeCheck / reloadTime;
 
-            int ammoValue = (int)Mathf.Lerp(Ammo, maxAmmo, reloadCurve.Evaluate(t));
+            int ammoValue = (int)Mathf.Lerp(currentAmmo, maxAmmo, reloadCurve.Evaluate(t));
             UpdateState(ammoValue - Ammo);
 
             yield return null;
-            timeCheck += Time.deltaTime;
 
         }
 
@@ -493,4 +480,45 @@ public class GunStateController : MonoBehaviour
                 break;
         }
     }
+
+    public void SwapGunMode(GunMode changeMode)
+    {
+
+        // 각종 모드 스왑을 막아야 하는 상황 1. 리로딩중, 그랩모드중 그랩일때, 이미 내가 활성화한 모드일때
+        if (state == GunState.RELOADING || currentMode.OnGrab || currentMode == mode[(int)changeMode])
+        {
+            return;
+        }
+
+        // 해금모드들 해금전에 스왑 방지
+        if((changeMode == GunMode.Grab && !usedGrabGun) ||
+            (changeMode == GunMode.Bond && !usedBondGun))
+        {
+            return;
+        }
+
+        int id = (int)GunSoundList.ChangeMod;
+        SoundManager.instance.PlaySound(GroupList.Gun, id);
+
+        currentMode = mode[(int)changeMode];
+        SwapLayer();
+
+        for (int i = 0; i < ModeText.Length; i++)
+        {
+            if (ModeText[i] == ModeText[(int)changeMode])
+            {
+                ModeText[i].color = ModeColor[(int)changeMode];
+                AmmoGauge.color = ModeColor[(int)changeMode];
+                ModeText[i].fontSize = CloseUp_FontSize;
+
+                continue;
+            }
+
+            ModeText[i].color = originColor;
+            ModeText[i].fontSize = CloseOff_FontSize;
+        }
+
+
+    }
+
 }

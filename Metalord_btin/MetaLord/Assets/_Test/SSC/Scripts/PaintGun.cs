@@ -2,8 +2,7 @@ using UnityEngine;
 using UnityEngine.Windows;
 
 public class PaintGun : GunBase
-{               
-    float autoTime = 1f;
+{                   
     float rangeLimit = 4f;
     float timeCheck = 0f;
     float autotimeCheck = 0;    
@@ -56,7 +55,7 @@ public class PaintGun : GunBase
         }
 
         // 일정시간동안 사격키 입력상태라면 연사모드
-        else if (autotimeCheck > autoTime && state.CanFire)
+        else if (autotimeCheck > state.AutoInitTime && state.CanFire)
         {
             AutoFire();
             return;
