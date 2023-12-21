@@ -570,7 +570,6 @@ public class Controller_Physics : MonoBehaviour
             }
             jumpDirection = contactNormal;
         }
-
         //그외
         else
         {
@@ -578,16 +577,21 @@ public class Controller_Physics : MonoBehaviour
             return;
         }
 
-        //점프 상태
-        isJump = true;
-        //등산 딜레이
-        StartCoroutine(climbDelayRoutine(OnClimb?jumpDelayTime:0f));
-        //점프 애니메이션
-        animator.SetTrigger(JumpTriggerHash);
-        animator.SetBool(ClimbWaitHash, true);
+        if (jumpPhase == 0)
+        { 
+            //점프 상태
+            isJump = true;
+            //등산 딜레이
+            StartCoroutine(climbDelayRoutine(OnClimb ? jumpDelayTime : 0f));
+            //점프 애니메이션
+            animator.SetTrigger(JumpTriggerHash);
+            animator.SetBool(ClimbWaitHash, true);
 
-        int id = (int)PlayerSoundList.Jump;
-        SoundManager.instance.PlaySound(GroupList.Player, id);
+            int id = (int)PlayerSoundList.Jump;
+            SoundManager.instance.PlaySound(GroupList.Player, id);
+
+        }
+       
 
         //점프 방향에 추가적인 upAxis 추가
         jumpDirection = (jumpDirection + upAxis).normalized;

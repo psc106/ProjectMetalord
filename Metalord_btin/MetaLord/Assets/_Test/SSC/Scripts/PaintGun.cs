@@ -111,15 +111,15 @@ public class PaintGun : GunBase
             }
             Ray muzzleRay = new Ray(state.startPoint, state.hit.point - state.startPoint);
 
-            if(state.minDistance == true)
+/*            if(state.minDistance == true)
             {
 
-                muzzleRay = new Ray(state.checkPos.position, state.hit.point - state.startPoint);
+                muzzleRay = new Ray(state.startPoint, state.hit.point - state.startPoint);
                 UsedAmmo(muzzleRay, paintAmmo);
 
                 fireStart = true;                
                 return;
-            }
+            }*/
 
             if(state.hit.transform.GetComponent<NpcBase>() != null)
             {

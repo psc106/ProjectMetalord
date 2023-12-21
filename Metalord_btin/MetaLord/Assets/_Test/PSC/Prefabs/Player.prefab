@@ -3425,6 +3425,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   crossHair: {fileID: 8823238110768659009}
+  crossHairRect: {fileID: 0}
   input: {fileID: 11400000, guid: 75abd6246b51f9e48a0d52dae45fab3f, type: 2}
   checkPos: {fileID: 7900184379219393653}
   pickupPoint: {fileID: 364788840478490789}
@@ -3441,6 +3442,7 @@ MonoBehaviour:
   startPoint: {x: 0, y: 0, z: 0}
   checkSuccessRay: 0
   minDistance: 0
+  targetNpc: {fileID: 0}
   state: 0
 --- !u!114 &2813025332178416258
 MonoBehaviour:
