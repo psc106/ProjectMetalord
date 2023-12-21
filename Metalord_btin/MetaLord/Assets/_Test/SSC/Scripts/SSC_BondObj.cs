@@ -2,16 +2,14 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 public class SSC_BondObj : MonoBehaviour
-{
-    GrabGun grab;
+{    
     MeshCollider myColider;        
     public LayerMask layerMask;
 
     [HideInInspector] public Rigidbody myRigid;
 
     private void Awake()
-    {
-        grab = FindAnyObjectByType<GrabGun>();       
+    {            
         myColider = GetComponent<MeshCollider>();
     }
 
@@ -35,7 +33,7 @@ public class SSC_BondObj : MonoBehaviour
                 {
                     Destroy(transform.GetComponent<Rigidbody>());
                     myColider.convex = false;
-                    grab.CancleGrab();
+                    GrabGun.instance.CancelObj();                    
                 }
             }            
         }

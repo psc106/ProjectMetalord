@@ -16,7 +16,7 @@ public enum GunState_TODO
 public class GunStateController : MonoBehaviour
 {
     GunBase[] mode = new GunBase[3];
-    public GunBase currentMode = null;
+    public GunBase currentMode;
 
     enum GunMode { PaintMode, GrabMode, BondMode }
 
@@ -65,19 +65,6 @@ public class GunStateController : MonoBehaviour
     //{
     //    return player.GetPlayerCenter();
     //}
-    private void Awake()
-    {
-        mode[(int)GunMode.PaintMode] = transform.GetComponent<PaintGun>();
-        mode[(int)GunMode.GrabMode] = transform.GetComponent<GrabGun>();
-        mode[(int)GunMode.BondMode] = transform.GetComponent<BondGun>();
-
-        for(int i = 0; i < mode.Length; i++)
-        {
-            mode[i].hideFlags = HideFlags.HideInInspector;
-        }
-
-        currentMode = mode[(int)GunMode.PaintMode];
-    }
 
     public bool CanFire
     {
@@ -121,14 +108,28 @@ public class GunStateController : MonoBehaviour
         private set { ammo = value; }
     }
 
+    private void Awake()
+    {
+        mode[(int)GunMode.PaintMode] = transform.GetComponent<PaintGun>();
+        mode[(int)GunMode.GrabMode] = transform.GetComponent<GrabGun>();
+        mode[(int)GunMode.BondMode] = transform.GetComponent<BondGun>();
+
+        for (int i = 0; i < mode.Length; i++)
+        {
+            mode[i].hideFlags = HideFlags.HideInInspector;
+        }
+
+        currentMode = mode[(int)GunMode.PaintMode];
+        SwapLayer();
+
+    }
+
     void Start()
     {
         Ammo = MaxAmmo;
         AmmoText.text = MaxAmmo + " / " + Ammo;
 
         state = GunState.READY;
-
-        SwapLayer();        
     }
 
     void SwapLayer()

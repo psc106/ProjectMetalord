@@ -2,18 +2,18 @@ using UnityEngine;
 
 abstract public class GunBase : MonoBehaviour
 {
-    public GunStateController state;
+    protected GunStateController state;
     protected Brush brush = null;
     protected Transform AimTarget = null;
     protected int ammo;
-
     public LayerMask myLayer;
-    public bool OnGrab = false;
+
+    [HideInInspector] public bool OnGrab = false;
 
     protected virtual void Awake()
-    {
-        //state = FindAnyObjectByType<GunStateController>();
+    {        
         brush = new Brush();
+        state = FindAnyObjectByType<GunStateController>();
 
         if (brush.splatTexture == null)
         {

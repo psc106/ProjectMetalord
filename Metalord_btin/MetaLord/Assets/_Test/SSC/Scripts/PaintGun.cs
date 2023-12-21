@@ -35,13 +35,13 @@ public class PaintGun : GunBase
         brush.splatChannel = 0;
         ammo = -50;
 
-        AimTarget = state.AimTarget;
+        //AimTarget = state.AimTarget;
 
-        int initLayer = 1 << LayerMask.NameToLayer("Player") |
-            1 << LayerMask.NameToLayer("CatchObject") |
-            1 << LayerMask.NameToLayer("NonInteractObject");
+        //int initLayer = 1 << LayerMask.NameToLayer("Player") |
+        //    1 << LayerMask.NameToLayer("CatchObject") |
+        //    1 << LayerMask.NameToLayer("NonInteractObject");
 
-        myLayer = ~initLayer;
+        //myLayer = ~initLayer;
     }
 
     //public PaintGun(GunStateController state) : base(state)
@@ -76,38 +76,38 @@ public class PaintGun : GunBase
         //    //}
 
         //}
-            if (!state.CanFire)
-            {
-                fireStart = false;
-                autotimeCheck = 0f;
-                return;
-            }
+        if (!state.CanFire)
+        {
+            fireStart = false;
+            autotimeCheck = 0f;
+            return;
+        }
 
-            // 마우스 클릭에서 손을 떼면 사격 중지.
-            if (!state.input.ShootKey)
-            {
-                fireStart = false;
-                autotimeCheck = 0f;
-            }
+        // 마우스 클릭에서 손을 떼면 사격 중지.
+        if (!state.input.ShootKey)
+        {
+            fireStart = false;
+            autotimeCheck = 0f;
+        }
 
-            // 일정시간동안 사격키 입력상태라면 연사모드
-            else if (autotimeCheck > autoTime && state.CanFire)
-            {
-                AutoFire();
-                return;
-            }
+        // 일정시간동안 사격키 입력상태라면 연사모드
+        else if (autotimeCheck > autoTime && state.CanFire)
+        {
+            AutoFire();
+            return;
+        }
 
-            // 사격을 시작 == 마우스버튼 누른시점동안
-            else if (fireStart == true)
-            {
-                autotimeCheck += Time.deltaTime;
-                return;
-            }
+        // 사격을 시작 == 마우스버튼 누른시점동안
+        else if (fireStart == true)
+        {
+            autotimeCheck += Time.deltaTime;
+            return;
+        }
 
-            else if (state.input.ShootKey && state.CanFire)
-            {
-                NormalFire();
-            }
+        else if (state.input.ShootKey && state.CanFire)
+        {
+            NormalFire();
+        }
     }
 
     private void NormalFire()

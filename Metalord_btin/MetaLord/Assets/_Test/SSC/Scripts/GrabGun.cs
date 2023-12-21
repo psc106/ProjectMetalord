@@ -4,13 +4,16 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 public class GrabGun : GunBase
-{        
+{
+    public static GrabGun instance;    
     protected override void Awake()
     {
+        instance = this;
         base.Awake();
         brush.splatChannel = 2;
         ammo = -55;
-        myLayer = 1 << LayerMask.NameToLayer("MovedObject");
+
+        //myLayer = 1 << LayerMask.NameToLayer("MovedObject");
     }
 
     GameObject targetObj = null;
