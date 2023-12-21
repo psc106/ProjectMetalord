@@ -259,7 +259,7 @@ public class GunStateController : MonoBehaviour
             if (checkDistance <= minRange)
             {
                 minDistance = true;
-                Debug.Log($"일정거리 이하 : {minDistance}");
+                //Debug.Log($"일정거리 이하 : {minDistance}");
                 startPoint = startPlayerPos;
                 //AimTarget.position = hit.point;
                 checkSuccessRay = true;
@@ -277,7 +277,7 @@ public class GunStateController : MonoBehaviour
             else
             {
                 minDistance = false;
-                Debug.Log($"일정거리 이하 : {minDistance}");
+                //Debug.Log($"일정거리 이하 : {minDistance}");
                 //something
             }
         }
