@@ -32,13 +32,13 @@ public class RecordObject : MonoBehaviour,IPointerDownHandler
     /// </summary>
     private void ReflectInfo()
     {
-        GetComponent<Image>().sprite = Resources.Load<Sprite>("Object/" + recordInfo.id_Description);
+        transform.GetChild(0).GetComponent<Image>().sprite = Resources.Load<Sprite>("Object/" + recordInfo.id_Description);
 
-        if(recordInfo.obtained == true) transform.GetChild(0).gameObject.SetActive(false);
-        else transform.GetChild(0).gameObject.SetActive(true);
+        if(recordInfo.obtained == true) transform.GetChild(1).gameObject.SetActive(false);
+        else transform.GetChild(1).gameObject.SetActive(true);
 
-        if (recordInfo.isSelected == true) transform.GetChild(1).gameObject.SetActive(true);
-        else transform.GetChild(1).gameObject.SetActive(false);
+        if (recordInfo.isSelected == true) transform.GetChild(2).gameObject.SetActive(true);
+        else transform.GetChild(2).gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -68,10 +68,10 @@ public class RecordObject : MonoBehaviour,IPointerDownHandler
     /// <summary>
     /// 체크표시 비활성화
     /// </summary>
-    private void InActiveChecking()
+    public void InActiveChecking()
     {
         recordInfo.isSelected = false;
-        transform.GetChild(1).gameObject.SetActive(false);
+        transform.GetChild(2).gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -80,7 +80,7 @@ public class RecordObject : MonoBehaviour,IPointerDownHandler
     private void ActiveChecking()
     {
         recordInfo.isSelected = true; //선택되었다고 표시
-        transform.GetChild(1).gameObject.SetActive(true); //선택되었다고 표시
+        transform.GetChild(2).gameObject.SetActive(true); //선택되었다고 표시
     }
 
     /// <summary>
@@ -92,5 +92,6 @@ public class RecordObject : MonoBehaviour,IPointerDownHandler
     public void OnPointerDown(PointerEventData eventData)
     {
         GameEventsManager.instance.recordEvents.SelectRecord(recordInfo.id);
+        RecordManager.instance.SelectObject(this); // 게임매니저에 내 오브젝트 저장
     }
 }

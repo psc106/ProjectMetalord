@@ -2,16 +2,14 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 public class SSC_BondObj : MonoBehaviour
-{
-    SSC_GrabGun grab;
+{    
     MeshCollider myColider;        
     public LayerMask layerMask;
 
     [HideInInspector] public Rigidbody myRigid;
 
     private void Awake()
-    {
-        grab = FindAnyObjectByType<SSC_GrabGun>();       
+    {            
         myColider = GetComponent<MeshCollider>();
     }
 
@@ -29,13 +27,13 @@ public class SSC_BondObj : MonoBehaviour
                 PaintTarget.RayColor(ray) == Color.red)
             {
                 transform.parent = hit.transform;
-                SSC_GunState.AddBondList(this);
+                GunStateController.AddList(this);
 
                 if (transform.GetComponent<Rigidbody>() != null)
                 {
                     Destroy(transform.GetComponent<Rigidbody>());
                     myColider.convex = false;
-                    grab.CancleGrab();
+                    GrabGun.instance.CancelObj();                    
                 }
             }            
         }

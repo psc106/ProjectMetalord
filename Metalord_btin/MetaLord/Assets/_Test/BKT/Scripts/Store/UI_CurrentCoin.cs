@@ -3,29 +3,55 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class UI_CurrentCoin : UI_StoreCoin
-{
-    public float fadeDuration = 1f;
-    private Coroutine fadeCoroutine;
+/// <summary>
+/// 현재 코인 보여주는 UI 클래스
+/// 배경택
+/// </summary>
+public class UI_CurrentCoin : MonoBehaviour
+    {
+
+    [SerializeField] private GameObject storeUI;
+
+    private TMP_Text coinText;
     private CanvasGroup canvasGroup;
 
-    protected override void Awake()
+    private Coroutine fadeCoroutine;
+    private float fadeDuration = 1f;
+
+    private  void Awake()
     {
-        base.Awake();
+        coinText = GetComponent<TMP_Text>();
         canvasGroup = transform.parent.GetComponent<CanvasGroup>();        
     }
 
-    //protected override void OnEnable()
-    //{
-    //    GameEventsManager.instance.coinEvents.onChangeCoin+= ReflectCoinToUI;
-    //    ReflectCoinToUI(CoinManager.instance.currentCoin);  //자식에서 사용하니 NullReferenceException: 오류가 발생함에 따라 주석처리함
-    //}
-
-    protected override void ReflectCoinToUI(int coin)
+    private void OnEnable()
     {
-        base.ReflectCoinToUI(coin);
+        GameEventsManager.instance.coinEvents.onChangeCoin += ReflectCoinToUI;
 
-        if (canvasGroup != null)
+        if (CoinManager.instance != null)
+        {
+            ReflectCoinToUI(CoinManager.instance.currentCoin);
+
+        }
+    }
+
+    private void OnDisable()
+    {
+        GameEventsManager.instance.coinEvents.onChangeCoin -= ReflectCoinToUI;
+    }
+
+    private  void ReflectCoinToUI(int coin)
+    {
+        if (coinText != null)
+        {
+            coinText.text = coin.ToString();
+        }
+        else
+        {
+            Debug.LogError("coinText를 찾을 수 없습니다!");
+        }
+
+        if (canvasGroup != null && !storeUI.activeSelf)
         {
             if (fadeCoroutine != null)
             {
@@ -37,7 +63,7 @@ public class UI_CurrentCoin : UI_StoreCoin
         }
         else
         {
-            Debug.LogError("CanvasGroup 컴포넌트를 찾을 수 없습니다!");
+            /* pass */
         }
     }
 
