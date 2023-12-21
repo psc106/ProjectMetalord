@@ -100,7 +100,9 @@ public class Controller_Physics : MonoBehaviour
     public bool isMove { get; private set; }
     public static bool stopState { get; private set; }
     public bool CanFire => canFire && CanReload;
-    public bool CanReload => !playingReloadAnimation && !OnClimb;
+
+    // 12.21 SSC : NPC 대화중(stopState) 사격, 재장전 방지 위해 CanReload => !stopState 추가
+    public bool CanReload => !playingReloadAnimation && !OnClimb && !stopState;
     public bool OnMultipleState => multipleState;
     public bool OnGround => groundContactCount > 0;
     public bool OnSteep => steepContactCount > 0;

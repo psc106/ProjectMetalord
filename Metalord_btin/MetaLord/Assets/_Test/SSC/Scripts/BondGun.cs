@@ -35,7 +35,15 @@ public class BondGun : GunBase
                 return;
             }
 
-            UsedAmmo(muzzleRay, ammo);
+            if (state.hit.transform.GetComponent<NpcBase>() != null)
+            {
+                PaintingNpc(muzzleRay, ammo);
+            }
+            else
+            {
+                UsedAmmo(muzzleRay, ammo);
+            }
+
 
         }
     }

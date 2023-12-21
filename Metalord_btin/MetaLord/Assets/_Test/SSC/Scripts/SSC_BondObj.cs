@@ -34,7 +34,7 @@ public class SSC_BondObj : MonoBehaviour
                 if(hit.transform.GetComponent<NpcBase>() != null)
                 {
                     hit.transform.GetComponent<NpcBase>().ChangedState(npcState.objectAttached);
-                    SSC_GunState.AddBondList(hit.transform.GetComponent<NpcBase>());
+                    GunStateController.AddList(hit.transform.GetComponent<NpcBase>());
                 }
 
                 transform.parent = hit.transform;

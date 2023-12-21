@@ -23,16 +23,15 @@ public class GunStateController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI AmmoText;
     [SerializeField] private Image AmmoGauge;
     [SerializeField] private Controller_Physics player;
-    [SerializeField] private MeshRenderer gunRenderer;
-    [SerializeField] private GameObject backGun;
     [SerializeField] private AnimationCurve reloadCurve;
+    [SerializeField] private Image crossHair;
+    [SerializeField] private Transform crossHairRect;
 
     public InputReader input;    
     public Transform checkPos;
     public Transform pickupPoint;
     public Transform GunHolderHand;
     public LineRenderer grabLine;
-    
 
     [SerializeField]
     private Transform startPos;
@@ -58,9 +57,12 @@ public class GunStateController : MonoBehaviour
     [HideInInspector]
     public bool minDistance = false;
 
+    [HideInInspector] public NpcBase targetNpc = null;
     [HideInInspector] public GunState state;
     [HideInInspector] public static List<PaintTarget> paintList = new List<PaintTarget>();
     [HideInInspector] public static List<SSC_BondObj> bondList = new List<SSC_BondObj>();
+    [HideInInspector] public static List<NpcBase> npcList = new List<NpcBase>();
+
 
     //public Vector3 GetPlayerCenter()
     //{
@@ -90,7 +92,7 @@ public class GunStateController : MonoBehaviour
                 return !currentMode.OnGrab;
             }
 
-            return !player.OnClimb;
+            return player.CanReload;
         }
         private set { }
     }
@@ -188,10 +190,15 @@ public class GunStateController : MonoBehaviour
     {
         Vector3 startCameraPos = GetOriginPos();
         Vector3 startPlayerPos = checkPos.position;
+        Vector3 direction = CheckDir();
 
-        Ray normalRay = new Ray(startCameraPos, CheckDir());
-        Ray checkRay = new Ray(startPlayerPos, CheckDir());
+        Vector3 endPos = startCameraPos + Camera.main.transform.forward * range;
 
+        Ray normalRay = new Ray(startCameraPos, direction);
+        Ray checkRay = new Ray(startPlayerPos, direction);
+        Ray defaultRay = new Ray(startPlayerPos, endPos- startPlayerPos);
+
+        crossHair.rectTransform.anchoredPosition = Vector2.zero;
 
         // 일반적인 상황의 사격
         if (Physics.Raycast(normalRay, out hit, range, gunLayer))
@@ -201,9 +208,20 @@ public class GunStateController : MonoBehaviour
             //카메라->끝점 range 이하 경우
             if (checkDistance <= minRange)
             {
-                //minDistance = true;
-                //Debug.Log($"일정거리 이하 : {minDistance}");
-                //something
+                if(Physics.Raycast(defaultRay, out hit, range, gunLayer))
+                {
+                    startPoint = startPlayerPos;
+                    checkSuccessRay = true;
+                    crossHair.color = CanFire ? Color.green : Color.red;
+
+                    Vector3 space = Camera.main.WorldToScreenPoint(hit.point);
+                    if(RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)crossHair.transform.parent, space, null, out Vector2 localPoint))
+                    {
+                        crossHair.rectTransform.anchoredPosition = localPoint;
+                    }
+                    return;
+                }
+                return;
             }
 
             //카메라->끝점 range 이상 경우
@@ -211,8 +229,10 @@ public class GunStateController : MonoBehaviour
             {
                 //minDistance = false;    
                 //Debug.Log($"일정거리 이하 : {minDistance}");
+                //AimTarget.position = hit.point;
                 startPoint = startCameraPos;
                 checkSuccessRay = true;
+                crossHair.color = CanFire ? Color.green : Color.red;
                 return;
             }
         }
@@ -228,7 +248,15 @@ public class GunStateController : MonoBehaviour
                 minDistance = true;
                 Debug.Log($"일정거리 이하 : {minDistance}");
                 startPoint = startPlayerPos;
+                //AimTarget.position = hit.point;
                 checkSuccessRay = true;
+                crossHair.color = CanFire ? Color.green:Color.red;
+
+                Vector3 space = Camera.main.WorldToScreenPoint(hit.point);
+                if (RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)crossHair.transform.parent, space, null, out Vector2 localPoint))
+                {
+                    crossHair.rectTransform.anchoredPosition = localPoint;
+                }
                 return;
             }
 
@@ -242,6 +270,7 @@ public class GunStateController : MonoBehaviour
         }
         
         checkSuccessRay = false;
+        crossHair.color = Color.red;
 
     }
 
@@ -331,6 +360,7 @@ public class GunStateController : MonoBehaviour
         player.PlayReloadAnimation();
         state = GunState.RELOADING;
         ClearBondList();
+        ClearNpcList();
         PaintTarget.ClearAllPaint();
         StartCoroutine(ReloadingAmmo());
     }
@@ -381,6 +411,19 @@ public class GunStateController : MonoBehaviour
         paintList.Add(obj);
     }
 
+    public static void AddList(NpcBase obj)
+    {
+        for (int i = 0; i < npcList.Count; i++)
+        {
+            if (npcList[i] == obj)
+            {
+                return;
+            }
+        }
+
+        npcList.Add(obj);
+    }
+
     void ClearBondList()
     {
         for (int i = 0; i < bondList.Count; i++)
@@ -389,5 +432,20 @@ public class GunStateController : MonoBehaviour
         }
 
         bondList.Clear();
+    }
+
+    void ClearNpcList()
+    {
+        for (int i = 0; i < npcList.Count; i++)
+        {
+            npcList[i].ChangedState(npcState.normal);
+        }
+
+        bondList.Clear();
+    }
+
+    public void GrabUnlock()
+    {
+
     }
 }

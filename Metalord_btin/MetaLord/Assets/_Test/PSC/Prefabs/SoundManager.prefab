@@ -96,6 +96,10 @@ MonoBehaviour:
   audioSource: {fileID: 7035652128151636326}
   audioGroups:
   - {fileID: 41850298660997240}
+  - {fileID: 4572061272570668739}
+  - {fileID: 8512730442485234760}
+  - {fileID: 6815403370904356771}
+  - {fileID: 5794644866579135593}
 --- !u!1 &1881799548989525020
 GameObject:
   m_ObjectHideFlags: 0
