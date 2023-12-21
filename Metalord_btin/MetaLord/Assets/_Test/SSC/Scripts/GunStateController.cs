@@ -18,8 +18,6 @@ public class GunStateController : MonoBehaviour
     GunBase[] mode = new GunBase[3];
     public GunBase currentMode;
 
-    enum GunMode { PaintMode, GrabMode, BondMode }
-
     [SerializeField] private TextMeshProUGUI AmmoText;
     [SerializeField] private Image AmmoGauge;
     [SerializeField] private Controller_Physics player;
@@ -32,6 +30,9 @@ public class GunStateController : MonoBehaviour
     public Transform pickupPoint;
     public Transform GunHolderHand;
     public LineRenderer grabLine;
+
+    bool usedGrabGun = false;
+    bool usedBondGun = false;
 
     [SerializeField]
     private Transform startPos;
@@ -113,18 +114,28 @@ public class GunStateController : MonoBehaviour
 
     private void Awake()
     {
-        mode[(int)GunMode.PaintMode] = transform.GetComponent<PaintGun>();
-        mode[(int)GunMode.GrabMode] = transform.GetComponent<GrabGun>();
-        mode[(int)GunMode.BondMode] = transform.GetComponent<BondGun>();
+        mode[(int)GunMode.Paint] = transform.GetComponent<PaintGun>();
+        mode[(int)GunMode.Grab] = transform.GetComponent<GrabGun>();
+        mode[(int)GunMode.Bond] = transform.GetComponent<BondGun>();
 
         for (int i = 0; i < mode.Length; i++)
         {
             mode[i].hideFlags = HideFlags.HideInInspector;
         }
 
-        currentMode = mode[(int)GunMode.PaintMode];
+        currentMode = mode[(int)GunMode.Paint];
         SwapLayer();
 
+    }
+
+    private void OnEnable()
+    {
+        GameEventsManager.instance.coinEvents.onUseCoin += GunModeUnlock;
+    }
+
+    private void OnDisable()
+    {
+        GameEventsManager.instance.coinEvents.onUseCoin -= GunModeUnlock;
     }
 
     void Start()
@@ -146,7 +157,7 @@ public class GunStateController : MonoBehaviour
         //레이캐스트 업데이트
         UpdateRaycast();        
 
-        if(currentMode == mode[(int)GunMode.PaintMode])
+        if(currentMode == mode[(int)GunMode.Paint])
         {            
             currentMode.ShootGun();
         }
@@ -308,30 +319,30 @@ public class GunStateController : MonoBehaviour
             return;
         }
 
-        currentMode = mode[(int)GunMode.PaintMode];
+        currentMode = mode[(int)GunMode.Paint];
         SwapLayer();
 
     }
 
     private void SwapGrabGun()
     {
-        if (state == GunState.RELOADING)
+        if (state == GunState.RELOADING || !usedGrabGun)
         {
             return;
         }
 
-        currentMode = mode[(int)GunMode.GrabMode];        
+        currentMode = mode[(int)GunMode.Grab];        
         SwapLayer();
     }
 
     public void SwapBondGun()
     {
-        if (state == GunState.RELOADING || currentMode.OnGrab)
+        if (state == GunState.RELOADING || currentMode.OnGrab || !usedBondGun)
         {
             return;
         }
 
-        currentMode = mode[(int)GunMode.BondMode];        
+        currentMode = mode[(int)GunMode.Bond];        
         SwapLayer();
     }
 
@@ -444,8 +455,18 @@ public class GunStateController : MonoBehaviour
         bondList.Clear();
     }
 
-    public void GrabUnlock()
+    public void GunModeUnlock(GunMode gunMode)
     {
-
+        switch (gunMode)
+        {
+            case GunMode.Paint:
+                break;
+            case GunMode.Grab:
+                usedGrabGun = true;
+                break;
+            case GunMode.Bond:
+                usedBondGun = true;
+                break;
+        }
     }
 }

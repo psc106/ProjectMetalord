@@ -125,5 +125,5 @@ public enum GunMode
 {
     Paint,
     Grab,
-    bond,
+    Bond,
 }
