@@ -39,11 +39,13 @@ public class GunStateController : MonoBehaviour
 
     public Transform AimTarget;
 
-    [SerializeField, Range(0, 100)]
+    [Range(0, 100)]
     public float range;
     [SerializeField, Range(0, 10)]
-    public float minRange;
-    
+    float minRange;
+    [SerializeField, Range(0, 10)]
+    float reloadTime = 4.5f;
+
     public LayerMask gunLayer;
 
     [HideInInspector]
@@ -56,7 +58,6 @@ public class GunStateController : MonoBehaviour
     [HideInInspector]
     public bool minDistance = false;
 
-    float reloadTime = 4.5f;
     [HideInInspector] public GunState state;
     [HideInInspector] public static List<PaintTarget> paintList = new List<PaintTarget>();
     [HideInInspector] public static List<SSC_BondObj> bondList = new List<SSC_BondObj>();

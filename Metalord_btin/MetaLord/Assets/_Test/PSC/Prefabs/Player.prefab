@@ -300,8 +300,8 @@ MonoBehaviour:
   backGunRender: {fileID: 4838373344311464730}
   cameraManager: {fileID: 3171454143736129391}
   jumpHeight: 7.5
-  jumpDuringTimer: 1
-  fireDuringTime: 1
+  jumpDelayTime: 2
+  fireDelayTime: 1
   probeDistance: 1
   runMultiple: 1.5
   walkMultiple: 1
@@ -2597,7 +2597,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70b342d8ce5c2fd48b8fa3147d48d1d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Weight: 1
+  m_Weight: 0
   m_Effectors: []
 --- !u!1 &4730650201000316632
 GameObject:
@@ -2860,7 +2860,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70b342d8ce5c2fd48b8fa3147d48d1d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Weight: 1
+  m_Weight: 0
   m_Effectors:
   - m_Transform: {fileID: 0}
     m_Style:
@@ -3729,11 +3729,11 @@ GameObject:
   - component: {fileID: 5544221135650746926}
   - component: {fileID: 7123065273601845396}
   - component: {fileID: 3782273591382764777}
-  - component: {fileID: 6798630036274658337}
-  - component: {fileID: 7495584123684662292}
-  - component: {fileID: 1669183892189733819}
   - component: {fileID: 1637722241099862447}
-  - component: {fileID: 7381759805318663902}
+  - component: {fileID: 1050017471771283651}
+  - component: {fileID: 2813025332178416258}
+  - component: {fileID: 2985409044552464339}
+  - component: {fileID: 59815113745812605}
   m_Layer: 12
   m_Name: Watergun_Front
   m_TagString: Untagged
@@ -3809,116 +3809,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &6798630036274658337
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7224486885945868048}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9155b1d1f61b117448a0f44fd105efd0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  AmmoText: {fileID: 3141948962894904113}
-  AmmoGauge: {fileID: 4875576917903876993}
-  paintMode: {fileID: 7495584123684662292}
-  grabMode: {fileID: 1669183892189733819}
-  bondMode: {fileID: 7381759805318663902}
-  player: {fileID: 3742653360604592892}
-  gunRenderer: {fileID: 3782273591382764777}
-  backGun: {fileID: 6965213186463046493}
-  reloadCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 1
-      outSlope: 1
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 1
-      outSlope: 1
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  state: 0
-  checkPos: {fileID: 7900184379219393653}
-  startPos: {fileID: 6677764962144662948}
-  range: 50
-  minRange: 4
-  gunLayer:
-    serializedVersion: 2
-    m_Bits: 1975
-  startPoint: {x: 0, y: 0, z: 0}
-  checkSuccessRay: 0
---- !u!114 &7495584123684662292
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7224486885945868048}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9f6912241efa03d4db8b9e29a6b69c4f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  brush:
-    splatTexture: {fileID: 0}
-    splatsX: 1
-    splatsY: 1
-    splatIndex: 0
-    splatScale: 10
-    splatRandomScaleMin: 1
-    splatRandomScaleMax: 1
-    splatRotation: 0
-    splatRandomRotation: 180
-    splatChannel: 0
-  gun: {fileID: 6798630036274658337}
-  input: {fileID: 11400000, guid: 75abd6246b51f9e48a0d52dae45fab3f, type: 2}
-  aimTarget: {fileID: 8203518221037570998}
-  checkPos: {fileID: 7900184379219393653}
-  startPoint: {fileID: 6677764962144662948}
-  gunLayer:
-    serializedVersion: 2
-    m_Bits: 1975
-  attackSpeed: 0.1
-  autoTime: 0.5
-  range: 50
---- !u!114 &1669183892189733819
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7224486885945868048}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 638c2489616e64440a77118a41528e87, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  range: 1
-  MovedObject:
-    serializedVersion: 2
-    m_Bits: 1024
-  pickupPoint: {fileID: 364788840478490789}
-  startPoint: {fileID: 8282372781614362592}
-  followObj: {fileID: 364788840478490789}
-  grabLine: {fileID: 1637722241099862447}
-  state: {fileID: 6798630036274658337}
-  OnGrab: 0
 --- !u!120 &1637722241099862447
 LineRenderer:
   serializedVersion: 2
@@ -4023,7 +3913,7 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
---- !u!114 &7381759805318663902
+--- !u!114 &1050017471771283651
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4032,26 +3922,103 @@ MonoBehaviour:
   m_GameObject: {fileID: 7224486885945868048}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 72356db50a30c7242ab4c76f5a5afabb, type: 3}
+  m_Script: {fileID: 11500000, guid: 474c911dbaf414b44922371fcf24c6df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  brush:
-    splatTexture: {fileID: 0}
-    splatsX: 1
-    splatsY: 1
-    splatIndex: -1
-    splatScale: 10
-    splatRandomScaleMin: 1
-    splatRandomScaleMax: 1
-    splatRotation: 0
-    splatRandomRotation: 180
-    splatChannel: 1
-  gun: {fileID: 6798630036274658337}
+  currentMode: {fileID: 0}
+  AmmoText: {fileID: 3141948962894904113}
+  AmmoGauge: {fileID: 4875576917903876993}
+  player: {fileID: 3742653360604592892}
+  gunRenderer: {fileID: 3782273591382764777}
+  backGun: {fileID: 6965213186463046493}
+  reloadCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  input: {fileID: 11400000, guid: 75abd6246b51f9e48a0d52dae45fab3f, type: 2}
   checkPos: {fileID: 7900184379219393653}
-  startPoint: {fileID: 6677764962144662948}
+  pickupPoint: {fileID: 364788840478490789}
+  GunHolderHand: {fileID: 8282372781614362592}
+  grabLine: {fileID: 1637722241099862447}
+  startPos: {fileID: 6677764962144662948}
+  AimTarget: {fileID: 8203518221037570998}
+  range: 50
+  minRange: 4
   gunLayer:
     serializedVersion: 2
     m_Bits: 1975
+  startPoint: {x: 0, y: 0, z: 0}
+  checkSuccessRay: 0
+  minDistance: 0
+  state: 0
+--- !u!114 &2813025332178416258
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7224486885945868048}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e0af72c7a96fd948b633a0173775d82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myLayer:
+    serializedVersion: 2
+    m_Bits: 1975
+  OnGrab: 0
+--- !u!114 &2985409044552464339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7224486885945868048}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c91aa72e9ec5ebb44837a056afc79765, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myLayer:
+    serializedVersion: 2
+    m_Bits: 1024
+  OnGrab: 0
+--- !u!114 &59815113745812605
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7224486885945868048}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f7a6cd612c85884e8b9a9bb000bcfb8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myLayer:
+    serializedVersion: 2
+    m_Bits: 1975
+  OnGrab: 0
 --- !u!1 &7232609396906643999
 GameObject:
   m_ObjectHideFlags: 0
