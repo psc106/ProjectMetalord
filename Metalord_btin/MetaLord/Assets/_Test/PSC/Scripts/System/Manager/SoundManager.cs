@@ -70,6 +70,9 @@ public enum PlayerSoundList
 
 public enum GunSoundList
 {
+    ChangeMod = 0,
+    Reload,
+    FireSound
 }
 
 public enum NpcSoundList

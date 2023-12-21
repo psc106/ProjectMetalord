@@ -38,6 +38,9 @@ abstract public class GunBase : MonoBehaviour
     
     protected void UsedAmmo(Ray _ray, int _ammo)
     {
+        int id = (int)GunSoundList.FireSound;
+        SoundManager.instance.PlaySound(GroupList.Gun, id);
+
         PaintTarget.PaintRay(_ray, brush, state.range);
 
         state.UpdateState(_ammo);
