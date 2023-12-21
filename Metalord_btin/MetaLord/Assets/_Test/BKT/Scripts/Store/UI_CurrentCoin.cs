@@ -21,7 +21,8 @@ public class UI_CurrentCoin : MonoBehaviour
     private  void Awake()
     {
         coinText = GetComponent<TMP_Text>();
-        canvasGroup = transform.parent.GetComponent<CanvasGroup>();        
+        canvasGroup = transform.parent.GetComponent<CanvasGroup>();
+        canvasGroup.alpha = 0f;
     }
 
     private void OnEnable()
@@ -89,8 +90,7 @@ public class UI_CurrentCoin : MonoBehaviour
 
         while (elapsedTime < fadeDuration)
         {
-            elapsedTime += Time.deltaTime;
-            Debug.Log(elapsedTime);
+            elapsedTime += Time.deltaTime;          
             canvasGroup.alpha = Mathf.Lerp(startAlpha, 0f, elapsedTime / fadeDuration);
             yield return null;
         }

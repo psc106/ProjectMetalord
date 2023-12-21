@@ -117,3 +117,13 @@ public enum CoinType
     SMALL_COIN,
     BIG_COIN
 }
+
+/// <summary>
+/// 총 발사 모드
+/// </summary>
+public enum GunMode
+{
+    Paint,
+    Grab,
+    bond,
+}

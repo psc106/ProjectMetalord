@@ -107,13 +107,13 @@ public class RecordManager : MonoBehaviour
         InputCSVFileToInfo(); // 초기화 레코드 정보 저장
         MakePage(objectCSV.Count); //초기화 페이지 수 계산
         MakeRecordObject(recordObjectInfos); //초기화 도감 오브젝트 구성
-        ResetRecord();
     }
 
     private void OnEnable()
     {
         GameEventsManager.instance.recordEvents.onGetRecordItem += GetItem;
         GameEventsManager.instance.recordEvents.onSelectRecord += InputRecordInfo;
+        ResetRecord();
     }
 
     private void OnDisable()

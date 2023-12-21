@@ -8,7 +8,11 @@ public class CoinManager : MonoBehaviour
 {
     static public CoinManager instance;
 
+    [Header("상점 UI")]
+    [SerializeField] private GameObject storeUI;
+
     [SerializeField] private int startCoin = 10; // 시작 코인
+
 
     public int currentCoin = 0;
 
@@ -24,6 +28,7 @@ public class CoinManager : MonoBehaviour
         }
         DontDestroyOnLoad(this.gameObject);
         currentCoin = startCoin; // 시작시 코인 세팅
+        storeUI.SetActive(false);
     }
 
     private void Start()
