@@ -2,8 +2,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 public class SSC_GrabGun : MonoBehaviour
-{    
-     
+{         
     Rigidbody targetRigid;
     [Range(1f, 100f), SerializeField] private float range;
     [SerializeField] private LayerMask MovedObject;
@@ -139,7 +138,6 @@ public class SSC_GrabGun : MonoBehaviour
         grabLine.enabled = false;
         targetRigid = null;
         OnGrab = false;
-        state.UpdateState(-grabAmmo);
     }
 
     void PulledObj(float wheelData)
