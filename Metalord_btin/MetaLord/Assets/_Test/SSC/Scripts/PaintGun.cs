@@ -3,7 +3,7 @@ using UnityEngine.Windows;
 
 public class PaintGun : GunBase
 {            
-    float attackSpeed = 0.5f;    
+    float attackSpeed = 0.1f;    
     float autoTime = 1f;
 
     float rangeLimit = 4f;
