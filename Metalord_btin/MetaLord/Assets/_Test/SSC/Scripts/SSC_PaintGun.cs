@@ -25,7 +25,7 @@ public class SSC_PaintGun : MonoBehaviour
     float timeCheck = 0f;
     float autotimeCheck = 0f;
 
-    int normalShot = -10;
+    int normalShot = -50;
     int autoShot = -5;
     
     bool fireStart = false;
@@ -134,7 +134,6 @@ public class SSC_PaintGun : MonoBehaviour
                 timeCheck = 0f;
             }
         }
-
     }
 
    /* /// <summary>

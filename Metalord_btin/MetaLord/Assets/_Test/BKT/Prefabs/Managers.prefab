@@ -79,10 +79,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9775e896ae76b43e88f5402047608230, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pagePanel: {fileID: 0}
-  itemName: {fileID: 0}
-  zone: {fileID: 0}
-  description: {fileID: 0}
+  recordCanvas: {fileID: 0}
 --- !u!1 &2684934400435575540
 GameObject:
   m_ObjectHideFlags: 0

@@ -13,8 +13,11 @@ public class Store_WeaponStatus : StoreObject
     [Header("스킬 정보")]
     [SerializeField] private string skillName;
 
+    [Header("업그레이드 이미지")]
+    [SerializeField] private Sprite stackOn;
+
     // 각각 자식 오브젝트의 인덱스 번호
-    private const int NAME_INDEX = 0;
+    private const int NAME_INDEX = 1;
     private const int COST_INDEX = 1;
     private const int STEPS_INDEX = 3;
 
@@ -35,12 +38,15 @@ public class Store_WeaponStatus : StoreObject
         stepIndex = 0;
 
         // 스킬 정보 입력할 게임 오브젝트 캐싱
-        nameObject = transform.GetChild(NAME_INDEX).GetComponent<TMP_Text>();
-        costObject = transform.GetChild(COST_INDEX).GetComponent<TMP_Text>();
+        //nameObject = transform.GetChild(NAME_INDEX).GetComponent<TMP_Text>();
+        //costObject = transform.GetChild(COST_INDEX).GetChild(COST_INDEX).GetComponent<TMP_Text>();
+
+        nameObject = Utility.FindChildObj(this.gameObject, "Text(Name)").GetComponent<TMP_Text>();
+        costObject = Utility.FindChildObj(this.gameObject, "Text(Cost)").GetComponent<TMP_Text>();
 
         // 스킬 정보 입력
         nameObject.text = skillName;
-        costObject.text = stepCost[stepIndex].ToString();
+        costObject.text = stepCost[stepIndex].ToString() + "개";
         price = stepCost[stepIndex];
     }
 
@@ -69,15 +75,15 @@ public class Store_WeaponStatus : StoreObject
     // 업그레이드 이미지 채워지는거 반영
     private void ReflectStepImage(int _index)
     {
-        Image stepImage = transform.GetChild(STEPS_INDEX).GetChild(stepIndex).GetComponent<Image>();
-        stepImage.color = Color.red;
+        Image stepImage = Utility.FindChildObj(this.gameObject,"Steps").transform.GetChild(_index).GetComponent<Image>();
+        stepImage.sprite = stackOn;
     }
 
     // 업그레이드 텍스트 반영
     private void ReflectCostText(int _index)
     {
-        if (stepIndex < MAX_STEP - 1) costObject.text = stepCost[stepIndex + 1].ToString(); // 다음 스텝의 금액을 반영
-        else costObject.text = "Complete";
+        if (stepIndex < MAX_STEP - 1) costObject.text = stepCost[stepIndex + 1].ToString() + "개"; // 다음 스텝의 금액을 반영
+        else costObject.text = "최대";
     }
 
     // 업그레이드 텍스트 반영
