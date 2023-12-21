@@ -12,20 +12,12 @@ public class RecordObject : MonoBehaviour,IPointerDownHandler
     private void Awake()
     {
         GameEventsManager.instance.recordEvents.onSelectRecord += CheckSelected; // 선택여부 체크 추가
-    }
-
-    private void OnEnable()
-    {
         GameEventsManager.instance.recordEvents.onChangeRecord += ReflectInfo; // 도감 변경알림시 갖고있는 정보 반영 추가
-    }
-
-    private void OnDisable()
-    {
-        GameEventsManager.instance.recordEvents.onChangeRecord -= ReflectInfo; // 도감 변경알림시 갖고있는 정보 반영 해제
     }
 
     private void OnDestroy()
     {
+        GameEventsManager.instance.recordEvents.onChangeRecord -= ReflectInfo; // 도감 변경알림시 갖고있는 정보 반영 해제
         GameEventsManager.instance.recordEvents.onSelectRecord -= CheckSelected; // 선택여부 체크 해제
     }
 
@@ -40,13 +32,13 @@ public class RecordObject : MonoBehaviour,IPointerDownHandler
     /// </summary>
     private void ReflectInfo()
     {
-        GetComponent<Image>().sprite = Resources.Load<Sprite>("Object/" + recordInfo.id_Description);
+        transform.GetChild(0).GetComponent<Image>().sprite = Resources.Load<Sprite>("Object/" + recordInfo.id_Description);
 
-        if(recordInfo.obtained == true) transform.GetChild(0).gameObject.SetActive(false);
-        else transform.GetChild(0).gameObject.SetActive(true);
+        if(recordInfo.obtained == true) transform.GetChild(1).gameObject.SetActive(false);
+        else transform.GetChild(1).gameObject.SetActive(true);
 
-        if (recordInfo.isSelected == true) transform.GetChild(1).gameObject.SetActive(true);
-        else transform.GetChild(1).gameObject.SetActive(false);
+        if (recordInfo.isSelected == true) transform.GetChild(2).gameObject.SetActive(true);
+        else transform.GetChild(2).gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -76,10 +68,10 @@ public class RecordObject : MonoBehaviour,IPointerDownHandler
     /// <summary>
     /// 체크표시 비활성화
     /// </summary>
-    private void InActiveChecking()
+    public void InActiveChecking()
     {
         recordInfo.isSelected = false;
-        transform.GetChild(1).gameObject.SetActive(false);
+        transform.GetChild(2).gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -88,7 +80,7 @@ public class RecordObject : MonoBehaviour,IPointerDownHandler
     private void ActiveChecking()
     {
         recordInfo.isSelected = true; //선택되었다고 표시
-        transform.GetChild(1).gameObject.SetActive(true); //선택되었다고 표시
+        transform.GetChild(2).gameObject.SetActive(true); //선택되었다고 표시
     }
 
     /// <summary>
@@ -100,5 +92,6 @@ public class RecordObject : MonoBehaviour,IPointerDownHandler
     public void OnPointerDown(PointerEventData eventData)
     {
         GameEventsManager.instance.recordEvents.SelectRecord(recordInfo.id);
+        RecordManager.instance.SelectObject(this); // 게임매니저에 내 오브젝트 저장
     }
 }

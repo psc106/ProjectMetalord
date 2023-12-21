@@ -14,6 +14,16 @@ public class RecordManager : MonoBehaviour
 {
     static public RecordManager instance;
 
+    [Header("도감 캔버스")]
+    [SerializeField] private GameObject recordCanvas;
+
+    private GameObject pagePanel; //페이지 좌측 페이지가 생성될 기준 패널
+    private GameObject itemName; //페이지 우측 이름 text
+    private GameObject zone; //페이지 우측 지역 text
+    private GameObject description; //페이지 우측 설명 text
+    private GameObject labelSortGot;
+    private GameObject labelSortZone;
+
     private GameObject itemUIObjectPrefab; // 복사하여 생성할 프리펩
     private GameObject pagePrefab; // 복사하여 생성할 프리펩
     private List<Dictionary<string, object>> objectCSV = new List<Dictionary<string, object>>();
@@ -23,17 +33,15 @@ public class RecordManager : MonoBehaviour
 
     private List<RecordObjectInfo> tempRecordObjectInfos; // 정렬에 맞춰 변경될 도감 정보 배열
 
+    private RecordObject selectedObject;
+
     private int zoneSortIndex;
     private int gotSortIndex;
 
-    [SerializeField] private GameObject pagePanel; //페이지 좌측 페이지가 생성될 기준 패널
-    [SerializeField] private GameObject itemName; //페이지 우측 이름 text
-    [SerializeField] private GameObject zone; //페이지 우측 지역 text
-    [SerializeField] private GameObject description; //페이지 우측 설명 text
 
     private string s_zone; // 지역저장을 위한 임시변수
 
-    private const int PAGE_FULL_ITEMCOUNT = 3; // 한페이지에 몇개의 아이템을 표시할 것인지
+    private const int PAGE_FULL_ITEMCOUNT = 6; // 한페이지에 몇개의 아이템을 표시할 것인지
 
     // 우측 도감 설명 초기화 텍스트
     private const string RESET_NAME = "Not Select";
@@ -73,10 +81,14 @@ public class RecordManager : MonoBehaviour
         DontDestroyOnLoad(this.gameObject);
 
         // 도감 우측 정보창 게임오브젝트 가져오기
-        //itemName = GameObject.Find("Text(Info_Name)");
-        //zone = GameObject.Find("Text(Info_Zone)");
-        //description = GameObject.Find("Text(Info_Description)");
-        //pagePanel = GameObject.Find("RecordPagePanel");
+        itemName = Utility.FindChildObj(recordCanvas,"Text(Info_Name)");
+        zone = Utility.FindChildObj(recordCanvas, "Text(Info_Zone)");
+        description = Utility.FindChildObj(recordCanvas, "Text(Info_Description)");
+        pagePanel = Utility.FindChildObj(recordCanvas, "RecordPagePanel");
+        //labelSortGot = Utility.FindChildObj(recordCanvas, "Label(SortGot)");
+        //labelSortZone = Utility.FindChildObj(recordCanvas, "Label(SortZone)");
+        labelSortGot = Utility.FindChildObj(recordCanvas, "Sort(Got)");
+        labelSortZone = Utility.FindChildObj(recordCanvas, "Sort(Zone)");
 
         itemUIObjectPrefab = Resources.Load<GameObject>("Prefabs/Object_ForRecordObject");
         pagePrefab = Resources.Load<GameObject>("Prefabs/Object_ForPage");
@@ -95,6 +107,7 @@ public class RecordManager : MonoBehaviour
         InputCSVFileToInfo(); // 초기화 레코드 정보 저장
         MakePage(objectCSV.Count); //초기화 페이지 수 계산
         MakeRecordObject(recordObjectInfos); //초기화 도감 오브젝트 구성
+        ResetRecord();
     }
 
     private void OnEnable()
@@ -201,7 +214,8 @@ public class RecordManager : MonoBehaviour
             int tempIndex = infoIndex / PAGE_FULL_ITEMCOUNT; 
 
             GameObject recordObject = Instantiate(itemUIObjectPrefab, pageList[tempIndex].transform);
-            recordObject.GetComponent<RecordObject>().recordInfo = _recordObjectInfos[infoIndex+1];
+            recordObject.GetComponent<RecordObject>().recordInfo = _recordObjectInfos[Utility.GetRecordId(infoIndex)];
+            
         }
     }
 
@@ -231,7 +245,7 @@ public class RecordManager : MonoBehaviour
         for(int i = 1; i < recordObjectInfos.Count; i++)
         {
             if(selectedId == i) continue;
-            recordObjectInfos[i].isSelected = false;
+            recordObjectInfos[Utility.GetRecordId(i)].isSelected = false;
         }
 
         if (checkRecordInfoId == recordObjectInfos[selectedId].id) // 중복으로 같은 아이디값이 들어올 경우
@@ -335,28 +349,56 @@ public class RecordManager : MonoBehaviour
         if (gotSortIndex == 1) check = true; // 획득된 상태
         else if (gotSortIndex == 2) check = false; //획득되지 않은 상태
 
-        for (int i = 1; i < recordObjectInfos.Count+1; i++) // Dictionary ID값이 1부터 시작하기때문에 i값이 1~Count+1로 설정
+        for (int i = 0; i < recordObjectInfos.Count; i++)
         {
-            if (recordObjectInfos[i].obtained == check && recordObjectInfos[i].zone == zoneSortIndex)
+            if (recordObjectInfos[Utility.GetRecordId(i)].obtained == check && recordObjectInfos[Utility.GetRecordId(i)].zone == zoneSortIndex)
             {
-                tempRecordObjectInfos.Add(recordObjectInfos[i]);
+                tempRecordObjectInfos.Add(recordObjectInfos[Utility.GetRecordId(i)]);
             }
-            else if(recordObjectInfos[i].obtained == check && zoneSortIndex == 0)
+            else if(recordObjectInfos[Utility.GetRecordId(i)].obtained == check && zoneSortIndex == 0)
             {
-                tempRecordObjectInfos.Add(recordObjectInfos[i]);
+                tempRecordObjectInfos.Add(recordObjectInfos[Utility.GetRecordId(i)]);
             }
-            else if(gotSortIndex == 0 && recordObjectInfos[i].zone == zoneSortIndex)
+            else if(gotSortIndex == 0 && recordObjectInfos[Utility.GetRecordId(i)].zone == zoneSortIndex)
             {
-                tempRecordObjectInfos.Add(recordObjectInfos[i]);
+                tempRecordObjectInfos.Add(recordObjectInfos[Utility.GetRecordId(i)]);
             }
             else if(gotSortIndex == 0 && zoneSortIndex == 0)
             {
-                tempRecordObjectInfos.Add(recordObjectInfos[i]);
+                tempRecordObjectInfos.Add(recordObjectInfos[Utility.GetRecordId(i)]);
             }
         }
 
         // 임시 리스트를 매개변수로 페이지와 오브젝트 생성
         MakePage(tempRecordObjectInfos.Count);
         MakeRecordObject(tempRecordObjectInfos);
+    }
+
+    /// <summary>
+    /// 도감을 리셋하는 함수
+    /// 231220 배경택
+    /// </summary>
+    public void ResetRecord()
+    {
+        SortGot(0);
+        SortZone(0);
+
+        //labelSortGot.GetComponent<TMP_Text>().text = "획득 여부";
+        //labelSortZone.GetComponent<TMP_Text>().text = "지역";
+        labelSortZone.GetComponent<TMP_Dropdown>().captionText.text = "지역";
+        labelSortGot.GetComponent<TMP_Dropdown>().captionText.text = "획득 여부";
+
+        if(selectedObject != null) selectedObject.InActiveChecking(); // 선택표시 비활성화
+        DeleteRecordInfo();
+    }
+
+    /// <summary>
+    /// 선택된 오브젝트를 기억하는 함수
+    /// 231220 배경택
+    /// </summary>
+    /// <param name="_selectedObject"></param>
+    public void SelectObject(RecordObject _selectedObject)
+    {
+        selectedObject = _selectedObject;
     }
 }

@@ -9,7 +9,7 @@ public class DialogueTypingEffect : MonoBehaviour
     //AudioSource myAduio = default;
     
     private float textSpeed = 10f;
-
+    public GameObject fadeImgae = default;
     public bool isTypingRunning {  get; private set; }
 
     private Coroutine typingCoroutine;
@@ -53,23 +53,25 @@ public class DialogueTypingEffect : MonoBehaviour
             charIndex = Mathf.FloorToInt(duration);
             charIndex = Mathf.Clamp(charIndex, 0, textToType.Length);
             textLabel.text = textToType.Substring(0, charIndex);
-            Debug.Log(textLabel.text);
+            //Debug.Log(textLabel.text);
             yield return null;
             //Debug.LogFormat("{0} <== This is chaiIndex ", charIndex);
         }
         isTypingRunning = false;
+        Debug.Log("지금 writeEffect 언제 되는거지?");
+        fadeImgae.SetActive(true);
         //textLabel.text = textToType;
     }
 
     public IEnumerator TextSoundEffect(string textToType, AudioSource myAduio, int toneNumber)
     {
         string[] temporaryText = textToType.Split(new char[] { ' ' });
-        Debug.Log(temporaryText.Length);
+        //Debug.Log(temporaryText.Length);
         for(int i = 0; i < temporaryText.Length; i++)
         {
             //string[] row = testText[i].Split(new char[] { ' ' });
-            Debug.Log(temporaryText[i].Length);
-            Debug.LogFormat("{0} <=== �ؽ�Ʈ", temporaryText[i]);
+            //Debug.Log(temporaryText[i].Length);
+            //Debug.LogFormat("{0} <=== 텍스트", temporaryText[i]);
             for (int j = 0; j < temporaryText[i].Length; j++)
             {
                 myAudioClip = ChooseRandomSound(toneNumber);
@@ -80,7 +82,7 @@ public class DialogueTypingEffect : MonoBehaviour
         }
         //for (int i = 0;  i < textToType.Length; i++)
         //{
-        //    Debug.LogFormat("{0} <== �ؽ�Ʈ ����", textToType.Length);
+        //    Debug.LogFormat("{0} <== 텍스트 길이", textToType.Length);
         //    myAudioClip = ChooseRandomSound(toneNumber);
         //    myAduio.PlayOneShot(myAudioClip);
         //    yield return new WaitForSeconds(0.085f);
@@ -90,7 +92,7 @@ public class DialogueTypingEffect : MonoBehaviour
 
     private AudioClip ChooseRandomSound(int toneNumber)
     {
-        AudioClip myClip = default;
+        AudioClip myClip;
         if (toneNumber == 0)
         {
             randomNumber = UnityEngine.Random.Range(0, boldTone.Length);

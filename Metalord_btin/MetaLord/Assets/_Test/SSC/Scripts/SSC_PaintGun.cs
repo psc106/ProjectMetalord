@@ -1,16 +1,16 @@
 using System;
 using UnityEngine;
-using UnityEngine.UIElements;
+
 
 public class SSC_PaintGun : MonoBehaviour
 {
     [SerializeField] private Brush brush;
     [SerializeField] private SSC_GunState gun;
     [SerializeField] private InputReader input;
-    [SerializeField] private Transform checkPos;
-    [SerializeField] private Transform startPoint;
     [SerializeField] private Transform aimTarget;
 
+    [SerializeField] private Transform checkPos;
+    [SerializeField] private Transform startPoint;
 
     [SerializeField] private LayerMask gunLayer = -1;
     [Range(0.1f, 1f)] public float attackSpeed;
@@ -20,10 +20,12 @@ public class SSC_PaintGun : MonoBehaviour
     [SerializeField, Range(1, 100)]
     float range = 50f;
 
+    float rangeLimit = 4f;
+
     float timeCheck = 0f;
     float autotimeCheck = 0f;
 
-    int normalShot = -10;
+    int normalShot = -50;
     int autoShot = -5;
     
     bool fireStart = false;
@@ -38,37 +40,21 @@ public class SSC_PaintGun : MonoBehaviour
         }
     }
 
-    private void OnDrawGizmos()
-    {
-        //Gizmos.color = Color.yellow;
-        //Vector3 dir = Vector3.zero;
-        //dir = Camera.main.transform.forward +
-        //    Camera.main.transform.TransformDirection(dir);
-
-        //Gizmos.DrawLine(GetOriginPos(), Camera.main.transform.forward);
-
-        //Gizmos.color = Color.red;
-        //Gizmos.DrawLine(startPoint.position, Camera.main.transform.position + Camera.main.transform.forward * range);
-
-
-        //Gizmos.color = Color.blue;
-        //Gizmos.DrawLine(Camera.main.transform.position, Camera.main.transform.position + Camera.main.transform.forward * range);
-    }
-
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.T))
+        // ë ˆì´ì§€ì  ì»¬ëŸ¬ ì²´í¬ í…ŒìŠ¤íŠ¸ìš©
+        if (Input.GetKeyDown(KeyCode.T))
         {
             Debug.Log(PaintTarget.CursorColor());
         }
 
-        if (Input.GetKeyDown(KeyCode.R) && gun.CanReload)
-        {
-            PaintTarget.ClearAllPaint();
-            gun.UpdateState(gun.MaxAmmo, GunState.READY);
-        }
+        Shoot();
 
+    }
+
+    public void Shoot()
+    {
         if (!gun.CanFire)
         {
             fireStart = false;
@@ -76,135 +62,84 @@ public class SSC_PaintGun : MonoBehaviour
             return;
         }
 
-        // ¸¶¿ì½º Å¬¸¯¿¡¼­ ¼ÕÀ» ¶¼¸é »ç°İ ÁßÁö.
-        if(!input.ShootKey)
+        // ë§ˆìš°ìŠ¤ í´ë¦­ì—ì„œ ì†ì„ ë–¼ë©´ ì‚¬ê²© ì¤‘ì§€.
+        if (!input.ShootKey)
         {
             fireStart = false;
             autotimeCheck = 0f;
         }
 
-        // ÀÏÁ¤½Ã°£µ¿¾È »ç°İÅ° ÀÔ·Â»óÅÂ¶ó¸é ¿¬»ç¸ğµå
-        else if(autotimeCheck > autoTime && gun.state == GunState.READY)
+        // ì¼ì •ì‹œê°„ë™ì•ˆ ì‚¬ê²©í‚¤ ì…ë ¥ìƒíƒœë¼ë©´ ì—°ì‚¬ëª¨ë“œ
+        else if (autotimeCheck > autoTime && gun.CanFire)
         {
             AutoFire();
             return;
         }
 
-        // »ç°İÀ» ½ÃÀÛ == ¸¶¿ì½º¹öÆ° ´©¸¥½ÃÁ¡µ¿¾È
-        else if(fireStart == true)
+        // ì‚¬ê²©ì„ ì‹œì‘ == ë§ˆìš°ìŠ¤ë²„íŠ¼ ëˆ„ë¥¸ì‹œì ë™ì•ˆ
+        else if (fireStart == true)
         {
             autotimeCheck += Time.deltaTime;
             return;
         }
 
-        else if(input.ShootKey && gun.state == GunState.READY)
-        {            
+        else if (input.ShootKey && gun.CanFire)
+        {
             NormalFire();
         }
-
     }
 
     /// <summary>
-    /// ´Ü¹ß ¸Ş¼Òµå
+    /// ë‹¨ë°œ ë©”ì†Œë“œ
     /// </summary>
     private void NormalFire()
     {
-        Vector3 dir = Vector3.zero;
-        dir = Camera.main.transform.forward +
-            Camera.main.transform.TransformDirection(dir);
-
-        Ray ray = new Ray(GetOriginPos(), dir);
-        RaycastHit hit;
-
-        Ray checkRay = new Ray(checkPos.position, dir);
-        RaycastHit checkHit;
-
-        if(Physics.Raycast(checkRay, out checkHit, range, gunLayer))
+        if (gun.checkSuccessRay)
         {
-            float checkDistance = Vector3.Distance(checkPos.position, checkHit.point);
-            //Debug.Log($"½ÃÀÛÁöÁ¡ °Å¸® : {checkDistance}");
-
-            if (checkDistance <= 4f)
+            if(gun.hit.transform.GetComponent<NpcBase>() != null)
             {
-                Ray muzzleRay = new Ray(checkPos.position, dir);
-
-                PaintTarget.PaintRay(muzzleRay, brush, range);
-
-                gun.UpdateState(normalShot);
-
-                if (gun.Ammo <= 0)
-                {
-                    gun.UpdateState(0, GunState.EMPTY);
-                }
-
-                fireStart = true;
-                return;
-            }
-        }
-
-        if (Physics.Raycast(ray, out hit, range, gunLayer))
-        {
-            Ray muzzleRay = new Ray(startPoint.position, hit.point - startPoint.position);
-
-            float rangePos = Vector3.Distance(GetOriginPos(), hit.point);
-
-            PaintTarget.PaintRay(muzzleRay, brush, range);
-
-            gun.UpdateState(normalShot);
-
-            if (gun.Ammo <= 0)
-            {
-                gun.UpdateState(0, GunState.EMPTY);
+                gun.hit.transform.GetComponent<BoxCollider>().enabled = false;
+                gun.hit.transform.GetComponent<NpcBase>().ChangedState(npcState.glued);
+                SSC_GunState.AddBondList(gun.hit.transform.GetComponent<NpcBase>());
             }
 
-            if(hit.transform.GetComponent<NpcBase>() != null)
+            Ray muzzleRay = new Ray(gun.startPoint, gun.hit.point - gun.startPoint);
+            UsedAmmo(muzzleRay, normalShot);
+            Debug.Log(gun.hit.transform.name);
+
+            if (gun.hit.transform.GetComponent<NpcBase>() != null)
             {
-                hit.transform.GetComponent<NpcBase>().ChangedState(npcState.glued);
+                gun.hit.transform.GetComponent<BoxCollider>().enabled = true;
             }
+
 
             fireStart = true;
         }
     }
 
     /// <summary>
-    /// ¿¬»ç ¸Ş¼Òµå
+    /// ì—°ì‚¬ ë©”ì†Œë“œ
     /// </summary>
     private void AutoFire()
     {
         timeCheck += Time.deltaTime;
 
-        if(timeCheck >= attackSpeed)
+        if (timeCheck >= attackSpeed)
         {
-            Vector3 dir = Vector3.zero;
-            dir = Camera.main.transform.forward +
-                Camera.main.transform.TransformDirection(dir);
-
-            Ray ray = new Ray(GetOriginPos(), dir);
-            RaycastHit hit;
-
-            if (Physics.Raycast(ray, out hit, range, gunLayer))
+            if (gun.checkSuccessRay)
             {
-                Ray muzzleRay = new Ray(startPoint.position, hit.point - startPoint.position);
+                Ray muzzleRay = new Ray(gun.startPoint, gun.hit.point - gun.startPoint);
+                UsedAmmo(muzzleRay, autoShot);
 
-                PaintTarget.PaintRay(muzzleRay, brush, range);
-
-                gun.UpdateState(autoShot);
-
-                if (gun.Ammo <= 0)
-                {
-                    gun.UpdateState(0, GunState.EMPTY);
-                }
-
-                timeCheck = 0f;        
+                timeCheck = 0f;
             }
-            
         }
     }
 
-    /// <summary>
-    /// Ä«¸Ş¶ó¿Í ÇÃ·¹ÀÌ¾îÀÇ ÃàÀ» µ¿ÀÏ¼±»ó¿¡ ³õ¾ÆÁÖ´Â ¸Ş¼Òµå
+   /* /// <summary>
+    /// ì¹´ë©”ë¼ì™€ í”Œë ˆì´ì–´ì˜ ì¶•ì„ ë™ì¼ì„ ìƒì— ë†“ì•„ì£¼ëŠ” ë©”ì†Œë“œ
     /// </summary>
-    /// <returns>Ä«¸Ş¶óÀÇ Á¤¸é ¹æÇâ + ÇÃ·¹ÀÌ¾îÀÇ ¼öÁ÷¼±»ó </returns>
+    /// <returns>ì¹´ë©”ë¼ì˜ ì •ë©´ ë°©í–¥ + í”Œë ˆì´ì–´ì˜ ìˆ˜ì§ì„ ìƒ </returns>
     Vector3 GetOriginPos()
     {
         Vector3 origin = Vector3.zero;
@@ -215,5 +150,52 @@ public class SSC_PaintGun : MonoBehaviour
 
         return origin;
     }
+    /// <summary>
+    /// GetOriginPos()ë¥¼ í†µí•´ ì–»ì€ ì¶•ì—ì„œ ì¹´ë©”ë¼ì˜ Rayë°©í–¥ì„ ì–»ì–´ë‚¼ ë©”ì†Œë“œ
+    /// </summary>
+    /// <returns></returns>
+    Vector3 CheckDir()
+    {
+        Vector3 dir = Vector3.zero;
+        dir = Camera.main.transform.forward +
+            Camera.main.transform.TransformDirection(dir);
 
+        return dir;
+    }*/
+
+    /// <summary>
+    /// ì „ë‹¬ë°›ì€ Ray ìœ„ì¹˜ì— PaintTarget.PaintRay() ì‹¤í–‰
+    /// <para>
+    /// ì´í›„ ì „ë‹¬ë°›ì€ _ammoê°’ë§Œí¼ GunStateì— ì†Œëª¨ê°’ ìš”ì²­
+    /// </para>
+    /// </summary>
+    /// <param name="_ray"></param>
+    /// <param name="_ammo"></param>
+    void UsedAmmo(Ray _ray, int _ammo)
+    {
+        PaintTarget.PaintRay(_ray, brush, range);
+
+        gun.UpdateState(_ammo);
+
+        if (gun.Ammo <= 0)
+        {
+            gun.UpdateState(0, GunState.EMPTY);
+        }
+    }
+
+    void CheckGizmo()
+    {
+        //Gizmos.color = Color.yellow;
+        //Vector3 dir = Vector3.zero;
+        //dir = CheckDir();     
+
+        //Gizmos.DrawLine(GetOriginPos(), Camera.main.transform.forward);
+
+        //Gizmos.color = Color.red;
+        //Gizmos.DrawLine(startPoint.position, Camera.main.transform.position + Camera.main.transform.forward * range);
+
+
+        //Gizmos.color = Color.blue;
+        //Gizmos.DrawLine(Camera.main.transform.position, Camera.main.transform.position + Camera.main.transform.forward * range);
+    }
 }

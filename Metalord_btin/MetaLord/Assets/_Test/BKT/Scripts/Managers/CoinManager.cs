@@ -1,11 +1,5 @@
 using UnityEngine;
 
-public enum CoinType
-{
-    SMALL_COIN,
-    BIG_COIN
-}
-
 /// <summary>
 /// 재화 매니저
 /// 231129_배경택
@@ -16,7 +10,7 @@ public class CoinManager : MonoBehaviour
 
     [SerializeField] private int startCoin = 10; // 시작 코인
 
-    public int currentCoin { get; private set; }
+    public int currentCoin = 0;
 
     private void Awake()
     {
@@ -30,18 +24,6 @@ public class CoinManager : MonoBehaviour
         }
         DontDestroyOnLoad(this.gameObject);
         currentCoin = startCoin; // 시작시 코인 세팅
-    }
-
-    private void OnEnable()
-    {
-        Debug.Log(GameEventsManager.instance);
-        //GameEventsManager.instance.coinEvents.onUseCoin += UseCoin;
-        GameEventsManager.instance.coinEvents.ChangeCoin(currentCoin); // 코인 먹을 경우 코인 변경
-    }
-
-    private void OnDisable()
-    {
-        //GameEventsManager.instance.coinEvents.onUseCoin -= UseCoin;
     }
 
     private void Start()

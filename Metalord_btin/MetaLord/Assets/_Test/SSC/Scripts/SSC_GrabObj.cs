@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class SSC_GrabObj : MonoBehaviour
@@ -14,32 +11,23 @@ public class SSC_GrabObj : MonoBehaviour
         myColid = GetComponent<MeshCollider>();
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         if(isGrabed == true)
         {
             if(myRigid != null && myRigid.IsSleeping())
             {
-                myColid.convex = false;
                 Destroy(myRigid);
-                isGrabed = false;
+                myColid.convex = false;
+                isGrabed = false;                
             }
         }
     }
 
-    public void ChangedState(bool _ChangedRigid)
+    public void ChangedState()
     {        
         myRigid = GetComponent<Rigidbody>();
-        myColid.convex = true;
-        myRigid.useGravity = false;
-        myRigid.constraints = RigidbodyConstraints.FreezeRotation;
         isGrabed = true;
-
-        if(myRigid.isKinematic == true)
-        {
-            myRigid.isKinematic = _ChangedRigid;
-        }
-
     }
-    
+
 }

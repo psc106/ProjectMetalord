@@ -6,7 +6,7 @@ public class DialogueDBManager : MonoBehaviour
 {
     public static DialogueDBManager instance;
 
-    [SerializeField] private TextAsset dialogueCsv;
+    //[SerializeField] private TextAsset dialogueCsv;
     [SerializeField] private TextAsset questionCsv;
 
     //12.12 HJ 추가
@@ -26,7 +26,7 @@ public class DialogueDBManager : MonoBehaviour
         {
             instance = this;
             DialogueDataParse dialogerParser = GetComponent<DialogueDataParse>();
-            Dialogue[] dialogues = dialogerParser.ParseDialogue(dialogueCsv);
+            //Dialogue[] dialogues = dialogerParser.ParseDialogue(dialogueCsv); //TODO 삭제예정
             DialogueQuestion[] questionArray = dialogerParser.ParseQuestionList(questionCsv);
             //12.12 HJ추가  
             StatusDialogue[] statusDialogues = dialogerParser.ParseStatusDialogue(dialogueStatusCsv);
@@ -37,11 +37,11 @@ public class DialogueDBManager : MonoBehaviour
                 questionDic.Add(i + 1, questionArray[i]);
             }
            
-            // 대화 대사 딕셔너리 형식으로 저장
-            for (int i = 0; i < dialogues.Length; i++)
-            {
-                dialogueDic.Add(i + 1, dialogues[i]);
-            }
+            //// 대화 대사 딕셔너리 형식으로 저장
+            //for (int i = 0; i < dialogues.Length; i++)
+            //{
+            //    dialogueDic.Add(i + 1, dialogues[i]);
+            //}
 
             // 상태 대화 대사 딕셔너리 형식으로 저장
             for (int i = 0; i< statusDialogues.Length; i++)

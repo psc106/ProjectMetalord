@@ -6,6 +6,7 @@ public class DinosaurNpc : NpcBase, IInteractNpc
 {
     public void InteractNpc()
     {
+        // °ø·æ 19
         myDialogue.CheckStateDialogue(19, state);
     }
 }

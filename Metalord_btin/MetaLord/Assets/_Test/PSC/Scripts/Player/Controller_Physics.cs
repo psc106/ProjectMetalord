@@ -13,6 +13,8 @@ public class Controller_Physics : MonoBehaviour
     LayerMask climbMask = -1;
     [SerializeField] 
     LayerMask colorCheckLayer = -1;
+    [SerializeField] 
+    LayerMask aimLayer = -1;
 
     [Header("Component")]
     [SerializeField]
@@ -25,6 +27,14 @@ public class Controller_Physics : MonoBehaviour
     //TrailRenderer trailRenderer;
     [SerializeField]
     Animator animator;
+    [SerializeField]
+    MeshRenderer frontGunRender;
+    [SerializeField]
+    MeshRenderer handGunRender;
+    [SerializeField]
+    MeshRenderer backGunRender;
+    [SerializeField]
+    CameraManager cameraManager;
 
     #region Private Reference
 
@@ -71,6 +81,9 @@ public class Controller_Physics : MonoBehaviour
     bool isJump = false;
     bool canFire = false;
 
+    bool playingReloadAnimation = false;
+    bool playingEquipAnimation = false;
+
     int jumpPhase = 0;
     int stepsSinceLastGrounded = 0;
     int stepsSinceLastJump = 0;
@@ -86,7 +99,8 @@ public class Controller_Physics : MonoBehaviour
 
     public bool isMove { get; private set; }
     public static bool stopState { get; private set; }
-    public bool CanFire => canFire && !OnClimb;
+    public bool CanFire => canFire && CanReload;
+    public bool CanReload => !playingReloadAnimation && !OnClimb;
     public bool OnMultipleState => multipleState;
     public bool OnGround => groundContactCount > 0;
     public bool OnSteep => steepContactCount > 0;
@@ -98,9 +112,9 @@ public class Controller_Physics : MonoBehaviour
     [SerializeField, Range(0, 100f)]
     float jumpHeight = default;
     [SerializeField, Range(0, 10)]
-    float jumpDuringTimer = 2f;
+    float jumpDelayTime = 2f;
     [SerializeField, Range(0, 10)]
-    float fireDuringTime = 1f;
+    float fireDelayTime = 1f;
 
     [SerializeField, Min(0f)]
     float probeDistance = default;
@@ -139,34 +153,24 @@ public class Controller_Physics : MonoBehaviour
     [Header("RigController")]
     [SerializeField] Transform startPoint;
     [SerializeField] Transform cameraPoint;
+
     [SerializeField] Transform aimTarget;
     [SerializeField] Transform rotateTarget;
-    [SerializeField] LayerMask aimLayer = -1;
 
-    [SerializeField] float range = 50;
+    [SerializeField] float aimRange = 50;
 
     [SerializeField] Rig aimRig;
     [SerializeField] Rig rotateRig;
 
     RaycastHit aimHit;
 
-    // Update is called once per frame
-    void LateUpdate()
-    {
-        aimRig.weight = OnClimb && !OnMultipleState ? 0 : 1;
-        rotateRig.weight = OnClimb && !OnMultipleState ? 1 : 0;
-
-        if (OnClimb)
-        {
-            rotateTarget.rotation = Quaternion.LookRotation(-GetClimbNormal());
-        }
-
-        aimTarget.position = cameraPoint.position + cameraPoint.forward * range;
-        if (Physics.Raycast(startPoint.position, aimTarget.position - startPoint.position, out aimHit, range, aimLayer))
-        {
-            aimTarget.position = aimHit.point;
-        }
-    }
+    //231219 배경택
+    [Header("UI 상점, 도감, 환경설정")]
+    [SerializeField] GameObject storeUI; // 상점 UI 오브젝트
+    [SerializeField] GameObject recordUI; // 도감 UI 오브젝트
+    [SerializeField] GameObject settingsUI; // 환경설정 UI 오브젝트
+    private bool canInput = true; // 입력 가능여부
+    private const float INPUT_DELAYTIME = 0.1f; // 입력 후 대기 시간
 
     #region Animator Hash
     private readonly int VelocityXHash = Animator.StringToHash("VelocityX");
@@ -176,7 +180,9 @@ public class Controller_Physics : MonoBehaviour
     private readonly int ReloadTriggerHash = Animator.StringToHash("Reload");
     private readonly int EquipStateHash = Animator.StringToHash("EquipState");
     private readonly int EquipTriggerHash = Animator.StringToHash("EquipTrigger");
+    private readonly int ClimbWaitHash = Animator.StringToHash("ClimbWait");
     #endregion
+
 
     //에디터에서 처리
     private void OnValidate()
@@ -198,13 +204,17 @@ public class Controller_Physics : MonoBehaviour
         rb.useGravity = false;
 
         canFire = false;
-        fireDelay = StartCoroutine(fireDelayRoutine(fireDuringTime));
+        fireDelay = StartCoroutine(fireDelayRoutine(fireDelayTime));
     }
 
     void Update()
     {
         //대화나 메뉴에서 stop시킴
-        if (stopState) return;
+        if (stopState)
+        {
+            rb.velocity += gravity * Time.deltaTime;
+            return;
+        }
 
         input.x = reader.Direction.x;
         input.z = reader.Direction.y;
@@ -229,13 +239,86 @@ public class Controller_Physics : MonoBehaviour
         trailColor.b = OnClimb ? 1 : 0;
 
         GetComponent<Renderer>().material.color = trailColor;
+
+        #region 상점, 도감, 환경설정 키 누를경우 _ 231219 배경택
+        if (canInput)
+        {
+            if (reader.StoreKey) // 상점 키 누를 경우 _231219 배경택
+            {
+                if (storeUI.activeSelf == true) storeUI.SetActive(false); // 중복 버튼을 누를경우 꺼짐
+                else
+                {
+                    storeUI.SetActive(true);
+                    recordUI.SetActive(false);
+                    settingsUI.SetActive(false);
+                }
+
+                StartCoroutine(DelayInput());
+            }
+
+            if (reader.RecordKey) // 도감 키 누를 경우 _231219 배경택
+            {
+                if (recordUI.activeSelf == true) recordUI.SetActive(false); // 중복 버튼을 누를경우 꺼짐
+                else
+                {
+                    recordUI.SetActive(true);
+                    storeUI.SetActive(false);
+                    settingsUI.SetActive(false);
+                }
+
+                StartCoroutine(DelayInput());
+
+            }
+
+            if (!storeUI.activeSelf && !recordUI.activeSelf && reader.SettingsKey) //설정 키 누를 경우 _231219 배경택
+            {
+                if (settingsUI.activeSelf == true) settingsUI.SetActive(false); // 중복 버튼을 누를경우 꺼짐
+                else
+                {
+                    settingsUI.SetActive(true);
+                    recordUI.SetActive(false);
+                    storeUI.SetActive(false);
+                }
+
+                StartCoroutine(DelayInput());
+
+            }
+
+            if (Input.GetKeyDown(KeyCode.Escape)) // 그냥 ESC키 누를경우 꺼짐 (환경설정키가 ESC로 되어있음에 따라 환경설정키는 조건에서 제외)
+            {
+                if (storeUI.activeSelf == true)
+                {
+                    storeUI.SetActive(false);
+                }
+
+                if (recordUI.activeSelf == true)
+                {
+                    recordUI.SetActive(false);
+                }
+                
+                StartCoroutine(DelayInput());
+            }
+        }
+        #endregion
+
+    }
+
+    // 입력 대기시간 코루틴
+    IEnumerator DelayInput()
+    {
+        canInput = false; // 입력 불가
+        yield return new WaitForSeconds(INPUT_DELAYTIME); // 대기시간
+        canInput = true; // 입력 가능
     }
 
     private void FixedUpdate()
     {
         //대화나 메뉴에서 stop시킴
-        if (stopState) return;
-
+        if (stopState)
+        {
+            rb.velocity += gravity * Time.deltaTime;
+            return;
+        }
         //상태 업데이트
         UpdateState();
         //속도 계산
@@ -288,13 +371,29 @@ public class Controller_Physics : MonoBehaviour
     }
 
 
-    private void AdjustJump()
+
+    void LateUpdate()
     {
-        //점프 키 눌렀을 경우만
-        if (desireJump)
+
+        if (playingReloadAnimation)
         {
-            desireJump = false;
-            Jump(gravity);
+            frontGunRender.enabled = true;
+            backGunRender.enabled = (false);
+        }
+
+
+        aimRig.weight = OnClimb && !OnMultipleState ? 0 : 1;
+        rotateRig.weight = OnClimb && !OnMultipleState ? 1 : 0;
+
+        if (OnClimb)
+        {
+            rotateTarget.rotation = Quaternion.LookRotation(-GetClimbNormal());
+        }
+
+        aimTarget.position = cameraPoint.position + cameraPoint.forward * aimRange;
+        if (Physics.Raycast(startPoint.position, aimTarget.position - startPoint.position, out aimHit, aimRange, aimLayer))
+        {
+            aimTarget.position = aimHit.point;
         }
     }
 
@@ -403,6 +502,15 @@ public class Controller_Physics : MonoBehaviour
 
     }
 
+    private void AdjustJump()
+    {
+        //점프 키 눌렀을 경우만
+        if (desireJump)
+        {
+            desireJump = false;
+            Jump(gravity);
+        }
+    }
 
     void Jump(Vector3 gravity)
     {
@@ -416,6 +524,9 @@ public class Controller_Physics : MonoBehaviour
             {
                 //점프 방향을 접촉 표면과 같게 한다.
                 jumpDirection = contactNormal;
+                cameraManager.UpdateFixedAngle();
+                cameraManager.PlayBlendCameraRoutine();
+                cameraManager.ChangePriorityCamera(CameraType.Climb, 1);
             }
 
             //인풋이 있을 경우
@@ -467,9 +578,13 @@ public class Controller_Physics : MonoBehaviour
         //점프 상태
         isJump = true;
         //등산 딜레이
-        StartCoroutine(climbDelayRoutine(OnClimb?jumpDuringTimer:0f));
+        StartCoroutine(climbDelayRoutine(OnClimb?jumpDelayTime:0f));
         //점프 애니메이션
         animator.SetTrigger(JumpTriggerHash);
+        animator.SetBool(ClimbWaitHash, true);
+
+        int id = (int)PlayerSoundList.Jump;
+        SoundManager.instance.PlaySound(GroupList.Player, id);
 
         //점프 방향에 추가적인 upAxis 추가
         jumpDirection = (jumpDirection + upAxis).normalized;
@@ -505,6 +620,7 @@ public class Controller_Physics : MonoBehaviour
     {
         yield return new WaitForSeconds(time);
         isJump = false;
+        animator.SetBool(ClimbWaitHash, false);
     }
 
     void EvaluateCollision(Collision collision)
@@ -582,6 +698,7 @@ public class Controller_Physics : MonoBehaviour
         steepNormal = Vector3.zero;
         //등산가능
         climbContactCount = 0;
+        previousClimbNormal = climbNormal;
         climbNormal = Vector3.zero;
 
         connectionVelocity = Vector3.zero;
@@ -591,11 +708,16 @@ public class Controller_Physics : MonoBehaviour
         desireClimb = false;
     }
 
+    public enum PlayerState
+    {
+        ground, climb ,air
+    }
 
     private void UpdateState()
     {
         // 지상<->등산 애니메이션 결정
         animator.SetBool(ClimbTriggerHash, !multipleState && OnClimb);
+
 
         //마지막 그라운드에서 몇 프레임이 지났는지 저장하기 위한 변수
         stepsSinceLastGrounded += 1;
@@ -648,7 +770,7 @@ public class Controller_Physics : MonoBehaviour
         {
             if (fireDelay != null) StopCoroutine(fireDelay);
             canFire = false;
-            fireDelay = StartCoroutine(fireDelayRoutine(fireDuringTime));
+            fireDelay = StartCoroutine(fireDelayRoutine(fireDelayTime));
 
             //등산 가능 상태를 유지한다.
             desireClimb = true;
@@ -802,6 +924,17 @@ public class Controller_Physics : MonoBehaviour
         return climbNormal;
     }
 
+    Vector3 previousClimbNormal;
+    public Vector3 GetPreviousClimbNormal()
+    {
+        return previousClimbNormal;
+    }
+
+    public Vector2 GetMoveDirection()
+    {
+        return reader.Direction.normalized;
+    }
+
     float GetMinDot(int layer)
     {
         //n만큼 비트 이동한 것과 비교하여 1이 검출되지않는다면 지형 / 그외 오브젝트
@@ -825,13 +958,105 @@ public class Controller_Physics : MonoBehaviour
 
     public static void SwitchCameraLock(bool check)
     {
+        if (stopState)
+        {
+            FindObjectOfType<Controller_Physics>().rb.velocity = Vector3.zero;
+        }
         stopState = check;
     }
 
 
-    #region 바인딩 함수
 
-    //인풋 시스템 리더
+    #region 애니메이션 이벤트
+
+
+    public void PlayWalkSound()
+    {
+        if (!OnGround)
+        {
+            return;
+        }
+        int id = desireClimb ? (int)PlayerSoundList.GlueWalk : (int)PlayerSoundList.DefaultWalk;
+        SoundManager.instance.PlaySound(GroupList.Player, id);
+    }
+    public void PlayClimbSound()
+    {
+        if (!OnClimb)
+        {
+            return;
+        }
+
+        int id =  (int)PlayerSoundList.GlueWalk;
+        SoundManager.instance.PlaySound(GroupList.Player, id);
+    }
+    public void PlayReloadAnimation()
+    {
+        playingReloadAnimation = true;
+        aimRig.weight = 0;
+        animator.SetTrigger(ReloadTriggerHash);
+    }
+    public void EndReloadAnimation()
+    {
+        playingReloadAnimation = false;
+        aimRig.weight = 1;
+    }
+
+    public bool onUnequip = false;
+
+    public void PlayUnEquipAnimation()
+    {
+        handGunRender.enabled = true;
+        frontGunRender.enabled = false;
+        backGunRender.enabled = (false);
+
+        playingEquipAnimation = true;
+        aimRig.weight = 0;
+        animator.SetTrigger(EquipTriggerHash);
+    }
+    public void EndUnEquipAnimation()
+    {
+        Debug.Log("등에매기");
+
+        if (!OnClimb) return;
+        handGunRender.enabled = false;
+        frontGunRender.enabled = false;
+        backGunRender.enabled = (true);
+
+        playingEquipAnimation = false;
+        aimRig.weight = 1;
+
+    }
+    public void PlayEquipAnimation()
+    {
+        Debug.Log("앞에들기");
+
+        handGunRender.enabled = false;
+        frontGunRender.enabled = true;
+        backGunRender.enabled = (false);
+
+        aimRig.weight = 1;
+        //handGunRender.enabled = true;
+        //frontGunRender.enabled = false;
+        //backGunRender.enabled = (false);
+
+        //playingEquipAnimation = true;
+        //aimRig.weight = 0;
+        //animator.SetTrigger(EquipTriggerHash);
+    }
+    public void EndEquipAnimation()
+    {
+        handGunRender.enabled = false;
+        frontGunRender.enabled = true;
+        backGunRender.enabled = (false);
+
+        playingEquipAnimation = false;
+        aimRig.weight = 1;
+    }
+
+    #endregion
+
+    #region 바인딩 함수
+    [Header("인풋 시스템 리더")] //인풋 시스템 리더
     [SerializeField]
     InputReader reader;
 

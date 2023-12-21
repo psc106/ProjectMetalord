@@ -67,8 +67,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 2f9c678a1bd6d2c4c895a9d4c8b60154, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -98,10 +98,10 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 0.8301887, g: 0.66660976, b: 0.19971518, a: 1}
-    m_HighlightedColor: {r: 0.83137256, g: 0.6666667, b: 0.2, a: 1}
-    m_PressedColor: {r: 1, g: 0.95184326, b: 0, a: 1}
-    m_SelectedColor: {r: 0.83137256, g: 0.6666667, b: 0.2, a: 1}
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.8207547, g: 0.76692015, b: 0.63105196, a: 1}
+    m_PressedColor: {r: 0.9716981, g: 0.926173, b: 0.81127626, a: 1}
+    m_SelectedColor: {r: 0.8196079, g: 0.7686275, b: 0.6313726, a: 1}
     m_DisabledColor: {r: 0, g: 0, b: 0, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -188,8 +188,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: New Text 1
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: bb3625fd14de61843b22fa755a535e78, type: 2}
-  m_sharedMaterial: {fileID: 8903376631138267742, guid: bb3625fd14de61843b22fa755a535e78, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 377387d65541fcd429f2b9dd83d84755, type: 2}
+  m_sharedMaterial: {fileID: -429357652147104594, guid: 377387d65541fcd429f2b9dd83d84755, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

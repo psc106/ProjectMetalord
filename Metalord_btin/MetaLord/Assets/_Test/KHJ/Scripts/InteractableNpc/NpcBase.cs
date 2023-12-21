@@ -19,33 +19,47 @@ public class NpcBase : MonoBehaviour
 
     protected virtual void Awake()
     {
-        myDialogue = GameObject.Find("TutorialDialogueCanvas").GetComponent<DialogueUI>();
+        myDialogue = GameObject.Find("DialogueCanvas").GetComponent<DialogueUI>();
         state = npcState.normal;                
     }
-
-    private void Update()
+    
+    public void ChangedState(npcState _change)
     {
-        if(Input.GetKeyDown(KeyCode.H))
+            Debug.LogFormat("{0} <==현재 변경될 상태, {1}<====현재 상태", _change, state);
+        if(_change == npcState.objectAttached)
         {
-            ChangedState(npcState.normal);
-            Debug.Log("기본 상태");
-        }
+            Debug.LogFormat("변경될 상태가 오브젝트 붙은 상태일떄 실행되는 메서드 {0} <==현재 변경될 상태, {1}<====현재 상태", _change, state);
 
-        if (Input.GetKeyDown(KeyCode.J))
-        {
-            ChangedState(npcState.glued);
-            Debug.Log("접착제 묻은 상태");
+            if (state == npcState.glued || state == npcState.objectAttached)
+            { 
+                state = _change;
+            }
+            else
+            {
+                return;
+            }
         }
-
-        if (Input.GetKeyDown(KeyCode.K))
+        else if (_change == npcState.glued)
         {
-            ChangedState(npcState.objectAttached);
-            Debug.Log("물건 붙은 상태");
+            Debug.LogFormat("본드 상태일때 들어오는 상태{0} <==현재 변경될 상태, {1}<====현재 상태", _change, state);
+
+            if (state == npcState.objectAttached)
+            {
+                state = npcState.objectAttached;
+            }
+            else
+            {
+                state = _change;
+            }
+        }
+        else
+        {
+            state = _change;
         }
     }
 
-    public virtual void ChangedState(npcState _change)
+    public void PrintState()
     {
-        state = _change;
+        Debug.LogFormat("{0} <== {1} 상태",state, transform.name);
     }
 }

@@ -7,7 +7,8 @@ using UnityEngine;
 public class DialogueUI : MonoBehaviour
 {
     #region 다이얼로그 매직넘버 관련 ID
-    // ShowDialogue
+    // TODO 수정 예정
+    //ShowDialogue
     // 01 ~ 12 : 튜토리얼 토끼
     // 13 ~ 15 : 양
     // 16 ~ 18 : 꿀벌
@@ -18,7 +19,8 @@ public class DialogueUI : MonoBehaviour
     // 31 ~ 33 : 공주
     // 34 ~ 36 : 모험가
     #endregion
-    public PlayerInteractNpc testPlayer;
+
+    public PlayerInteractNpc playerInteract;
 
     public GameObject dialogueUI;
     public GameObject questionUI;
@@ -32,7 +34,7 @@ public class DialogueUI : MonoBehaviour
     [Header("TextSound")]
     //12.15 사운드 작업을 위한 추가
     private AudioSource myAduio = default;
-    public AudioClip textSound = default;
+    private AudioClip textSound = default;
 
     
 
@@ -44,82 +46,86 @@ public class DialogueUI : MonoBehaviour
         CloseDialogueUI();
         CloseTutoQuestion();
     }
-    
-    public void ShowTutoDialogue(int keyNum)
-    {
-        OpenDialogueUI();
-        isResponse = true;
-        StartCoroutine(StepThroughDialogue(keyNum));
-    }
+    #region TODO 삭제예정
+    //public void ShowTutoDialogue(int keyNum)
+    //{
+    //    OpenDialogueUI();
+    //    isResponse = true;
+    //    StartCoroutine(StepThroughDialogue(keyNum));
+    //}
 
-    public void ShowDialogue(int keyNum)
-    {
-        OpenDialogueUI();
-        StartCoroutine(StepThroughDialogue(keyNum));
-    }
-    private IEnumerator StepThroughDialogue(int keyNum)
-    {
-        if (keyNum == 0)
-        {
-            yield break;
-        }
-        while (true)
-        {
-            string id = DialogueDBManager.instance.dialogueDic[keyNum].dialogueID;
-            string nextId = DialogueDBManager.instance.dialogueDic[keyNum].nextTextNum;
-            string[] contexteArray = DialogueDBManager.instance.dialogueDic[keyNum].contextes;
+    //public void ShowDialogue(int keyNum)
+    //{
+    //    OpenDialogueUI();
+    //    StartCoroutine(StepThroughDialogue(keyNum));
+    //}
+   
+    //private IEnumerator StepThroughDialogue(int keyNum)
+    //{
+    //    if (keyNum == 0)
+    //    {
+    //        yield break;
+    //    }
+    //    while (true)
+    //    {
+    //        string id = DialogueDBManager.instance.dialogueDic[keyNum].dialogueID;
+    //        string nextId = DialogueDBManager.instance.dialogueDic[keyNum].nextTextNum;
+    //        string[] contexteArray = DialogueDBManager.instance.dialogueDic[keyNum].contextes;
 
-            for (int i = 0; i < contexteArray.Length; i++)
-            {
-                string dialogue = DialogueDBManager.instance.dialogueDic[keyNum].contextes[i];
-                dialogueBox.transform.GetChild(1).gameObject.transform.GetChild(0).gameObject.GetComponent<TMP_Text>().text =
-                    DialogueDBManager.instance.dialogueDic[keyNum].speakerName.Trim();
-                //yield return myTextEffect.Run(dialogue, dialogueText);
-                yield return RunTypingEffect(dialogue);
+    //        for (int i = 0; i < contexteArray.Length; i++)
+    //        {
+    //            string dialogue = DialogueDBManager.instance.dialogueDic[keyNum].contextes[i];
+    //            dialogueBox.transform.GetChild(1).gameObject.transform.GetChild(0).gameObject.GetComponent<TMP_Text>().text =
+    //                DialogueDBManager.instance.dialogueDic[keyNum].speakerName.Trim();
+    //            //yield return myTextEffect.Run(dialogue, dialogueText);
+    //            yield return RunTypingEffect(dialogue);
                 
-                dialogueText.text = dialogue;
+    //            dialogueText.text = dialogue;
 
-                yield return null;
-                yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.E));
-            }
+    //            yield return null;
+    //            yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.E));
+    //        }
             
-            if(isResponse)
-            {
-                //TODO 추가적인 넣고싶은 기능 넣으면 될 듯
-                OpenTutoQuestion();
-            }
+    //        if(isResponse)
+    //        {
+    //            //TODO 추가적인 넣고싶은 기능 넣으면 될 듯
+    //            OpenTutoQuestion();
+    //        }
 
-            if (nextId != "")
-            {
-                keyNum = int.Parse(nextId);
-            }
-            else if (nextId == "")
-            {
-                // TODO 대화창 닫고 플레이어 이동제한 해제
-                Debug.Log("여기온거면 끝난거임");
-                yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.E));
-                if (isResponse == false)
-                {
-                    CloseDialogueUI();
-                    //플레이어 움직임 다시 제어 // TODO 캐릭터 움직임 제어
-                    testPlayer.isMove = true;
-                }
-                break;
-            }
+    //        if (nextId != "")
+    //        {
+    //            keyNum = int.Parse(nextId);
+    //        }
+    //        else if (nextId == "")
+    //        {
+    //            // TODO 대화창 닫고 플레이어 이동제한 해제
+    //            Debug.Log("여기온거면 끝난거임");
+    //            yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.E));
+    //            if (isResponse == false)
+    //            {
+    //                CloseDialogueUI();
+    //                //플레이어 움직임 다시 제어 // TODO 캐릭터 움직임 제어
+    //                //testPlayer.isMove = true;
+    //            }
+    //            break;
+    //        }
             
-            Debug.Log("이건 마지막 eKey 위에 디버그");
-        }
-        yield break;
-    }
-    private IEnumerator RunTypingEffect(string dialouge)
+    //        Debug.Log("이건 마지막 eKey 위에 디버그");
+    //    }
+    //    yield break;
+    //}
+    #endregion
+    private IEnumerator RunTypingEffect(string dialouge, int voice)
     {
-        myTextEffect.Run(dialouge, dialogueText, myAduio, 1); //매직넘버 톤리스트 결정하는거임
+        //int toneNum = voice;
+        myTextEffect.Run(dialouge, dialogueText, myAduio, voice); //매직넘버 톤리스트 결정하는거임
         while (myTextEffect.isTypingRunning)
         {
             yield return null;
             if(Input.GetKeyDown(KeyCode.E))
             {
                 myTextEffect.Stop();
+                myTextEffect.fadeImgae.SetActive(true);
             }
         }
     }
@@ -159,6 +165,7 @@ public class DialogueUI : MonoBehaviour
             string id = DialogueDBManager.instance.statusDialogueDic[keyNum].dialogueID;
             string nextId = DialogueDBManager.instance.statusDialogueDic[keyNum].nextTextNum;
             string[] contexteArray = DialogueDBManager.instance.statusDialogueDic[keyNum].contextes;
+            int voice = int.Parse(DialogueDBManager.instance.statusDialogueDic[keyNum].voice);
 
             for (int i = 0; i < contexteArray.Length; i++)
             {
@@ -166,14 +173,19 @@ public class DialogueUI : MonoBehaviour
                 dialogueBox.transform.GetChild(1).gameObject.transform.GetChild(0).gameObject.GetComponent<TMP_Text>().text =
                     DialogueDBManager.instance.statusDialogueDic[keyNum].speakerName.Trim();
                 //yield return myTextEffect.Run(dialogue, dialogueText);
-                Debug.Log(dialogue);
-               
-                yield return RunTypingEffect(dialogue);
+                //Debug.Log(dialogue);
+                //만약 대화ID당 한사람만 말하는 것이 아니라면 이 안에다가 voice 를 넣어줘야할듯
+                yield return RunTypingEffect(dialogue, voice);
 
                 dialogueText.text = dialogue;
+                myTextEffect.fadeImgae.SetActive(true);
 
                 yield return null;
+                //Debug.Log("E키 누르기 전인데 실행될려나?");
+
                 yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.E));
+                //Debug.Log("E키 누른뒤인데 작동 안하나?");
+                myTextEffect.fadeImgae.SetActive(false);
             }
 
             if (isResponse)
@@ -184,6 +196,7 @@ public class DialogueUI : MonoBehaviour
 
             if (nextId != "" && nextId != null)
             {
+                Debug.LogFormat("{0}<== 여기가 nextId에 값이 들어있을때인데 무슨 값이죠?", nextId);
                 keyNum = int.Parse(nextId);
             }
             else if (nextId == "" || nextId == null)
@@ -191,11 +204,14 @@ public class DialogueUI : MonoBehaviour
                 // TODO 대화창 닫고 플레이어 이동제한 해제
                 Debug.Log("여기온거면 끝난거임");
                 yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.E));
+                myTextEffect.fadeImgae.SetActive(false);
                 if (isResponse == false)
                 {
                     CloseDialogueUI();
                     //플레이어 움직임 다시 제어
                     //testPlayer.isMove = true;
+                    playerInteract.isInteract = true; //다시 대화할 수 있게끔
+                    Controller_Physics.SwitchCameraLock(false);
                 }
                 break;
             }
