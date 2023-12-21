@@ -92,7 +92,7 @@ public class GunStateController : MonoBehaviour
                 return !currentMode.OnGrab;
             }
 
-            return !player.OnClimb;
+            return player.CanReload;
         }
         private set { }
     }
