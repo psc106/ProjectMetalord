@@ -32,12 +32,12 @@ public class CoinEvents
         }
     }
 
-    public event Action<int> onUpgradeGun;
-    public void UpgradeGun(int value)
+    public event Action<UpgradeCategory,int> onUpgradeGun;
+    public void UpgradeGun(UpgradeCategory upgradeCategory,int value)
     {
         if (onUpgradeGun != null)
         {
-            onUpgradeGun(value);
+            onUpgradeGun(upgradeCategory,value);
         }
     }
 }
