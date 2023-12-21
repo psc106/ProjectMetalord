@@ -33,6 +33,8 @@ public class Controller_Physics : MonoBehaviour
     MeshRenderer handGunRender;
     [SerializeField]
     MeshRenderer backGunRender;
+    [SerializeField]
+    CameraManager cameraManager;
 
     #region Private Reference
 
@@ -110,9 +112,9 @@ public class Controller_Physics : MonoBehaviour
     [SerializeField, Range(0, 100f)]
     float jumpHeight = default;
     [SerializeField, Range(0, 10)]
-    float jumpDuringTimer = 2f;
+    float jumpDelayTime = 2f;
     [SerializeField, Range(0, 10)]
-    float fireDuringTime = 1f;
+    float fireDelayTime = 1f;
 
     [SerializeField, Min(0f)]
     float probeDistance = default;
@@ -202,7 +204,7 @@ public class Controller_Physics : MonoBehaviour
         rb.useGravity = false;
 
         canFire = false;
-        fireDelay = StartCoroutine(fireDelayRoutine(fireDuringTime));
+        fireDelay = StartCoroutine(fireDelayRoutine(fireDelayTime));
     }
 
     void Update()
@@ -522,6 +524,9 @@ public class Controller_Physics : MonoBehaviour
             {
                 //점프 방향을 접촉 표면과 같게 한다.
                 jumpDirection = contactNormal;
+                cameraManager.UpdateFixedAngle();
+                cameraManager.PlayBlendCameraRoutine();
+                cameraManager.ChangePriorityCamera(CameraType.Climb, 1);
             }
 
             //인풋이 있을 경우
@@ -573,10 +578,13 @@ public class Controller_Physics : MonoBehaviour
         //점프 상태
         isJump = true;
         //등산 딜레이
-        StartCoroutine(climbDelayRoutine(OnClimb?jumpDuringTimer:0f));
+        StartCoroutine(climbDelayRoutine(OnClimb?jumpDelayTime:0f));
         //점프 애니메이션
         animator.SetTrigger(JumpTriggerHash);
         animator.SetBool(ClimbWaitHash, true);
+
+        int id = (int)PlayerSoundList.Jump;
+        SoundManager.instance.PlaySound(GroupList.Player, id);
 
         //점프 방향에 추가적인 upAxis 추가
         jumpDirection = (jumpDirection + upAxis).normalized;
@@ -690,6 +698,7 @@ public class Controller_Physics : MonoBehaviour
         steepNormal = Vector3.zero;
         //등산가능
         climbContactCount = 0;
+        previousClimbNormal = climbNormal;
         climbNormal = Vector3.zero;
 
         connectionVelocity = Vector3.zero;
@@ -761,7 +770,7 @@ public class Controller_Physics : MonoBehaviour
         {
             if (fireDelay != null) StopCoroutine(fireDelay);
             canFire = false;
-            fireDelay = StartCoroutine(fireDelayRoutine(fireDuringTime));
+            fireDelay = StartCoroutine(fireDelayRoutine(fireDelayTime));
 
             //등산 가능 상태를 유지한다.
             desireClimb = true;
@@ -915,6 +924,17 @@ public class Controller_Physics : MonoBehaviour
         return climbNormal;
     }
 
+    Vector3 previousClimbNormal;
+    public Vector3 GetPreviousClimbNormal()
+    {
+        return previousClimbNormal;
+    }
+
+    public Vector2 GetMoveDirection()
+    {
+        return reader.Direction.normalized;
+    }
+
     float GetMinDot(int layer)
     {
         //n만큼 비트 이동한 것과 비교하여 1이 검출되지않는다면 지형 / 그외 오브젝트
@@ -943,6 +963,31 @@ public class Controller_Physics : MonoBehaviour
             FindObjectOfType<Controller_Physics>().rb.velocity = Vector3.zero;
         }
         stopState = check;
+    }
+
+
+
+    #region 애니메이션 이벤트
+
+
+    public void PlayWalkSound()
+    {
+        if (!OnGround)
+        {
+            return;
+        }
+        int id = desireClimb ? (int)PlayerSoundList.GlueWalk : (int)PlayerSoundList.DefaultWalk;
+        SoundManager.instance.PlaySound(GroupList.Player, id);
+    }
+    public void PlayClimbSound()
+    {
+        if (!OnClimb)
+        {
+            return;
+        }
+
+        int id =  (int)PlayerSoundList.GlueWalk;
+        SoundManager.instance.PlaySound(GroupList.Player, id);
     }
     public void PlayReloadAnimation()
     {
@@ -1007,6 +1052,8 @@ public class Controller_Physics : MonoBehaviour
         playingEquipAnimation = false;
         aimRig.weight = 1;
     }
+
+    #endregion
 
     #region 바인딩 함수
     [Header("인풋 시스템 리더")] //인풋 시스템 리더

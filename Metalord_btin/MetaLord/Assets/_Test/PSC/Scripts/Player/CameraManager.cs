@@ -1,5 +1,9 @@
 using Cinemachine;
+using System;
+using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class CameraManager : MonoBehaviour
 {
@@ -13,16 +17,26 @@ public class CameraManager : MonoBehaviour
     [SerializeField]
     Transform crossHair;
     [SerializeField]
+    CinemachineVirtualCamera groundCamera;
+    [SerializeField]
     CinemachineVirtualCamera climbCamera;
+    [SerializeField]
+    CinemachineVirtualCamera blendCamera;
 
     [Header("Settings")]
     [SerializeField, Range(0.5f, 20f)] float SpeedMulitiplier = 1f;
+    [SerializeField, Range(0, 10)]     float blendCameraDuration = 1f;
 
     bool isUnLockPressed = false;
-    static public bool cameraMovementLock { get; private set; }
+
+    float fixedAngle = -1;
+    float time;
 
     float newRotationY;
     float newRotationX;
+    static public bool cameraMovementLock { get; private set; }
+
+
 
     private void OnEnable()
     {
@@ -48,21 +62,47 @@ public class CameraManager : MonoBehaviour
 
     private void Update()
     {
-        climbCamera.gameObject.SetActive(player.OnClimb);
         crossHair.gameObject.SetActive(!player.OnClimb);
     }
+
+    public void UpdateFixedAngle()
+    {
+        time = 0;
+        Vector3 currAngle = player.GetPreviousClimbNormal();
+        currAngle.y = 0;
+        currAngle.Normalize();
+        Quaternion rotation = Quaternion.LookRotation(currAngle);
+        fixedAngle = rotation.eulerAngles.y;
+    }
+
 
     private void LateUpdate()
     {
 
         if (cameraMovementLock) return;
 
-        if (input.mouseMovement.magnitude == 0) 
+        if (fixedAngle != -1 && blendCameraDuration >= time)
+        {
+            time += Time.deltaTime;
+            float currAngle = Mathf.Lerp(targetY.eulerAngles.y, fixedAngle, time / blendCameraDuration);
+
+            targetY.transform.eulerAngles = new Vector3(0, currAngle, 0);
+            targetX.rotation = Quaternion.Euler(targetX.eulerAngles.x, currAngle, targetX.eulerAngles.z);
+        }
+
+        if (input.mouseMovement.magnitude == 0 && input.Direction.magnitude == 0) 
         {
             newRotationY = targetX.eulerAngles.y;
             newRotationX = targetX.eulerAngles.x;
             return;
         }
+        
+        if (input.mouseMovement.magnitude != 0)
+        {
+            fixedAngle = -1;
+            time = 0;
+        }
+        
         //Vector2 cameraMovement = input.mouseMovement;
 
         if (player.OnClimb)
@@ -108,7 +148,6 @@ public class CameraManager : MonoBehaviour
         //targetX.rotation = Quaternion.Euler(newRotationX, Mathf.Lerp(targetX.eulerAngles.y, newRotationY, 15 * Time.deltaTime), targetX.eulerAngles.z);
         targetX.rotation = Quaternion.Euler(newRotationX, newRotationY, targetX.eulerAngles.z);
     }
-
     void OnLook(Vector2 cameraMovement, bool isDeviceMouse)
     {
         if (cameraMovementLock) return;
@@ -137,6 +176,40 @@ public class CameraManager : MonoBehaviour
 
     }
 
+
+    public void ChangePriorityCamera(CameraType type ,int priority)
+    {
+        switch (type)
+        {
+            case CameraType.Ground:
+                groundCamera.Priority = priority;
+                break;
+            case CameraType.Blend:
+                blendCamera.Priority = priority;
+                break;
+            case CameraType.Climb:
+                climbCamera.Priority = priority;
+                break;
+        }
+    }
+
+    public void PlayBlendCameraRoutine()
+    {
+        StartCoroutine(BlendCameraRoutine(blendCameraDuration));
+    }
+
+
+    IEnumerator BlendCameraRoutine(float time)
+    {
+        blendCamera.Priority = 100;
+        yield return new WaitForSeconds(time);
+        blendCamera.Priority = 1;
+
+    }
+
+
+
+
     public static void SwitchCameraLock(bool check)
     {
         cameraMovementLock = check;
@@ -145,4 +218,9 @@ public class CameraManager : MonoBehaviour
     }
 
 
+}
+
+public enum CameraType
+{
+    Ground, Climb, Blend
 }

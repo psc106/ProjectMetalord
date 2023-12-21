@@ -1,14 +1,19 @@
+using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ClimbBehaviour : StateMachineBehaviour
 {
     Controller_Physics player;
+    CameraManager cameraManager;
 
     private void OnEnable()
     {
+        cameraManager = FindObjectOfType<CameraManager>();
         player = FindObjectOfType<Controller_Physics>();
+        Debug.Log(cameraManager.name);
         Debug.Log(player.name);
     }
 
@@ -18,6 +23,7 @@ public class ClimbBehaviour : StateMachineBehaviour
     {
         Debug.Log("들어옴");
         player.PlayUnEquipAnimation();
+        cameraManager.ChangePriorityCamera(CameraType.Climb, 20);
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
@@ -31,6 +37,8 @@ public class ClimbBehaviour : StateMachineBehaviour
     {
         Debug.Log("나갔나?");
         player.PlayEquipAnimation();
+        cameraManager.ChangePriorityCamera(CameraType.Climb, 1);
+
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()
