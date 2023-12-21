@@ -15,12 +15,7 @@ public class Store_WeaponStatus : StoreObject
     [SerializeField] private UpgradeCategory upgradeCategory;
 
     [Header("업그레이드 이미지")]
-    [SerializeField] private Sprite stackOn;
-
-    // 각각 자식 오브젝트의 인덱스 번호
-    private const int NAME_INDEX = 1;
-    private const int COST_INDEX = 1;
-    private const int STEPS_INDEX = 3;
+    [SerializeField] private Sprite stackOn;    
 
     private TMP_Text nameObject;
     private TMP_Text costObject;
@@ -54,9 +49,15 @@ public class Store_WeaponStatus : StoreObject
     }
 
     // 웨폰 업그레이드 구매시
-    public override void BuyStoreObject()
+    protected override void BuyStoreObject()
     {
-        if (IsCanBuy() == false) return;
+        if (IsCanBuy() == false)
+        {
+            PlayCantBuySound();
+            return;
+        }
+        else PlayCanBuySound();
+
 
         // 최대 스텝까지만 실행
         if (stepIndex < MAX_STEP)
@@ -70,7 +71,7 @@ public class Store_WeaponStatus : StoreObject
             stepIndex += 1;
         }
         else
-        {
+        {            
             Debug.Log("이미 업그레이드를 전부 완료하였습니다");
             // TODO 전체 업그레이드 완료 알림
         }
