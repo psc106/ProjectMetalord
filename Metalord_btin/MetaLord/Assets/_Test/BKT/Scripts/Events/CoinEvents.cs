@@ -23,12 +23,21 @@ public class CoinEvents
     }
 
     //코인 사용시 호출되는 이벤트
-    public event Action<GunMode> onUseCoin;
-    public void UseCoin(GunMode gunMode)
+    public event Action<GunMode> onUnlockGunMode;
+    public void UnlockGunMode(GunMode gunMode)
     {
-        if (onUseCoin != null)
+        if (onUnlockGunMode != null)
         {
-            onUseCoin(gunMode);
+            onUnlockGunMode(gunMode);
+        }
+    }
+
+    public event Action<int> onUpgradeGun;
+    public void UpgradeGun(int value)
+    {
+        if (onUpgradeGun != null)
+        {
+            onUpgradeGun(value);
         }
     }
 }
