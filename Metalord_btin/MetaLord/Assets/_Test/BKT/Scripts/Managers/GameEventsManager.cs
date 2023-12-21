@@ -27,6 +27,8 @@ public class GameEventsManager : MonoBehaviour
         }
         DontDestroyOnLoad(this.gameObject);
 
+        Debug.Log(" GameEventManager ");
+
         coinEvents = new CoinEvents(); // 재화 이벤트 생성
         recordEvents = new RecordEvents(); // 도감 이벤트 생성
         resetEvents = new ResetEvents();

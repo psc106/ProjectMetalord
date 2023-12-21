@@ -24,8 +24,13 @@ public class Store_SkillUnlock : StoreObject
     private TMP_Text costObject;
     private TMP_Text explainObject;
 
-    private void Awake()
+    [SerializeField] private GunMode gunMode;
+
+    
+
+    protected override void Awake()
     {
+        base.Awake();
         // 스킬 정보 입력할 게임 오브젝트 캐싱
         //nameObject = transform.GetChild(NAME_INDEX).GetComponent<TMP_Text>();
         //costObject = transform.GetChild(COST_INDEX).GetComponent<TMP_Text>();
@@ -49,6 +54,8 @@ public class Store_SkillUnlock : StoreObject
     {
         if (IsCanBuy() == false) return;
         base.BuyStoreObject();
-        
+
+
+        GameEventsManager.instance.coinEvents.UseCoin(gunMode);        
     }
 }
