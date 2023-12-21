@@ -51,11 +51,11 @@ public class UI_CurrentCoin : MonoBehaviour
             Debug.LogError("coinText를 찾을 수 없습니다!");
         }
 
-        if (canvasGroup != null && !storeUI.activeSelf)
+        if (canvasGroup != null && !storeUI.activeSelf) // 상점 UI가 꺼져있다면
         {
             if (fadeCoroutine != null)
-            {
-                StopCoroutine(fadeCoroutine);
+            {                
+                StopFadeOut();
             }
 
             canvasGroup.alpha = 1f;
@@ -67,6 +67,21 @@ public class UI_CurrentCoin : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 페이드아웃 제거하는 함수
+    /// 231221 배경택
+    /// </summary>
+    public void StopFadeOut()
+    {
+        if(fadeCoroutine != null) StopCoroutine(fadeCoroutine);
+    }
+
+
+    /// <summary>
+    /// 현재 UI 페이드아웃
+    /// </summary>
+    /// <param name="canvasGroup"></param>
+    /// <returns></returns>
     IEnumerator FadeOutUI(CanvasGroup canvasGroup)
     {
         float elapsedTime = 0f;
@@ -75,6 +90,7 @@ public class UI_CurrentCoin : MonoBehaviour
         while (elapsedTime < fadeDuration)
         {
             elapsedTime += Time.deltaTime;
+            Debug.Log(elapsedTime);
             canvasGroup.alpha = Mathf.Lerp(startAlpha, 0f, elapsedTime / fadeDuration);
             yield return null;
         }
