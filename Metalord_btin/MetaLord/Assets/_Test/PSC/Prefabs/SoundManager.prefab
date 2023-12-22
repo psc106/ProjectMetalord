@@ -45,7 +45,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   group: 400
-  nodes: []
+  nodes:
+  - Clip: {fileID: 8300000, guid: bdf7b058e4a4eb3489112fb94f3e4412, type: 3}
+  - Clip: {fileID: 8300000, guid: 9ee50e7e629518f46a95762fb69a79ac, type: 3}
 --- !u!1 &1773190905425976055
 GameObject:
   m_ObjectHideFlags: 0
@@ -181,7 +183,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   group: 300
-  nodes: []
+  nodes:
+  - Clip: {fileID: 8300000, guid: 8b974c1fba789124cafe381ea7d5f8eb, type: 3}
+  - Clip: {fileID: 8300000, guid: 6d8050ebcf13f2347b586be2ee62bb85, type: 3}
+  - Clip: {fileID: 8300000, guid: 0edc99ba097c8a942b25395040a57277, type: 3}
+  - Clip: {fileID: 8300000, guid: 481988b329e64864390e852270355686, type: 3}
+  - Clip: {fileID: 8300000, guid: acf0714fc8f77e54a9c95b490e2613ee, type: 3}
 --- !u!1 &2910379432406410640
 GameObject:
   m_ObjectHideFlags: 0

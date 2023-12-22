@@ -48,6 +48,8 @@ public class RecordObject : MonoBehaviour,IPointerDownHandler
     /// <param name="_id"></param>
     private void CheckSelected(int _id)
     {
+        SoundManager.instance.PlaySound(GroupList.UI, (int)UISoundList.ButtonClickSound_Record);
+
         if (recordInfo.id != _id)
         {
             InActiveChecking();

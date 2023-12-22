@@ -10,8 +10,9 @@ public class Coin : MonoBehaviour
 {
     [SerializeField] private CoinType mytype; // 인스펙터창에서 코인 타입 선택
 
-    [SerializeField] private const int SMALL_COIN_VALUE = 5; // 작은코인 값
-    [SerializeField] private const int BIG_COIN_VALUE = 100; // 큰 코인 값
+    // 코인 증가량
+    private const int SMALL_COIN_VALUE = 5; // 작은코인 값
+    private const int BIG_COIN_VALUE = 100; // 큰 코인 값
 
     private void OnTriggerEnter(Collider other)
     {
@@ -26,6 +27,10 @@ public class Coin : MonoBehaviour
             {
                 CoinManager.instance.GetCoin(BIG_COIN_VALUE);
             }
+
+            // 사운드 추가            
+            SoundManager.instance.PlaySound(GroupList.Item, (int)ItemSoundList.GetCoinSound);
+
             Destroy(this.gameObject);
         }
     }
