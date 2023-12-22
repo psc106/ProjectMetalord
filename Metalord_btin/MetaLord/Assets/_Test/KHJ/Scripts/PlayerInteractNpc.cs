@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class PlayerInteractNpc : MonoBehaviour
@@ -17,18 +18,22 @@ public class PlayerInteractNpc : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.layer == LayerMask.NameToLayer("NPC"))
+        if(other.gameObject.layer == LayerMask.NameToLayer("InteractZone"))
         {
-            playerInteract = other.GetComponent<IInteractNpc>();
+            Debug.Log("찍히나?");
+            playerInteract = other.transform.parent.GetComponent<IInteractNpc>();
+                //other.GetComponent<IInteractNpc>();
             isInteract = true;
+            Debug.Log(playerInteract);
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
        
-        if (other.gameObject.layer == LayerMask.NameToLayer("NPC"))
+        if (other.gameObject.layer == LayerMask.NameToLayer("InteractZone"))
         {
+            Debug.Log("나오나?");
             playerInteract = null;
             isInteract = false;
         }
