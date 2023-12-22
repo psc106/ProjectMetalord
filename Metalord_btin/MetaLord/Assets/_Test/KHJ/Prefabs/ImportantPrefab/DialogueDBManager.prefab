@@ -45,9 +45,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17065dba8998d8442afff2c94b1e96fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dialogueCsv: {fileID: 4900000, guid: 4d551d7dd87429946a7baa369143a5d6, type: 3}
   questionCsv: {fileID: 4900000, guid: 3f3ed8ba245c8074ab3c3c5fad5babf0, type: 3}
-  dialogueStatusCsv: {fileID: 4900000, guid: 03d7a08d7f2eb4d4096a77e4dd186d3c, type: 3}
+  dialogueStatusCsv: {fileID: 4900000, guid: 33db0308c840d6743bc9188eeba59236, type: 3}
   dialogueQuestions: []
 --- !u!114 &2096068612191149897
 MonoBehaviour:
@@ -61,4 +60,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c30dba2c3f168894db5d87bb07e39b5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  testAsset: {fileID: 4900000, guid: 03d7a08d7f2eb4d4096a77e4dd186d3c, type: 3}
