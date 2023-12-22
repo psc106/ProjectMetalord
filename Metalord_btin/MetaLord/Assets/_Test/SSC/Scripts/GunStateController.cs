@@ -32,9 +32,7 @@ public class GunStateController : MonoBehaviour
     public Transform AimTarget;
     public LayerMask gunLayer;
 
-    [Header("도구 UI")]
-    [SerializeField] private TextMeshProUGUI[] ModeText = new TextMeshProUGUI[3];
-    [SerializeField] private TextMeshProUGUI AmmoText;
+    [Header("도구 UI")]        
     [SerializeField] private Image AmmoGauge;
     [SerializeField] private Color[] ModeColor = new Color[3];
     public int CloseUp_FontSize = 32;
@@ -76,6 +74,14 @@ public class GunStateController : MonoBehaviour
     [HideInInspector] public static List<PaintTarget> paintList = new List<PaintTarget>();
     [HideInInspector] public static List<SSC_BondObj> bondList = new List<SSC_BondObj>();
     [HideInInspector] public static List<NpcBase> npcList = new List<NpcBase>();
+
+
+    // UI 제어 추가문
+    public GameObject ModeUI;
+    string[,] modeText = { { "벽타기", "1" }, { "당기기", "2" }, {"붙이기  ", "3" } };        
+    //string[] modeNum = { "1", "2", "3" };
+    TextMeshProUGUI[] modeTMps;
+
 
     // 프로퍼티 모음
     #region Property
@@ -126,6 +132,11 @@ public class GunStateController : MonoBehaviour
     #region CallBack
     private void Awake()
     {
+        modeTMps = ModeUI.GetComponentsInChildren<TextMeshProUGUI>();
+
+        Debug.Log("0번 인덱스에 담긴 넘버 : " + modeText[0, 0] + "  0번 인덱스에 담긴 텍스트 : " + modeText[0, 1]);
+        Debug.Log(modeText.Length);
+
         mode[(int)GunMode.Paint] = transform.GetComponent<PaintGun>();
         mode[(int)GunMode.Grab] = transform.GetComponent<GrabGun>();
         mode[(int)GunMode.Bond] = transform.GetComponent<BondGun>();
@@ -149,26 +160,26 @@ public class GunStateController : MonoBehaviour
     void Start()
     {
         Ammo = MaxAmmo;
-        AmmoText.text = MaxAmmo + " / " + Ammo;
+        //AmmoText.text = MaxAmmo + " / " + Ammo;
 
-        for(int i = 0; i < ModeText.Length; i++)
-        {
-            Color tempColor = ModeColor[i];
+        //for(int i = 0; i < ModeText.Length; i++)
+        //{
+        //    Color tempColor = ModeColor[i];
     
-            if (ModeText[i] == ModeText[(int)GunMode.Paint])
-            {
-                tempColor.a = 1f;
-                ModeText[i].color = tempColor;
-                AmmoGauge.color = tempColor;
-                ModeText[i].fontSize = CloseUp_FontSize;
+        //    if (ModeText[i] == ModeText[(int)GunMode.Paint])
+        //    {
+        //        tempColor.a = 1f;
+        //        ModeText[i].color = tempColor;
+        //        AmmoGauge.color = tempColor;
+        //        ModeText[i].fontSize = CloseUp_FontSize;
 
-                continue;
-            }
+        //        continue;
+        //    }
 
-            tempColor.a = 0.3f;
-            ModeText[i].color = tempColor;
-            ModeText[i].fontSize = CloseOff_FontSize;
-        }
+        //    tempColor.a = 0.3f;
+        //    ModeText[i].color = tempColor;
+        //    ModeText[i].fontSize = CloseOff_FontSize;
+        //}
 
         state = GunState.READY;
     }
@@ -197,6 +208,7 @@ public class GunStateController : MonoBehaviour
         // 1번키 누르면 페인트건
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
+            //SwapTest(GunMode.Paint);
             SwapGunMode(GunMode.Paint);
             //SwapPaintGun();
         }
@@ -204,6 +216,7 @@ public class GunStateController : MonoBehaviour
         // 2번키 누르면 그랩건
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
+            //SwapTest(GunMode.Grab);
             SwapGunMode(GunMode.Grab);
             //SwapGrabGun();
         }
@@ -211,6 +224,7 @@ public class GunStateController : MonoBehaviour
         // 3번키 누르면 본드건
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
+            //SwapTest(GunMode.Bond);
             SwapGunMode(GunMode.Bond);
             //SwapBondGun();
         }
@@ -349,14 +363,14 @@ public class GunStateController : MonoBehaviour
     {
         Ammo = ammoValue;
         state = updatedState;
-        AmmoText.text = MaxAmmo + " / " + Ammo;
+        //AmmoText.text = MaxAmmo + " / " + Ammo;
         AmmoGauge.fillAmount = (float)Ammo / (float)MaxAmmo;
     }
 
     public void UpdateState(int ammoValue)
     {
         Ammo += ammoValue;
-        AmmoText.text = MaxAmmo + " / " + Ammo;
+        //AmmoText.text = MaxAmmo + " / " + Ammo;
         AmmoGauge.fillAmount = (float)Ammo / (float)MaxAmmo;
     }
 
@@ -490,7 +504,6 @@ public class GunStateController : MonoBehaviour
 
     public void SwapGunMode(GunMode changeMode)
     {
-
         // 각종 모드 스왑을 막아야 하는 상황 1. 리로딩중, 그랩모드중 그랩일때, 이미 내가 활성화한 모드일때
         if (state == GunState.RELOADING || currentMode.OnGrab || currentMode == mode[(int)changeMode])
         {
@@ -507,26 +520,47 @@ public class GunStateController : MonoBehaviour
         int id = (int)GunSoundList.ChangeMod;
         SoundManager.instance.PlaySound(GroupList.Gun, id);
 
+        SwapTest(changeMode);
         currentMode = mode[(int)changeMode];
         SwapLayer();
+        
+        //int temp = (int)changeMode;
 
-        for (int i = 0; i < ModeText.Length; i++)
+        //for(int i = 0; i < 2; i++)
+        //{
+        //    modeTMps[i].text = modeText[temp, i];
+        //}
+
+        //modeTMps[0].text = modeText[(int)changeMode];
+        //modeTMps[1].text = modeNum[(int)changeMode];
+
+    }
+
+    void SwapTest(GunMode changeMode)
+    {
+        int currentIdx = 0;
+
+        for(int i = 0; i < mode.Length; i++)
         {
-            Color tempColor = ModeText[i].color;
-
-            if (ModeText[i] == ModeText[(int)changeMode])
+            if(currentMode == mode[i])
             {
-                tempColor.a = 1f;
-                ModeText[i].color = ModeColor[(int)changeMode];
-                AmmoGauge.color = ModeColor[(int)changeMode];
-                ModeText[i].fontSize = CloseUp_FontSize;
-
-                continue;
+                currentIdx = i;
+                break;
             }
+        }
 
-            tempColor.a = 0.3f;
-            ModeText[i].color = tempColor;
-            ModeText[i].fontSize = CloseOff_FontSize;
+        int targetIdx = (int)changeMode + (int)changeMode;
+        string[] tempString = new string[2];
+
+        for(int i = 0; i < tempString.Length; i++)
+        {
+            tempString[i] = modeTMps[i].text;
+        }
+
+        for (int i = 0; i < tempString.Length; i++)
+        {
+            modeTMps[i].text = modeText[(int)changeMode, i];
+            modeTMps[targetIdx + i].text = tempString[i];
         }
 
 
