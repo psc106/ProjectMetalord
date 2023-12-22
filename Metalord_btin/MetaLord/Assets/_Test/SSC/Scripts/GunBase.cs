@@ -7,8 +7,8 @@ abstract public class GunBase : MonoBehaviour
     protected Transform AimTarget = null;
     protected int ammo;
     public LayerMask myLayer;
-
-    [HideInInspector] public bool OnGrab = false;
+    
+    public GunMode mode { get; protected set; }
 
     protected virtual void Awake()
     {        
@@ -59,4 +59,9 @@ abstract public class GunBase : MonoBehaviour
     }
 
     abstract public void ShootGun();
+
+    public virtual bool CanFireAmmoCount()
+    {
+        return state.Ammo >= -ammo;
+    }
 }

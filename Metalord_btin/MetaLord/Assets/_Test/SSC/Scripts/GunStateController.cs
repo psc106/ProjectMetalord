@@ -25,7 +25,7 @@ public class GunStateController : MonoBehaviour
     [SerializeField] private Image crossHair;
     [SerializeField] private Transform crossHairRect;
 
-    public InputReader input;    
+    public InputReader reader;    
     public Transform checkPos;
     public Transform pickupPoint;
     public Transform GunHolderHand;
@@ -52,9 +52,11 @@ public class GunStateController : MonoBehaviour
     public Vector3 startPoint;
     [HideInInspector]
     public RaycastHit hit;
+
     [HideInInspector]
     public bool checkSuccessRay = false;
-
+    [HideInInspector] 
+    public bool onGrab = false;
     [HideInInspector]
     public bool minDistance = false;
 
@@ -88,9 +90,9 @@ public class GunStateController : MonoBehaviour
     {
         get
         {            
-            if (currentMode.OnGrab)
+            if (onGrab)
             {
-                return !currentMode.OnGrab;
+                return !onGrab;
             }
 
             return player.CanReload;
@@ -157,40 +159,10 @@ public class GunStateController : MonoBehaviour
     private void Update()
     {
         //레이캐스트 업데이트
-        UpdateRaycast();        
-
-        if(currentMode == mode[(int)GunMode.Paint])
-        {            
-            currentMode.ShootGun();
-        }
-
-        if(Input.GetMouseButtonDown(0))
-        {            
-            currentMode.ShootGun();
-        }
-
-        // 장전        
-        if (Input.GetKeyDown(KeyCode.R))
+        UpdateRaycast();
+        if (onGrab || (reader.ShootKey && checkSuccessRay && CanFire && currentMode.CanFireAmmoCount()))
         {
-            Reloading();
-        }
-
-        // 1번키 누르면 페인트건
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            SwapPaintGun();
-        }
-
-        // 2번키 누르면 그랩건
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            SwapGrabGun();
-        }
-
-        // 3번키 누르면 본드건
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            SwapBondGun();
+            crossHair.color = Color.blue;
         }
 
         if (Input.GetKeyDown(KeyCode.Q))
@@ -228,7 +200,7 @@ public class GunStateController : MonoBehaviour
                 startPoint = startPlayerPos;
                 //AimTarget.position = hit.point;
                 checkSuccessRay = true;
-                crossHair.color = CanFire ? Color.green : Color.red;
+                crossHair.color = CanFire && currentMode.CanFireAmmoCount() ? Color.green : Color.red;
 
                 Vector3 anchor = Camera.main.WorldToScreenPoint(hit.point);
                 if (RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)crossHair.transform.parent, anchor, null, out Vector2 localPoint))
@@ -260,7 +232,7 @@ public class GunStateController : MonoBehaviour
                     startPoint = startPlayerPos;
                     checkSuccessRay = true;
                     minDistance = true;
-                    crossHair.color = CanFire ? Color.green : Color.red;
+                    crossHair.color = CanFire && currentMode.CanFireAmmoCount() ? Color.green : Color.red;
 
                     Vector3 anchor = Camera.main.WorldToScreenPoint(hit.point);
                     if(RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)crossHair.transform.parent, anchor, null, out Vector2 localPoint))
@@ -280,7 +252,7 @@ public class GunStateController : MonoBehaviour
                 startPoint = startCameraPos;
                 checkSuccessRay = true;
                 minDistance = false;
-                crossHair.color = CanFire ? Color.green : Color.red;
+                crossHair.color = CanFire && currentMode.CanFireAmmoCount() ? Color.green : Color.red;
 
                 if (crossHair.rectTransform.anchoredPosition != Vector2.zero)
                 {
@@ -289,6 +261,7 @@ public class GunStateController : MonoBehaviour
                 return;
             }
         }
+
 
 
         if (crossHair.rectTransform.anchoredPosition != Vector2.zero)
@@ -329,7 +302,7 @@ public class GunStateController : MonoBehaviour
 
     public void SwapPaintGun()
     {
-        if(state == GunState.RELOADING || currentMode.OnGrab)
+        if(state == GunState.RELOADING || onGrab)
         {
             return;
         }
@@ -339,7 +312,7 @@ public class GunStateController : MonoBehaviour
 
     }
 
-    private void SwapGrabGun()
+    public void SwapGrabGun()
     {
         if (state == GunState.RELOADING || !usedGrabGun)
         {
@@ -352,7 +325,7 @@ public class GunStateController : MonoBehaviour
 
     public void SwapBondGun()
     {
-        if (state == GunState.RELOADING || currentMode.OnGrab || !usedBondGun)
+        if (state == GunState.RELOADING || onGrab || !usedBondGun)
         {
             return;
         }

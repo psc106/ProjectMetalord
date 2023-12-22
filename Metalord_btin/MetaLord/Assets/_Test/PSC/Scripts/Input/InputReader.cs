@@ -10,9 +10,9 @@ public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions
 
     public event UnityAction EnableMouseControlCamera = delegate { };
     public event UnityAction DisableMouseControlCamera = delegate { };
-    public event UnityAction Reload = delegate { };
-    public event UnityAction Interact = delegate { };
-    public event UnityAction modeChange = delegate { };
+    public event UnityAction<float> Reload = delegate { };
+    public event UnityAction<float> Interact = delegate { };
+    public event UnityAction<float> ModeChange = delegate { };
 
     public event UnityAction<float> Jump = delegate { };
     public event UnityAction<float> Run = delegate { };
@@ -29,6 +29,8 @@ public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions
     public bool JumpKey => inputActions.Player.Jump.ReadValue<float>()==1f;
     public bool RunKey => inputActions.Player.Run.ReadValue<float>() == 1f;
     public bool ShootKey => inputActions.Player.Fire.ReadValue<float>() == 1f;
+    public bool ReloadKey => inputActions.Player.Reload.ReadValue<float>() == 1f;
+    public bool InteractKey => inputActions.Player.Interact.ReadValue<float>() == 1f;
     public bool StoreKey => inputActions.Player.Store.ReadValue<float>() == 1f; // 231219 배경택
     public bool RecordKey => inputActions.Player.Record.ReadValue<float>() == 1f; //231219 배경택
     public bool SettingsKey => inputActions.Player.Settings.ReadValue<float>() == 1f; //231219 배경택
@@ -98,7 +100,7 @@ public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions
 
     public void OnReload(InputAction.CallbackContext context)
     {
-      //  throw new System.NotImplementedException();
+        Reload.Invoke(context.ReadValue<float>());
     }
 
     public void OnModeChange(InputAction.CallbackContext context)
@@ -108,7 +110,7 @@ public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions
 
     public void OnInteract(InputAction.CallbackContext context)
     {
-       // throw new System.NotImplementedException();
+        Interact.Invoke(context.ReadValue<float>());
     }
 
     public void OnStore(InputAction.CallbackContext context) // 231219 배경택

@@ -28,6 +28,8 @@ public class Controller_Physics : MonoBehaviour
     [SerializeField]
     Animator animator;
     [SerializeField]
+    GunStateController gunController;
+    [SerializeField]
     MeshRenderer frontGunRender;
     [SerializeField]
     MeshRenderer handGunRender;
@@ -215,6 +217,8 @@ public class Controller_Physics : MonoBehaviour
         //대화나 메뉴에서 stop시킴
         if (stopState)
         {
+            animator.SetFloat(VelocityXHash, 0);
+            animator.SetFloat(VelocityYHash, 0);
             rb.velocity += gravity * Time.deltaTime;
             return;
         }
@@ -242,6 +246,42 @@ public class Controller_Physics : MonoBehaviour
         trailColor.b = OnClimb ? 1 : 0;
 
         GetComponent<Renderer>().material.color = trailColor;
+
+
+
+        if (gunController.currentMode.mode == GunMode.Paint)
+        {
+            gunController.currentMode.ShootGun();
+        }
+        else if (reader.ShootKey)
+        {
+            gunController.currentMode.ShootGun();
+        }
+
+        // 장전        
+        if (reader.ReloadKey)
+        {
+            gunController.Reloading();
+        }
+
+        // 1번키 누르면 페인트건
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            gunController.SwapPaintGun();
+        }
+
+        // 2번키 누르면 그랩건
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            gunController.SwapGrabGun();
+        }
+
+        // 3번키 누르면 본드건
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            gunController.SwapBondGun();
+        }
+
 
         #region 상점, 도감, 환경설정 키 누를경우 _ 231219 배경택
         if (canInput)
@@ -965,11 +1005,19 @@ public class Controller_Physics : MonoBehaviour
 
     public static void SwitchCameraLock(bool check)
     {
+        stopState = check;
         if (stopState)
         {
             FindObjectOfType<Controller_Physics>().rb.velocity = Vector3.zero;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
-        stopState = check;
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+
+        }
     }
 
 
