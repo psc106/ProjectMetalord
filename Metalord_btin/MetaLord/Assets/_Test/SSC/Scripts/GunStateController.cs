@@ -20,7 +20,7 @@ public enum GunState_TODO
 public class GunStateController : MonoBehaviour
 {
     GunBase[] mode = new GunBase[3];
-    GunBase currentMode;
+    public GunBase currentMode;
     
     [SerializeField] private Controller_Physics player;
     [SerializeField] private Image crossHair;
@@ -46,7 +46,7 @@ public class GunStateController : MonoBehaviour
     [Range(1, 50)]
     public float paintingSize = 10f;
     [Range(0, 500)]
-    public float range;
+    public float range; 
     [SerializeField, Range(0, 10)]
     float minRange;
     [SerializeField, Range(0, 10)]
@@ -141,9 +141,6 @@ public class GunStateController : MonoBehaviour
         currentText = ModeUI[0].GetComponentsInChildren<TextMeshProUGUI>();
         elseText1 = ModeUI[1].GetComponentsInChildren<TextMeshProUGUI>();
         elseText2 = ModeUI[2].GetComponentsInChildren<TextMeshProUGUI>();
-
-        Debug.Log("0번 인덱스에 담긴 넘버 : " + modeText[0, 0] + "  0번 인덱스에 담긴 텍스트 : " + modeText[0, 1]);
-        Debug.Log(modeText.Length);
 
         mode[(int)GunMode.Paint] = transform.GetComponent<PaintGun>();
         mode[(int)GunMode.Grab] = transform.GetComponent<GrabGun>();
@@ -597,7 +594,7 @@ public class GunStateController : MonoBehaviour
     public void SwapGunMode(GunMode changeMode)
     {
         // 각종 모드 스왑을 막아야 하는 상황 1. 리로딩중, 그랩모드중 그랩일때, 이미 내가 활성화한 모드일때
-        if (state == GunState.RELOADING || currentMode.OnGrab || currentMode == mode[(int)changeMode])
+        if (state == GunState.RELOADING || onGrab || currentMode == mode[(int)changeMode])
         {
             return;
         }
@@ -644,8 +641,10 @@ public class GunStateController : MonoBehaviour
                 break;
         }
 
+
         ModeUI[1].SetActive(true);
         ModeUI[2].SetActive(true);
+        Debug.Log("???");
     }
 
 }
