@@ -13,7 +13,7 @@ public class PaintGun : GunBase
     {
         get
         {
-            if(state.Ammo < -ammo)
+            if(state.Ammo < -ammo) 
             {
                 return autoShot;
             }

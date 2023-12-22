@@ -21,7 +21,7 @@ abstract public class GunBase : MonoBehaviour
             brush.splatsX = 4;
             brush.splatsY = 4;
 
-            brush.splatScale = 10;
+            brush.splatScale = state.paintingSize;
         }
     }
 
@@ -40,6 +40,9 @@ abstract public class GunBase : MonoBehaviour
     {
         int id = (int)GunSoundList.FireSound;
         SoundManager.instance.PlaySound(GroupList.Gun, id);
+
+        // 인스펙터창에서 값 변동 즉시 적용 사항
+        brush.splatScale = state.paintingSize;        
 
         PaintTarget.PaintRay(_ray, brush, state.range);
 

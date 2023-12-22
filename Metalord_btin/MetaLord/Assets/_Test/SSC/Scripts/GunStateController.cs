@@ -42,6 +42,8 @@ public class GunStateController : MonoBehaviour
     [SerializeField] private AnimationCurve reloadCurve;
 
     [Header("도구 스텟")]
+    [Range(1, 50)]
+    public float paintingSize = 10f;
     [Range(0, 500)]
     public float range;
     [SerializeField, Range(0, 10)]
@@ -54,6 +56,8 @@ public class GunStateController : MonoBehaviour
     public float fireRate = 0.1f;
     [SerializeField, Range(0, 1000)]
     private int maxAmmo = 200;
+    //[Range(0, 100)]
+    //public int ammoCount = 50;
 
     [HideInInspector]
     public Vector3 startPoint;
@@ -65,8 +69,7 @@ public class GunStateController : MonoBehaviour
     public bool minDistance = false;
 
     bool usedGrabGun = false;
-    bool usedBondGun = false;
-    Color originColor = Color.white;
+    bool usedBondGun = false;    
 
     [HideInInspector] public NpcBase targetNpc = null;
     [HideInInspector] public GunState state;
@@ -150,16 +153,20 @@ public class GunStateController : MonoBehaviour
 
         for(int i = 0; i < ModeText.Length; i++)
         {
+            Color tempColor = ModeColor[i];
+    
             if (ModeText[i] == ModeText[(int)GunMode.Paint])
             {
-                ModeText[i].color = ModeColor[(int)GunMode.Paint];
-                AmmoGauge.color = ModeColor[(int)GunMode.Paint];
+                tempColor.a = 1f;
+                ModeText[i].color = tempColor;
+                AmmoGauge.color = tempColor;
                 ModeText[i].fontSize = CloseUp_FontSize;
 
                 continue;
             }
 
-            ModeText[i].color = originColor;
+            tempColor.a = 0.3f;
+            ModeText[i].color = tempColor;
             ModeText[i].fontSize = CloseOff_FontSize;
         }
 
@@ -505,8 +512,11 @@ public class GunStateController : MonoBehaviour
 
         for (int i = 0; i < ModeText.Length; i++)
         {
+            Color tempColor = ModeText[i].color;
+
             if (ModeText[i] == ModeText[(int)changeMode])
             {
+                tempColor.a = 1f;
                 ModeText[i].color = ModeColor[(int)changeMode];
                 AmmoGauge.color = ModeColor[(int)changeMode];
                 ModeText[i].fontSize = CloseUp_FontSize;
@@ -514,7 +524,8 @@ public class GunStateController : MonoBehaviour
                 continue;
             }
 
-            ModeText[i].color = originColor;
+            tempColor.a = 0.3f;
+            ModeText[i].color = tempColor;
             ModeText[i].fontSize = CloseOff_FontSize;
         }
 
