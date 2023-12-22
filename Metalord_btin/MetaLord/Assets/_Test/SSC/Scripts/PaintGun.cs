@@ -2,17 +2,11 @@ using UnityEngine;
 using UnityEngine.Windows;
 
 public class PaintGun : GunBase
-{            
-    float attackSpeed = 0.1f;    
-    float autoTime = 1f;
-
+{                   
     float rangeLimit = 4f;
-
     float timeCheck = 0f;
-    float autotimeCheck = 0;
-    
+    float autotimeCheck = 0;    
     int autoShot = -5;
-
     bool fireStart = false;
 
     int paintAmmo
@@ -36,29 +30,9 @@ public class PaintGun : GunBase
         brush.splatChannel = 0;
         ammo = -50;
 
-        //AimTarget = state.AimTarget;
-
-        //int initLayer = 1 << LayerMask.NameToLayer("Player") |
-        //    1 << LayerMask.NameToLayer("CatchObject") |
-        //    1 << LayerMask.NameToLayer("NonInteractObject");
-
-        //myLayer = ~initLayer;
+        AimTarget = state.AimTarget;
     }
 
-    //public PaintGun(GunStateController state) : base(state)
-    //{        
-    //    brush.splatChannel = 0;
-    //    ammo = -50;
-
-    //    AimTarget = state.AimTarget;
-
-    //    int initLayer = 1<< LayerMask.NameToLayer("Player") |
-    //        1 << LayerMask.NameToLayer("CatchObject") |
-    //        1 << LayerMask.NameToLayer("NonInteractObject");
-
-    //    myLayer = ~initLayer;
-        
-    //}
 
     public override void ShootGun()
     {
@@ -77,7 +51,7 @@ public class PaintGun : GunBase
         }
 
         // 일정시간동안 사격키 입력상태라면 연사모드
-        else if (autotimeCheck > autoTime && state.CanFire)
+        else if (autotimeCheck > state.AutoInitTime && state.CanFire)
         {
             AutoFire();
         }
@@ -132,7 +106,7 @@ public class PaintGun : GunBase
     {
         timeCheck += Time.deltaTime;
 
-        if (timeCheck >= attackSpeed)
+        if (timeCheck >= state.fireRate)
         {
             if (state.checkSuccessRay)
             {
