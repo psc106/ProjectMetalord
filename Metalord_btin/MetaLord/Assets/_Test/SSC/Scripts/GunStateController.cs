@@ -2,10 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Rendering;
 using UnityEngine.SocialPlatforms;
 using UnityEngine.UI;
-using static UnityEngine.UIElements.UxmlAttributeDescription;
 
 public enum GunState_TODO
 {
@@ -18,10 +16,10 @@ public class GunStateController : MonoBehaviour
 {
     GunBase[] mode = new GunBase[3];
     GunBase currentMode;
+    public GunBase CurrentMode { get { return currentMode; } private set { currentMode = value; } }
     
     [SerializeField] private Controller_Physics player;
     [SerializeField] private Image crossHair;
-    [SerializeField] private Transform crossHairRect;
     [SerializeField] private Transform startPos;
 
     public InputReader reader;    
@@ -46,6 +44,9 @@ public class GunStateController : MonoBehaviour
     public float range;
     [SerializeField, Range(0, 10)]
     float minRange;
+    [SerializeField, Range(0,500)]
+    float grabRange = 20f;
+    public float GrabRange { get { return grabRange; } private set { grabRange = GrabRange; } }
     [SerializeField, Range(0, 10)]
     float reloadTime = 3f;
     [Range(0.1f, 3f)]
@@ -194,47 +195,6 @@ public class GunStateController : MonoBehaviour
         //레이캐스트 업데이트
         UpdateRaycast();
 
-//TODO : 옮기기
-        if (currentMode == mode[(int)GunMode.Paint])
-        {
-            currentMode.ShootGun();
-        }
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            currentMode.ShootGun();
-        }
-
-        // 장전        
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            Reloading();
-        }
-
-        // 1번키 누르면 페인트건
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            //SwapTest(GunMode.Paint);
-            SwapGunMode(GunMode.Paint);
-            //SwapPaintGun();
-        }
-
-        // 2번키 누르면 그랩건
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            //SwapTest(GunMode.Grab);
-            SwapGunMode(GunMode.Grab);
-            //SwapGrabGun();
-        }
-
-        // 3번키 누르면 본드건
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            //SwapTest(GunMode.Bond);
-            SwapGunMode(GunMode.Bond);
-            //SwapBondGun();
-        }
-////////////////////////////////////
         if (onGrab || (reader.ShootKey && checkSuccessRay && CanFire && currentMode.CanFireAmmoCount()))
         {
             crossHair.color = Color.blue;
@@ -272,6 +232,7 @@ public class GunStateController : MonoBehaviour
 
         float distance = Vector3.Distance(Camera.main.transform.position, startPos.position);
 
+        
         // 일반적인 상황의 사격
         if (Physics.Raycast(normalRay, out hit, range, gunLayer))
         {
@@ -315,29 +276,15 @@ public class GunStateController : MonoBehaviour
                 return;
             }
         }
-
         // 정면 오브젝트와 설정한 rangeLimit 값 거리 이하일 때
-        if (Physics.Raycast(defaultRay, out hit, range, gunLayer))
+        if (Physics.Raycast(checkRay, out hit, range, gunLayer))
         {
             float checkDistance = Vector3.Distance(startPlayerPos, hit.point);
-
-            //Debug.Log("플레이어->디폴트히트포인트");
-            startPoint = startPlayerPos;
-            checkSuccessRay = true;
-            minDistance = false;
-            crossHair.color = CanFire && currentMode.CanFireAmmoCount() ? Color.green : Color.red;
-
-            Vector3 anchor = Camera.main.WorldToScreenPoint(hit.point);
-            if (RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)crossHair.transform.parent, anchor, null, out Vector2 localPoint))
-            {
-                crossHair.rectTransform.anchoredPosition = localPoint;
-            }
-            return;
 
             //플레이어->끝점 range 이하 경우
             if (checkDistance <= minRange)
             {
-                /*Debug.Log("플레이어->플레이어정면");
+                Debug.Log("플레이어->플레이어정면");
                 minDistance = true;
                 //Debug.Log($"일정거리 이하 : {minDistance}");
                 startPoint = startPlayerPos;
@@ -350,13 +297,13 @@ public class GunStateController : MonoBehaviour
                 {
                     crossHair.rectTransform.anchoredPosition = localPoint;
                 }
-                return;*/
+                return;
             }
 
             //플레이어->끝점 range 이상 경우
             else
             {
-                /*if (Physics.Raycast(defaultRay, out hit, range, gunLayer))
+                if (Physics.Raycast(defaultRay, out hit, range * 0.75f, gunLayer))
                 {
                     Debug.Log("플레이어->디폴트히트포인트");
                     startPoint = startPlayerPos;
@@ -370,10 +317,10 @@ public class GunStateController : MonoBehaviour
                         crossHair.rectTransform.anchoredPosition = localPoint;
                     }
                     return;
-                }*/
+                }
             }
         }
-       
+
 
 
         if (crossHair.rectTransform.anchoredPosition != Vector2.zero)
@@ -394,8 +341,8 @@ public class GunStateController : MonoBehaviour
         Vector3 origin = Vector3.zero;
 
         origin = Camera.main.transform.position 
-            //+ Camera.main.transform.forward 
-            //* Vector3.Distance(Camera.main.transform.position, startPos.position)
+            + Camera.main.transform.forward 
+            * Vector3.Distance(Camera.main.transform.position, startPos.position)
             ;
 
         return origin;
@@ -594,7 +541,7 @@ public class GunStateController : MonoBehaviour
     public void SwapGunMode(GunMode changeMode)
     {
         // 각종 모드 스왑을 막아야 하는 상황 1. 리로딩중, 그랩모드중 그랩일때, 이미 내가 활성화한 모드일때
-        if (state == GunState.RELOADING || currentMode.OnGrab || currentMode == mode[(int)changeMode])
+        if (state == GunState.RELOADING || onGrab || currentMode == mode[(int)changeMode])
         {
             return;
         }

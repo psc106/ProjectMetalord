@@ -13,7 +13,7 @@ public class GrabGun : GunBase
         brush.splatChannel = 2;
         ammo = -55;
         mode = GunMode.Grab;
-
+        rangeLimit = state.GrabRange;
         //myLayer = 1 << LayerMask.NameToLayer("MovedObject");
     }
 
@@ -31,6 +31,7 @@ public class GrabGun : GunBase
 
         // TODO : state.hit에 정보가 안담겼을 때 Null값을 참조하지 않게 만들어야 함
 
+        Debug.Log(targetRigid);
         OneShotGrab();
     }
 
@@ -91,9 +92,12 @@ public class GrabGun : GunBase
             float distanceCheck = Vector3.Distance(state.startPoint, targetObj.transform.position);
             float distanceCheck2 = Vector3.Distance(state.startPoint, state.pickupPoint.position);
 
-            if (distanceCheck <= rangeLimit
+            if (false
+                //||distanceCheck <= rangeLimit
                 || distanceCheck2 <= rangeLimit)
             {
+                Debug.Log(distanceCheck+"/"+ rangeLimit);
+                Debug.Log(distanceCheck2 + "/" + rangeLimit);
                 CancelObj();
             }
             
