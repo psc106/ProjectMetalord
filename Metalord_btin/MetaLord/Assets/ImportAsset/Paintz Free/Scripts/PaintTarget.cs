@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -266,6 +266,10 @@ public class PaintTarget : MonoBehaviour
     {
         PaintRaycast(ray, brush, range, multiple);
     }
+    public static void PaintRay(Ray ray, Brush brush, LayerMask layer, float range, bool multiple = true)
+    {
+        PaintRaycast(ray, brush, layer, range, multiple);
+    }
 
     public static void PaintCursor(Brush brush)
     {
@@ -278,11 +282,36 @@ public class PaintTarget : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         PaintRaycast(ray, brush);
     }
-
-    private static void PaintRaycast(Ray ray, Brush brush, float range = 100, bool multi = true)
+    private static void PaintRaycast(Ray ray, Brush brush, float range = 50, bool multi = true)
     {
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, range))
+        {
+            if (multi)
+            {
+                RaycastHit[] hits = Physics.SphereCastAll(hit.point, brush.splatScale, ray.direction);
+                for (int h = 0; h < hits.Length; h++)
+                {
+                    PaintTarget paintTarget = hits[h].collider.gameObject.GetComponent<PaintTarget>();
+                    if (paintTarget != null)
+                    {
+                        PaintObject(paintTarget, hit.point, hits[h].normal, brush);
+                    }
+                }
+            }
+            else
+            {
+                PaintTarget paintTarget = hit.collider.gameObject.GetComponent<PaintTarget>();
+                if (!paintTarget) return;
+                PaintObject(paintTarget, hit.point, hit.normal, brush);
+            }
+        }
+    }
+
+    private static void PaintRaycast(Ray ray, Brush brush, LayerMask layer, float range = 50, bool multi = true)
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, range, layer))
         {
             if (multi)
             {

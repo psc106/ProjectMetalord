@@ -41,7 +41,6 @@ public class SoundManager : MonoBehaviour
 
             for (int j = 0; j < nodes.Length; j++)
             {
-                Debug.Log((int)group + j);
                 audioNodes.Add((int)group + j, nodes[j].Clip);
             }
         }

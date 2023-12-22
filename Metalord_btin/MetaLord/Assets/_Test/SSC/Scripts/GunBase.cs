@@ -38,7 +38,7 @@ abstract public class GunBase : MonoBehaviour
     
     protected void UsedAmmo(Ray _ray, int _ammo)
     {
-        PaintTarget.PaintRay(_ray, brush, state.range);
+        PaintTarget.PaintRay(_ray, brush, myLayer, state.range);
 
         state.UpdateState(_ammo);
 

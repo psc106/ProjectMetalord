@@ -13,15 +13,12 @@ public class ClimbBehaviour : StateMachineBehaviour
     {
         cameraManager = FindObjectOfType<CameraManager>();
         player = FindObjectOfType<Controller_Physics>();
-        Debug.Log(cameraManager.name);
-        Debug.Log(player.name);
     }
 
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        Debug.Log("들어옴");
         player.PlayUnEquipAnimation();
         cameraManager.ChangePriorityCamera(CameraType.Climb, 20);
     }
@@ -35,7 +32,6 @@ public class ClimbBehaviour : StateMachineBehaviour
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        Debug.Log("나갔나?");
         player.PlayEquipAnimation();
         cameraManager.ChangePriorityCamera(CameraType.Climb, 1);
 

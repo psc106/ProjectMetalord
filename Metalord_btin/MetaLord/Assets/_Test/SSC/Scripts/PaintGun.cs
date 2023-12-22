@@ -62,12 +62,7 @@ public class PaintGun : GunBase
 
     public override void ShootGun()
     {
-        if(CheckCanFire() == false)
-        {
-            return;
-        }
-
-        if (!state.CanFire)
+        if(CheckCanFire() == false || !state.CanFire)
         {
             fireStart = false;
             autotimeCheck = 0f;
@@ -77,7 +72,6 @@ public class PaintGun : GunBase
         // 마우스 클릭에서 손을 떼면 사격 중지.
         if (!state.reader.ShootKey)
         {
-            
             fireStart = false;
             autotimeCheck = 0f;
         }
@@ -86,14 +80,12 @@ public class PaintGun : GunBase
         else if (autotimeCheck > autoTime && state.CanFire)
         {
             AutoFire();
-            return;
         }
 
         // 사격을 시작 == 마우스버튼 누른시점동안
         else if (fireStart == true)
         {
             autotimeCheck += Time.deltaTime;
-            return;
         }
 
         else if (state.reader.ShootKey && state.CanFire)
