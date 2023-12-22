@@ -26,14 +26,14 @@ public class BondGun : GunBase
         if (state.checkSuccessRay)
         {
             Ray muzzleRay = new Ray(state.startPoint, state.hit.point - state.startPoint);
-
+/*
             if (state.minDistance == true)
             {
                 muzzleRay = new Ray(state.checkPos.position, state.hit.point - state.startPoint);
                 UsedAmmo(muzzleRay, ammo);
                                 
                 return;
-            }
+            }*/
 
             if (state.hit.transform.GetComponent<NpcBase>() != null)
             {

@@ -15,7 +15,12 @@ public class RecordItem : MonoBehaviour
         if(other.tag == "Player")
         {
             GameEventsManager.instance.recordEvents.GetRecordItem((int)recordItem);
-            Debug.Log($"수집품 ID : {(int)recordItem}, 이름 : {recordItem}");
+
+            // 사운드 추가
+            int id = (int)ItemSoundList.GetRecordItemSound;
+            SoundManager.instance.PlaySound(GroupList.Item, id);
+
+            //Debug.Log($"수집품 ID : {(int)recordItem}, 이름 : {recordItem}");
             Destroy(this.gameObject);
         }
     }

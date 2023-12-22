@@ -257,12 +257,43 @@ public class GunStateController : MonoBehaviour
 
         Ray normalRay = new Ray(startCameraPos, direction);
         Ray checkRay = new Ray(startPlayerPos, direction);
-        Ray defaultRay = new Ray(startPlayerPos, endPos- startPlayerPos);
+        Ray defaultRay = new Ray(startPlayerPos, (endPos - startPlayerPos).normalized);
 
-        crossHair.rectTransform.anchoredPosition = Vector2.zero;
 
+        // 정면 오브젝트와 설정한 rangeLimit 값 거리 이하일 때
+         if (Physics.Raycast(checkRay, out hit, range, gunLayer))
+        {
+            float checkDistance = Vector3.Distance(startPlayerPos, hit.point);
+
+            //카메라->끝점 range 이하 경우
+            if (checkDistance <= minRange)
+            {
+                Debug.Log("플레이어->플레이어정면");
+                minDistance = true;
+                //Debug.Log($"일정거리 이하 : {minDistance}");
+                startPoint = startPlayerPos;
+                //AimTarget.position = hit.point;
+                checkSuccessRay = true;
+                crossHair.color = CanFire ? Color.green : Color.red;
+
+                Vector3 anchor = Camera.main.WorldToScreenPoint(hit.point);
+                if (RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)crossHair.transform.parent, anchor, null, out Vector2 localPoint))
+                {
+                    crossHair.rectTransform.anchoredPosition = localPoint;
+                }
+                return;
+            }
+
+            //카메라->끝점 range 이상 경우
+            else
+            {
+                minDistance = false;
+                //Debug.Log($"일정거리 이하 : {minDistance}");
+                //something
+            }
+        }
         // 일반적인 상황의 사격
-        if (Physics.Raycast(normalRay, out hit, range, gunLayer))
+        if(Physics.Raycast(normalRay, out hit, range, gunLayer))
         {
             float checkDistance = Vector3.Distance(startCameraPos, hit.point);
 
@@ -271,18 +302,19 @@ public class GunStateController : MonoBehaviour
             {
                 if(Physics.Raycast(defaultRay, out hit, range, gunLayer))
                 {
+                    Debug.Log("플레이어->디폴트히트포인트");
                     startPoint = startPlayerPos;
                     checkSuccessRay = true;
+                    minDistance = true;
                     crossHair.color = CanFire ? Color.green : Color.red;
 
-                    Vector3 space = Camera.main.WorldToScreenPoint(hit.point);
-                    if(RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)crossHair.transform.parent, space, null, out Vector2 localPoint))
+                    Vector3 anchor = Camera.main.WorldToScreenPoint(hit.point);
+                    if(RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)crossHair.transform.parent, anchor, null, out Vector2 localPoint))
                     {
                         crossHair.rectTransform.anchoredPosition = localPoint;
                     }
                     return;
                 }
-                return;
             }
 
             //카메라->끝점 range 이상 경우
@@ -293,40 +325,22 @@ public class GunStateController : MonoBehaviour
                 //AimTarget.position = hit.point;
                 startPoint = startCameraPos;
                 checkSuccessRay = true;
+                minDistance = false;
                 crossHair.color = CanFire ? Color.green : Color.red;
-                return;
-            }
-        }
 
-        // 정면 오브젝트와 설정한 rangeLimit 값 거리 이하일 때
-        else if (Physics.Raycast(checkRay, out hit, range, gunLayer))
-        {
-            float checkDistance = Vector3.Distance(startPlayerPos, hit.point);
-
-            //카메라->끝점 range 이하 경우
-            if (checkDistance <= minRange)
-            {
-                minDistance = true;                
-                startPoint = startPlayerPos;                
-                checkSuccessRay = true;
-                crossHair.color = CanFire ? Color.green:Color.red;
-
-                Vector3 space = Camera.main.WorldToScreenPoint(hit.point);
-                if (RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)crossHair.transform.parent, space, null, out Vector2 localPoint))
+                if (crossHair.rectTransform.anchoredPosition != Vector2.zero)
                 {
-                    crossHair.rectTransform.anchoredPosition = localPoint;
+                    crossHair.rectTransform.anchoredPosition = Vector2.zero;
                 }
                 return;
             }
-
-            //카메라->끝점 range 이상 경우
-            else
-            {
-                minDistance = false;                
-                //something
-            }
         }
-        
+
+
+        if (crossHair.rectTransform.anchoredPosition != Vector2.zero)
+        {
+            crossHair.rectTransform.anchoredPosition = Vector2.zero;
+        }
         checkSuccessRay = false;
         crossHair.color = Color.red;
 

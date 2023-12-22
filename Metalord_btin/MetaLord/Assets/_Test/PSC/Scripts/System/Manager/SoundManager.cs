@@ -41,6 +41,7 @@ public class SoundManager : MonoBehaviour
 
             for (int j = 0; j < nodes.Length; j++)
             {
+                Debug.Log((int)group + j);
                 audioNodes.Add((int)group + j, nodes[j].Clip);
             }
         }
@@ -111,7 +112,15 @@ public enum NpcSoundList
 
 public enum UISoundList
 {
+    ButtonClickSound_Record = 0,
+    ChangePageSound,
+    ButtonClickSound_Coin,
+    Can_BuySound,
+    Cant_BuySound,
+
 }
 public enum ItemSoundList
 {
+    GetRecordItemSound = 0,
+    GetCoinSound,
 }
