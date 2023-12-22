@@ -56,7 +56,7 @@ public class RecordManager : MonoBehaviour
     private int pageIndex
     {
         get
-        {
+        {            
             return _pageIndex;
         }
         set
@@ -65,6 +65,7 @@ public class RecordManager : MonoBehaviour
             pageList[_pageIndex].SetActive(false);
             _pageIndex = value;
             pageList[_pageIndex].SetActive(true);
+
         }
     }
 
@@ -298,7 +299,10 @@ public class RecordManager : MonoBehaviour
         if (pageIndex < pageList.Count-1)
         {
             pageIndex++;
+            PlayPageSound();
         }
+        else PlayCantSound();
+
     }
 
     /// <summary>
@@ -310,7 +314,9 @@ public class RecordManager : MonoBehaviour
         if (pageIndex > 0)
         {
             pageIndex--;
+            PlayPageSound();
         }
+        else PlayCantSound();
     }
 
     /// <summary>
@@ -321,7 +327,7 @@ public class RecordManager : MonoBehaviour
     public void SortGot(int optionIndex) 
     {
         gotSortIndex = optionIndex; //정렬 인덱스 저장
-
+        PlayButtonSound();
         SortTotal();
     }
 
@@ -333,8 +339,10 @@ public class RecordManager : MonoBehaviour
     public void SortZone(int optionIndex)
     {
         zoneSortIndex = optionIndex; // 정렬 인덱스 저장
+        PlayButtonSound();
         SortTotal();
     }
+
 
     /// <summary>
     /// 전체 정렬 함수
@@ -342,7 +350,7 @@ public class RecordManager : MonoBehaviour
     /// </summary>
     private void SortTotal()
     {
-        tempRecordObjectInfos.Clear();
+        tempRecordObjectInfos.Clear();        
 
         bool check = false; // 비교를 위한 임시 변수
 
@@ -379,9 +387,13 @@ public class RecordManager : MonoBehaviour
     /// 231220 배경택
     /// </summary>
     public void ResetRecord()
-    {
-        SortGot(0);
-        SortZone(0);
+    {        
+        //SortGot(0);
+        //SortZone(0);
+        zoneSortIndex = 0; // 정렬 인덱스 저장
+        gotSortIndex = 0; //정렬 인덱스 저장
+        SortTotal();
+
 
         //labelSortGot.GetComponent<TMP_Text>().text = "획득 여부";
         //labelSortZone.GetComponent<TMP_Text>().text = "지역";
@@ -400,5 +412,23 @@ public class RecordManager : MonoBehaviour
     public void SelectObject(RecordObject _selectedObject)
     {
         selectedObject = _selectedObject;
+        PlayButtonSound();
+    }
+
+    private void PlayButtonSound()
+    {
+        SoundManager.instance.PlaySound(GroupList.UI, (int)UISoundList.ButtonClickSound_Record);
+    }
+
+    private void PlayPageSound()
+    {
+        // 사운드 추가            
+        SoundManager.instance.PlaySound(GroupList.UI, (int)UISoundList.ChangePageSound);
+    }
+
+    private void PlayCantSound()
+    {
+        // 사운드 추가        
+        SoundManager.instance.PlaySound(GroupList.UI, (int)UISoundList.Cant_BuySound);
     }
 }

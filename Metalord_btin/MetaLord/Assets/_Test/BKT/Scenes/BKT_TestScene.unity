@@ -1444,6 +1444,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skillName: "\uCD1D\uB7C9"
+  upgradeCategory: 0
   stackOn: {fileID: 21300000, guid: b77d27f91fb714f969bce7e4b232b9d8, type: 3}
   stepCost: 05000000090000000d0000001100000015000000190000001d000000230000002d00000037000000410000004b00000055000000
   stepIncreaseAmount: 01000000030000000500000007000000090000000b0000000d0000000f0000001400000016000000180000002300000028000000
@@ -2410,6 +2411,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 415403919}
   m_CullTransparentMesh: 1
+--- !u!1001 &438936661
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1773190905425976055, guid: f6fe57a2bec8682488b38257e9afe5ec, type: 3}
+      propertyPath: m_Name
+      value: SoundManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 4128592616313192434, guid: f6fe57a2bec8682488b38257e9afe5ec, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4128592616313192434, guid: f6fe57a2bec8682488b38257e9afe5ec, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4128592616313192434, guid: f6fe57a2bec8682488b38257e9afe5ec, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4128592616313192434, guid: f6fe57a2bec8682488b38257e9afe5ec, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4128592616313192434, guid: f6fe57a2bec8682488b38257e9afe5ec, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4128592616313192434, guid: f6fe57a2bec8682488b38257e9afe5ec, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4128592616313192434, guid: f6fe57a2bec8682488b38257e9afe5ec, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4128592616313192434, guid: f6fe57a2bec8682488b38257e9afe5ec, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4128592616313192434, guid: f6fe57a2bec8682488b38257e9afe5ec, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4128592616313192434, guid: f6fe57a2bec8682488b38257e9afe5ec, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f6fe57a2bec8682488b38257e9afe5ec, type: 3}
 --- !u!1 &438987634
 GameObject:
   m_ObjectHideFlags: 0
@@ -10849,6 +10907,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skillName: "\uC0AC\uAC70\uB9AC"
+  upgradeCategory: 0
   stackOn: {fileID: 21300000, guid: b77d27f91fb714f969bce7e4b232b9d8, type: 3}
   stepCost: 05000000090000000d0000001100000015000000190000001d0000001e00000028000000320000000a000000140000001e000000
   stepIncreaseAmount: 01000000030000000500000007000000090000000b0000000d00000014000000180000001e000000210000002800000032000000
@@ -16682,3 +16741,4 @@ SceneRoots:
   - {fileID: 531365402}
   - {fileID: 1810920183}
   - {fileID: 438987635}
+  - {fileID: 438936661}
