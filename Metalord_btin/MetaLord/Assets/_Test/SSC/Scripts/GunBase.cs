@@ -7,8 +7,8 @@ abstract public class GunBase : MonoBehaviour
     protected Transform AimTarget = null;
     protected int ammo;
     public LayerMask myLayer;
-
-    [HideInInspector] public bool OnGrab = false;
+    
+    public GunMode mode { get; protected set; }
 
     protected virtual void Awake()
     {        
@@ -44,7 +44,7 @@ abstract public class GunBase : MonoBehaviour
         // 인스펙터창에서 값 변동 즉시 적용 사항
         brush.splatScale = state.paintingSize;        
 
-        PaintTarget.PaintRay(_ray, brush, state.range);
+        PaintTarget.PaintRay(_ray, brush, myLayer, state.range);
 
         state.UpdateState(_ammo);
 
@@ -65,4 +65,9 @@ abstract public class GunBase : MonoBehaviour
     }
 
     abstract public void ShootGun();
+
+    public virtual bool CanFireAmmoCount()
+    {
+        return state.Ammo >= -ammo;
+    }
 }

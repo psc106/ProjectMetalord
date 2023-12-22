@@ -191,7 +191,6 @@ GameObject:
   - component: {fileID: 4109092652244796837}
   - component: {fileID: 2829666601689883593}
   - component: {fileID: 29759510932080361}
-  - component: {fileID: 8765222856210531335}
   - component: {fileID: 7497749117217417900}
   m_Layer: 8
   m_Name: BeeNpc
@@ -214,6 +213,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 482711919420056387}
+  - {fileID: 6460833619372197789}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 65.035, z: 0}
 --- !u!33 &2853917513556030150
@@ -285,8 +285,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.91, y: 0.53, z: 0.52}
-  m_Center: {x: 0, y: -0.2, z: 0.1}
+  m_Size: {x: 0.001, y: 0.001, z: 0.001}
+  m_Center: {x: 0, y: -200, z: 0.1}
 --- !u!64 &2829666601689883593
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -322,19 +322,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myDialogue: {fileID: 0}
---- !u!114 &8765222856210531335
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7006533252895142986}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cb5c3a6d9dca6f34e87c96a478dcd13c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fadeImage: {fileID: 2280294551480923444}
 --- !u!114 &7497749117217417900
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -353,3 +340,71 @@ MonoBehaviour:
   PaintAllSplats: 0
   debugTexture: 0
   splatTexPick: {fileID: 0}
+--- !u!1 &7763823150434195569
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6460833619372197789}
+  - component: {fileID: 4401372975182024869}
+  - component: {fileID: 6336040265886973506}
+  m_Layer: 13
+  m_Name: InteractZone
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6460833619372197789
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7763823150434195569}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 9001803395639632936}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4401372975182024869
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7763823150434195569}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb5c3a6d9dca6f34e87c96a478dcd13c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fadeImage: {fileID: 2280294551480923444}
+  isShowInteractUI: 0
+--- !u!65 &6336040265886973506
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7763823150434195569}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.91, y: 0.53, z: 0.52}
+  m_Center: {x: 0, y: -0.2, z: 0.1}

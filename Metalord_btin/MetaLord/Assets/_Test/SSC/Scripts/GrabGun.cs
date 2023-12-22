@@ -12,6 +12,7 @@ public class GrabGun : GunBase
         base.Awake();
         brush.splatChannel = 2;
         ammo = -55;
+        mode = GunMode.Grab;
 
         //myLayer = 1 << LayerMask.NameToLayer("MovedObject");
     }
@@ -53,7 +54,6 @@ public class GrabGun : GunBase
             return;
         }
 
-        OnGrab = true;
         FollowingObj();
         
     }
@@ -112,7 +112,7 @@ public class GrabGun : GunBase
 
         targetObj = null;
         state.grabLine.enabled = false;
-        OnGrab = false;        
+        state.onGrab = false;        
     }
 
     public void CancleGrab()
@@ -120,7 +120,7 @@ public class GrabGun : GunBase
         targetObj = null;
         state.grabLine.enabled = false;
         targetRigid = null;
-        OnGrab = false;        
+        state.onGrab = false;        
     }
 
     void FollowingObj( )

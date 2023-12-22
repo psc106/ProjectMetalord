@@ -13,7 +13,7 @@ public class PaintGun : GunBase
     {
         get
         {
-            if(state.Ammo < -ammo) 
+            if(fireStart)
             {
                 return autoShot;
             }
@@ -26,6 +26,7 @@ public class PaintGun : GunBase
     {
         base.Awake();
 
+        mode = GunMode.Paint;
         brush.splatChannel = 0;
         ammo = -50;
 
@@ -35,12 +36,7 @@ public class PaintGun : GunBase
 
     public override void ShootGun()
     {
-        if(CheckCanFire() == false)
-        {
-            return;
-        }
-
-        if (!state.CanFire)
+        if(CheckCanFire() == false || !state.CanFire)
         {
             fireStart = false;
             autotimeCheck = 0f;
@@ -48,7 +44,7 @@ public class PaintGun : GunBase
         }
 
         // 마우스 클릭에서 손을 떼면 사격 중지.
-        if (!state.input.ShootKey)
+        if (!state.reader.ShootKey)
         {
             fireStart = false;
             autotimeCheck = 0f;
@@ -58,21 +54,20 @@ public class PaintGun : GunBase
         else if (autotimeCheck > state.AutoInitTime && state.CanFire)
         {
             AutoFire();
-            return;
         }
 
         // 사격을 시작 == 마우스버튼 누른시점동안
         else if (fireStart == true)
         {
             autotimeCheck += Time.deltaTime;
-            return;
         }
 
-        else if (state.input.ShootKey && state.CanFire)
+        else if (state.reader.ShootKey && state.CanFire)
         {
             NormalFire();
         }
     }
+
 
     private void NormalFire()
     {
@@ -80,11 +75,10 @@ public class PaintGun : GunBase
         {
             if(state.Ammo < -ammo)
             {
-                fireStart = true;
                 return;
             }
-            Ray muzzleRay = new Ray(state.startPoint, state.hit.point - state.startPoint);
 
+            Ray muzzleRay = new Ray(state.startPoint, state.hit.point - state.startPoint);
 /*            if(state.minDistance == true)
             {
 
@@ -95,7 +89,7 @@ public class PaintGun : GunBase
                 return;
             }*/
 
-            if(state.hit.transform.GetComponent<NpcBase>() != null)
+            if (state.hit.transform.GetComponent<NpcBase>() != null)
             {
                 PaintingNpc(muzzleRay, paintAmmo);
             }
@@ -142,4 +136,8 @@ public class PaintGun : GunBase
         return true;
     }
 
+    public override bool CanFireAmmoCount()
+    {
+        return state.Ammo >= (fireStart && autotimeCheck > autoTime ? -autoShot : - ammo);
+    }
 }
