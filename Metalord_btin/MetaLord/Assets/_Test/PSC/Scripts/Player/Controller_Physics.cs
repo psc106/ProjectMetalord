@@ -327,15 +327,15 @@ public class Controller_Physics : MonoBehaviour
 
         GetComponent<Renderer>().material.color = trailColor;
 
-
-
-        if (gunController.currentMode.mode == GunMode.Paint)
+        if (gunController.CurrentMode.mode == GunMode.Paint)
         {
-            gunController.currentMode.ShootGun();
+            gunController.CurrentMode.ShootGun();
         }
-        else if (reader.ShootKey)
+
+        else if (desireFire)
         {
-            gunController.currentMode.ShootGun();
+            desireFire = false;
+            gunController.CurrentMode.ShootGun();
         }
 
         // 장전        
@@ -347,23 +347,26 @@ public class Controller_Physics : MonoBehaviour
         // 1번키 누르면 페인트건
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            gunController.SwapPaintGun();
+            //SwapTest(GunMode.Paint);
+            gunController.SwapGunMode(GunMode.Paint);
+            //SwapPaintGun();
         }
 
         // 2번키 누르면 그랩건
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            gunController.SwapGrabGun();
+            //SwapTest(GunMode.Grab);
+            gunController.SwapGunMode(GunMode.Grab);
+            //SwapGrabGun();
         }
 
         // 3번키 누르면 본드건
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
-            gunController.SwapBondGun();
+            //SwapTest(GunMode.Bond);
+            gunController.SwapGunMode(GunMode.Bond);
+            //SwapBondGun();
         }
-
-
-        
 
     }
 
@@ -1137,9 +1140,24 @@ public class Controller_Physics : MonoBehaviour
     InputReader reader;
 
     private void BindHandler()
-    { 
+    {
+        reader.Fire += PressKey;
     }
 
+    bool desireFire;
+
+    public void PressKey(float input)
+    {
+        if (input == 1)
+        {
+            desireFire = true;
+        }
+        else
+        {
+            desireFire = false;
+        }
+
+    }
 
 
     #endregion

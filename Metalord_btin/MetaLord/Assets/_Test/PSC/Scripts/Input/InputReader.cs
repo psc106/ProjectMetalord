@@ -79,7 +79,15 @@ public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions
 
     public void OnFire(InputAction.CallbackContext context)
     {
-        Fire.Invoke(context.ReadValue<float>());
+        switch (context.phase)
+        {
+            case InputActionPhase.Started:
+                Fire.Invoke(1);
+                break;
+            case InputActionPhase.Canceled:
+                Fire.Invoke(0);
+                break;
+        }
     }
 
     public void OnJump(InputAction.CallbackContext context)
