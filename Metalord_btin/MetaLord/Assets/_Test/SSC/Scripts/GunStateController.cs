@@ -25,7 +25,7 @@ public class GunStateController : MonoBehaviour
     [SerializeField] private Image crossHair;
     [SerializeField] private Transform crossHairRect;
 
-    public InputReader input;    
+    public InputReader reader;    
     public Transform checkPos;
     public Transform pickupPoint;
     public Transform GunHolderHand;
@@ -52,9 +52,11 @@ public class GunStateController : MonoBehaviour
     public Vector3 startPoint;
     [HideInInspector]
     public RaycastHit hit;
+
     [HideInInspector]
     public bool checkSuccessRay = false;
-
+    [HideInInspector] 
+    public bool onGrab = false;
     [HideInInspector]
     public bool minDistance = false;
 
@@ -88,9 +90,9 @@ public class GunStateController : MonoBehaviour
     {
         get
         {            
-            if (currentMode.OnGrab)
+            if (onGrab)
             {
-                return !currentMode.OnGrab;
+                return !onGrab;
             }
 
             return player.CanReload;
@@ -157,40 +159,10 @@ public class GunStateController : MonoBehaviour
     private void Update()
     {
         //레이캐스트 업데이트
-        UpdateRaycast();        
-
-        if(currentMode == mode[(int)GunMode.Paint])
-        {            
-            currentMode.ShootGun();
-        }
-
-        if(Input.GetMouseButtonDown(0))
-        {            
-            currentMode.ShootGun();
-        }
-
-        // 장전        
-        if (Input.GetKeyDown(KeyCode.R))
+        UpdateRaycast();
+        if (onGrab || (reader.ShootKey && checkSuccessRay && CanFire && currentMode.CanFireAmmoCount()))
         {
-            Reloading();
-        }
-
-        // 1번키 누르면 페인트건
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            SwapPaintGun();
-        }
-
-        // 2번키 누르면 그랩건
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            SwapGrabGun();
-        }
-
-        // 3번키 누르면 본드건
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            SwapBondGun();
+            crossHair.color = Color.blue;
         }
 
         if (Input.GetKeyDown(KeyCode.Q))
@@ -213,62 +185,31 @@ public class GunStateController : MonoBehaviour
         Ray checkRay = new Ray(startPlayerPos, direction);
         Ray defaultRay = new Ray(startPlayerPos, (endPos - startPlayerPos).normalized);
 
+        float distance = Vector3.Distance(Camera.main.transform.position, startPos.position);
 
-        // 정면 오브젝트와 설정한 rangeLimit 값 거리 이하일 때
-         if (Physics.Raycast(checkRay, out hit, range, gunLayer))
-        {
-            float checkDistance = Vector3.Distance(startPlayerPos, hit.point);
-
-            //카메라->끝점 range 이하 경우
-            if (checkDistance <= minRange)
-            {
-                Debug.Log("플레이어->플레이어정면");
-                minDistance = true;
-                //Debug.Log($"일정거리 이하 : {minDistance}");
-                startPoint = startPlayerPos;
-                //AimTarget.position = hit.point;
-                checkSuccessRay = true;
-                crossHair.color = CanFire ? Color.green : Color.red;
-
-                Vector3 anchor = Camera.main.WorldToScreenPoint(hit.point);
-                if (RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)crossHair.transform.parent, anchor, null, out Vector2 localPoint))
-                {
-                    crossHair.rectTransform.anchoredPosition = localPoint;
-                }
-                return;
-            }
-
-            //카메라->끝점 range 이상 경우
-            else
-            {
-                minDistance = false;
-                //Debug.Log($"일정거리 이하 : {minDistance}");
-                //something
-            }
-        }
         // 일반적인 상황의 사격
-        if(Physics.Raycast(normalRay, out hit, range, gunLayer))
+        if (Physics.Raycast(normalRay, out hit, range, gunLayer))
         {
             float checkDistance = Vector3.Distance(startCameraPos, hit.point);
 
             //카메라->끝점 range 이하 경우
             if (checkDistance <= minRange)
             {
-                if(Physics.Raycast(defaultRay, out hit, range, gunLayer))
+               /* if (Physics.Raycast(defaultRay, out hit, range, gunLayer))
                 {
-                    Debug.Log("플레이어->디폴트히트포인트");
+                    //Debug.Log("플레이어->디폴트히트포인트");
                     startPoint = startPlayerPos;
                     checkSuccessRay = true;
                     minDistance = true;
-                    crossHair.color = CanFire ? Color.green : Color.red;
+                    crossHair.color = CanFire && currentMode.CanFireAmmoCount() ? Color.green : Color.red;
 
                     Vector3 anchor = Camera.main.WorldToScreenPoint(hit.point);
-                    if(RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)crossHair.transform.parent, anchor, null, out Vector2 localPoint))
+                    if (RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)crossHair.transform.parent, anchor, null, out Vector2 localPoint))
                     {
                         crossHair.rectTransform.anchoredPosition = localPoint;
                     }
                     return;
-                }
+                }*/
             }
 
             //카메라->끝점 range 이상 경우
@@ -280,7 +221,7 @@ public class GunStateController : MonoBehaviour
                 startPoint = startCameraPos;
                 checkSuccessRay = true;
                 minDistance = false;
-                crossHair.color = CanFire ? Color.green : Color.red;
+                crossHair.color = CanFire && currentMode.CanFireAmmoCount() ? Color.green : Color.red;
 
                 if (crossHair.rectTransform.anchoredPosition != Vector2.zero)
                 {
@@ -289,6 +230,65 @@ public class GunStateController : MonoBehaviour
                 return;
             }
         }
+
+        // 정면 오브젝트와 설정한 rangeLimit 값 거리 이하일 때
+        if (Physics.Raycast(defaultRay, out hit, range, gunLayer))
+        {
+            float checkDistance = Vector3.Distance(startPlayerPos, hit.point);
+
+            //Debug.Log("플레이어->디폴트히트포인트");
+            startPoint = startPlayerPos;
+            checkSuccessRay = true;
+            minDistance = false;
+            crossHair.color = CanFire && currentMode.CanFireAmmoCount() ? Color.green : Color.red;
+
+            Vector3 anchor = Camera.main.WorldToScreenPoint(hit.point);
+            if (RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)crossHair.transform.parent, anchor, null, out Vector2 localPoint))
+            {
+                crossHair.rectTransform.anchoredPosition = localPoint;
+            }
+            return;
+
+            //플레이어->끝점 range 이하 경우
+            if (checkDistance <= minRange)
+            {
+                /*Debug.Log("플레이어->플레이어정면");
+                minDistance = true;
+                //Debug.Log($"일정거리 이하 : {minDistance}");
+                startPoint = startPlayerPos;
+                //AimTarget.position = hit.point;
+                checkSuccessRay = true;
+                crossHair.color = CanFire && currentMode.CanFireAmmoCount() ? Color.green : Color.red;
+
+                Vector3 anchor = Camera.main.WorldToScreenPoint(hit.point);
+                if (RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)crossHair.transform.parent, anchor, null, out Vector2 localPoint))
+                {
+                    crossHair.rectTransform.anchoredPosition = localPoint;
+                }
+                return;*/
+            }
+
+            //플레이어->끝점 range 이상 경우
+            else
+            {
+                /*if (Physics.Raycast(defaultRay, out hit, range, gunLayer))
+                {
+                    Debug.Log("플레이어->디폴트히트포인트");
+                    startPoint = startPlayerPos;
+                    checkSuccessRay = true;
+                    minDistance = false;
+                    crossHair.color = CanFire && currentMode.CanFireAmmoCount() ? Color.green : Color.red;
+
+                    Vector3 anchor = Camera.main.WorldToScreenPoint(hit.point);
+                    if (RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)crossHair.transform.parent, anchor, null, out Vector2 localPoint))
+                    {
+                        crossHair.rectTransform.anchoredPosition = localPoint;
+                    }
+                    return;
+                }*/
+            }
+        }
+       
 
 
         if (crossHair.rectTransform.anchoredPosition != Vector2.zero)
@@ -308,9 +308,10 @@ public class GunStateController : MonoBehaviour
     {
         Vector3 origin = Vector3.zero;
 
-        origin = Camera.main.transform.position +
-            Camera.main.transform.forward *
-            Vector3.Distance(Camera.main.transform.position, startPos.position);
+        origin = Camera.main.transform.position 
+            //+ Camera.main.transform.forward 
+            //* Vector3.Distance(Camera.main.transform.position, startPos.position)
+            ;
 
         return origin;
     }
@@ -329,7 +330,7 @@ public class GunStateController : MonoBehaviour
 
     public void SwapPaintGun()
     {
-        if(state == GunState.RELOADING || currentMode.OnGrab)
+        if(state == GunState.RELOADING || onGrab)
         {
             return;
         }
@@ -339,7 +340,7 @@ public class GunStateController : MonoBehaviour
 
     }
 
-    private void SwapGrabGun()
+    public void SwapGrabGun()
     {
         if (state == GunState.RELOADING || !usedGrabGun)
         {
@@ -352,7 +353,7 @@ public class GunStateController : MonoBehaviour
 
     public void SwapBondGun()
     {
-        if (state == GunState.RELOADING || currentMode.OnGrab || !usedBondGun)
+        if (state == GunState.RELOADING || onGrab || !usedBondGun)
         {
             return;
         }

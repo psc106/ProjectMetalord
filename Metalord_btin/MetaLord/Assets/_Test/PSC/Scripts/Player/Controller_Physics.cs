@@ -28,6 +28,8 @@ public class Controller_Physics : MonoBehaviour
     [SerializeField]
     Animator animator;
     [SerializeField]
+    GunStateController gunController;
+    [SerializeField]
     MeshRenderer frontGunRender;
     [SerializeField]
     MeshRenderer handGunRender;
@@ -212,12 +214,94 @@ public class Controller_Physics : MonoBehaviour
 
     void Update()
     {
+        #region 상점, 도감, 환경설정 키 누를경우 _ 231219 배경택
+        if (canInput)
+        {
+            if (reader.StoreKey) // 상점 키 누를 경우 _231219 배경택
+            {
+                if (storeUI.activeSelf == true)
+                {
+                    SwitchCameraLock(false);
+                    storeUI.SetActive(false); // 중복 버튼을 누를경우 꺼짐    
+                }
+                else
+                {
+                    SwitchCameraLock(true);
+                    storeUI.SetActive(true);
+                    recordUI.SetActive(false);
+                    settingsUI.SetActive(false);
+                }
+
+                StartCoroutine(DelayInput());
+            }
+
+            if (reader.RecordKey) // 도감 키 누를 경우 _231219 배경택
+            {
+                if (recordUI.activeSelf == true)
+                {
+                    SwitchCameraLock(false);
+                    recordUI.SetActive(false); // 중복 버튼을 누를경우 꺼짐
+                }
+
+                else
+                {
+                    SwitchCameraLock(true);
+                    recordUI.SetActive(true);
+                    storeUI.SetActive(false);
+                    settingsUI.SetActive(false);
+                }
+
+                StartCoroutine(DelayInput());
+
+            }
+
+            if (!storeUI.activeSelf && !recordUI.activeSelf && reader.SettingsKey) //설정 키 누를 경우 _231219 배경택
+            {
+                if (settingsUI.activeSelf == true)
+                {
+                    SwitchCameraLock(false);
+                    settingsUI.SetActive(false); // 중복 버튼을 누를경우 꺼짐
+                }
+                else
+                {
+                    SwitchCameraLock(true);
+                    settingsUI.SetActive(true);
+                    recordUI.SetActive(false);
+                    storeUI.SetActive(false);
+                }
+
+                StartCoroutine(DelayInput());
+
+            }
+
+            if (Input.GetKeyDown(KeyCode.Escape)) // 그냥 ESC키 누를경우 꺼짐 (환경설정키가 ESC로 되어있음에 따라 환경설정키는 조건에서 제외)
+            {
+                if (storeUI.activeSelf == true)
+                {
+                    SwitchCameraLock(false);
+                    storeUI.SetActive(false);
+                }
+
+                if (recordUI.activeSelf == true)
+                {
+                    SwitchCameraLock(true);
+                    recordUI.SetActive(false);
+                }
+
+                StartCoroutine(DelayInput());
+            }
+        }
+        #endregion
+
         //대화나 메뉴에서 stop시킴
         if (stopState)
         {
+            animator.SetFloat(VelocityXHash, 0);
+            animator.SetFloat(VelocityYHash, 0);
             rb.velocity += gravity * Time.deltaTime;
             return;
         }
+
 
         input.x = reader.Direction.x;
         input.z = reader.Direction.y;
@@ -243,66 +327,43 @@ public class Controller_Physics : MonoBehaviour
 
         GetComponent<Renderer>().material.color = trailColor;
 
-        #region 상점, 도감, 환경설정 키 누를경우 _ 231219 배경택
-        if (canInput)
+
+
+        if (gunController.currentMode.mode == GunMode.Paint)
         {
-            if (reader.StoreKey) // 상점 키 누를 경우 _231219 배경택
-            {
-                if (storeUI.activeSelf == true) storeUI.SetActive(false); // 중복 버튼을 누를경우 꺼짐
-                else
-                {
-                    storeUI.SetActive(true);
-                    recordUI.SetActive(false);
-                    settingsUI.SetActive(false);
-                }
-
-                StartCoroutine(DelayInput());
-            }
-
-            if (reader.RecordKey) // 도감 키 누를 경우 _231219 배경택
-            {
-                if (recordUI.activeSelf == true) recordUI.SetActive(false); // 중복 버튼을 누를경우 꺼짐
-                else
-                {
-                    recordUI.SetActive(true);
-                    storeUI.SetActive(false);
-                    settingsUI.SetActive(false);
-                }
-
-                StartCoroutine(DelayInput());
-
-            }
-
-            if (!storeUI.activeSelf && !recordUI.activeSelf && reader.SettingsKey) //설정 키 누를 경우 _231219 배경택
-            {
-                if (settingsUI.activeSelf == true) settingsUI.SetActive(false); // 중복 버튼을 누를경우 꺼짐
-                else
-                {
-                    settingsUI.SetActive(true);
-                    recordUI.SetActive(false);
-                    storeUI.SetActive(false);
-                }
-
-                StartCoroutine(DelayInput());
-
-            }
-
-            if (Input.GetKeyDown(KeyCode.Escape)) // 그냥 ESC키 누를경우 꺼짐 (환경설정키가 ESC로 되어있음에 따라 환경설정키는 조건에서 제외)
-            {
-                if (storeUI.activeSelf == true)
-                {
-                    storeUI.SetActive(false);
-                }
-
-                if (recordUI.activeSelf == true)
-                {
-                    recordUI.SetActive(false);
-                }
-                
-                StartCoroutine(DelayInput());
-            }
+            gunController.currentMode.ShootGun();
         }
-        #endregion
+        else if (reader.ShootKey)
+        {
+            gunController.currentMode.ShootGun();
+        }
+
+        // 장전        
+        if (reader.ReloadKey)
+        {
+            gunController.Reloading();
+        }
+
+        // 1번키 누르면 페인트건
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            gunController.SwapPaintGun();
+        }
+
+        // 2번키 누르면 그랩건
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            gunController.SwapGrabGun();
+        }
+
+        // 3번키 누르면 본드건
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            gunController.SwapBondGun();
+        }
+
+
+        
 
     }
 
@@ -965,11 +1026,19 @@ public class Controller_Physics : MonoBehaviour
 
     public static void SwitchCameraLock(bool check)
     {
+        stopState = check;
         if (stopState)
         {
             FindObjectOfType<Controller_Physics>().rb.velocity = Vector3.zero;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
-        stopState = check;
+        else
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+
+        }
     }
 
 
