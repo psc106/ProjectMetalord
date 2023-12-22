@@ -6,7 +6,9 @@ using Unity.VisualScripting.Dependencies.Sqlite;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.SocialPlatforms;
 using UnityEngine.UI;
+using static UnityEngine.UIElements.UxmlAttributeDescription;
 
 public enum GunState_TODO
 {
@@ -77,11 +79,11 @@ public class GunStateController : MonoBehaviour
 
 
     // UI 제어 추가문
-    public GameObject ModeUI;
-    string[,] modeText = { { "벽타기", "1" }, { "당기기", "2" }, {"붙이기  ", "3" } };        
-    //string[] modeNum = { "1", "2", "3" };
-    TextMeshProUGUI[] modeTMps;
-
+    public GameObject[] ModeUI = new GameObject[3];
+    string[,] modeText = { { "벽타기", "1" }, { "당기기", "2" }, {"붙이기  ", "3" } };    
+    TextMeshProUGUI[] currentText;
+    TextMeshProUGUI[] elseText1;
+    TextMeshProUGUI[] elseText2;
 
     // 프로퍼티 모음
     #region Property
@@ -132,7 +134,9 @@ public class GunStateController : MonoBehaviour
     #region CallBack
     private void Awake()
     {
-        modeTMps = ModeUI.GetComponentsInChildren<TextMeshProUGUI>();
+        currentText = ModeUI[0].GetComponentsInChildren<TextMeshProUGUI>();
+        elseText1 = ModeUI[1].GetComponentsInChildren<TextMeshProUGUI>();
+        elseText2 = ModeUI[2].GetComponentsInChildren<TextMeshProUGUI>();
 
         Debug.Log("0번 인덱스에 담긴 넘버 : " + modeText[0, 0] + "  0번 인덱스에 담긴 텍스트 : " + modeText[0, 1]);
         Debug.Log(modeText.Length);
@@ -537,47 +541,37 @@ public class GunStateController : MonoBehaviour
         SwapTest(changeMode);
         currentMode = mode[(int)changeMode];
         SwapLayer();
-        
-        //int temp = (int)changeMode;
-
-        //for(int i = 0; i < 2; i++)
-        //{
-        //    modeTMps[i].text = modeText[temp, i];
-        //}
-
-        //modeTMps[0].text = modeText[(int)changeMode];
-        //modeTMps[1].text = modeNum[(int)changeMode];
-
     }
 
     void SwapTest(GunMode changeMode)
     {
-        int currentIdx = 0;
-
-        for(int i = 0; i < mode.Length; i++)
+        switch (changeMode)
         {
-            if(currentMode == mode[i])
-            {
-                currentIdx = i;
+            case GunMode.Paint:
+                
+                for(int i = 0; i < 2; i++)
+                {
+                    currentText[i].text = modeText[0, i];                                        
+                }
                 break;
-            }
+            case GunMode.Grab:
+                for (int i = 0; i < 2; i++)
+                {
+                    currentText[i].text = modeText[1, i];
+                }
+
+                break;
+            case GunMode.Bond:
+
+                for (int i = 0; i < 2; i++)
+                {
+                    currentText[i].text = modeText[2, i];
+                }
+                break;
         }
 
-        int targetIdx = (int)changeMode + (int)changeMode;
-        string[] tempString = new string[2];
-
-        for(int i = 0; i < tempString.Length; i++)
-        {
-            tempString[i] = modeTMps[i].text;
-        }
-
-        for (int i = 0; i < tempString.Length; i++)
-        {
-            modeTMps[i].text = modeText[(int)changeMode, i];
-            modeTMps[targetIdx + i].text = tempString[i];
-        }
-
-
+        ModeUI[1].SetActive(true);
+        ModeUI[2].SetActive(true);
     }
 
 }
