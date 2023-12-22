@@ -102,6 +102,78 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!1 &3786343579164573195
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6672767871417534923}
+  - component: {fileID: 2180090229116130918}
+  - component: {fileID: 5416110337142476312}
+  m_Layer: 13
+  m_Name: InteractZone
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6672767871417534923
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3786343579164573195}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1377886107892596804}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2180090229116130918
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3786343579164573195}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89ec82d64fb76cf4fa84e6655089dc98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fadeImage: {fileID: 5556813922514977579}
+  isCanInteractUI: 0
+  interactCollider: {fileID: 280274412592375223}
+  waterLayer:
+    serializedVersion: 2
+    m_Bits: 16
+--- !u!65 &5416110337142476312
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3786343579164573195}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.18, y: 0.02, z: 0.26}
+  m_Center: {x: 0.00000023841858, y: 0.015, z: 0.2}
 --- !u!1 &5636759491513940572
 GameObject:
   m_ObjectHideFlags: 0
@@ -117,7 +189,6 @@ GameObject:
   - component: {fileID: 2476125703160027377}
   - component: {fileID: 1483213677826224115}
   - component: {fileID: 356153650817801429}
-  - component: {fileID: 2798618829993308638}
   m_Layer: 8
   m_Name: BearNpc
   m_TagString: Untagged
@@ -140,6 +211,7 @@ Transform:
   m_Children:
   - {fileID: 6739919256223197902}
   - {fileID: 8245648142400225841}
+  - {fileID: 6672767871417534923}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 43.389, z: 0}
 --- !u!33 &6993184733104038673
@@ -224,8 +296,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.18, y: 0.02, z: 0.26}
-  m_Center: {x: 0.00000023841858, y: 0.015, z: 0.2}
+  m_Size: {x: 0.001, y: 0.001, z: 0.001}
+  m_Center: {x: 0, y: -200, z: 0}
 --- !u!64 &1483213677826224115
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -266,20 +338,6 @@ MonoBehaviour:
   PaintAllSplats: 0
   debugTexture: 0
   splatTexPick: {fileID: 0}
---- !u!114 &2798618829993308638
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5636759491513940572}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cb5c3a6d9dca6f34e87c96a478dcd13c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fadeImage: {fileID: 5556813922514977579}
-  isShowInteractUI: 0
 --- !u!1 &5800815337804273892
 GameObject:
   m_ObjectHideFlags: 0
@@ -296,7 +354,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &8245648142400225841
 Transform:
   m_ObjectHideFlags: 0

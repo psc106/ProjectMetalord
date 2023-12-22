@@ -12,9 +12,8 @@ GameObject:
   - component: {fileID: 6697901780893847668}
   - component: {fileID: 6438878047211654854}
   - component: {fileID: 1254211525158810479}
-  - component: {fileID: 5205437251495188115}
   - component: {fileID: 3771279733296348294}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: AdventurersHorse
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -108,19 +107,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -4578260038893755361, guid: 743fc88b89c33a3449e1cabe4027f93d, type: 3}
---- !u!114 &5205437251495188115
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 976699043027110526}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cb5c3a6d9dca6f34e87c96a478dcd13c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fadeImage: {fileID: 0}
 --- !u!114 &3771279733296348294
 MonoBehaviour:
   m_ObjectHideFlags: 0
