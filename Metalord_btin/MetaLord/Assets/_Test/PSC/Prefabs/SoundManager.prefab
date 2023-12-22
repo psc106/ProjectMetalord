@@ -283,7 +283,37 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   group: 200
-  nodes: []
+  nodes:
+  - Clip: {fileID: 8300000, guid: 92e9f72e3733c68449cebfc18d9473d4, type: 3}
+  - Clip: {fileID: 8300000, guid: 293ec4939e054ad42bcb0adb40e08944, type: 3}
+  - Clip: {fileID: 8300000, guid: 3d65c8d669b84c0428f75176a46e1fc8, type: 3}
+  - Clip: {fileID: 8300000, guid: 41097f8413f6e07459ddd56d4ae3a452, type: 3}
+  - Clip: {fileID: 8300000, guid: 4ac1dccf1b0ea344dbee68b2be815574, type: 3}
+  - Clip: {fileID: 8300000, guid: 613e97363d233214fbd6160f195f74b8, type: 3}
+  - Clip: {fileID: 8300000, guid: 5251633f4d9407a41b11661ddb224b87, type: 3}
+  - Clip: {fileID: 8300000, guid: 8e675d60e1c68d747b085fed0d35b506, type: 3}
+  - Clip: {fileID: 8300000, guid: 024ff038f79cacd4d94d84c0460f0678, type: 3}
+  - Clip: {fileID: 8300000, guid: 18056ef38194d5445a8f81a184918dc5, type: 3}
+  - Clip: {fileID: 8300000, guid: 8d5ee5150fe93ec47ba8135b66ffecdc, type: 3}
+  - Clip: {fileID: 8300000, guid: 0af24c43f73fd1143892e62e27688b2c, type: 3}
+  - Clip: {fileID: 8300000, guid: 2bfe054d7eae258469da39ddcbff57d2, type: 3}
+  - Clip: {fileID: 8300000, guid: bfec87af22c63394ab2321309886f29a, type: 3}
+  - Clip: {fileID: 8300000, guid: b1af2f0b59a994f48adf73737ebd716e, type: 3}
+  - Clip: {fileID: 8300000, guid: fa075d267250f1640a96dc9ccbc70e7e, type: 3}
+  - Clip: {fileID: 8300000, guid: 6140510fb43ced74eaf332face9f16b2, type: 3}
+  - Clip: {fileID: 8300000, guid: ebab5a3f2b9d6bd4fb8f913d0a229e28, type: 3}
+  - Clip: {fileID: 8300000, guid: 4ec1e9e5133e5624b9da51bc403807c8, type: 3}
+  - Clip: {fileID: 8300000, guid: 90b445f1ae1d90a4f81ab7d8501847b0, type: 3}
+  - Clip: {fileID: 8300000, guid: 6de4e11d47ae6ff4187cd155b5f54155, type: 3}
+  - Clip: {fileID: 8300000, guid: 25a350984d889e04db087f25aa185423, type: 3}
+  - Clip: {fileID: 8300000, guid: e5afec5b2f6cf5942bdc4e7c3667feb9, type: 3}
+  - Clip: {fileID: 8300000, guid: 3710daced42578b4698a03fd3bf1effe, type: 3}
+  - Clip: {fileID: 8300000, guid: f07318f5961f8f940986c0fa3f419546, type: 3}
+  - Clip: {fileID: 8300000, guid: 298c2f91ed8a64547b69c61637488eab, type: 3}
+  - Clip: {fileID: 8300000, guid: 0dc648cb5678bbc469978deba1f0f165, type: 3}
+  - Clip: {fileID: 8300000, guid: 60bf30df8d1c9ec41a2d74575f118f88, type: 3}
+  - Clip: {fileID: 8300000, guid: ec80743c75562da49a2977f6094b1bf4, type: 3}
+  - Clip: {fileID: 8300000, guid: fadbb32376d24c7408a1df7d591de502, type: 3}
 --- !u!1 &4045342427502668790
 GameObject:
   m_ObjectHideFlags: 0

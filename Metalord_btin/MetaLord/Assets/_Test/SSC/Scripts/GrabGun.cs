@@ -100,7 +100,6 @@ public class GrabGun : GunBase
         }
     }
 
-
     public void CancelObj()
     {
         if(targetRigid != null)
@@ -139,6 +138,8 @@ public class GrabGun : GunBase
 
         if(state.Ammo > -ammo)
         {
+            int id = (int)GunSoundList.FireSound;
+            SoundManager.instance.PlaySound(GroupList.Gun, id);
             state.UpdateState(ammo);
         }
     }
