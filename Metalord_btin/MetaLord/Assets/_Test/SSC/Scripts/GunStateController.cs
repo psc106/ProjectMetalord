@@ -1,21 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
-using Unity.VisualScripting.Dependencies.Sqlite;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using UnityEngine.Rendering;
 using UnityEngine.SocialPlatforms;
 using UnityEngine.UI;
 using static UnityEngine.UIElements.UxmlAttributeDescription;
-
-public enum GunState_TODO
-{
-    READY,
-    EMPTY,
-    RELOADING
-}
 
 public class GunStateController : MonoBehaviour
 {
@@ -165,28 +154,10 @@ public class GunStateController : MonoBehaviour
     void Start()
     {
         Ammo = MaxAmmo;
-        //AmmoText.text = MaxAmmo + " / " + Ammo;
-
-        //for(int i = 0; i < ModeText.Length; i++)
-        //{
-        //    Color tempColor = ModeColor[i];
-    
-        //    if (ModeText[i] == ModeText[(int)GunMode.Paint])
-        //    {
-        //        tempColor.a = 1f;
-        //        ModeText[i].color = tempColor;
-        //        AmmoGauge.color = tempColor;
-        //        ModeText[i].fontSize = CloseUp_FontSize;
-
-        //        continue;
-        //    }
-
-        //    tempColor.a = 0.3f;
-        //    ModeText[i].color = tempColor;
-        //    ModeText[i].fontSize = CloseOff_FontSize;
-        //}
-
         state = GunState.READY;
+
+        ModeUI[1].transform.GetChild(1).GetChild(0).gameObject.SetActive(false);
+        ModeUI[2].transform.GetChild(1).GetChild(0).gameObject.SetActive(false);
     }
 
     private void Update()
@@ -197,25 +168,25 @@ public class GunStateController : MonoBehaviour
 //TODO : 옮기기
         if (currentMode == mode[(int)GunMode.Paint])
         {
-            currentMode.ShootGun();
+            //currentMode.ShootGun();
         }
 
         if (Input.GetMouseButtonDown(0))
         {
-            currentMode.ShootGun();
+            //currentMode.ShootGun();
         }
 
         // 장전        
         if (Input.GetKeyDown(KeyCode.R))
         {
-            Reloading();
+            //Reloading();
         }
 
         // 1번키 누르면 페인트건
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             //SwapTest(GunMode.Paint);
-            SwapGunMode(GunMode.Paint);
+            //SwapGunMode(GunMode.Paint);
             //SwapPaintGun();
         }
 
@@ -223,7 +194,7 @@ public class GunStateController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             //SwapTest(GunMode.Grab);
-            SwapGunMode(GunMode.Grab);
+            //SwapGunMode(GunMode.Grab);
             //SwapGrabGun();
         }
 
@@ -231,7 +202,7 @@ public class GunStateController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
             //SwapTest(GunMode.Bond);
-            SwapGunMode(GunMode.Bond);
+            //SwapGunMode(GunMode.Bond);
             //SwapBondGun();
         }
 ////////////////////////////////////
@@ -569,9 +540,13 @@ public class GunStateController : MonoBehaviour
             case GunMode.Paint:
                 break;
             case GunMode.Grab:
-                usedGrabGun = true;
+                ModeUI[1].transform.GetChild(1).GetChild(1).gameObject.SetActive(false);
+                ModeUI[1].transform.GetChild(1).GetChild(0).gameObject.SetActive(true);
+                usedGrabGun = true;                
                 break;
             case GunMode.Bond:
+                ModeUI[2].transform.GetChild(1).GetChild(1).gameObject.SetActive(false);
+                ModeUI[2].transform.GetChild(1).GetChild(0).gameObject.SetActive(true);
                 usedBondGun = true;
                 break;
         }
@@ -615,36 +590,29 @@ public class GunStateController : MonoBehaviour
     }
 
     void SwapTest(GunMode changeMode)
-    {
-        switch (changeMode)
+    {        
+        string[] tempString = new string[2];
+        tempString[0] = currentText[0].text.Trim();
+        tempString[1] = currentText[1].text.Trim();
+
+        for (int i = 0; i < 3; i++)
         {
-            case GunMode.Paint:
-                
-                for(int i = 0; i < 2; i++)
-                {
-                    currentText[i].text = modeText[0, i];                                        
-                }
-                break;
-            case GunMode.Grab:
-                for (int i = 0; i < 2; i++)
-                {
-                    currentText[i].text = modeText[1, i];
-                }
+            if (ModeUI[i].transform.GetComponentInChildren<TextMeshProUGUI>().text.Trim() == modeText[(int)changeMode, 0].Trim())
+            {
+                ModeUI[i].transform.GetComponentsInChildren<TextMeshProUGUI>()[0].text = tempString[0];
+                ModeUI[i].transform.GetComponentsInChildren<TextMeshProUGUI>()[1].text = tempString[1];
 
                 break;
-            case GunMode.Bond:
-
-                for (int i = 0; i < 2; i++)
-                {
-                    currentText[i].text = modeText[2, i];
-                }
-                break;
+            }        
         }
 
+        for(int i = 0; i < 2; i++)
+        {
+            currentText[i].text = modeText[(int)changeMode, i];
+        }        
 
-        ModeUI[1].SetActive(true);
-        ModeUI[2].SetActive(true);
-        Debug.Log("???");
+        ModeUI[1].GetComponent<UiFadeOut>().InitFadeOut();
+        ModeUI[2].GetComponent<UiFadeOut>().InitFadeOut();              
     }
 
 }
