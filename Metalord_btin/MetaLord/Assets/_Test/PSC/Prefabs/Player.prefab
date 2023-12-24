@@ -295,6 +295,7 @@ MonoBehaviour:
   playerInputSpace: {fileID: 5467668828909890017}
   playerCenter: {fileID: 6677764962144662948}
   animator: {fileID: 6381496018623211574}
+  gunController: {fileID: 1050017471771283651}
   frontGunRender: {fileID: 3782273591382764777}
   handGunRender: {fileID: 378431335789592413}
   backGunRender: {fileID: 4838373344311464730}
@@ -335,7 +336,7 @@ TrailRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 283528363170913266}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -3426,7 +3427,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   crossHair: {fileID: 8823238110768659009}
   crossHairRect: {fileID: 0}
-  input: {fileID: 11400000, guid: 75abd6246b51f9e48a0d52dae45fab3f, type: 2}
+  reader: {fileID: 11400000, guid: 75abd6246b51f9e48a0d52dae45fab3f, type: 2}
   checkPos: {fileID: 7900184379219393653}
   pickupPoint: {fileID: 364788840478490789}
   GunHolderHand: {fileID: 8282372781614362592}
@@ -3435,7 +3436,7 @@ MonoBehaviour:
   AimTarget: {fileID: 8203518221037570998}
   range: 50
   minRange: 4
-  reloadTime: 4.5
+  reloadTime: 3
   gunLayer:
     serializedVersion: 2
     m_Bits: 1975

@@ -2,24 +2,18 @@ using UnityEngine;
 using UnityEngine.Windows;
 
 public class PaintGun : GunBase
-{            
-    float attackSpeed = 0.1f;    
-    float autoTime = 1f;
-
+{                   
     float rangeLimit = 4f;
-
     float timeCheck = 0f;
-    float autotimeCheck = 0;
-    
+    float autotimeCheck = 0;    
     int autoShot = -5;
-
     bool fireStart = false;
 
     int paintAmmo
     {
         get
         {
-            if(state.Ammo < -ammo)
+            if(fireStart)
             {
                 return autoShot;
             }
@@ -32,41 +26,17 @@ public class PaintGun : GunBase
     {
         base.Awake();
 
+        mode = GunMode.Paint;
         brush.splatChannel = 0;
         ammo = -50;
 
-        //AimTarget = state.AimTarget;
-
-        //int initLayer = 1 << LayerMask.NameToLayer("Player") |
-        //    1 << LayerMask.NameToLayer("CatchObject") |
-        //    1 << LayerMask.NameToLayer("NonInteractObject");
-
-        //myLayer = ~initLayer;
+        AimTarget = state.AimTarget;
     }
 
-    //public PaintGun(GunStateController state) : base(state)
-    //{        
-    //    brush.splatChannel = 0;
-    //    ammo = -50;
-
-    //    AimTarget = state.AimTarget;
-
-    //    int initLayer = 1<< LayerMask.NameToLayer("Player") |
-    //        1 << LayerMask.NameToLayer("CatchObject") |
-    //        1 << LayerMask.NameToLayer("NonInteractObject");
-
-    //    myLayer = ~initLayer;
-        
-    //}
 
     public override void ShootGun()
     {
-        if(CheckCanFire() == false)
-        {
-            return;
-        }
-
-        if (!state.CanFire)
+        if(CheckCanFire() == false || !state.CanFire)
         {
             fireStart = false;
             autotimeCheck = 0f;
@@ -74,31 +44,30 @@ public class PaintGun : GunBase
         }
 
         // 마우스 클릭에서 손을 떼면 사격 중지.
-        if (!state.input.ShootKey)
+        if (!state.reader.ShootKey)
         {
             fireStart = false;
             autotimeCheck = 0f;
         }
 
         // 일정시간동안 사격키 입력상태라면 연사모드
-        else if (autotimeCheck > autoTime && state.CanFire)
+        else if (autotimeCheck > state.AutoInitTime && state.CanFire)
         {
             AutoFire();
-            return;
         }
 
         // 사격을 시작 == 마우스버튼 누른시점동안
         else if (fireStart == true)
         {
             autotimeCheck += Time.deltaTime;
-            return;
         }
 
-        else if (state.input.ShootKey && state.CanFire)
+        else if (state.reader.ShootKey && state.CanFire)
         {
             NormalFire();
         }
     }
+
 
     private void NormalFire()
     {
@@ -106,11 +75,10 @@ public class PaintGun : GunBase
         {
             if(state.Ammo < -ammo)
             {
-                fireStart = true;
                 return;
             }
-            Ray muzzleRay = new Ray(state.startPoint, state.hit.point - state.startPoint);
 
+            Ray muzzleRay = new Ray(state.startPoint, state.hit.point - state.startPoint);
 /*            if(state.minDistance == true)
             {
 
@@ -121,7 +89,7 @@ public class PaintGun : GunBase
                 return;
             }*/
 
-            if(state.hit.transform.GetComponent<NpcBase>() != null)
+            if (state.hit.transform.GetComponent<NpcBase>() != null)
             {
                 PaintingNpc(muzzleRay, paintAmmo);
             }
@@ -138,7 +106,7 @@ public class PaintGun : GunBase
     {
         timeCheck += Time.deltaTime;
 
-        if (timeCheck >= attackSpeed)
+        if (timeCheck >= state.fireRate)
         {
             if (state.checkSuccessRay)
             {
@@ -168,4 +136,8 @@ public class PaintGun : GunBase
         return true;
     }
 
+    public override bool CanFireAmmoCount()
+    {
+        return state.Ammo >= (fireStart && autotimeCheck > state.AutoInitTime ? -autoShot : - ammo);
+    }
 }

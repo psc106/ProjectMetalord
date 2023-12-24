@@ -41,7 +41,6 @@ public class SoundManager : MonoBehaviour
 
             for (int j = 0; j < nodes.Length; j++)
             {
-                Debug.Log((int)group + j);
                 audioNodes.Add((int)group + j, nodes[j].Clip);
             }
         }
@@ -71,6 +70,9 @@ public enum PlayerSoundList
 
 public enum GunSoundList
 {
+    ChangeMod = 0,
+    Reload,
+    FireSound
 }
 
 public enum NpcSoundList

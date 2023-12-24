@@ -9,6 +9,7 @@ public class BondGun : GunBase
         base.Awake();
         brush.splatChannel = 1;
         ammo = -60;
+        mode = GunMode.Bond;
     }
 
     public override void ShootGun()

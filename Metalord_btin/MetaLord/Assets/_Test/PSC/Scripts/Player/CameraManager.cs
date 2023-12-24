@@ -34,13 +34,11 @@ public class CameraManager : MonoBehaviour
 
     float newRotationY;
     float newRotationX;
-    static public bool cameraMovementLock { get; private set; }
 
 
 
     private void OnEnable()
     {
-        cameraMovementLock = false;
         transform.parent = null;
 
         input.Look += OnLook;
@@ -79,7 +77,7 @@ public class CameraManager : MonoBehaviour
     private void LateUpdate()
     {
 
-        if (cameraMovementLock) return;
+        if (Controller_Physics.stopState) return;
 
         if (fixedAngle != -1 && blendCameraDuration >= time)
         {
@@ -150,7 +148,7 @@ public class CameraManager : MonoBehaviour
     }
     void OnLook(Vector2 cameraMovement, bool isDeviceMouse)
     {
-        if (cameraMovementLock) return;
+        if (Controller_Physics.stopState) return;
         if (isUnLockPressed) return;
         newRotationY = targetX.eulerAngles.y + cameraMovement.x * SpeedMulitiplier * Time.deltaTime;
         newRotationX = targetX.eulerAngles.x - cameraMovement.y * SpeedMulitiplier * Time.deltaTime;
@@ -160,7 +158,7 @@ public class CameraManager : MonoBehaviour
 
     void OnEnableMouseControlCamera()
     {
-        if (cameraMovementLock) return;
+        if (Controller_Physics.stopState) return;
         isUnLockPressed = true;
 
         Cursor.lockState = CursorLockMode.None;
@@ -168,7 +166,7 @@ public class CameraManager : MonoBehaviour
     }
     void OnDisableMouseControlCamera()
     {
-        if (cameraMovementLock) return;
+        if (Controller_Physics.stopState) return;
         isUnLockPressed = false;
 
         Cursor.lockState = CursorLockMode.Locked;
@@ -205,16 +203,6 @@ public class CameraManager : MonoBehaviour
         yield return new WaitForSeconds(time);
         blendCamera.Priority = 1;
 
-    }
-
-
-
-
-    public static void SwitchCameraLock(bool check)
-    {
-        cameraMovementLock = check;
-        if(check) Cursor.lockState = CursorLockMode.None;
-        else Cursor.lockState = CursorLockMode.Locked;
     }
 
 
