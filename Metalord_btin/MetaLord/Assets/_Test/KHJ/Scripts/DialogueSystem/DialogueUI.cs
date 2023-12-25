@@ -28,6 +28,9 @@ public class DialogueUI : MonoBehaviour
     [SerializeField] private GameObject dialogueBox;
     [SerializeField] private TMP_Text dialogueText;
 
+    public float minFontSize = 10f;
+    public float maxFontSize = 50f;
+
     private DialogueTypingEffect myTextEffect;
     public bool isResponse = false;
 
@@ -45,6 +48,7 @@ public class DialogueUI : MonoBehaviour
         myTextEffect = GetComponent<DialogueTypingEffect>();
         CloseDialogueUI();
         CloseTutoQuestion();
+       // ChangeFontSize(6);
     }
     #region TODO 삭제예정
     //public void ShowTutoDialogue(int keyNum)
@@ -276,5 +280,38 @@ public class DialogueUI : MonoBehaviour
         }
     }
 
-   
+    //폰트 사이즈 변경
+    public void ChangeFontSize(float fontSize)
+    {
+        float changeSize = fontSize;
+        if(fontSize <= minFontSize)
+        {
+            Debug.Log("만약 폰트 사이즈가 최소 사이즈 보다 작다면");
+            changeSize = minFontSize;
+            Debug.LogFormat("{0}<< 변경 전 폰트 사이즈", dialogueText.fontSize);
+            dialogueText.fontSize = changeSize;
+            Debug.LogFormat("{0}<< 변경 후 폰트 사이즈", dialogueText.fontSize);
+        }
+        else if( fontSize >= maxFontSize)
+        {
+            Debug.Log("만약 폰트 사이즈가 max 사이즈 보다 크다면");
+            changeSize = maxFontSize;
+            Debug.LogFormat("{0}<< 변경 전 폰트 사이즈", dialogueText.fontSize);
+            dialogueText.fontSize = changeSize;
+            Debug.LogFormat("{0}<< 변경 후 폰트 사이즈", dialogueText.fontSize);
+        }
+        else
+        {
+            Debug.Log("그 외 사이즈");
+            changeSize = fontSize;
+            Debug.LogFormat("{0}<< 변경 전 폰트 사이즈", dialogueText.fontSize);
+            dialogueText.fontSize = changeSize;
+            Debug.LogFormat("{0}<< 변경 후 폰트 사이즈", dialogueText.fontSize);
+        }
+    }
+
+    //public void ChangeMinOrMaxSize()
+    //{
+
+    //}
 }
