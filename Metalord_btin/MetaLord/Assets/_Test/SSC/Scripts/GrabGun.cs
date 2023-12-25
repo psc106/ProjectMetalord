@@ -138,9 +138,8 @@ public class GrabGun : GunBase
 
         if(state.Ammo > -ammo)
         {
-            int id = (int)GunSoundList.FireSound;
-            SoundManager.instance.PlaySound(GroupList.Gun, id);
-            state.UpdateState(ammo);
+            //state.UpdateState(ammo);
+            UsedAmmo(ammo);
         }
     }
 

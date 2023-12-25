@@ -45,14 +45,17 @@ public class GunStateController : MonoBehaviour
     [Range(0.01f, 1)]
     public float fireRate = 0.1f;
     [SerializeField, Range(0, 1000)]
-    private int maxAmmo = 200;
-    //[Range(0, 100)]
-    //public int ammoCount = 50;
+    private int maxAmmo = 200;    
 
     [HideInInspector]
     public Vector3 startPoint;
     [HideInInspector]
     public RaycastHit hit;
+    [HideInInspector]
+    public float lerpTime = 1f;
+    [HideInInspector]
+    public int checkAmmo;
+    
 
     [HideInInspector]
     public bool checkSuccessRay = false;
@@ -62,7 +65,8 @@ public class GunStateController : MonoBehaviour
     public bool minDistance = false;
 
     bool usedGrabGun = false;
-    bool usedBondGun = false;    
+    bool usedBondGun = false;
+    int maxUpgrade = 405;
 
     [HideInInspector] public NpcBase targetNpc = null;
     [HideInInspector] public GunState state;
@@ -153,15 +157,17 @@ public class GunStateController : MonoBehaviour
 
     void Start()
     {
-        Ammo = MaxAmmo;
-        state = GunState.READY;
+        UpdateState(MaxAmmo, GunState.READY);
+        checkAmmo = Ammo;
+        //Ammo = MaxAmmo;
+        //state = GunState.READY;
 
         ModeUI[1].transform.GetChild(1).GetChild(0).gameObject.SetActive(false);
         ModeUI[2].transform.GetChild(1).GetChild(0).gameObject.SetActive(false);
     }
 
     private void Update()
-    {
+    {   
         //레이캐스트 업데이트
         UpdateRaycast();
 
@@ -422,16 +428,14 @@ public class GunStateController : MonoBehaviour
     public void UpdateState(int ammoValue, GunState updatedState)
     {
         Ammo = ammoValue;
-        state = updatedState;
-        //AmmoText.text = MaxAmmo + " / " + Ammo;
-        AmmoGauge.fillAmount = (float)Ammo / (float)MaxAmmo;
+        state = updatedState;                
+        AmmoGauge.fillAmount = (float)Ammo / (float)maxUpgrade;
     }
 
     public void UpdateState(int ammoValue)
-    {
-        Ammo += ammoValue;
-        //AmmoText.text = MaxAmmo + " / " + Ammo;
-        AmmoGauge.fillAmount = (float)Ammo / (float)MaxAmmo;
+    {        
+        Ammo = ammoValue;                
+        AmmoGauge.fillAmount = (float)Ammo / (float)maxUpgrade;
     }
 
     public void Reloading()
@@ -449,6 +453,7 @@ public class GunStateController : MonoBehaviour
         ClearBondList();
         ClearNpcList();
         PaintTarget.ClearAllPaint();
+        currentMode.StopLerpGaguge();
         StartCoroutine(ReloadingAmmo());
     }
 
@@ -465,12 +470,13 @@ public class GunStateController : MonoBehaviour
             t = timeCheck / reloadTime;
 
             int ammoValue = (int)Mathf.Lerp(currentAmmo, maxAmmo, reloadCurve.Evaluate(t));
-            UpdateState(ammoValue - Ammo);
+            UpdateState(ammoValue);
 
             yield return null;
 
         }
 
+        checkAmmo = maxAmmo;
         UpdateState(maxAmmo, GunState.READY);
     }
 
@@ -560,8 +566,8 @@ public class GunStateController : MonoBehaviour
                 range += _value;
                 break;
             case UpgradeCategory.Amount:
-                MaxAmmo += _value;
-                UpdateState(_value);
+                MaxAmmo += _value;                
+                UpdateState(Ammo + _value);
                 break;
         }
     }
