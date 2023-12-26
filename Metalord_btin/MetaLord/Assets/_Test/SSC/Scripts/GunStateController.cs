@@ -252,7 +252,7 @@ public class GunStateController : MonoBehaviour
                 if (Physics.Raycast(checkRay, out hit, range, gunLayer))
                 {
                     checkDistance = Vector3.Distance(startPlayerPos, hit.point);
-
+                    Debug.Log(checkDistance);
                     //플레이어->끝점 range 이하 경우
                     if (checkDistance <= playerMinRange)
                     {
