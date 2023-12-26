@@ -118,7 +118,7 @@ public class GrabGun : GunBase
             //}
 
             if (false
-                //||distanceCheck <= rangeLimit
+                ||distanceCheck <= rangeLimit
                 || distanceCheck2 <= rangeLimit)
             {
                 CancelObj();
@@ -154,7 +154,8 @@ public class GrabGun : GunBase
     }
 
     void FollowingObj( )
-    {        
+    {
+        state.onGrab = true;
         targetObj = state.hit.transform.gameObject;
         state.pickupPoint.position = state.hit.point;
         followPos = state.pickupPoint.position - state.hit.transform.position;
