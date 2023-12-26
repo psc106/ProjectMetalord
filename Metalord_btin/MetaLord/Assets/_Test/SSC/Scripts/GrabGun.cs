@@ -121,23 +121,6 @@ public class GrabGun : GunBase
                 //||distanceCheck <= rangeLimit
                 || distanceCheck2 <= rangeLimit)
             {
-<<<<<<< HEAD
-                //Vector3 reflectionDir = state.pickupPoint.position - targetRigid.position;
-                //float force = reflectionDir.magnitude;
-
-                //if (force >= maxSpeed)
-                //{
-                //    force = maxSpeed;
-                //}
-                //Vector3 targetDir = state.pickupPoint.localPosition - state.checkPos.localPosition;
-                //state.pickupPoint.localPosition += targetDir.normalized;
-                //targetRigid.velocity = reflectionDir * force;
-                //Debug.Log("오브젝트 피벗 거리" + distanceCheck);
-                //Debug.Log("픽업 포인트 거리" + distanceCheck2);
-=======
-                Debug.Log(distanceCheck+"/"+ rangeLimit);
-                Debug.Log(distanceCheck2 + "/" + rangeLimit);
->>>>>>> fc5bfd9227dffc228f036a99da0e083fd397d0c3
                 CancelObj();
             }
 
