@@ -8,6 +8,7 @@ public class BondGun : GunBase
     {
         base.Awake();
         brush.splatChannel = 1;
+        brush.splatScale = state.BondSize;
         ammo = -60;
         mode = GunMode.Bond;
     }

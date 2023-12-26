@@ -14,6 +14,8 @@ public class UiFadeOut : MonoBehaviour
     Color[] imageOrigin;
     Color[] textOrigin;
 
+    IEnumerator fadeOut;
+
     private void Awake()
     {
         myText = GetComponentsInChildren<TextMeshProUGUI>();
@@ -33,8 +35,32 @@ public class UiFadeOut : MonoBehaviour
         }
     }
 
-    private void OnEnable()
+    private void Start()
     {
+        fadeOut = FadeOut();
+        InitFadeOut();
+    }
+
+    //private void OnEnable()
+    //{
+    //    for (int i = 0; i < myImage.Length; i++)
+    //    {
+    //        myImage[i].color = imageOrigin[i];
+    //    }
+
+    //    for (int i = 0; i < myText.Length; i++)
+    //    {
+    //        myText[i].color = textOrigin[i];
+    //    }
+
+    //    StartCoroutine(FadeOut());
+    //}
+
+    public void InitFadeOut()
+    {
+        StopCoroutine(fadeOut);
+        fadeOut = FadeOut();
+
         for (int i = 0; i < myImage.Length; i++)
         {
             myImage[i].color = imageOrigin[i];
@@ -45,7 +71,7 @@ public class UiFadeOut : MonoBehaviour
             myText[i].color = textOrigin[i];
         }
 
-        StartCoroutine(FadeOut());
+        StartCoroutine(fadeOut);
     }
 
     IEnumerator FadeOut()
@@ -80,6 +106,6 @@ public class UiFadeOut : MonoBehaviour
             yield return null;
         }
 
-        transform.gameObject.SetActive(false);
+        //transform.gameObject.SetActive(false);
     }
 }

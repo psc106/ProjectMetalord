@@ -2,7 +2,8 @@ using UnityEngine;
 using UnityEngine.Windows;
 
 public class PaintGun : GunBase
-{                   
+{
+    float autoTime = 1f;
     float rangeLimit = 4f;
     float timeCheck = 0f;
     float autotimeCheck = 0;    
@@ -28,6 +29,7 @@ public class PaintGun : GunBase
 
         mode = GunMode.Paint;
         brush.splatChannel = 0;
+        brush.splatScale = state.ClimbeSize;
         ammo = -50;
 
         AimTarget = state.AimTarget;
