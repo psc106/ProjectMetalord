@@ -1,6 +1,5 @@
 using System.Collections;
 using Unity.VisualScripting;
-using UnityEditor.SceneTemplate;
 using UnityEngine;
 
 abstract public class GunBase : MonoBehaviour
@@ -24,8 +23,6 @@ abstract public class GunBase : MonoBehaviour
             brush.splatTexture = Resources.Load<Texture2D>("splats");
             brush.splatsX = 4;
             brush.splatsY = 4;
-
-            brush.splatScale = state.paintingSize;
         }
     }
     abstract public void ShootGun();
@@ -46,9 +43,6 @@ abstract public class GunBase : MonoBehaviour
         int id = (int)GunSoundList.FireSound;
         SoundManager.instance.PlaySound(GroupList.Gun, id);
 
-        // 인스펙터창에서 값 변동 즉시 적용 사항
-        brush.splatScale = state.paintingSize;
-
         // 코루틴 돌고있는지 체크
         StopLerpGaguge();
         shootCoroutine = StartCoroutine(LerpGauge(_ammo));        
@@ -60,9 +54,6 @@ abstract public class GunBase : MonoBehaviour
     {
         int id = (int)GunSoundList.FireSound;
         SoundManager.instance.PlaySound(GroupList.Gun, id);
-
-        // 인스펙터창에서 값 변동 즉시 적용 사항
-        brush.splatScale = state.paintingSize;
 
         if (shootCoroutine != null) { StopCoroutine(shootCoroutine); }
         shootCoroutine = StartCoroutine(LerpGauge(_ammo));

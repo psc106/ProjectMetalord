@@ -18,10 +18,11 @@ public class GrabGun : GunBase
     }
 
     GameObject targetObj = null;
-    Rigidbody targetRigid = null;                 
+    Rigidbody targetRigid = null;           
     Vector3 followPos;
 
-    float rangeLimit = 20f;    
+    float rangeLimit = 30f;
+    float maxSpeed = 3f;
     public override void ShootGun()
     {
         if(CheckCanFire() == false)
@@ -29,8 +30,7 @@ public class GrabGun : GunBase
             return;
         }
 
-        // TODO : state.hit에 정보가 안담겼을 때 Null값을 참조하지 않게 만들어야 함
-
+        // TODO : state.hit에 정보가 안담겼을 때 Null값을 참조하지 않게 만들어야 함        
         OneShotGrab();
     }
 
@@ -40,23 +40,40 @@ public class GrabGun : GunBase
         {
             CancelObj();
             return;
-        }       
-
-        if(state.hit.transform != null)
-        {
-            state.pickupPoint.position = state.hit.point;
         }
+                
+        if (state.hit.transform == null)
+        {
+            return;
+        }
+
+        state.pickupPoint.position = state.hit.point;
+
         float distanceCheck = Vector3.Distance(state.startPoint, state.pickupPoint.position);
-        //float distanceCheck2 = Vector3.Distance(state.startPoint, state.hit.transform.position);
+        float distanceCheck2 = Vector3.Distance(state.startPoint, state.hit.transform.position);
 
         if (distanceCheck <= rangeLimit)
         {
+            Debug.Log("못드는 거리 : " + distanceCheck);
             return;
         }
 
         FollowingObj();
         
     }
+
+    //private void Update()
+    //{
+    //    if (targetRigid)
+    //    {
+    //        //float distanceCheck = Vector3.Distance(state.startPoint, targetObj.transform.position);
+    //        float distanceCheck2 = Vector3.Distance(state.checkPos.position, state.pickupPoint.position);
+
+    //        //Debug.Log("오브젝트 피벗 거리" + distanceCheck);
+    //        Debug.Log("픽업 포인트 거리" + distanceCheck2);
+    //    }
+
+    //}
 
     private void FixedUpdate()
     {
@@ -69,6 +86,9 @@ public class GrabGun : GunBase
         {
             float wheel = Input.GetAxis("Mouse ScrollWheel");
 
+            float distanceCheck = Vector3.Distance(state.checkPos.position, targetObj.transform.position);
+            float distanceCheck2 = Vector3.Distance(state.checkPos.position, state.pickupPoint.position);            
+
             if (wheel < 0f)
             {
                 PulledObj(wheel);
@@ -77,9 +97,9 @@ public class GrabGun : GunBase
             Vector3 dir = (state.pickupPoint.position - followPos) - targetRigid.position;
             float mag = dir.magnitude;
 
-            if (mag >= 2f)
+            if (mag >= maxSpeed)
             {
-                mag = 2f;
+                mag = maxSpeed;
             }
 
             state.grabLine.enabled = true;
@@ -88,14 +108,34 @@ public class GrabGun : GunBase
 
             targetRigid.velocity = dir * mag;
 
-            float distanceCheck = Vector3.Distance(state.startPoint, targetObj.transform.position);
-            float distanceCheck2 = Vector3.Distance(state.startPoint, state.pickupPoint.position);
+            //Debug.Log("픽업 포인트 위치는?" + state.pickupPoint.position);
+
+            //if(distanceCheck2 < rangeLimit + 2f)
+            //{
+            //    //Debug.Log("너무 가까움");
+            //    //Vector3 targetDir = state.pickupPoint.localPosition - state.checkPos.localPosition;
+            //    //state.pickupPoint.localPosition += targetDir.normalized;
+            //    //targetObj.transform.position += targetDir.normalized;
+            //}
 
             if (distanceCheck <= rangeLimit
                 || distanceCheck2 <= rangeLimit)
             {
+                //Vector3 reflectionDir = state.pickupPoint.position - targetRigid.position;
+                //float force = reflectionDir.magnitude;
+
+                //if (force >= maxSpeed)
+                //{
+                //    force = maxSpeed;
+                //}
+                //Vector3 targetDir = state.pickupPoint.localPosition - state.checkPos.localPosition;
+                //state.pickupPoint.localPosition += targetDir.normalized;
+                //targetRigid.velocity = reflectionDir * force;
+                //Debug.Log("오브젝트 피벗 거리" + distanceCheck);
+                //Debug.Log("픽업 포인트 거리" + distanceCheck2);
                 CancelObj();
             }
+
             
         }
     }
@@ -103,13 +143,14 @@ public class GrabGun : GunBase
     public void CancelObj()
     {
         if(targetRigid != null)
-        {
+        {            
             targetRigid.constraints = RigidbodyConstraints.None;
             targetRigid.useGravity = true;
             targetRigid.velocity = Vector3.zero;
-            targetRigid = null;
+            targetRigid = null;            
         }
 
+        targetObj.GetComponent<Collider>().material.dynamicFriction = 1f;
         targetObj = null;
         state.grabLine.enabled = false;
         state.onGrab = false;        
@@ -117,6 +158,7 @@ public class GrabGun : GunBase
 
     public void CancleGrab()
     {
+        targetObj.GetComponent<Collider>().material.dynamicFriction = 1f;
         targetObj = null;
         state.grabLine.enabled = false;
         targetRigid = null;
@@ -147,17 +189,17 @@ public class GrabGun : GunBase
     {
         Vector3 dir = state.checkPos.localPosition - state.pickupPoint.localPosition;
 
-        if (Vector3.Distance(state.pickupPoint.position, state.startPoint) < 25f)
+        if (Vector3.Distance(state.pickupPoint.position, state.startPoint) < rangeLimit + 5f)
         {
             return;
         }
 
-        dir = dir.normalized * wheelData;
+        dir = dir.normalized * (wheelData * 2f);
         state.pickupPoint.transform.localPosition -= dir;
     }
 
     protected override bool CheckCanFire()
-    {        
+    {
         if (!state.CanFire)
         {        
             return false;        

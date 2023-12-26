@@ -33,7 +33,9 @@ public class GunStateController : MonoBehaviour
 
     [Header("도구 스텟")]
     [Range(1, 50)]
-    public float paintingSize = 10f;
+    public float ClimbeSize = 10f;
+    [Range(1, 50)]
+    public float BondSize = 20f;
     [Range(0, 500)]
     public float range; 
     [SerializeField, Range(0, 10)]
@@ -174,25 +176,25 @@ public class GunStateController : MonoBehaviour
 //TODO : 옮기기
         if (currentMode == mode[(int)GunMode.Paint])
         {
-            //currentMode.ShootGun();
+            currentMode.ShootGun();
         }
 
         if (Input.GetMouseButtonDown(0))
         {
-            //currentMode.ShootGun();
+            currentMode.ShootGun();
         }
 
         // 장전        
         if (Input.GetKeyDown(KeyCode.R))
         {
-            //Reloading();
+            Reloading();
         }
 
         // 1번키 누르면 페인트건
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             //SwapTest(GunMode.Paint);
-            //SwapGunMode(GunMode.Paint);
+            SwapGunMode(GunMode.Paint);
             //SwapPaintGun();
         }
 
@@ -200,7 +202,7 @@ public class GunStateController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             //SwapTest(GunMode.Grab);
-            //SwapGunMode(GunMode.Grab);
+            SwapGunMode(GunMode.Grab);
             //SwapGrabGun();
         }
 
@@ -208,7 +210,7 @@ public class GunStateController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
             //SwapTest(GunMode.Bond);
-            //SwapGunMode(GunMode.Bond);
+            SwapGunMode(GunMode.Bond);
             //SwapBondGun();
         }
 ////////////////////////////////////
@@ -440,7 +442,7 @@ public class GunStateController : MonoBehaviour
 
     public void Reloading()
     {
-        if (!CanReload || state == GunState.RELOADING)
+        if (!CanReload || state == GunState.RELOADING || Ammo == MaxAmmo)
         {
             return;
         }
@@ -566,6 +568,7 @@ public class GunStateController : MonoBehaviour
                 range += _value;
                 break;
             case UpgradeCategory.Amount:
+                checkAmmo += _value;
                 MaxAmmo += _value;                
                 UpdateState(Ammo + _value);
                 break;
