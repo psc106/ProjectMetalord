@@ -28,10 +28,12 @@ public class DialogueUI : MonoBehaviour
     [SerializeField] private GameObject dialogueBox;
     [SerializeField] private TMP_Text dialogueText;
 
+    [Header("TextFontSize")]
     public float minFontSize = 10f;
     public float maxFontSize = 50f;
 
     private DialogueTypingEffect myTextEffect;
+    [Header("Response")]
     public bool isResponse = false;
 
     [Header("TextSound")]
@@ -215,6 +217,8 @@ public class DialogueUI : MonoBehaviour
                     //플레이어 움직임 다시 제어
                     //testPlayer.isMove = true;
                     playerInteract.isInteract = true; //다시 대화할 수 있게끔
+                    //23.12.26 
+                    PlayerInteractNpc.isTalking = false; // 대화 끝난거확인 
                     Controller_Physics.SwitchCameraLock(false);
                 }
                 break;

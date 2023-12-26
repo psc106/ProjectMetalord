@@ -8,7 +8,10 @@ public class PlayerInteractNpc : MonoBehaviour
     //npc 상호작용관련
     public bool isInteract = false;
     IInteractNpc playerInteract = null;
-    
+
+    //대화중인지 판별하기 위한 bool값
+    public static bool isTalking = false; //TODO static 인거 참조로 변경예정 아마?
+
     void Update()
     {
         if (isInteract)
@@ -42,6 +45,7 @@ public class PlayerInteractNpc : MonoBehaviour
     {
         if (playerInteract != null && Input.GetKeyDown(KeyCode.E))
         {
+            isTalking = true;
             isInteract = false;
             Debug.Log("플레이어 E 키누르기 ");
 
