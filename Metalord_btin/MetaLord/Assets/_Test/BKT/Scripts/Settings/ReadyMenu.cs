@@ -48,4 +48,9 @@ public class ReadyMenu : MonoBehaviour
         // 사운드 추가       
         SoundManager.instance.PlaySound(GroupList.UI, (int)UISoundList.Can_BuySound);
     }
+
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
 }
