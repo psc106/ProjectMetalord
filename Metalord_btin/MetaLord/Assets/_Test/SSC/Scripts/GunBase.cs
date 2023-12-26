@@ -4,6 +4,7 @@ using UnityEngine;
 
 abstract public class GunBase : MonoBehaviour
 {
+    protected Rigidbody conectedBody;
     protected GunStateController state;
     protected Brush brush = null;
     protected Transform AimTarget = null;
@@ -33,8 +34,8 @@ abstract public class GunBase : MonoBehaviour
         BoxCollider interactZone = state.targetNpc.GetComponent<BoxCollider>();
         interactZone.enabled = false;
         UsedAmmo(muzzleRay, paintAmmo);
-        state.targetNpc.ChangedState(npcState.glued);
-        GunStateController.AddList(state.targetNpc);
+        //state.targetNpc.ChangedState(npcState.glued);
+        //GunStateController.AddList(state.targetNpc);
         interactZone.enabled = true;
     }
     
@@ -116,7 +117,5 @@ abstract public class GunBase : MonoBehaviour
                 yield return Time.deltaTime;
             }
         }
-
-
     }
 }

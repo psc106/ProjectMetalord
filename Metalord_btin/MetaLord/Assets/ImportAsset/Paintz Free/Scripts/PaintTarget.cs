@@ -316,11 +316,24 @@ public class PaintTarget : MonoBehaviour
             if (multi)
             {
                 RaycastHit[] hits = Physics.SphereCastAll(hit.point, brush.splatScale, ray.direction);
+                RaycastHit[] hitsNpc = Physics.SphereCastAll(hit.point, 1f, ray.direction);
                 for (int h=0; h < hits.Length; h++)
                 {
                     PaintTarget paintTarget = hits[h].collider.gameObject.GetComponent<PaintTarget>();
                     if (paintTarget != null)
                     {
+                        for(int i = 0; i < hitsNpc.Length; i++)
+                        {
+                            // 12.26 SSC : 페인트칠시 NPC 범위로 체크하기 위하여 조건문 추가
+                            if (hitsNpc[i].collider.gameObject.GetComponent<NpcBase>() != null)
+                            {
+                                hitsNpc[i].collider.gameObject.GetComponent<NpcBase>().ChangedState(npcState.glued);
+                                GunStateController.AddList(hitsNpc[i].collider.gameObject.GetComponent<NpcBase>());
+                                //Debug.Log("여기서도 엔피씨 체크 가능");
+                            }
+
+                        }
+
                         PaintObject(paintTarget, hit.point, hits[h].normal, brush);
                     }
                 }
@@ -329,6 +342,7 @@ public class PaintTarget : MonoBehaviour
             {
                 PaintTarget paintTarget = hit.collider.gameObject.GetComponent<PaintTarget>();
                 if (!paintTarget) return;
+
                 PaintObject(paintTarget, hit.point, hit.normal, brush);
             }
         }

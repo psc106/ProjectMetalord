@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SocialPlatforms;
 using UnityEngine.UI;
@@ -14,6 +15,11 @@ public class GunStateController : MonoBehaviour
     [SerializeField] private Controller_Physics player;
     [SerializeField] private Image crossHair;
     [SerializeField] private Transform startPos;
+
+    public Rigidbody getconnect()
+    {
+        return player.connectedBody;
+    }
 
     public InputReader reader;    
     public Transform checkPos;
@@ -167,15 +173,13 @@ public class GunStateController : MonoBehaviour
     {
         UpdateState(MaxAmmo, GunState.READY);
         checkAmmo = Ammo;
-        //Ammo = MaxAmmo;
-        //state = GunState.READY;
 
         ModeUI[1].transform.GetChild(1).GetChild(0).gameObject.SetActive(false);
         ModeUI[2].transform.GetChild(1).GetChild(0).gameObject.SetActive(false);
     }
 
     private void Update()
-    {   
+    {
         //레이캐스트 업데이트
         UpdateRaycast();
 
@@ -225,7 +229,7 @@ public class GunStateController : MonoBehaviour
             //카메라->끝점 range 이하 경우
             if(hit.distance <= distance)
             {
-                Debug.Log("0");
+                //Debug.Log("0");
 
             }
             else if (checkDistance <= cameraMinRange)
@@ -234,11 +238,11 @@ public class GunStateController : MonoBehaviour
                 if (Physics.Raycast(checkRay, out hit, range, gunLayer))
                 {
                     checkDistance = Vector3.Distance(startPlayerPos, hit.point);
-                    Debug.Log(checkDistance);
+                    //Debug.Log(checkDistance);
                     //플레이어->끝점 range 이하 경우
                     if (checkDistance <= playerMinRange)
                     {
-                        Debug.Log("3");
+                        //Debug.Log("3");
                         //Debug.Log("플레이어->플레이어정면");
                         minDistance = true;
                         //Debug.Log($"일정거리 이하 : {minDistance}");
@@ -260,7 +264,7 @@ public class GunStateController : MonoBehaviour
                     {
                         if (Physics.Raycast(defaultRay, out hit, range * 0.6f, gunLayer))
                         {
-                            Debug.Log("4");
+                            //Debug.Log("4");
                             // Debug.Log("플레이어->디폴트히트포인트");
                             startPoint = startPlayerPos;
                             checkSuccessRay = true;
@@ -281,7 +285,7 @@ public class GunStateController : MonoBehaviour
             //카메라->끝점 range 이상 경우
             else
             {
-                Debug.Log("2");
+                //Debug.Log("2");
                 //minDistance = false;    
                 //Debug.Log($"일정거리 이하 : {minDistance}");
                 //AimTarget.position = hit.point;

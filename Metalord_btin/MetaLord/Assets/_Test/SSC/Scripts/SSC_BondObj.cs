@@ -25,7 +25,6 @@ public class SSC_BondObj : MonoBehaviour
             Vector3 dir = collision.contacts[i].normal;
 
             Ray ray = new Ray(collision.contacts[i].point + dir, -dir);
-
             RaycastHit hit;
 
             if (Physics.Raycast(ray, out hit, 1.5f, layerMask) &&

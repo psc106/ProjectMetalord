@@ -16,7 +16,7 @@ public class GrabGun : GunBase
         rangeLimit = state.GrabRange;
         //myLayer = 1 << LayerMask.NameToLayer("MovedObject");
     }
-
+    
     GameObject targetObj = null;
     Rigidbody targetRigid = null;           
     Vector3 followPos;
@@ -24,7 +24,7 @@ public class GrabGun : GunBase
     float rangeLimit = 30f;
     float maxSpeed = 3f;
     public override void ShootGun()
-    {
+    {        
         if(CheckCanFire() == false)
         {
             return;
@@ -34,9 +34,9 @@ public class GrabGun : GunBase
     }
 
     void OneShotGrab()
-    {        
-        if (targetRigid || state.Ammo < -ammo)
-        {
+    {           
+        if (targetRigid || state.Ammo < - ammo)
+        {            
             CancelObj();
             return;
         }
@@ -51,30 +51,18 @@ public class GrabGun : GunBase
         float distanceCheck = Vector3.Distance(state.startPoint, state.pickupPoint.position);
         float distanceCheck2 = Vector3.Distance(state.startPoint, state.hit.transform.position);
 
-        if (distanceCheck <= rangeLimit)
+        if (distanceCheck <= rangeLimit ||
+            distanceCheck2 <= rangeLimit)
         {
-            Debug.Log("못드는 거리 : " + distanceCheck);
+            Debug.Log("못드는 거리1 : " + distanceCheck);
+            Debug.Log("못드는 거리2 : " + distanceCheck2);
             return;
         }
 
-        FollowingObj();
-        
+        FollowingObj();        
     }
 
-    //private void Update()
-    //{
-    //    if (targetRigid)
-    //    {
-    //        //float distanceCheck = Vector3.Distance(state.startPoint, targetObj.transform.position);
-    //        float distanceCheck2 = Vector3.Distance(state.checkPos.position, state.pickupPoint.position);
-
-    //        //Debug.Log("오브젝트 피벗 거리" + distanceCheck);
-    //        Debug.Log("픽업 포인트 거리" + distanceCheck2);
-    //    }
-
-    //}
-
-    private void FixedUpdate()
+    private void Update()
     {
         GrabObj();
     }
@@ -83,10 +71,19 @@ public class GrabGun : GunBase
     {
         if (targetRigid)
         {
+            if (state.getconnect() == targetRigid)
+            {
+                CancelObj();
+                return;
+            }    
+
             float wheel = Input.GetAxis("Mouse ScrollWheel");
 
-            float distanceCheck = Vector3.Distance(state.checkPos.position, targetObj.transform.position);
-            float distanceCheck2 = Vector3.Distance(state.checkPos.position, state.pickupPoint.position);            
+            //float distanceCheck = Vector3.Distance(state.checkPos.position, targetObj.transform.position);
+            //float distanceCheck2 = Vector3.Distance(state.checkPos.position, state.pickupPoint.position);
+
+            //Debug.Log("트랜스폼" + distanceCheck);            
+            //Debug.Log("픽업" + distanceCheck2);
 
             if (wheel < 0f)
             {
@@ -106,25 +103,6 @@ public class GrabGun : GunBase
             state.grabLine.SetPosition(1, state.pickupPoint.position);
 
             targetRigid.velocity = dir * mag;
-
-            //Debug.Log("픽업 포인트 위치는?" + state.pickupPoint.position);
-
-            //if(distanceCheck2 < rangeLimit + 2f)
-            //{
-            //    //Debug.Log("너무 가까움");
-            //    //Vector3 targetDir = state.pickupPoint.localPosition - state.checkPos.localPosition;
-            //    //state.pickupPoint.localPosition += targetDir.normalized;
-            //    //targetObj.transform.position += targetDir.normalized;
-            //}
-
-            if (false
-                ||distanceCheck <= rangeLimit
-                || distanceCheck2 <= rangeLimit)
-            {
-                CancelObj();
-            }
-
-            
         }
     }
 
@@ -136,9 +114,9 @@ public class GrabGun : GunBase
             targetRigid.useGravity = true;
             targetRigid.velocity = Vector3.zero;
             targetRigid = null;            
+            targetObj.GetComponent<Collider>().material.dynamicFriction = 1f;
         }
 
-        targetObj.GetComponent<Collider>().material.dynamicFriction = 1f;
         targetObj = null;
         state.grabLine.enabled = false;
         state.onGrab = false;        
@@ -166,7 +144,6 @@ public class GrabGun : GunBase
         targetRigid.constraints = RigidbodyConstraints.FreezeRotation;
         targetRigid.useGravity = false;
 
-
         if(state.Ammo > -ammo)
         {
             //state.UpdateState(ammo);
@@ -189,8 +166,14 @@ public class GrabGun : GunBase
 
     protected override bool CheckCanFire()
     {
-        if (!state.CanFire)
-        {        
+        Ray checkRay = new Ray(state.checkPos.position, -(state.checkPos.up));
+        RaycastHit hit;
+        Physics.SphereCast(checkRay, 2f, out hit, 20f, myLayer);        
+
+        // 플레이어 밑에 있는 오브젝트가 내 조준점에 담긴 오브젝트라면 그랩시도 X
+        if (!state.CanFire || hit.transform?.gameObject == state.hit.transform?.gameObject)
+        {
+            Debug.Log("캔 파이어?");
             return false;        
         }
 
