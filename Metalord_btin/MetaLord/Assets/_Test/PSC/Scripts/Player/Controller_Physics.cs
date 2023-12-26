@@ -81,6 +81,7 @@ public class Controller_Physics : MonoBehaviour
     bool multipleState;
 
     bool isJump = false;
+    bool canJump = true;
     bool canFire = false;
 
     bool playingReloadAnimation = false;
@@ -284,7 +285,7 @@ public class Controller_Physics : MonoBehaviour
 
                 if (recordUI.activeSelf == true)
                 {
-                    SwitchCameraLock(true);
+                    SwitchCameraLock(false);
                     recordUI.SetActive(false);
                 }
 
@@ -311,7 +312,9 @@ public class Controller_Physics : MonoBehaviour
         input = Vector3.ClampMagnitude(input, 1);
         isMove |= (input.magnitude != 0);
 
-        desireJump |= reader.JumpKey;
+        desireJump |= reader.JumpKey && (OnClimb || OnGround);
+        desireJump &= canJump;
+
         desireRun = reader.RunKey;
 
         multipleState = OnGround && OnSteep && OnClimb;
@@ -369,6 +372,8 @@ public class Controller_Physics : MonoBehaviour
         }
 
     }
+
+    public static int a = 0;
 
     // 입력 대기시간 코루틴
     IEnumerator DelayInput()
@@ -469,7 +474,6 @@ public class Controller_Physics : MonoBehaviour
 
         if (other.gameObject.layer == catchObject)
         {
-            Debug.Log("아이템 겟");
             Destroy(other.gameObject);
         }
     }
@@ -571,6 +575,11 @@ public class Controller_Physics : MonoBehaviour
 
     private void AdjustJump()
     {
+        if (OnClimb && !animator.GetCurrentAnimatorStateInfo(0).IsName("Climb"))
+        {
+            return;
+        }
+
         //점프 키 눌렀을 경우만
         if (desireJump)
         {
@@ -642,7 +651,7 @@ public class Controller_Physics : MonoBehaviour
         }
 
         if (jumpPhase == 0)
-        { 
+        {
             //점프 상태
             isJump = true;
             //등산 딜레이
@@ -718,7 +727,6 @@ public class Controller_Physics : MonoBehaviour
             Color color = PaintTarget.RayColor(ray, 1.5f, colorCheckLayer);
             bool isColoredWall = color != Color.black;
             desireClimb |= isColoredWall;
-
             //cos에서 y값은 1->-1로 가므로 높을수록 각도는 낮은 각도
 
             //만약 접촉 표면의 각도가 최소 각도를 만족할 경우
@@ -753,7 +761,7 @@ public class Controller_Physics : MonoBehaviour
                     connectedBody = collision.rigidbody;
                 }
             }
-            
+
         }
     }
 
@@ -849,6 +857,7 @@ public class Controller_Physics : MonoBehaviour
 
         else if (!OnClimb && OnGround)
         {
+            canJump = true;
             canFire = true;
             isJump = false;
         }
@@ -1094,8 +1103,6 @@ public class Controller_Physics : MonoBehaviour
     }
     public void EndUnEquipAnimation()
     {
-        Debug.Log("등에매기");
-
         if (!OnClimb) return;
         handGunRender.enabled = false;
         frontGunRender.enabled = false;
@@ -1107,8 +1114,6 @@ public class Controller_Physics : MonoBehaviour
     }
     public void PlayEquipAnimation()
     {
-        Debug.Log("앞에들기");
-
         handGunRender.enabled = false;
         frontGunRender.enabled = true;
         backGunRender.enabled = (false);
@@ -1130,6 +1135,14 @@ public class Controller_Physics : MonoBehaviour
 
         playingEquipAnimation = false;
         aimRig.weight = 1;
+    }
+    public void StartClimbAnimation()
+    {
+        canJump = false;
+    }
+    public void UpdateClimbAnimation()
+    {
+        canJump = true;
     }
 
     #endregion

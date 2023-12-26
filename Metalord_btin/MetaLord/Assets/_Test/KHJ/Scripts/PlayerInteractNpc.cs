@@ -20,11 +20,11 @@ public class PlayerInteractNpc : MonoBehaviour
     {
         if(other.gameObject.layer == LayerMask.NameToLayer("InteractZone"))
         {
-            Debug.Log("찍히나?");
+           // Debug.Log("찍히나?");
             playerInteract = other.transform.parent.GetComponent<IInteractNpc>();
                 //other.GetComponent<IInteractNpc>();
             isInteract = true;
-            Debug.Log(playerInteract);
+           // Debug.Log(playerInteract);
         }
     }
 
@@ -33,7 +33,7 @@ public class PlayerInteractNpc : MonoBehaviour
        
         if (other.gameObject.layer == LayerMask.NameToLayer("InteractZone"))
         {
-            Debug.Log("나오나?");
+           // Debug.Log("나오나?");
             playerInteract = null;
             isInteract = false;
         }

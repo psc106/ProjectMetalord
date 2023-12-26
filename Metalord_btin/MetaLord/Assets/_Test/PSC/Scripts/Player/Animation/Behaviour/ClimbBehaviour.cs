@@ -8,6 +8,8 @@ public class ClimbBehaviour : StateMachineBehaviour
 {
     Controller_Physics player;
     CameraManager cameraManager;
+    float enterTime = 0;
+    bool check = false;
 
     private void OnEnable()
     {
@@ -19,19 +21,32 @@ public class ClimbBehaviour : StateMachineBehaviour
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        check = false;
+        enterTime = 0;
+        player.StartClimbAnimation();
         player.PlayUnEquipAnimation();
         cameraManager.ChangePriorityCamera(CameraType.Climb, 20);
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
-    //override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    //{
-    //    
-    //}
+    override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        if (!check)
+        {
+            enterTime += Time.deltaTime;
+            if (enterTime > .5f)
+            {
+                check = true;
+                player.UpdateClimbAnimation();
+            }
+        }
+
+    }
 
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        player.UpdateClimbAnimation();
         player.PlayEquipAnimation();
         cameraManager.ChangePriorityCamera(CameraType.Climb, 1);
 
