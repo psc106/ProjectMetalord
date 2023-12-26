@@ -28,7 +28,12 @@ public class DialogueUI : MonoBehaviour
     [SerializeField] private GameObject dialogueBox;
     [SerializeField] private TMP_Text dialogueText;
 
+    [Header("TextFontSize")]
+    public float minFontSize = 10f;
+    public float maxFontSize = 50f;
+
     private DialogueTypingEffect myTextEffect;
+    [Header("Response")]
     public bool isResponse = false;
 
     [Header("TextSound")]
@@ -45,6 +50,7 @@ public class DialogueUI : MonoBehaviour
         myTextEffect = GetComponent<DialogueTypingEffect>();
         CloseDialogueUI();
         CloseTutoQuestion();
+       // ChangeFontSize(6);
     }
     #region TODO 삭제예정
     //public void ShowTutoDialogue(int keyNum)
@@ -211,6 +217,8 @@ public class DialogueUI : MonoBehaviour
                     //플레이어 움직임 다시 제어
                     //testPlayer.isMove = true;
                     playerInteract.isInteract = true; //다시 대화할 수 있게끔
+                    //23.12.26 
+                    PlayerInteractNpc.isTalking = false; // 대화 끝난거확인 
                     Controller_Physics.SwitchCameraLock(false);
                 }
                 break;
@@ -276,5 +284,38 @@ public class DialogueUI : MonoBehaviour
         }
     }
 
-   
+    //폰트 사이즈 변경
+    public void ChangeFontSize(float fontSize)
+    {
+        float changeSize = fontSize;
+        if(fontSize <= minFontSize)
+        {
+            Debug.Log("만약 폰트 사이즈가 최소 사이즈 보다 작다면");
+            changeSize = minFontSize;
+            Debug.LogFormat("{0}<< 변경 전 폰트 사이즈", dialogueText.fontSize);
+            dialogueText.fontSize = changeSize;
+            Debug.LogFormat("{0}<< 변경 후 폰트 사이즈", dialogueText.fontSize);
+        }
+        else if( fontSize >= maxFontSize)
+        {
+            Debug.Log("만약 폰트 사이즈가 max 사이즈 보다 크다면");
+            changeSize = maxFontSize;
+            Debug.LogFormat("{0}<< 변경 전 폰트 사이즈", dialogueText.fontSize);
+            dialogueText.fontSize = changeSize;
+            Debug.LogFormat("{0}<< 변경 후 폰트 사이즈", dialogueText.fontSize);
+        }
+        else
+        {
+            Debug.Log("그 외 사이즈");
+            changeSize = fontSize;
+            Debug.LogFormat("{0}<< 변경 전 폰트 사이즈", dialogueText.fontSize);
+            dialogueText.fontSize = changeSize;
+            Debug.LogFormat("{0}<< 변경 후 폰트 사이즈", dialogueText.fontSize);
+        }
+    }
+
+    //public void ChangeMinOrMaxSize()
+    //{
+
+    //}
 }

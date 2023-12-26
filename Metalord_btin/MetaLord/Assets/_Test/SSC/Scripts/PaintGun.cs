@@ -140,6 +140,6 @@ public class PaintGun : GunBase
 
     public override bool CanFireAmmoCount()
     {
-        return state.Ammo >= (fireStart && autotimeCheck > autoTime ? -autoShot : - ammo);
+        return state.Ammo >= (fireStart && autotimeCheck > state.AutoInitTime ? -autoShot : - ammo);
     }
 }

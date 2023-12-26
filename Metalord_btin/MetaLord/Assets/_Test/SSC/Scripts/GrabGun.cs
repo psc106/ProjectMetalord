@@ -13,7 +13,7 @@ public class GrabGun : GunBase
         brush.splatChannel = 2;
         ammo = -55;
         mode = GunMode.Grab;
-
+        rangeLimit = state.GrabRange;
         //myLayer = 1 << LayerMask.NameToLayer("MovedObject");
     }
 
@@ -30,7 +30,6 @@ public class GrabGun : GunBase
             return;
         }
 
-        // TODO : state.hit에 정보가 안담겼을 때 Null값을 참조하지 않게 만들어야 함        
         OneShotGrab();
     }
 
@@ -118,9 +117,11 @@ public class GrabGun : GunBase
             //    //targetObj.transform.position += targetDir.normalized;
             //}
 
-            if (distanceCheck <= rangeLimit
+            if (false
+                //||distanceCheck <= rangeLimit
                 || distanceCheck2 <= rangeLimit)
             {
+<<<<<<< HEAD
                 //Vector3 reflectionDir = state.pickupPoint.position - targetRigid.position;
                 //float force = reflectionDir.magnitude;
 
@@ -133,6 +134,10 @@ public class GrabGun : GunBase
                 //targetRigid.velocity = reflectionDir * force;
                 //Debug.Log("오브젝트 피벗 거리" + distanceCheck);
                 //Debug.Log("픽업 포인트 거리" + distanceCheck2);
+=======
+                Debug.Log(distanceCheck+"/"+ rangeLimit);
+                Debug.Log(distanceCheck2 + "/" + rangeLimit);
+>>>>>>> fc5bfd9227dffc228f036a99da0e083fd397d0c3
                 CancelObj();
             }
 

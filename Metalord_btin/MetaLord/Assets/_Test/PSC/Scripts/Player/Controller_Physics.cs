@@ -81,6 +81,7 @@ public class Controller_Physics : MonoBehaviour
     bool multipleState;
 
     bool isJump = false;
+    bool canJump = true;
     bool canFire = false;
 
     bool playingReloadAnimation = false;
@@ -284,7 +285,7 @@ public class Controller_Physics : MonoBehaviour
 
                 if (recordUI.activeSelf == true)
                 {
-                    SwitchCameraLock(true);
+                    SwitchCameraLock(false);
                     recordUI.SetActive(false);
                 }
 
@@ -311,7 +312,9 @@ public class Controller_Physics : MonoBehaviour
         input = Vector3.ClampMagnitude(input, 1);
         isMove |= (input.magnitude != 0);
 
-        desireJump |= reader.JumpKey;
+        desireJump |= reader.JumpKey && (OnClimb || OnGround);
+        desireJump &= canJump;
+
         desireRun = reader.RunKey;
 
         multipleState = OnGround && OnSteep && OnClimb;
@@ -327,15 +330,15 @@ public class Controller_Physics : MonoBehaviour
 
         GetComponent<Renderer>().material.color = trailColor;
 
-
-
-        if (gunController.currentMode.mode == GunMode.Paint)
+        if (gunController.CurrentMode.mode == GunMode.Paint)
         {
-            gunController.currentMode.ShootGun();
+            gunController.CurrentMode.ShootGun();
         }
-        else if (reader.ShootKey)
+
+        else if (desireFire)
         {
-            gunController.currentMode.ShootGun();
+            desireFire = false;
+            gunController.CurrentMode.ShootGun();
         }
 
         // 장전        
@@ -347,25 +350,30 @@ public class Controller_Physics : MonoBehaviour
         // 1번키 누르면 페인트건
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            gunController.SwapPaintGun();
+            //SwapTest(GunMode.Paint);
+            gunController.SwapGunMode(GunMode.Paint);
+            //SwapPaintGun();
         }
 
         // 2번키 누르면 그랩건
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            gunController.SwapGrabGun();
+            //SwapTest(GunMode.Grab);
+            gunController.SwapGunMode(GunMode.Grab);
+            //SwapGrabGun();
         }
 
         // 3번키 누르면 본드건
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
-            gunController.SwapBondGun();
+            //SwapTest(GunMode.Bond);
+            gunController.SwapGunMode(GunMode.Bond);
+            //SwapBondGun();
         }
 
-
-        
-
     }
+
+    public static int a = 0;
 
     // 입력 대기시간 코루틴
     IEnumerator DelayInput()
@@ -466,7 +474,6 @@ public class Controller_Physics : MonoBehaviour
 
         if (other.gameObject.layer == catchObject)
         {
-            Debug.Log("아이템 겟");
             Destroy(other.gameObject);
         }
     }
@@ -568,6 +575,11 @@ public class Controller_Physics : MonoBehaviour
 
     private void AdjustJump()
     {
+        if (OnClimb && !animator.GetCurrentAnimatorStateInfo(0).IsName("Climb"))
+        {
+            return;
+        }
+
         //점프 키 눌렀을 경우만
         if (desireJump)
         {
@@ -639,7 +651,7 @@ public class Controller_Physics : MonoBehaviour
         }
 
         if (jumpPhase == 0)
-        { 
+        {
             //점프 상태
             isJump = true;
             //등산 딜레이
@@ -715,7 +727,6 @@ public class Controller_Physics : MonoBehaviour
             Color color = PaintTarget.RayColor(ray, 1.5f, colorCheckLayer);
             bool isColoredWall = color != Color.black;
             desireClimb |= isColoredWall;
-
             //cos에서 y값은 1->-1로 가므로 높을수록 각도는 낮은 각도
 
             //만약 접촉 표면의 각도가 최소 각도를 만족할 경우
@@ -750,7 +761,7 @@ public class Controller_Physics : MonoBehaviour
                     connectedBody = collision.rigidbody;
                 }
             }
-            
+
         }
     }
 
@@ -846,6 +857,7 @@ public class Controller_Physics : MonoBehaviour
 
         else if (!OnClimb && OnGround)
         {
+            canJump = true;
             canFire = true;
             isJump = false;
         }
@@ -1091,8 +1103,6 @@ public class Controller_Physics : MonoBehaviour
     }
     public void EndUnEquipAnimation()
     {
-        Debug.Log("등에매기");
-
         if (!OnClimb) return;
         handGunRender.enabled = false;
         frontGunRender.enabled = false;
@@ -1104,8 +1114,6 @@ public class Controller_Physics : MonoBehaviour
     }
     public void PlayEquipAnimation()
     {
-        Debug.Log("앞에들기");
-
         handGunRender.enabled = false;
         frontGunRender.enabled = true;
         backGunRender.enabled = (false);
@@ -1128,6 +1136,14 @@ public class Controller_Physics : MonoBehaviour
         playingEquipAnimation = false;
         aimRig.weight = 1;
     }
+    public void StartClimbAnimation()
+    {
+        canJump = false;
+    }
+    public void UpdateClimbAnimation()
+    {
+        canJump = true;
+    }
 
     #endregion
 
@@ -1137,9 +1153,24 @@ public class Controller_Physics : MonoBehaviour
     InputReader reader;
 
     private void BindHandler()
-    { 
+    {
+        reader.Fire += PressKey;
     }
 
+    bool desireFire;
+
+    public void PressKey(float input)
+    {
+        if (input == 1)
+        {
+            desireFire = true;
+        }
+        else
+        {
+            desireFire = false;
+        }
+
+    }
 
 
     #endregion

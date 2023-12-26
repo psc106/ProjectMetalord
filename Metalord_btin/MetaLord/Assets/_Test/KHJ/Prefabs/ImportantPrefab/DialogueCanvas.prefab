@@ -82,7 +82,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -20, y: -20}
+  m_SizeDelta: {x: -200, y: -20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &416945592420453469
 CanvasRenderer:
@@ -112,7 +112,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: TEST  DIALOGUE
+  m_text: <color=#80A0FF>TEST</color>  DIALOGUE
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 377387d65541fcd429f2b9dd83d84755, type: 2}
   m_sharedMaterial: {fileID: -429357652147104594, guid: 377387d65541fcd429f2b9dd83d84755, type: 2}
@@ -508,11 +508,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a1a7afdd9d169438dcf72aec7b0a29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  testPlayer: {fileID: 0}
+  playerInteract: {fileID: 0}
   dialogueUI: {fileID: 7467940204069898366}
   questionUI: {fileID: 0}
   dialogueBox: {fileID: 215940411559189654}
   dialogueText: {fileID: 365957068189753167}
+  minFontSize: 10
+  maxFontSize: 50
   isResponse: 0
 --- !u!114 &6233745851746948509
 MonoBehaviour:
