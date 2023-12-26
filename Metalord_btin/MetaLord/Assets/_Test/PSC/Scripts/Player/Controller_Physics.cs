@@ -395,7 +395,7 @@ public class Controller_Physics : MonoBehaviour
         //대화나 메뉴에서 stop시킴
         if (stopState)
         {
-            rb.velocity += gravity * Time.deltaTime;
+            rb.velocity = contactNormal * (Vector3.Dot(gravity, contactNormal) * Time.deltaTime);
             return;
         }
         //상태 업데이트
