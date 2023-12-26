@@ -99,7 +99,7 @@ abstract public class GunBase : MonoBehaviour
 
                 int value = (int)Mathf.Lerp(currentAmmo, state.checkAmmo, t);
                 state.UpdateState(value);        
-                yield return null;
+                yield return Time.deltaTime;
             }
 
             yield break;
@@ -113,7 +113,7 @@ abstract public class GunBase : MonoBehaviour
 
                 int value = (int)Mathf.Lerp(currentAmmo, state.checkAmmo, t);
                 state.UpdateState(value);     
-                yield return null;
+                yield return Time.deltaTime;
             }
         }
 

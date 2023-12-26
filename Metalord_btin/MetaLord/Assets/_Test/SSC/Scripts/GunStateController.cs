@@ -58,7 +58,7 @@ public class GunStateController : MonoBehaviour
     [HideInInspector]
     public RaycastHit hit;
     [HideInInspector]
-    public float lerpTime = 1f;
+    public float lerpTime= .1f;
     [HideInInspector]
     public int checkAmmo;
     
@@ -137,6 +137,8 @@ public class GunStateController : MonoBehaviour
     #region CallBack
     private void Awake()
     {
+        lerpTime = Time.deltaTime;
+
         currentText = ModeUI[0].GetComponentsInChildren<TextMeshProUGUI>();
         elseText1 = ModeUI[1].GetComponentsInChildren<TextMeshProUGUI>();
         elseText2 = ModeUI[2].GetComponentsInChildren<TextMeshProUGUI>();
