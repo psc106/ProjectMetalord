@@ -71,8 +71,8 @@ public class SSC_BondObj : MonoBehaviour
             myColider.convex = true;
 
             myRigid = transform.AddComponent<Rigidbody>();
-            myRigid.useGravity = true;
-            //transform.AddComponent<Rigidbody>().useGravity = true;
+            myRigid.mass = 1000f;
+            myRigid.useGravity = true;            
         }
     }
 }

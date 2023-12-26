@@ -17,8 +17,8 @@ public class SSC_GrabObj : MonoBehaviour
         {
             if(myRigid != null && myRigid.IsSleeping())
             {
-                Destroy(myRigid);
-                myColid.convex = false;
+                Destroy(myRigid);                
+                myColid.convex = false;                
                 isGrabed = false;                
             }
         }
@@ -27,6 +27,9 @@ public class SSC_GrabObj : MonoBehaviour
     public void ChangedState()
     {        
         myRigid = GetComponent<Rigidbody>();
+        myRigid.mass = 1000f;
+        myColid.material.dynamicFriction = 0f;
+        myColid.material.bounciness = 0f;
         isGrabed = true;
     }
 
