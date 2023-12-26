@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class DialogueTypingEffect : MonoBehaviour
@@ -63,7 +62,7 @@ public class DialogueTypingEffect : MonoBehaviour
         //textLabel.text = textToType;
     }
 
-    public IEnumerator TextSoundEffect(string textToType, AudioSource myAduio, int toneNumber)
+    public IEnumerator TextSoundEffect(string textToType,AudioSource myAudio, int toneNumber)
     {
         string[] temporaryText = textToType.Split(new char[] { ' ' });
         //Debug.Log(temporaryText.Length);
@@ -108,30 +107,67 @@ public class DialogueTypingEffect : MonoBehaviour
         SoundManager.instance.PlaySound(GroupList.Npc, randomNumber);
     }
 
-    private void Test()
-    {
-        int id = (int)NpcSoundList.lowTone01;
-        SoundManager.instance.PlaySound(GroupList.Npc, id);
-    }
-    private AudioClip ChooseRandomSound(int toneNumber)
-    {
-        AudioClip myClip;
-        if (toneNumber == 0)
-        {
-            randomNumber = UnityEngine.Random.Range(0, boldTone.Length);
-            myClip = boldTone[randomNumber];
-        }
-        else if (toneNumber == 1)
-        {
-            randomNumber = UnityEngine.Random.Range(0, middleTone.Length);
-            myClip = middleTone[randomNumber];
-        }
-        else
-        {
-            randomNumber = UnityEngine.Random.Range(0, highTone.Length);
-            myClip = highTone[randomNumber];
-        }
+    
+    //TODO 삭제예정
+    //private void Test()
+    //{
+    //    int id = (int)NpcSoundList.lowTone01;
+    //    SoundManager.instance.PlaySound(GroupList.Npc, id);
+    //}
+    //private AudioClip ChooseRandomSound(int toneNumber)
+    //{
+    //    AudioClip myClip;
+    //    if (toneNumber == 0)
+    //    {
+    //        randomNumber = UnityEngine.Random.Range(0, boldTone.Length);
+    //        myClip = boldTone[randomNumber];
+    //    }
+    //    else if (toneNumber == 1)
+    //    {
+    //        randomNumber = UnityEngine.Random.Range(0, middleTone.Length);
+    //        myClip = middleTone[randomNumber];
+    //    }
+    //    else
+    //    {
+    //        randomNumber = UnityEngine.Random.Range(0, highTone.Length);
+    //        myClip = highTone[randomNumber];
+    //    }
 
-        return myClip;
+    //    return myClip;
+    //}
+
+
+    //TEST TEXT WRITTER 
+    public IEnumerator WriteTest(string textToType, TMP_Text textLabel)
+    {
+        isTypingRunning = true;
+        textLabel.text = string.Empty;
+
+        float duration = Time.deltaTime;
+        int charIndex = 0;
+
+        //string[] nanugi;
+        //nanugi = textToType.Split();
+
+        //textToType
+
+        //StartCoroutine(TextSoundEffect(textToType,myAduio,textSound));
+        while (charIndex < textToType.Length)
+        {
+            duration += Time.deltaTime * textSpeed;
+            charIndex = Mathf.FloorToInt(duration);
+            charIndex = Mathf.Clamp(charIndex, 0, textToType.Length);
+            textLabel.text = textToType.Substring(0, charIndex);
+            //Debug.Log(textLabel.text);
+            yield return null;
+            //Debug.LogFormat("{0} <== This is chaiIndex ", charIndex);
+        }
+        isTypingRunning = false;
+        Debug.Log("지금 writeEffect 언제 되는거지?");
+        fadeImgae.SetActive(true);
+        //textLabel.text = textToType;
     }
+
+
+
 }
