@@ -360,7 +360,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recordUI: {fileID: 1920195572}
   storeUI: {fileID: 2027852340}
-  settingUI: {fileID: 1166430175}
+  settingUI: {fileID: 346118243}
 --- !u!4 &40156917
 Transform:
   m_ObjectHideFlags: 0
@@ -1715,6 +1715,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 340113110}
   m_CullTransparentMesh: 1
+--- !u!1 &346118243 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4877925671406735861, guid: c0219f10de8d5ca43a2fedfff38a4481, type: 3}
+  m_PrefabInstance: {fileID: 704844988}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &366541487
 GameObject:
   m_ObjectHideFlags: 0
@@ -9392,11 +9397,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1153045500}
   m_CullTransparentMesh: 1
---- !u!1 &1166430175 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8908486372979611984, guid: c0219f10de8d5ca43a2fedfff38a4481, type: 3}
-  m_PrefabInstance: {fileID: 704844988}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1169545004
 GameObject:
   m_ObjectHideFlags: 0
