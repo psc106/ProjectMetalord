@@ -390,8 +390,9 @@ public class RecordManager : MonoBehaviour
     {        
         //SortGot(0);
         //SortZone(0);
-        zoneSortIndex = 0; // 정렬 인덱스 저장
-        gotSortIndex = 0; //정렬 인덱스 저장
+        zoneSortIndex = 0; // 정렬 인덱스 초기화
+        gotSortIndex = 0; //정렬 인덱스 초기화
+        pageIndex = 0; // 페이지 인덱스 초기화
         SortTotal();
 
 
