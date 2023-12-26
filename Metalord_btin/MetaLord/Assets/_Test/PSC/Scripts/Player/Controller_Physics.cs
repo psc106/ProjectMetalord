@@ -216,7 +216,7 @@ public class Controller_Physics : MonoBehaviour
     void Update()
     {
         #region 상점, 도감, 환경설정 키 누를경우 _ 231219 배경택
-        if (canInput)
+        if (canInput && !PlayerInteractNpc.isTalking)
         {
             if (reader.StoreKey) // 상점 키 누를 경우 _231219 배경택
             {
