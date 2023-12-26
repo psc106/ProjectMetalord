@@ -11,6 +11,8 @@ public class StoreObject : MonoBehaviour
     protected int price;
     private GameObject cantBuyImage;
 
+    protected bool isCanBuy = true;
+
     protected virtual void Awake()
     {        
         cantBuyImage = Utility.FindChildObj(this.gameObject, "Image(CantBuy)");
@@ -34,6 +36,22 @@ public class StoreObject : MonoBehaviour
     }
 
     /// <summary>
+    /// 버튼 검정색 이미지로 덮을지 덮지 않을지 변경
+    /// </summary>
+    protected void ChangeButtonUI(int temp)
+    {
+        if (IsCanBuy()) cantBuyImage.SetActive(false);
+        else cantBuyImage.SetActive(true);
+    }
+
+    // 구매 가능여부를 체크하는 함수
+    protected bool IsCanBuy()
+    {
+        if (CoinManager.instance.currentCoin >= price && isCanBuy) return true;        
+        else return false;
+    }
+
+    /// <summary>
     /// 구매 불가 소리 재생
     /// </summary>
     protected void PlayCantBuySound()
@@ -47,24 +65,7 @@ public class StoreObject : MonoBehaviour
     /// </summary>
     protected void PlayCanBuySound()
     {
-        // 사운드 추가
-        int id = (int)UISoundList.Can_BuySound;
-        SoundManager.instance.PlaySound(GroupList.UI, id);
-    }
-
-    /// <summary>
-    /// 버튼 검정색 이미지로 덮을지 덮지 않을지 변경
-    /// </summary>
-    protected void ChangeButtonUI(int temp)
-    {
-        if (IsCanBuy()) cantBuyImage.SetActive(false);
-        else cantBuyImage.SetActive(true);
-    }
-
-    // 구매 가능여부를 체크하는 함수
-    protected bool IsCanBuy()
-    {
-        if (CoinManager.instance.currentCoin >= price) return true;        
-        else return false;
+        // 사운드 추가       
+        SoundManager.instance.PlaySound(GroupList.UI, (int)UISoundList.Can_BuySound);
     }
 }

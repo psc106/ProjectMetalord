@@ -60,21 +60,19 @@ public class Store_WeaponStatus : StoreObject
 
 
         // 최대 스텝까지만 실행
-        if (stepIndex < MAX_STEP)
+        if (stepIndex >= MAX_STEP)
         {
+            isCanBuy = true;
+        }
             base.BuyStoreObject();
-
-            ReflectCost(stepIndex);
             ReflectStepImage(stepIndex);
             ReflectCostText(stepIndex);
+            ReflectCost(stepIndex);
+            ChangeButtonUI(0);
+
             GameEventsManager.instance.coinEvents.UpgradeGun(upgradeCategory,stepIncreaseAmount[stepIndex]); // 건 업그레이드에 전달
             stepIndex += 1;
-        }
-        else
-        {            
-            Debug.Log("이미 업그레이드를 전부 완료하였습니다");
-            // TODO 전체 업그레이드 완료 알림
-        }
+
     }
 
     // 업그레이드 이미지 채워지는거 반영
@@ -88,7 +86,7 @@ public class Store_WeaponStatus : StoreObject
     private void ReflectCostText(int _index)
     {
         if (stepIndex < MAX_STEP - 1) costObject.text = stepCost[stepIndex + 1].ToString() + "개"; // 다음 스텝의 금액을 반영
-        else costObject.text = "최대";
+        else costObject.text = "Sold Out";
     }
 
     // 업그레이드 텍스트 반영
