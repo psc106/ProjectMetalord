@@ -16,8 +16,6 @@ public class TestController : MonoBehaviour
         recordUI.SetActive(false);
     }
 
-
-
     void Update()
     {
         // 수집 도감
