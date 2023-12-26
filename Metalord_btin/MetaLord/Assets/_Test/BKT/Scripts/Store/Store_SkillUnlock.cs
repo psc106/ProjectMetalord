@@ -18,10 +18,9 @@ public class Store_SkillUnlock : StoreObject
     private TMP_Text nameObject;
     private TMP_Text costObject;
     private TMP_Text explainObject;
+    private TMP_Text soldOutObject;
 
     [SerializeField] private GunMode gunMode;
-
-    
 
     protected override void Awake()
     {
@@ -30,11 +29,13 @@ public class Store_SkillUnlock : StoreObject
         nameObject = Utility.FindChildObj(this.gameObject, "Text(Name)").GetComponent<TMP_Text>();
         costObject = Utility.FindChildObj(this.gameObject, "Text(Cost)").GetComponent<TMP_Text>();
         explainObject = Utility.FindChildObj(this.gameObject, "Text(Explain)").GetComponent<TMP_Text>();
+        soldOutObject = Utility.FindChildObj(this.gameObject, "Text(SoldOut)").GetComponent<TMP_Text>();
 
         // 스킬 정보 입력
         nameObject.text = skillName;
         costObject.text = cost.ToString() + "개";
         explainObject.text = skillExplain;
+        soldOutObject.enabled = false;
 
         // 금액에 코스트 반영
         price = cost;
@@ -51,7 +52,11 @@ public class Store_SkillUnlock : StoreObject
         else PlayCanBuySound();
 
 
+        isCanBuy = false;
+        soldOutObject.enabled = true;
+        costObject.text = "구매완료";
         base.BuyStoreObject();
+        
 
 
         GameEventsManager.instance.coinEvents.UnlockGunMode(gunMode);        
