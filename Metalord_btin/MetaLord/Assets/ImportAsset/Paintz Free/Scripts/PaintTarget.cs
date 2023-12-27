@@ -675,8 +675,7 @@ public class PaintTarget : MonoBehaviour
         if (!validTarget) return;
 
         if (m_Splats.Count > 0)
-        {
-            Debug.Log("여긴 안들오자나");
+        {            
             bPickDirty = true;
 
             if (!setupComplete) SetupPaint();
