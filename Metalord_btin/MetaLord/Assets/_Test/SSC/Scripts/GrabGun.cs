@@ -16,7 +16,9 @@ public class GrabGun : GunBase
         rangeLimit = state.GrabRange;
         //myLayer = 1 << LayerMask.NameToLayer("MovedObject");
     }
-    
+
+    public int GrabShot { get { return -ammo; } set { ammo = -value; } }
+
     GameObject targetObj = null;
     Rigidbody targetRigid = null;           
     Vector3 followPos;
