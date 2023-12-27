@@ -7,6 +7,8 @@ public class SavedGamePlayData
     // 획득한 수집아이템 리스트의 ID값
     List<int> obtainedItemIDList;
 
+    
+
     // 소지한 재화
     int Money;
 

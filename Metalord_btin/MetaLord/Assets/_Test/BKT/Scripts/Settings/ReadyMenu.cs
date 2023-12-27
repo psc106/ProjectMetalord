@@ -28,11 +28,18 @@ public class ReadyMenu : MonoBehaviour
 
     }
 
+    // 환경설정창으로 이동
     public void GoSettings()
     {
         SettingsCanvas.SetActive(true);
         gameObject.SetActive(false);
         CanUseSound();
+    }
+
+    // 게임 저장
+    public void GameSave()
+    {
+        GameEventsManager.instance.dataEvents.SaveData(); // 저장 이벤트 발생
     }
 
     // 임시 버튼 사용 불가 소리
