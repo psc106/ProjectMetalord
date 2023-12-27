@@ -26,18 +26,15 @@ public class SSC_BondObj : MonoBehaviour
 
             Ray ray = new Ray(collision.contacts[i].point + dir, -dir);
 
-            RaycastHit hit;
-
-            if (Physics.Raycast(ray, out hit, 1.5f, layerMask) &&
-                PaintTarget.RayColor(ray) == Color.red)
+            if (PaintTarget.RayChannel(ray, 1.5f, layerMask) == 0)
             {
-                if(hit.transform.GetComponent<NpcBase>() != null)
+                if(collision.transform.GetComponent<NpcBase>() != null)
                 {
-                    hit.transform.GetComponent<NpcBase>().ChangedState(npcState.objectAttached);
-                    GunStateController.AddList(hit.transform.GetComponent<NpcBase>());
+                    collision.transform.GetComponent<NpcBase>().ChangedState(npcState.objectAttached);
+                    GunStateController.AddList(collision.transform.GetComponent<NpcBase>());
                 }
 
-                transform.parent = hit.transform;
+                transform.parent = collision.transform;
                 GunStateController.AddList(this);
 
                 if (transform.GetComponent<Rigidbody>() != null)
