@@ -4,6 +4,7 @@ using UnityEngine;
 
 abstract public class GunBase : MonoBehaviour
 {
+    protected Rigidbody conectedBody;
     protected GunStateController state;
     protected Brush brush = null;
     protected Transform AimTarget = null;
@@ -27,21 +28,42 @@ abstract public class GunBase : MonoBehaviour
     }
     abstract public void ShootGun();
 
-    protected void PaintingNpc(Ray muzzleRay, int paintAmmo)
-    {
-        state.targetNpc = state.hit.transform.GetComponent<NpcBase>();
-        BoxCollider interactZone = state.targetNpc.GetComponent<BoxCollider>();
-        interactZone.enabled = false;
-        UsedAmmo(muzzleRay, paintAmmo);
-        state.targetNpc.ChangedState(npcState.glued);
-        GunStateController.AddList(state.targetNpc);
-        interactZone.enabled = true;
-    }
+    // TODO : UsedAmmo랑 구조적으로 합칠수 있는지 생각해보기
+    //protected void PaintingNpc(Ray muzzleRay, int paintAmmo)
+    //{
+    //    //state.targetNpc = state.hit.transform.GetComponent<NpcBase>();
+    //    BoxCollider interactZone = state.targetNpc.GetComponent<BoxCollider>();
+    //    interactZone.enabled = false;
+    //    UsedAmmo(muzzleRay, paintAmmo);
+    //    interactZone.enabled = true;
+    //    //state.targetNpc.ChangedState(npcState.glued);
+    //    //GunStateController.AddList(state.targetNpc);
+    //}
     
     protected void UsedAmmo(Ray _ray, int _ammo)
     {
         int id = (int)GunSoundList.FireSound;
         SoundManager.instance.PlaySound(GroupList.Gun, id);
+
+        // 여기 NPC 체크하는 구간 아예 필요 없을듯?
+        // PaintTarget에서 SpherCastAll로 NPC 체크중
+        // LEGACY
+
+        //Collider[] npcCheck = Physics.OverlapSphere(state.hit.point, 20f, 1 << LayerMask.NameToLayer("NPC"));
+        //foreach (Collider c in npcCheck)
+        //{
+        //    if (c != null)
+        //    {
+        //        Debug.Log("NPC 체크?");
+        //        BoxCollider interactZone = c.GetComponent<BoxCollider>();
+        //        interactZone.enabled = false;
+        //        StopLerpGaguge();
+        //        shootCoroutine = StartCoroutine(LerpGauge(_ammo));
+        //        PaintTarget.PaintRay(_ray, brush, myLayer, state.range);
+        //        interactZone.enabled = true;
+        //        return;
+        //    }
+        //}
 
         // 코루틴 돌고있는지 체크
         StopLerpGaguge();
@@ -65,7 +87,6 @@ abstract public class GunBase : MonoBehaviour
         {
             return false;
         }
-
 
         return true;
     }
@@ -116,7 +137,5 @@ abstract public class GunBase : MonoBehaviour
                 yield return Time.deltaTime;
             }
         }
-
-
     }
 }
