@@ -16,6 +16,7 @@ public class GrabGun : GunBase
         rangeLimit = state.GrabRange;
         //myLayer = 1 << LayerMask.NameToLayer("MovedObject");
     }
+    public int GrabShot { get { return -ammo; } set { ammo = -value; } }
 
     GameObject targetObj = null;
     Rigidbody targetRigid = null;           
@@ -83,6 +84,11 @@ public class GrabGun : GunBase
     {
         if (targetRigid)
         {
+            Debug.Log(targetRigid.name);
+            Ray checkRAy = new Ray(state.checkPos.position, -(state.checkPos.up * 10f));
+            RaycastHit hit;
+
+
             float wheel = Input.GetAxis("Mouse ScrollWheel");
 
             float distanceCheck = Vector3.Distance(state.checkPos.position, targetObj.transform.position);
@@ -107,6 +113,11 @@ public class GrabGun : GunBase
 
             targetRigid.velocity = dir * mag;
 
+            if (Physics.Raycast(checkRAy, out hit, 20f, myLayer))
+            {
+                CancelObj();
+            }
+
             //Debug.Log("픽업 포인트 위치는?" + state.pickupPoint.position);
 
             //if(distanceCheck2 < rangeLimit + 2f)
@@ -115,6 +126,13 @@ public class GrabGun : GunBase
             //    //Vector3 targetDir = state.pickupPoint.localPosition - state.checkPos.localPosition;
             //    //state.pickupPoint.localPosition += targetDir.normalized;
             //    //targetObj.transform.position += targetDir.normalized;
+            //}
+
+            //if (false
+            //    //||distanceCheck <= rangeLimit
+            //    || distanceCheck2 <= rangeLimit)
+            //{
+            //    CancelObj();
             //}
 
             if (false

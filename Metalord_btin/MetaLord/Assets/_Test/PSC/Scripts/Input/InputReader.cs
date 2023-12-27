@@ -15,7 +15,7 @@ public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions
     public event UnityAction<float> ModeChange = delegate { };
 
     public event UnityAction<float> Jump = delegate { };
-    public event UnityAction<float> Run = delegate { };
+    public event UnityAction Run = delegate { };
     public event UnityAction<float> Fire = delegate { };
 
     public event UnityAction<float> Store = delegate { }; // 231219 배경택
@@ -27,8 +27,11 @@ public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions
     public Vector3 mouseMovement => inputActions.Player.Look.ReadValue<Vector2>();
     public Vector3 Direction => inputActions.Player.Move.ReadValue<Vector2>();
     public bool JumpKey => inputActions.Player.Jump.ReadValue<float>()==1f;
-    public bool RunKey => inputActions.Player.Run.ReadValue<float>() == 1f;
-    public bool ShootKey => inputActions.Player.Fire.ReadValue<float>() == 1f;
+    public bool ShootKey => inputActions.Player.Fire.ReadValue<float>() == 1f 
+        //&& inputActions.Player.MouseControlCamera.phase!=InputActionPhase.Started
+        //&& inputActions.Player.MouseControlCamera.phase!=InputActionPhase.Canceled
+        //&& inputActions.Player.MouseControlCamera.phase!=InputActionPhase.Performed;
+        && inputActions.Player.MouseControlCamera.phase==InputActionPhase.Waiting;
     public bool ReloadKey => inputActions.Player.Reload.ReadValue<float>() == 1f;
     public bool InteractKey => inputActions.Player.Interact.ReadValue<float>() == 1f;
     public bool StoreKey => inputActions.Player.Store.ReadValue<float>() == 1f; // 231219 배경택
@@ -98,7 +101,12 @@ public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions
 
     public void OnRun(InputAction.CallbackContext context)
     {
-        Run.Invoke(context.ReadValue<float>());
+        switch (context.phase)
+        {
+            case InputActionPhase.Started:
+                Run.Invoke();
+                break;
+        }
     }
 
     public void OnPull(InputAction.CallbackContext context)
