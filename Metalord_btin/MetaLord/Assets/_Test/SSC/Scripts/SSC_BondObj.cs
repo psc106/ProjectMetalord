@@ -26,7 +26,7 @@ public class SSC_BondObj : MonoBehaviour
 
             Ray ray = new Ray(collision.contacts[i].point + dir, -dir);
 
-            if (PaintTarget.RayChannel(ray, 1.5f, layerMask) == 0)
+            if (PaintTarget.RayChannel(ray, 1.5f, layerMask) == 0 && collision.gameObject.GetComponent<Controller_Physics>() == null)
             {
                 if(collision.transform.GetComponent<NpcBase>() != null)
                 {
