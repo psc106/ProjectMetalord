@@ -189,6 +189,7 @@ GameObject:
   - component: {fileID: 2476125703160027377}
   - component: {fileID: 1483213677826224115}
   - component: {fileID: 356153650817801429}
+  - component: {fileID: 354074557412096579}
   m_Layer: 8
   m_Name: BearNpc
   m_TagString: Untagged
@@ -338,6 +339,25 @@ MonoBehaviour:
   PaintAllSplats: 0
   debugTexture: 0
   splatTexPick: {fileID: 0}
+  originTex: {fileID: 0}
+--- !u!114 &354074557412096579
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5636759491513940572}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89ec82d64fb76cf4fa84e6655089dc98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fadeImage: {fileID: 5556813922514977579}
+  isCanInteractUI: 0
+  interactCollider: {fileID: 280274412592375223}
+  waterLayer:
+    serializedVersion: 2
+    m_Bits: 16
 --- !u!1 &5800815337804273892
 GameObject:
   m_ObjectHideFlags: 0

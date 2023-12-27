@@ -107,7 +107,7 @@ public class DialogueTypingEffect : MonoBehaviour
         SoundManager.instance.PlaySound(GroupList.Npc, randomNumber);
     }
 
-    
+
     //TODO 삭제예정
     //private void Test()
     //{
@@ -145,29 +145,41 @@ public class DialogueTypingEffect : MonoBehaviour
 
         float duration = Time.deltaTime;
         int charIndex = 0;
-
-        //string[] nanugi;
-        //nanugi = textToType.Split();
-
-        //textToType
-
+        string chechLineC = "/";
+        string[] nanugi = textToType.Split(new char[] {' '});
+        for (int i = 0; i < nanugi.Length ; i++)
+        {
+            //Debug.Log(nanugi[i]);
+            if (nanugi[i] == chechLineC)
+            {
+                Debug.Log("같으면 들어오는건데");
+            }
+            //nanugi[i] = 
+        }
         //StartCoroutine(TextSoundEffect(textToType,myAduio,textSound));
+
         while (charIndex < textToType.Length)
         {
             duration += Time.deltaTime * textSpeed;
             charIndex = Mathf.FloorToInt(duration);
             charIndex = Mathf.Clamp(charIndex, 0, textToType.Length);
+
+            
+            //textToType.Substring(0, charIndex);
+
+
+
             textLabel.text = textToType.Substring(0, charIndex);
+
             //Debug.Log(textLabel.text);
             yield return null;
             //Debug.LogFormat("{0} <== This is chaiIndex ", charIndex);
         }
         isTypingRunning = false;
-        Debug.Log("지금 writeEffect 언제 되는거지?");
+        //Debug.Log("지금 writeEffect 언제 되는거지?");
         fadeImgae.SetActive(true);
         //textLabel.text = textToType;
     }
-
 
 
 }
