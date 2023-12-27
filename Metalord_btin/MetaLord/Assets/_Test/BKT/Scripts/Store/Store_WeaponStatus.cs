@@ -53,6 +53,18 @@ public class Store_WeaponStatus : StoreObject
         price = stepCost[stepIndex];
     }
 
+    protected override void SaveData()
+    {
+        base.SaveData();
+        //TODO 데이터 저장
+    }
+
+    protected override void LoadData()
+    {
+        base.LoadData();
+        //TODO 데이터 불러오기
+    }
+
     // 웨폰 업그레이드 구매시
     protected override void BuyStoreObject()
     {

@@ -31,6 +31,28 @@ public class CoinManager : MonoBehaviour
         storeUI.SetActive(false);
     }
 
+    private void OnEnable()
+    {
+        GameEventsManager.instance.dataEvents.onSaveData += SaveCoin;
+        GameEventsManager.instance.dataEvents.onLoadData += LoadCoin;
+    }
+
+    private void OnDisable()
+    {
+        GameEventsManager.instance.dataEvents.onSaveData -= SaveCoin;
+        GameEventsManager.instance.dataEvents.onLoadData -= LoadCoin;
+    }
+
+    private void SaveCoin()
+    {
+        //TODO 돈 저장
+    }
+
+    private void LoadCoin()
+    {
+        //TODO 돈 적용
+    }
+
     private void Start()
     {
         GameEventsManager.instance.coinEvents.ChangeCoin(currentCoin); // 시작시 코인 변경 알림

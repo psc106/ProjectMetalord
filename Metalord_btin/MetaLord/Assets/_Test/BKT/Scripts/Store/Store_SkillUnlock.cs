@@ -41,6 +41,19 @@ public class Store_SkillUnlock : StoreObject
         price = cost;
     }
 
+    protected override void SaveData()
+    {
+        base.SaveData();
+        // TODO 데이터 저장
+    }
+
+    protected override void LoadData()
+    {
+        base.LoadData();
+        // TODO 데이터 불러오기
+    }
+
+
     // 스킬 구매시 호출되는 함수
     protected override void BuyStoreObject()
     {

@@ -14,6 +14,28 @@ public class Coin : MonoBehaviour
     private const int SMALL_COIN_VALUE = 5; // 작은코인 값
     private const int BIG_COIN_VALUE = 20; // 큰 코인 값
 
+    private void OnEnable()
+    {
+        GameEventsManager.instance.dataEvents.onSaveData += SaveData;
+        GameEventsManager.instance.dataEvents.onLoadData += LoadData;
+    }
+
+    private void OnDisable()
+    {
+        GameEventsManager.instance.dataEvents.onSaveData -= SaveData;
+        GameEventsManager.instance.dataEvents.onLoadData -= LoadData;
+    }
+
+    private void SaveData()
+    {
+        // TODO 코인 활성화 여부 저장
+    }
+
+    private void LoadData()
+    {
+        // TODO 코인 비활성화 여부 저장
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if(other.tag == "Player")

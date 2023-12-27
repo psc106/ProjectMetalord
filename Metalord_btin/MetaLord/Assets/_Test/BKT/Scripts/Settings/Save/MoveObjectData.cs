@@ -14,6 +14,18 @@ public class MoveObjectData : MonoBehaviour
     public Vector3 pos;
     public Vector3 rotation;
 
+    private void OnEnable()
+    {
+        GameEventsManager.instance.dataEvents.onSaveData += SaveObject;
+        GameEventsManager.instance.dataEvents.onLoadData += LoadObject;
+    }
+
+    private void OnDisable()
+    {
+        GameEventsManager.instance.dataEvents.onSaveData -= SaveObject;
+        GameEventsManager.instance.dataEvents.onLoadData -= LoadObject;
+    }
+
     // 오브젝트 저장
     public void SaveObject()
     {
