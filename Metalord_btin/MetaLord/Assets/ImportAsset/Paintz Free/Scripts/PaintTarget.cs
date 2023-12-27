@@ -70,12 +70,15 @@ public class PaintTarget : MonoBehaviour
 
     private static GameObject splatObject;
 
+    static public Color climbColor;
+    static public Color bondColor;
 
     // 12.13 SSC
     // 페인트 초기화시 컬러값 초기화로 돌릴 origin값 저장 필드 추가
     private void Awake()
     {        
         originTex = splatTexPick;
+        bondColor = new Color(1, 0, 0, 1);
     }
 
     public static Color CursorColor()

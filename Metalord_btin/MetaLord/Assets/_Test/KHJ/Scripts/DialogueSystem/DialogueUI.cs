@@ -48,10 +48,17 @@ public class DialogueUI : MonoBehaviour
         myAduio = GetComponent<AudioSource>();
         myAduio.clip = textSound;
         myTextEffect = GetComponent<DialogueTypingEffect>();
+        
         CloseDialogueUI();
         CloseTutoQuestion();
-       // ChangeFontSize(6);
+        //ChangeFontSize(6);
+        
+        //Debug.Log("테스트 시작");
+        //string test = "<color=#ff40FF>test</color> test";
+
+        //StartCoroutine(myTextEffect.WriteTest(test, dialogueText));
     }
+  
     #region TODO 삭제예정
     //public void ShowTutoDialogue(int keyNum)
     //{
@@ -65,7 +72,7 @@ public class DialogueUI : MonoBehaviour
     //    OpenDialogueUI();
     //    StartCoroutine(StepThroughDialogue(keyNum));
     //}
-   
+
     //private IEnumerator StepThroughDialogue(int keyNum)
     //{
     //    if (keyNum == 0)
@@ -85,13 +92,13 @@ public class DialogueUI : MonoBehaviour
     //                DialogueDBManager.instance.dialogueDic[keyNum].speakerName.Trim();
     //            //yield return myTextEffect.Run(dialogue, dialogueText);
     //            yield return RunTypingEffect(dialogue);
-                
+
     //            dialogueText.text = dialogue;
 
     //            yield return null;
     //            yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.E));
     //        }
-            
+
     //        if(isResponse)
     //        {
     //            //TODO 추가적인 넣고싶은 기능 넣으면 될 듯
@@ -115,7 +122,7 @@ public class DialogueUI : MonoBehaviour
     //            }
     //            break;
     //        }
-            
+
     //        Debug.Log("이건 마지막 eKey 위에 디버그");
     //    }
     //    yield break;

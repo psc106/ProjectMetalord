@@ -12,7 +12,7 @@ public class Coin : MonoBehaviour
 
     // 코인 증가량
     private const int SMALL_COIN_VALUE = 5; // 작은코인 값
-    private const int BIG_COIN_VALUE = 100; // 큰 코인 값
+    private const int BIG_COIN_VALUE = 20; // 큰 코인 값
 
     private void OnTriggerEnter(Collider other)
     {
