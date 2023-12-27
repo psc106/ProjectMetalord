@@ -769,6 +769,7 @@ public class Controller_Physics : MonoBehaviour
             float upDot = Vector3.Dot(upAxis, normal);
 
             //색칠된 벽을 확인
+            //TODO : paintTarget 데이터들에서 1번 체크하는 함수 추가
             bool isColoredWall = CheckPaintedWall(collision.contacts[i], normal);
 
             //cos에서 y값은 1->-1로 가므로 높을수록 각도는 낮은 각도
@@ -813,8 +814,8 @@ public class Controller_Physics : MonoBehaviour
         //접촉 표면의 색을 가져와서 판단한다.
         //하나라도 색이 다를 경우 접착제 붙인 상태
         Ray ray = new Ray(point.point + normal, -normal);
-        Color color = PaintTarget.RayColor(ray, 1.5f, colorCheckLayer);
-        bool isColoredWall = color != Color.black;
+        int channel = PaintTarget.RayChannel(ray, 1.5f, colorCheckLayer);
+        bool isColoredWall = channel == 0;
         desireClimb |= isColoredWall;
         return isColoredWall;
     }
