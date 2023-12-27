@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.Android.Types;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 
@@ -128,6 +129,8 @@ public class Controller_Physics : MonoBehaviour
     float runMultiple = default;
     [SerializeField, Range(0, 1)]
     float walkMultiple = default;
+    [SerializeField, Range(0, 100f)]
+    float gravityMultiple = 1;
 
     [SerializeField, Range(0, 100)]
     float maxMoveSpeed = default;
@@ -189,6 +192,37 @@ public class Controller_Physics : MonoBehaviour
     private readonly int EquipTriggerHash = Animator.StringToHash("EquipTrigger");
     private readonly int ClimbWaitHash = Animator.StringToHash("ClimbWait");
     #endregion
+
+
+    public void SetValue(SliderType type, float value)
+    {
+        switch (type)
+        {
+            case SliderType.Move: maxMoveSpeed = value; break;
+            case SliderType.Jump: jumpHeight = value; break;
+            case SliderType.Gravity: gravityMultiple = value; break;
+            case SliderType.OneShot: (gunController.GetGunMode((int)GunMode.Paint) as PaintGun).FirstShot = (int)value; break;
+            case SliderType.repeatShot: (gunController.GetGunMode((int)GunMode.Paint) as PaintGun).AutoShot = (int)value; break;
+            case SliderType.Grab: (gunController.GetGunMode((int)GunMode.Grab) as GrabGun).GrabShot = (int)value; break;
+            case SliderType.Range: gunController.Range = value; break;
+            case SliderType.Capacity: gunController.MaxAmmo = (int)value; break;
+        }
+    }
+    public float GetValue(SliderType type)
+    {
+        switch (type)
+        {
+            case SliderType.Move: return maxMoveSpeed; 
+            case SliderType.Jump: return jumpHeight;
+            case SliderType.Gravity: return gravityMultiple; 
+            case SliderType.OneShot: return (float)(gunController.GetGunMode((int)GunMode.Paint) as PaintGun).FirstShot;
+            case SliderType.repeatShot: return (float)(gunController.GetGunMode((int)GunMode.Paint) as PaintGun).AutoShot;
+            case SliderType.Grab: return (float)(gunController.GetGunMode((int)GunMode.Grab) as GrabGun).GrabShot;
+            case SliderType.Range: return gunController.Range;
+            case SliderType.Capacity: return gunController.MaxAmmo;
+        }
+        return -1;
+    }
 
 
     //에디터에서 처리
@@ -322,7 +356,7 @@ public class Controller_Physics : MonoBehaviour
         desireJump |= reader.JumpKey && (OnClimb || OnGround);
         desireJump &= canJump;
 
-        desireRun = reader.RunKey;
+        //달리기 토글
 
         multipleState = OnGround && OnSteep && OnClimb;
 
@@ -380,6 +414,7 @@ public class Controller_Physics : MonoBehaviour
 
     }
 
+
     public static int a = 0;
 
     // 입력 대기시간 코루틴
@@ -392,10 +427,16 @@ public class Controller_Physics : MonoBehaviour
 
     private void FixedUpdate()
     {
+        //Debug.Log(connectedBody?.name);
+
         //대화나 메뉴에서 stop시킴
         if (stopState)
         {
-            rb.velocity = contactNormal * (Vector3.Dot(gravity, contactNormal) * Time.deltaTime);
+            rb.velocity += new Vector3(0, gravity.y*Time.deltaTime, 0);
+            if (rb.velocity.y > 10)
+            {
+                velocity = Vector3.zero;
+            }
             return;
         }
         //상태 업데이트
@@ -406,9 +447,9 @@ public class Controller_Physics : MonoBehaviour
         AdjustJump();
 
         //점프 상태일 경우 2배의 그래비티 적용
-        if (!isJump && !OnGround)
+        if (!isJump && !OnGround && !desireClimb)
         {
-            velocity += gravity * Time.deltaTime;
+            velocity += gravity * gravityMultiple * Time.deltaTime;
         }
 
         if (isJump || multipleState)
@@ -726,16 +767,11 @@ public class Controller_Physics : MonoBehaviour
             Vector3 normal = collision.GetContact(i).normal;
             //접촉 표면의 각도를 가져온다.(내적)
             float upDot = Vector3.Dot(upAxis, normal);
-;
 
-            //접촉 표면의 색을 가져와서 판단한다.
-            //하나라도 색이 다를 경우 접착제 붙인 상태
-            Ray ray = new Ray(collision.contacts[i].point+normal, -normal);
-            Color color = PaintTarget.RayColor(ray, 1.5f, colorCheckLayer);
-            bool isColoredWall = color != Color.black;
-            desireClimb |= isColoredWall;
+            //색칠된 벽을 확인
+            bool isColoredWall = CheckPaintedWall(collision.contacts[i], normal);
+
             //cos에서 y값은 1->-1로 가므로 높을수록 각도는 낮은 각도
-
             //만약 접촉 표면의 각도가 최소 각도를 만족할 경우
             if (upDot >= minDot)
             {
@@ -760,7 +796,7 @@ public class Controller_Physics : MonoBehaviour
                 }
 
                 //색칠된 곳이고 등산 가능한 각도+등산 가능한 레이어 일 경우
-                if(isColoredWall && upDot >= minClimbDotProduct && (climbMask & (1<<layer)) != 0 && !isJump)
+                if (isColoredWall && upDot >= minClimbDotProduct && (climbMask & (1 << layer)) != 0 && !isJump)
                 {
                     climbContactCount += 1;
                     climbNormal += normal;
@@ -770,6 +806,17 @@ public class Controller_Physics : MonoBehaviour
             }
 
         }
+    }
+
+    private bool CheckPaintedWall(ContactPoint point, Vector3 normal)
+    {
+        //접촉 표면의 색을 가져와서 판단한다.
+        //하나라도 색이 다를 경우 접착제 붙인 상태
+        Ray ray = new Ray(point.point + normal, -normal);
+        Color color = PaintTarget.RayColor(ray, 1.5f, colorCheckLayer);
+        bool isColoredWall = color != Color.black;
+        desireClimb |= isColoredWall;
+        return isColoredWall;
     }
 
     private void ClearState()
@@ -1162,6 +1209,7 @@ public class Controller_Physics : MonoBehaviour
     private void BindHandler()
     {
         reader.Fire += PressKey;
+        reader.Run += ToggleRun;
     }
 
     bool desireFire;
@@ -1177,6 +1225,10 @@ public class Controller_Physics : MonoBehaviour
             desireFire = false;
         }
 
+    }
+    void ToggleRun()
+    {
+        desireRun = !desireRun;
     }
 
 

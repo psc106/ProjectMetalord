@@ -6,9 +6,12 @@ public class PaintGun : GunBase
     float autoTime = 1f;
     float rangeLimit = 4f;
     float timeCheck = 0f;
-    float autotimeCheck = 0;    
+    float autotimeCheck = 0;
     int autoShot = -5;
     bool fireStart = false;
+
+    public int AutoShot { get { return -autoShot; } set { autoShot = -value; } }
+    public int FirstShot { get { return -ammo; }  set { ammo = -value; } }
 
     int paintAmmo
     {
