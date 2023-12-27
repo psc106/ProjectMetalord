@@ -139,6 +139,7 @@ public class RecordManager : MonoBehaviour
     private void Start()
     {
         GameEventsManager.instance.recordEvents.ReflectRecord();
+        recordCanvas.SetActive(false);
     }
 
 
