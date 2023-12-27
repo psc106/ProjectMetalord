@@ -91,15 +91,8 @@ public class PaintGun : GunBase
                 return;
             }*/
 
-            if (state.hit.transform.GetComponent<NpcBase>() != null)
-            {
-                PaintingNpc(muzzleRay, paintAmmo);
-            }
-            else
-            {
-                UsedAmmo(muzzleRay, paintAmmo);
-            }
-
+            UsedAmmo(muzzleRay, paintAmmo);
+           
             fireStart = true;
         }
     }
@@ -114,15 +107,7 @@ public class PaintGun : GunBase
             {
                 Ray muzzleRay = new Ray(state.startPoint, state.hit.point - state.startPoint);
 
-                if (state.hit.transform.GetComponent<NpcBase>() != null)
-                {
-                    PaintingNpc(muzzleRay, autoShot);                                        
-                }
-                else
-                {
-                    UsedAmmo(muzzleRay, autoShot);
-                }
-
+                UsedAmmo(muzzleRay, autoShot);                
                 timeCheck = 0f;
             }
         }

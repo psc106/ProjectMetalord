@@ -166,7 +166,9 @@ public class GrabGun : GunBase
 
     protected override bool CheckCanFire()
     {
-        Ray checkRay = new Ray(state.checkPos.position, -(state.checkPos.up));
+        Vector3 start = state.checkPos.position;
+        start.y -= 2f;
+        Ray checkRay = new Ray(start, -(state.checkPos.up));
         RaycastHit hit;
         Physics.SphereCast(checkRay, 2f, out hit, 20f, myLayer);        
 

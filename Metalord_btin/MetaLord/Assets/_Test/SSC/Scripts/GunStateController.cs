@@ -82,9 +82,9 @@ public class GunStateController : MonoBehaviour
 
     [HideInInspector] public NpcBase targetNpc = null;
     [HideInInspector] public GunState state;
-    [HideInInspector] public static List<PaintTarget> paintList = new List<PaintTarget>();
-    [HideInInspector] public static List<SSC_BondObj> bondList = new List<SSC_BondObj>();
-    [HideInInspector] public static List<NpcBase> npcList = new List<NpcBase>();
+    [HideInInspector] public static HashSet<PaintTarget> paintList = new HashSet<PaintTarget>();
+    [HideInInspector] public static HashSet<SSC_BondObj> bondList = new HashSet<SSC_BondObj>();
+    [HideInInspector] public static HashSet<NpcBase> npcList = new HashSet<NpcBase>();
 
 
     // UI 제어 추가문
@@ -404,7 +404,7 @@ public class GunStateController : MonoBehaviour
         state = GunState.RELOADING;
         ClearBondList();
         ClearNpcList();
-        PaintTarget.ClearAllPaint();
+        ClearAllPaint();
         currentMode.StopLerpGaguge();
         StartCoroutine(ReloadingAmmo());
     }
@@ -434,48 +434,24 @@ public class GunStateController : MonoBehaviour
 
     public static void AddList(SSC_BondObj obj)
     {
-        for (int i = 0; i < bondList.Count; i++)
-        {
-            if (bondList[i] == obj)
-            {
-                return;
-            }
-        }
-
         bondList.Add(obj);
     }
 
     public static void AddList(PaintTarget obj)
     {
-        for (int i = 0; i < paintList.Count; i++)
-        {
-            if (paintList[i] == obj)
-            {
-                return;
-            }
-        }
-
         paintList.Add(obj);
     }
 
     public static void AddList(NpcBase obj)
     {
-        for (int i = 0; i < npcList.Count; i++)
-        {
-            if (npcList[i] == obj)
-            {
-                return;
-            }
-        }
-
         npcList.Add(obj);
     }
 
     void ClearBondList()
     {
-        for (int i = 0; i < bondList.Count; i++)
+        foreach(var paint in bondList)
         {
-            bondList[i].CelarBond();
+            paint.CelarBond();
         }
 
         bondList.Clear();
@@ -483,9 +459,9 @@ public class GunStateController : MonoBehaviour
 
     void ClearNpcList()
     {
-        for (int i = 0; i < npcList.Count; i++)
+        foreach (var paint in npcList)
         {
-            npcList[i].ChangedState(npcState.normal);
+            paint.ChangedState(npcState.normal);
         }
 
         bondList.Clear();
@@ -572,6 +548,21 @@ public class GunStateController : MonoBehaviour
 
         ModeUI[1].GetComponent<UiFadeOut>().InitFadeOut();
         ModeUI[2].GetComponent<UiFadeOut>().InitFadeOut();              
+    }
+
+    public void ClearAllPaint()
+    {
+        foreach (PaintTarget target in paintList)
+        {
+            //if (!target.validTarget) continue;
+            target.ClearPaint();
+
+            // 12.13 SSC
+            // 페인트 초기화시 컬러값 초기화로 돌릴 origin값 저장 필드 추가
+            target.splatTexPick = target.originTex;
+        }
+
+        paintList.Clear();
     }
 
 }

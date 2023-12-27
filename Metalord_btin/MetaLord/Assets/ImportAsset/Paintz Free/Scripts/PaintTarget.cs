@@ -42,7 +42,7 @@ public class PaintTarget : MonoBehaviour
 
     // 12.13 SSC
     // 페인트 초기화시 컬러값 초기화로 돌릴 origin값 저장 필드 추가
-    Texture2D originTex;
+    public Texture2D originTex;
 
     private bool bPickDirty = true;
     private bool validTarget = false;
@@ -289,7 +289,8 @@ public class PaintTarget : MonoBehaviour
         {
             if (multi)
             {
-                RaycastHit[] hits = Physics.SphereCastAll(hit.point, brush.splatScale, ray.direction);
+                // 12.27 PSC : 최적화 위해 SphereCastAll 범위 줄였음
+                RaycastHit[] hits = Physics.SphereCastAll(hit.point, 0.1f, ray.direction, hit.distance);
                 for (int h = 0; h < hits.Length; h++)
                 {
                     PaintTarget paintTarget = hits[h].collider.gameObject.GetComponent<PaintTarget>();
@@ -315,26 +316,34 @@ public class PaintTarget : MonoBehaviour
         {
             if (multi)
             {
-                RaycastHit[] hits = Physics.SphereCastAll(hit.point, brush.splatScale, ray.direction);
-                RaycastHit[] hitsNpc = Physics.SphereCastAll(hit.point, 1f, ray.direction);
+                // LEGACY
+                //RaycastHit[] hits = Physics.SphereCastAll(hit.point, brush.splatScale, ray.direction, hit.distance);
+                //RaycastHit[] hitsNpc = Physics.SphereCastAll(hit.point, brush.splatScale, ray.direction, hit.distance);
+
+                // 12.27 PSC : 최적화 위해 SphereCastAll 범위 줄였음
+                RaycastHit[] hits = Physics.SphereCastAll(hit.point, 0.1f, ray.direction, hit.distance);
+                RaycastHit[] hitsNpc = Physics.SphereCastAll(hit.point, 0.1f, ray.direction, hit.distance);
+
                 for (int h=0; h < hits.Length; h++)
                 {
-                    PaintTarget paintTarget = hits[h].collider.gameObject.GetComponent<PaintTarget>();
+                    PaintTarget paintTarget = hits[h].collider.gameObject.GetComponent<PaintTarget>();                    
                     if (paintTarget != null)
                     {
+
+                        PaintObject(paintTarget, hit.point, hits[h].normal, brush);
+
+                         // 12.26 SSC : 페인트칠시 NPC 범위로 체크하기 위하여 조건문 추가
                         for(int i = 0; i < hitsNpc.Length; i++)
                         {
-                            // 12.26 SSC : 페인트칠시 NPC 범위로 체크하기 위하여 조건문 추가
                             if (hitsNpc[i].collider.gameObject.GetComponent<NpcBase>() != null)
                             {
                                 hitsNpc[i].collider.gameObject.GetComponent<NpcBase>().ChangedState(npcState.glued);
-                                GunStateController.AddList(hitsNpc[i].collider.gameObject.GetComponent<NpcBase>());
-                                //Debug.Log("여기서도 엔피씨 체크 가능");
+                                GunStateController.AddList(hitsNpc[i].collider.gameObject.GetComponent<NpcBase>());                                
                             }
 
                         }
-
-                        PaintObject(paintTarget, hit.point, hits[h].normal, brush);
+                        // 12.27 SSC : 페인트칠시 GunStateController에서 HashSet으로 관리하기위해 추가
+                        GunStateController.AddList(paintTarget);
                     }
                 }
             }
@@ -344,6 +353,17 @@ public class PaintTarget : MonoBehaviour
                 if (!paintTarget) return;
 
                 PaintObject(paintTarget, hit.point, hit.normal, brush);
+                
+                // 12.27 SSC : 페인트칠시 GunStateController에서 HashSet으로 관리하기위해 추가
+                GunStateController.AddList(paintTarget);
+
+                // 12.26 SSC : 페인트칠시 NPC 범위로 체크하기 위하여 조건문 추가
+                if (paintTarget.gameObject.GetComponent<NpcBase>() != null)
+                {
+                    paintTarget.gameObject.GetComponent<NpcBase>().ChangedState(npcState.glued);
+                    GunStateController.AddList(paintTarget.gameObject.GetComponent<NpcBase>());                    
+                }
+
             }
         }
     }
@@ -378,6 +398,10 @@ public class PaintTarget : MonoBehaviour
         newPaint.scaleBias = brush.getTile();
         newPaint.brush = brush;
 
+        if (!target.splatTexPick)
+        {
+            target.splatTexPick = new Texture2D((int)target.paintTextureSize, (int)target.paintTextureSize, TextureFormat.ARGB32, false);
+        }
         target.PaintSplat(newPaint);
     }
 
@@ -394,6 +418,8 @@ public class PaintTarget : MonoBehaviour
             // 페인트 초기화시 컬러값 초기화로 돌릴 origin값 저장 필드 추가
             target.splatTexPick = target.originTex;
         }
+
+
     }
 
     private static void UpdatePickColors(PaintTarget paintTarget, RenderTexture rt)
@@ -404,7 +430,7 @@ public class PaintTarget : MonoBehaviour
 
         if (!paintTarget.splatTexPick)
         {
-            paintTarget.splatTexPick = new Texture2D((int)paintTarget.paintTextureSize, (int)paintTarget.paintTextureSize, TextureFormat.ARGB32, false);
+           // paintTarget.splatTexPick = new Texture2D((int)paintTarget.paintTextureSize, (int)paintTarget.paintTextureSize, TextureFormat.ARGB32, false);
         }
 
         Rect rectReadPicture = new Rect(0, 0, rt.width, rt.height);
@@ -472,7 +498,6 @@ public class PaintTarget : MonoBehaviour
 
     private void SetupPaint()
     {
-
         CreateCamera();
         CreateMaterials();
         CreateTextures();
@@ -482,7 +507,7 @@ public class PaintTarget : MonoBehaviour
     }
 
     private void CreateMaterials()
-    {
+    {        
         paintBlitMaterial = new Material(Shader.Find("Hidden/PaintBlit"));
         worldPosMaterial = new Material(Shader.Find("Hidden/PaintPos"));
         worldTangentMaterial = new Material(Shader.Find("Hidden/PaintTangent"));
@@ -596,6 +621,10 @@ public class PaintTarget : MonoBehaviour
     public void PaintSplat(Paint paint)
     {
         m_Splats.Add(paint);
+
+        // 12.27 SSC : 최적화 관련 탐색중
+        //Debug.Log("리스트 크기 : " + m_Splats.Count);
+        //PaintSplats();
         return;
     }
 
@@ -605,6 +634,7 @@ public class PaintTarget : MonoBehaviour
 
         if (m_Splats.Count > 0)
         {
+            Debug.Log("여긴 안들오자나");
             bPickDirty = true;
 
             if (!setupComplete) SetupPaint();
@@ -677,7 +707,7 @@ public class PaintTarget : MonoBehaviour
     {
         if (PaintAllSplats)
         {
-            while(m_Splats.Count > 0)
+            while (m_Splats.Count > 0)
             {
                 PaintSplats();
             }
