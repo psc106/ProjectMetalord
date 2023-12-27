@@ -43,7 +43,7 @@ public class Controller_Physics : MonoBehaviour
 
     RaycastHit groundHit;
 
-    Rigidbody connectedBody;
+    public Rigidbody connectedBody;
     Rigidbody previousConnectedBody;
 
     Vector3 input = Vector3.zero;
