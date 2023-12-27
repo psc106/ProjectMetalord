@@ -33,7 +33,6 @@ public class SoundManager : MonoBehaviour
     }
     private void Start()
     {
-
         for (int i = 0; i < audioGroups.Length; i++)
         {
             var nodes = audioGroups[i].GetNodes();
