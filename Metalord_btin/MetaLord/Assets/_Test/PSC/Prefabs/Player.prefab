@@ -300,16 +300,18 @@ MonoBehaviour:
   handGunRender: {fileID: 378431335789592413}
   backGunRender: {fileID: 4838373344311464730}
   cameraManager: {fileID: 3171454143736129391}
+  connectedBody: {fileID: 0}
   jumpHeight: 7.5
   jumpDelayTime: 1
   fireDelayTime: 1
   probeDistance: 1
   runMultiple: 1.5
   walkMultiple: 1
+  gravityMultiple: 1
   maxMoveSpeed: 15
   maxClimbSpeed: 8
   maxAcceleration: 100
-  maxAirAcceleration: 10
+  maxAirAcceleration: 15
   maxClimbAcceleration: 100
   maxSnapSpeed: 100
   maxAirJumps: 0
@@ -326,6 +328,7 @@ MonoBehaviour:
   storeUI: {fileID: 0}
   recordUI: {fileID: 0}
   settingsUI: {fileID: 0}
+  explainUI: {fileID: 0}
   onUnequip: 0
   reader: {fileID: 11400000, guid: 75abd6246b51f9e48a0d52dae45fab3f, type: 2}
 --- !u!96 &5076636948133282176
@@ -652,8 +655,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 719308979689676731}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0.000000009837094, w: 1}
-  m_LocalPosition: {x: 0.2249987, y: 0.31010133, z: -1.2499983}
+  m_LocalRotation: {x: 4.440892e-16, y: -0, z: -0.000000009837095, w: 1}
+  m_LocalPosition: {x: 0.22500877, y: 0.31010133, z: -1.2500077}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1371,8 +1374,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2835489159986704413}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0.000000009837094, w: 1}
-  m_LocalPosition: {x: -0.0000058174132, y: 0.3126007, z: -2.5000012}
+  m_LocalRotation: {x: 4.440892e-16, y: -0, z: -0.000000009837095, w: 1}
+  m_LocalPosition: {x: -0.0000014305115, y: 0.3126007, z: -2.4999962}
   m_LocalScale: {x: 0.050000004, y: 0.049999997, z: 0.049999997}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1717,7 +1720,7 @@ MonoBehaviour:
   IgnoreTag: 
   CameraRadius: 0.1
   DampingIntoCollision: 0
-  DampingFromCollision: 0
+  DampingFromCollision: 0.2
 --- !u!1 &3491734157653045044
 GameObject:
   m_ObjectHideFlags: 0
@@ -2590,8 +2593,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5842208960856677968}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0.000000009837094, w: 1}
-  m_LocalPosition: {x: 0.2249987, y: 0.31010133, z: -1.2499983}
+  m_LocalRotation: {x: 4.440892e-16, y: -0, z: -0.000000009837095, w: 1}
+  m_LocalPosition: {x: 0.22500877, y: 0.31010133, z: -1.2500077}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3302,7 +3305,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 10308, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3397,10 +3400,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 474c911dbaf414b44922371fcf24c6df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentMode: {fileID: 0}
-  AmmoText: {fileID: 3141948962894904113}
-  AmmoGauge: {fileID: 4875576917903876993}
   player: {fileID: 3742653360604592892}
+  crossHair: {fileID: 8823238110768659009}
+  startPos: {fileID: 6677764962144662948}
+  reader: {fileID: 11400000, guid: 75abd6246b51f9e48a0d52dae45fab3f, type: 2}
+  checkPos: {fileID: 7900184379219393653}
+  pickupPoint: {fileID: 364788840478490789}
+  GunHolderHand: {fileID: 8282372781614362592}
+  grabLine: {fileID: 1637722241099862447}
+  AimTarget: {fileID: 8203518221037570998}
+  gunLayer:
+    serializedVersion: 2
+    m_Bits: 1975
+  AmmoGauge: {fileID: 4875576917903876993}
+  ModeColor:
+  - {r: 0, g: 0, b: 0, a: 0}
+  - {r: 0, g: 0, b: 0, a: 0}
+  - {r: 0, g: 0, b: 0, a: 0}
+  CloseUp_FontSize: 32
+  CloseOff_FontSize: 27
   reloadCurve:
     serializedVersion: 2
     m_Curve:
@@ -3425,26 +3443,28 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  crossHair: {fileID: 8823238110768659009}
-  crossHairRect: {fileID: 0}
-  reader: {fileID: 11400000, guid: 75abd6246b51f9e48a0d52dae45fab3f, type: 2}
-  checkPos: {fileID: 7900184379219393653}
-  pickupPoint: {fileID: 364788840478490789}
-  GunHolderHand: {fileID: 8282372781614362592}
-  grabLine: {fileID: 1637722241099862447}
-  startPos: {fileID: 6677764962144662948}
-  AimTarget: {fileID: 8203518221037570998}
+  ClimbeSize: 10
+  BondSize: 20
   range: 50
-  minRange: 4
+  cameraMinRange: 5
+  playerMinRange: 5
+  grabRange: 15
   reloadTime: 3
-  gunLayer:
-    serializedVersion: 2
-    m_Bits: 1975
+  AutoInitTime: 0.1
+  fireRate: 0.1
+  maxAmmo: 200
   startPoint: {x: 0, y: 0, z: 0}
+  lerpTime: 0.1
+  checkAmmo: 0
   checkSuccessRay: 0
+  onGrab: 0
   minDistance: 0
   targetNpc: {fileID: 0}
   state: 0
+  ModeUI:
+  - {fileID: 8398573891261884524}
+  - {fileID: 1245893460405484815}
+  - {fileID: 2963329891719524437}
 --- !u!114 &2813025332178416258
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3460,7 +3480,6 @@ MonoBehaviour:
   myLayer:
     serializedVersion: 2
     m_Bits: 1975
-  OnGrab: 0
 --- !u!114 &2985409044552464339
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3476,7 +3495,6 @@ MonoBehaviour:
   myLayer:
     serializedVersion: 2
     m_Bits: 1024
-  OnGrab: 0
 --- !u!114 &59815113745812605
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3492,7 +3510,6 @@ MonoBehaviour:
   myLayer:
     serializedVersion: 2
     m_Bits: 1975
-  OnGrab: 0
 --- !u!1 &7232609396906643999
 GameObject:
   m_ObjectHideFlags: 0
@@ -3733,7 +3750,7 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 2
+    m_Type: 0
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
@@ -3766,7 +3783,7 @@ Light:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingLayerMask: 1
-  m_Lightmapping: 4
+  m_Lightmapping: 2
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1
@@ -4200,6 +4217,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8337427875576720167}
     m_Modifications:
+    - target: {fileID: 11136382860345919, guid: 0ed45fffd3e6f3f438f0c3bcc8eca14f, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 376977193092245121, guid: 0ed45fffd3e6f3f438f0c3bcc8eca14f, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -4292,6 +4313,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4060029869386360455, guid: 0ed45fffd3e6f3f438f0c3bcc8eca14f, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4398790067660641932, guid: 0ed45fffd3e6f3f438f0c3bcc8eca14f, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: -91.1001
@@ -4310,17 +4335,16 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 376977193092245121, guid: 0ed45fffd3e6f3f438f0c3bcc8eca14f, type: 3}
   m_PrefabInstance: {fileID: 330999561075757661}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &3141948962894904113 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3390510918654421356, guid: 0ed45fffd3e6f3f438f0c3bcc8eca14f, type: 3}
+--- !u!1 &1245893460405484815 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1575626381596323666, guid: 0ed45fffd3e6f3f438f0c3bcc8eca14f, type: 3}
   m_PrefabInstance: {fileID: 330999561075757661}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+--- !u!1 &2963329891719524437 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3280923519558754824, guid: 0ed45fffd3e6f3f438f0c3bcc8eca14f, type: 3}
+  m_PrefabInstance: {fileID: 330999561075757661}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &4875576917903876993 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5133669298719044060, guid: 0ed45fffd3e6f3f438f0c3bcc8eca14f, type: 3}
@@ -4332,3 +4356,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &8398573891261884524 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8077848236434651697, guid: 0ed45fffd3e6f3f438f0c3bcc8eca14f, type: 3}
+  m_PrefabInstance: {fileID: 330999561075757661}
+  m_PrefabAsset: {fileID: 0}

@@ -324,6 +324,8 @@ public class PaintTarget : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         PaintRaycast(ray, brush);
     }
+
+    const float SPHERE_RADIUS = 0.5f;
     private static void PaintRaycast(Ray ray, Brush brush, float range = 50, bool multi = true)
     {
         RaycastHit hit;
@@ -332,7 +334,7 @@ public class PaintTarget : MonoBehaviour
             if (multi)
             {
                 // 12.27 PSC : 최적화 위해 SphereCastAll 범위 줄였음
-                RaycastHit[] hits = Physics.SphereCastAll(hit.point, 0.1f, ray.direction, hit.distance);
+                RaycastHit[] hits = Physics.SphereCastAll(hit.point, SPHERE_RADIUS, ray.direction, hit.distance- SPHERE_RADIUS*0.5f);
                 for (int h = 0; h < hits.Length; h++)
                 {
                     PaintTarget paintTarget = hits[h].collider.gameObject.GetComponent<PaintTarget>();
@@ -363,8 +365,8 @@ public class PaintTarget : MonoBehaviour
                 //RaycastHit[] hitsNpc = Physics.SphereCastAll(hit.point, brush.splatScale, ray.direction, hit.distance);
 
                 // 12.27 PSC : 최적화 위해 SphereCastAll 범위 줄였음
-                RaycastHit[] hits = Physics.SphereCastAll(hit.point, 0.1f, ray.direction, hit.distance);
-                RaycastHit[] hitsNpc = Physics.SphereCastAll(hit.point, 0.1f, ray.direction, hit.distance);
+                RaycastHit[] hits = Physics.SphereCastAll(hit.point, SPHERE_RADIUS, ray.direction, hit.distance- SPHERE_RADIUS * 0.5f);
+                RaycastHit[] hitsNpc = Physics.SphereCastAll(hit.point, SPHERE_RADIUS, ray.direction, hit.distance- SPHERE_RADIUS * 0.5f);
 
                 for (int h=0; h < hits.Length; h++)
                 {
@@ -472,6 +474,7 @@ public class PaintTarget : MonoBehaviour
 
         if (!paintTarget.splatTexPick)
         {
+            return;
            // paintTarget.splatTexPick = new Texture2D((int)paintTarget.paintTextureSize, (int)paintTarget.paintTextureSize, TextureFormat.ARGB32, false);
         }
 
@@ -646,7 +649,6 @@ public class PaintTarget : MonoBehaviour
     public void ClearPaint()
     {
         m_Splats.Clear();
-        splatTexPick = null;
         if (setupComplete)
         {
             CommandBuffer cb = new CommandBuffer();
@@ -676,7 +678,6 @@ public class PaintTarget : MonoBehaviour
 
         if (m_Splats.Count > 0)
         {
-            Debug.Log("여긴 안들오자나");
             bPickDirty = true;
 
             if (!setupComplete) SetupPaint();

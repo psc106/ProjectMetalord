@@ -91,6 +91,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
+                    ""name"": ""Grab"",
+                    ""type"": ""Value"",
+                    ""id"": ""904ad163-c672-4a7d-bc88-40ae7c1eb3cb"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
                     ""name"": ""Reload"",
                     ""type"": ""Value"",
                     ""id"": ""cca233b8-d946-44ac-abf7-77d63c806261"",
@@ -354,6 +363,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""Settings"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ca5b6371-6b51-4298-b703-5ea8ed7085c9"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Grab"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -430,6 +450,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
         m_Player_Pull = m_Player.FindAction("Pull", throwIfNotFound: true);
         m_Player_Fire = m_Player.FindAction("Fire", throwIfNotFound: true);
+        m_Player_Grab = m_Player.FindAction("Grab", throwIfNotFound: true);
         m_Player_Reload = m_Player.FindAction("Reload", throwIfNotFound: true);
         m_Player_ModeChange = m_Player.FindAction("ModeChange", throwIfNotFound: true);
         m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
@@ -504,6 +525,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Jump;
     private readonly InputAction m_Player_Pull;
     private readonly InputAction m_Player_Fire;
+    private readonly InputAction m_Player_Grab;
     private readonly InputAction m_Player_Reload;
     private readonly InputAction m_Player_ModeChange;
     private readonly InputAction m_Player_Interact;
@@ -521,6 +543,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
         public InputAction @Pull => m_Wrapper.m_Player_Pull;
         public InputAction @Fire => m_Wrapper.m_Player_Fire;
+        public InputAction @Grab => m_Wrapper.m_Player_Grab;
         public InputAction @Reload => m_Wrapper.m_Player_Reload;
         public InputAction @ModeChange => m_Wrapper.m_Player_ModeChange;
         public InputAction @Interact => m_Wrapper.m_Player_Interact;
@@ -557,6 +580,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Fire.started += instance.OnFire;
             @Fire.performed += instance.OnFire;
             @Fire.canceled += instance.OnFire;
+            @Grab.started += instance.OnGrab;
+            @Grab.performed += instance.OnGrab;
+            @Grab.canceled += instance.OnGrab;
             @Reload.started += instance.OnReload;
             @Reload.performed += instance.OnReload;
             @Reload.canceled += instance.OnReload;
@@ -600,6 +626,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Fire.started -= instance.OnFire;
             @Fire.performed -= instance.OnFire;
             @Fire.canceled -= instance.OnFire;
+            @Grab.started -= instance.OnGrab;
+            @Grab.performed -= instance.OnGrab;
+            @Grab.canceled -= instance.OnGrab;
             @Reload.started -= instance.OnReload;
             @Reload.performed -= instance.OnReload;
             @Reload.canceled -= instance.OnReload;
@@ -689,6 +718,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnJump(InputAction.CallbackContext context);
         void OnPull(InputAction.CallbackContext context);
         void OnFire(InputAction.CallbackContext context);
+        void OnGrab(InputAction.CallbackContext context);
         void OnReload(InputAction.CallbackContext context);
         void OnModeChange(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);

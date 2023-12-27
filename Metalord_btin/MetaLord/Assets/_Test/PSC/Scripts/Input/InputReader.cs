@@ -28,10 +28,10 @@ public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions
     public Vector3 Direction => inputActions.Player.Move.ReadValue<Vector2>();
     public bool JumpKey => inputActions.Player.Jump.ReadValue<float>()==1f;
     public bool ShootKey => inputActions.Player.Fire.ReadValue<float>() == 1f 
-        //&& inputActions.Player.MouseControlCamera.phase!=InputActionPhase.Started
-        //&& inputActions.Player.MouseControlCamera.phase!=InputActionPhase.Canceled
-        //&& inputActions.Player.MouseControlCamera.phase!=InputActionPhase.Performed;
         && inputActions.Player.MouseControlCamera.phase==InputActionPhase.Waiting;
+
+    public bool GrabKey => inputActions.Player.Grab.ReadValue<float>() == 1f
+        && inputActions.Player.MouseControlCamera.phase == InputActionPhase.Waiting;
     public bool ReloadKey => inputActions.Player.Reload.ReadValue<float>() == 1f;
     public bool InteractKey => inputActions.Player.Interact.ReadValue<float>() == 1f;
     public bool StoreKey => inputActions.Player.Store.ReadValue<float>() == 1f; // 231219 배경택
@@ -142,5 +142,10 @@ public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions
     public void OnSettings(InputAction.CallbackContext context) // 231219 배경택
     {
         Settings.Invoke(context.ReadValue<float>());
+    }
+
+    public void OnGrab(InputAction.CallbackContext context)
+    {
+        throw new System.NotImplementedException();
     }
 }

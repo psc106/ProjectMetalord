@@ -510,10 +510,20 @@ public class Controller_Physics : MonoBehaviour
             rotateTarget.rotation = Quaternion.LookRotation(-GetClimbNormal());
         }
 
-        aimTarget.position = cameraPoint.position + cameraPoint.forward * aimRange;
-        if (Physics.Raycast(startPoint.position, aimTarget.position - startPoint.position, out aimHit, aimRange, aimLayer))
+    }
+
+    public void SetAimPosition(Vector3 position)
+    {
+        //aimTarget.position = position;
+        aimTarget.position = Vector3.Lerp(aimTarget.position, position, Time.deltaTime * 5);
+
+        if (position == Vector3.zero)
         {
-            aimTarget.position = aimHit.point;
+            aimTarget.position = cameraPoint.position + cameraPoint.forward * aimRange;
+            if (Physics.Raycast(startPoint.position, aimTarget.position - startPoint.position, out aimHit, aimRange, aimLayer))
+            {
+                aimTarget.position = Vector3.Lerp(aimTarget.position, aimHit.point, Time.deltaTime * 5);
+            }
         }
     }
 
