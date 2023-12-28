@@ -109,10 +109,10 @@ public class PaintTarget : MonoBehaviour
         }
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        return RayChannel(ray,0, new LayerMask());
+        return RayChannel(ray);
     }
 
-    public static int RayChannel(Ray ray, float temp, LayerMask layer)
+    public static int RayChannel(Ray ray)
     {
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, 10000))
@@ -176,8 +176,8 @@ public class PaintTarget : MonoBehaviour
             int y = (int)(hit.textureCoord2.y * tc.height);
 
 
-            Color pc = GetColorByComputeShader(paintTarget, x, y);
-            //Color pc = tc.GetPixel(x, y);
+            //Color pc = GetColorByComputeShader(paintTarget, x, y);
+            Color pc = tc.GetPixel(x, y);
 
             int l = -1;
             if (pc.r > .4) l = 0;
@@ -215,7 +215,9 @@ public class PaintTarget : MonoBehaviour
 
             int x = (int)(hit.textureCoord2.x * tc.width);
             int y = (int)(hit.textureCoord2.y * tc.height);
-            Color pc = GetColorByComputeShader(paintTarget, x, y);
+
+            //Color pc = GetColorByComputeShader(paintTarget, x, y);
+            Color pc = tc.GetPixel(x, y);
             Debug.Log(paintTarget.name + " : " + x + ", " + y + "(" + pc + ")");
 
             Color c1 = r.sharedMaterial.GetColor("_SplatColor1");
@@ -589,6 +591,7 @@ public class PaintTarget : MonoBehaviour
 
     private void CreateComputeShader()
     {
+        return;
         Debug.Log(ReadPixel);
 
         ReadPixel = Instantiate((ComputeShader)Resources.Load("Shader/ReadPixel"));
@@ -710,13 +713,17 @@ public class PaintTarget : MonoBehaviour
             renderCamera.AddCommandBuffer(CameraEvent.AfterEverything, cb);
             renderCamera.Render();
             renderCamera.RemoveAllCommandBuffers();
+            RemoveComputeShader();
+        }
+    }
 
-            if (ReadPixel)
-            {
-                outputBuffer?.Release();
-                Destroy(ReadPixel);
-                ReadPixel = null;
-            }
+    private void RemoveComputeShader()
+    {
+        if (ReadPixel)
+        {
+            outputBuffer?.Release();
+            Destroy(ReadPixel);
+            ReadPixel = null;
         }
     }
 
