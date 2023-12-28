@@ -8,7 +8,6 @@ public class RecordEvents
 {
     public RecordEvents()
     {
-        Debug.Log("RecordEvents 생성");
     }
 
     /// <summary>

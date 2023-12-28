@@ -18,7 +18,6 @@ public class Coin : MonoBehaviour
     {
         if(other.tag == "Player")
         {
-            Debug.Log("코인 먹었습니다"); 
             if (mytype == CoinType.SMALL_COIN) // 작은 코인일 경우
             {
                 CoinManager.instance.GetCoin(SMALL_COIN_VALUE);

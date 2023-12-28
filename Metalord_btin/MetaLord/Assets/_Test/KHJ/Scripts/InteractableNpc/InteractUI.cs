@@ -30,7 +30,6 @@ public class InteractUI : MonoBehaviour
         {
             StartCoroutine(FadeOutImage());
         }
-        Debug.Log("나갔는데 실행됨?");
     }
 
    
