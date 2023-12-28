@@ -206,7 +206,7 @@ public class Controller_Physics : MonoBehaviour
 
     private void Awake()
     {
-        Application.targetFrameRate = 60;
+        //Application.targetFrameRate = 60;
 
         cameraPoint = Camera.main.transform;
         gravity = CustomGravity.GetGravity(rb.position, out upAxis); 
