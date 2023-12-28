@@ -55,14 +55,28 @@ public class Store_WeaponStatus : StoreObject
 
     protected override void SaveData()
     {
-        base.SaveData();
-        //TODO 데이터 저장
+        base.SaveData();        
+        DataManager.instance.savedGamePlayData.upgrade[(int)upgradeCategory] = stepIndex;
     }
 
     protected override void LoadData()
     {
-        base.LoadData();
-        //TODO 데이터 불러오기
+        base.LoadData();        
+        stepIndex = DataManager.instance.savedGamePlayData.upgrade[(int)upgradeCategory];
+        ReflectLoadUpgradeInfo();
+    }
+
+    // 불러온 업그레이드 정보 적용
+    private void ReflectLoadUpgradeInfo()
+    {
+        for(int i = 0; i < stepIndex; i++) // 스텝 인덱스까지 이미지 적용
+        {
+            ReflectStepImage(i);
+        }
+        ReflectCostText(stepIndex); // 금액 적용
+        ReflectCost(stepIndex); // 금액 적용
+        if (stepIndex == MAX_STEP) isCanBuy = false; // 만약 최고 스텝이라면 구매 불가
+        ChangeButtonUI(0); // UI 적용
     }
 
     // 웨폰 업그레이드 구매시
@@ -79,7 +93,7 @@ public class Store_WeaponStatus : StoreObject
         // 최대 스텝까지만 실행
         if (stepIndex >= MAX_STEP)
         {
-            isCanBuy = true;
+            isCanBuy = false;
         }
             base.BuyStoreObject();
             ReflectStepImage(stepIndex);
@@ -89,7 +103,6 @@ public class Store_WeaponStatus : StoreObject
 
             GameEventsManager.instance.coinEvents.UpgradeGun(upgradeCategory,stepIncreaseAmount[stepIndex]); // 건 업그레이드에 전달
             stepIndex += 1;
-
     }
 
     // 업그레이드 이미지 채워지는거 반영
