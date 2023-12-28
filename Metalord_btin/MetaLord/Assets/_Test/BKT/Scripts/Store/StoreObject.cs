@@ -19,14 +19,36 @@ public class StoreObject : MonoBehaviour
         GameEventsManager.instance.coinEvents.onChangeCoin += ChangeButtonUI;       
     }
 
+    private void Start()
+    {
+        GameEventsManager.instance.dataEvents.onSaveData += SaveData;
+        GameEventsManager.instance.dataEvents.onLoadData += LoadData;
+        
+    }
+
     private void OnEnable()
     {
         ChangeButtonUI(0);
+
+    }
+
+    protected virtual void SaveData()
+    {
+        // TODO 공통 저장 부분이 있다면 적용
+    }
+
+    protected virtual void LoadData()
+    {
+        // TODO 공통 불러오기 부분이 있다면 적용
     }
 
     private void OnDestroy()
     {
         GameEventsManager.instance.coinEvents.onChangeCoin -= ChangeButtonUI;
+
+        GameEventsManager.instance.dataEvents.onSaveData -= SaveData;
+        GameEventsManager.instance.dataEvents.onLoadData -= LoadData;
+
     }
 
     // 상점 UI버튼 누르면 실행되는 함수

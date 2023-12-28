@@ -130,6 +130,6 @@ public enum GunMode
 
 public enum UpgradeCategory
 {
-    Range,
-    Amount
+    Range = 0,
+    Amount = 1
 }
