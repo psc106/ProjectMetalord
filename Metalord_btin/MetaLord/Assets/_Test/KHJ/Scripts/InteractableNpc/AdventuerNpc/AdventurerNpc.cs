@@ -6,7 +6,7 @@ public class AdventurerNpc : NpcBase, IInteractNpc
 {
     public void InteractNpc()
     {
-        // ¸ðÇè°¡ 34 
-        myDialogue.CheckStateDialogue(34, state);
+        // ëª¨í—˜ê°€ 30
+        myDialogue.CheckStateDialogue(30, state);
     }
 }
