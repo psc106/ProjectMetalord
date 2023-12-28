@@ -1,5 +1,4 @@
 using System.Collections;
-using Unity.Android.Types;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 
@@ -371,6 +370,14 @@ public class Controller_Physics : MonoBehaviour
 
         GetComponent<Renderer>().material.color = trailColor;
 
+
+        // 레이지점 컬러 체크 테스트용
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            Debug.Log(PaintTarget.CursorColor()!=Color.black);
+        }
+
+
         if (gunController.CurrentMode.mode == GunMode.Paint)
         {
             gunController.CurrentMode.ShootGun();
@@ -510,10 +517,20 @@ public class Controller_Physics : MonoBehaviour
             rotateTarget.rotation = Quaternion.LookRotation(-GetClimbNormal());
         }
 
-        aimTarget.position = cameraPoint.position + cameraPoint.forward * aimRange;
-        if (Physics.Raycast(startPoint.position, aimTarget.position - startPoint.position, out aimHit, aimRange, aimLayer))
+    }
+
+    public void SetAimPosition(Vector3 position)
+    {
+        //aimTarget.position = position;
+        aimTarget.position = Vector3.Lerp(aimTarget.position, position, Time.deltaTime * 5);
+
+        if (position == Vector3.zero)
         {
-            aimTarget.position = aimHit.point;
+            aimTarget.position = cameraPoint.position + cameraPoint.forward * aimRange;
+            if (Physics.Raycast(startPoint.position, aimTarget.position - startPoint.position, out aimHit, aimRange, aimLayer))
+            {
+                aimTarget.position = Vector3.Lerp(aimTarget.position, aimHit.point, Time.deltaTime * 5);
+            }
         }
     }
 

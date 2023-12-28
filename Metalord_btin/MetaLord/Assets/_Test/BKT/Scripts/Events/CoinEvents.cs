@@ -9,7 +9,6 @@ public class CoinEvents
 {
     public CoinEvents()
     {
-        Debug.Log("CoinEvents 생성");
     }
 
     // 코인 얻었을때 호출되는 이벤트

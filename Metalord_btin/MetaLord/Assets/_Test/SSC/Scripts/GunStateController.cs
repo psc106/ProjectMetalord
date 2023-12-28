@@ -261,13 +261,17 @@ public class GunStateController : MonoBehaviour
             //카메라->끝점 range 이하 경우
             if (hit.distance <= distance)
             {
-
+                checkSuccessRay = false;
+                crossHair.color = Color.red;
+                player.SetAimPosition(player.transform.position+Vector3.up*100);
+                return;
             }
+
             else if (distanceCameraToHit <= cameraMinRange)
             {
                 if (Physics.Raycast(defaultRay, out hit, distancePlayerToHit, gunLayer))
                 {
-
+                    player.SetAimPosition(hit.point+defaultRay.direction*10);
                     // Debug.Log("4");
                     // Debug.Log("플레이어->디폴트히트포인트");
                     startPoint = startPlayerPos;
@@ -286,6 +290,7 @@ public class GunStateController : MonoBehaviour
                     {
                         //crossHair.rectTransform.anchoredPosition = localPoint;
                     }
+
                     return;
                 }
             }
@@ -294,10 +299,12 @@ public class GunStateController : MonoBehaviour
             //카메라->끝점 range 이상 경우
             else
             {
+                player.SetAimPosition(hit.point + defaultRay.direction * 10);
                 startPoint = startCameraPos;
                 checkSuccessRay = true;
                 minDistance = false;
                 crossHair.color = CanFire && currentMode.CanFireAmmoCount() ? Color.green : Color.red;
+
 
                 //if (CanFire && textFadeOut == null)
                 //{                    
@@ -316,14 +323,12 @@ public class GunStateController : MonoBehaviour
                 {
                    // crossHair.rectTransform.anchoredPosition = Vector2.zero;
                 }
+
                 return;
             }
         }
 
-        //if (crossHair.rectTransform.anchoredPosition != Vector2.zero)
-        {
-            //crossHair.rectTransform.anchoredPosition = Vector2.zero;
-        }
+        player.SetAimPosition(Vector3.zero);
         checkSuccessRay = false;
 
         if (!currentMode.CanFireAmmoCount() && !onGrab)
@@ -345,7 +350,6 @@ public class GunStateController : MonoBehaviour
         //{
         //    StartCoroutine(textFadeOut);
         //}
-
 
     }
 

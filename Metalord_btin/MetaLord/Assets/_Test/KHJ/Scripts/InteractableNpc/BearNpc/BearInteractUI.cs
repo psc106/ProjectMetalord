@@ -25,7 +25,6 @@ public class BearInteractUI : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            Debug.Log("플레이어 bear 앞에 들어옴");
             isPlayerIn = true;
             isCanInteractUI = true;
         }

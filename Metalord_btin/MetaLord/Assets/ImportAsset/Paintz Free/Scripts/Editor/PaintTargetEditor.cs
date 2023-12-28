@@ -1,4 +1,4 @@
-﻿using UnityEditor;
+using UnityEditor;
 using UnityEngine;
 
 [CustomEditor(typeof(PaintTarget))]
@@ -40,7 +40,7 @@ public class PaintTargetEditor : Editor
             script.renderTextureSize = (TextureSize)EditorGUILayout.EnumPopup("Render Texture", script.renderTextureSize);
             script.SetupOnStart = GUILayout.Toggle(script.SetupOnStart, "Setup On Start");
             script.PaintAllSplats = GUILayout.Toggle(script.PaintAllSplats, "Paint All Splats");
-
+            
             GUILayout.EndVertical();
 
             if (render == null)

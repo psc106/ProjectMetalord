@@ -82,6 +82,7 @@ public class PaintGun : GunBase
             }
 
             Ray muzzleRay = new Ray(state.startPoint, state.hit.point - state.startPoint);
+
             UsedAmmo(muzzleRay, paintAmmo);
            
             fireStart = true;

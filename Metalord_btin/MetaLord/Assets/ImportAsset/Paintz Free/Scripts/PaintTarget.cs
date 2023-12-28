@@ -40,6 +40,10 @@ public class PaintTarget : MonoBehaviour
     private RenderTexture splatTexAlt;
     public Texture2D splatTexPick;
 
+    public static ComputeShader ReadPixel;
+    private static ComputeBuffer outputBuffer;
+    private static int kernelID = -1;
+
     // 12.13 SSC
     // 페인트 초기화시 컬러값 초기화로 돌릴 origin값 저장 필드 추가
     public Texture2D originTex;
@@ -76,10 +80,14 @@ public class PaintTarget : MonoBehaviour
     // 12.13 SSC
     // 페인트 초기화시 컬러값 초기화로 돌릴 origin값 저장 필드 추가
     private void Awake()
-    {        
+    {
+        ReadPixel = (ComputeShader)Resources.Load("Shader/ReadPixel");
+
+
         originTex = splatTexPick;
         bondColor = new Color(1, 0, 0, 1);
     }
+
 
     public static Color CursorColor()
     {
@@ -102,10 +110,10 @@ public class PaintTarget : MonoBehaviour
         }
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        return RayChannel(ray);
+        return RayChannel(ray,0, new LayerMask());
     }
 
-    public static int RayChannel(Ray ray)
+    public static int RayChannel(Ray ray, float temp, LayerMask layer)
     {
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, 10000))
@@ -133,7 +141,7 @@ public class PaintTarget : MonoBehaviour
             Color pc = tc.GetPixel(x, y);
 
             int l = -1;
-            if (pc.r > .5) l = 0;
+            if (pc.r > .4) l = 0;
             if (pc.g > .5) l = 1;
             if (pc.b > .5) l = 2;
             if (pc.a > .5) l = 3;
@@ -165,14 +173,15 @@ public class PaintTarget : MonoBehaviour
             Texture2D tc = paintTarget.splatTexPick;
             if (!tc) return -1;
 
-
             int x = (int)(hit.textureCoord2.x * tc.width);
             int y = (int)(hit.textureCoord2.y * tc.height);
 
-            Color pc = tc.GetPixel(x, y);
+
+            Color pc = GetColorByComputeShader(paintTarget, x, y);
+            //Color pc = tc.GetPixel(x, y);
 
             int l = -1;
-            if (pc.r > .5) l = 0;
+            if (pc.r > .4) l = 0;
             if (pc.g > .5) l = 1;
             if (pc.b > .5) l = 2;
             if (pc.a > .5) l = 3;
@@ -199,7 +208,7 @@ public class PaintTarget : MonoBehaviour
             RenderTexture rt = (RenderTexture)r.sharedMaterial.GetTexture("_SplatTex");
             if (!rt) return Color.black;
 
-            UpdatePickColors(paintTarget,rt);
+            UpdatePickColors(paintTarget, rt);
 
             Texture2D tc = paintTarget.splatTexPick;
             if (!tc) return Color.black;
@@ -207,20 +216,43 @@ public class PaintTarget : MonoBehaviour
 
             int x = (int)(hit.textureCoord2.x * tc.width);
             int y = (int)(hit.textureCoord2.y * tc.height);
-
-            Color pc = tc.GetPixel(x,y);
+            Color pc = GetColorByComputeShader(paintTarget, x, y);
+            Debug.Log(paintTarget.name + " : " + x + ", " + y + "(" + pc + ")");
 
             Color c1 = r.sharedMaterial.GetColor("_SplatColor1");
             Color c2 = r.sharedMaterial.GetColor("_SplatColor2");
 
             Color cc = Color.black;
-            if (pc.r > .5) cc = c1;
+            if (pc.r > .4) cc = c1;
             if (pc.g > .5) cc = c2;
 
             return cc;
         }
 
         return Color.black;
+    }
+
+    private static Color GetColorByComputeShader(PaintTarget paintTarget, int x, int y)
+    {
+        // Set the input texture and output buffer to the shader
+        ReadPixel.SetTexture(kernelID, "inputTextureEven", paintTarget.splatTex);
+        ReadPixel.SetTexture(kernelID, "inputTextureOdd", paintTarget.splatTexAlt);
+
+        ReadPixel.SetInt("frame", paintTarget.evenFrame ? 1 : 0);
+        ReadPixel.SetInt("coord_x", x);
+        ReadPixel.SetInt("coord_y", y);
+
+        // Dispatch the compute shader
+        ReadPixel.Dispatch(kernelID, 1, 1, 1);
+
+        // Read the result from the output buffer
+        float[] outputArray = new float[4];
+        outputBuffer.GetData(outputArray);
+
+
+        // Extract the color components from the output array
+        Color pc = new Color(outputArray[0], outputArray[1], outputArray[2], outputArray[3]);
+        return pc;
     }
 
     public static Color RayColor(RaycastHit hit)
@@ -251,7 +283,7 @@ public class PaintTarget : MonoBehaviour
         Color c2 = r.sharedMaterial.GetColor("_SplatColor2");
 
         Color cc = Color.black;
-        if (pc.r > .5) cc = c1;
+        if (pc.r > .4) cc = c1;
         if (pc.g > .5) cc = c2;
 
         if(cc==null) return Color.black;
@@ -289,7 +321,7 @@ public class PaintTarget : MonoBehaviour
             Color c2 = r.sharedMaterial.GetColor("_SplatColor2");
 
             Color cc = Color.black;
-            if (pc.r > .5) cc = c1;
+            if (pc.r > .4) cc = c1;
             if (pc.g > .5) cc = c2;
 
             return cc;
@@ -324,6 +356,8 @@ public class PaintTarget : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         PaintRaycast(ray, brush);
     }
+
+    const float SPHERE_RADIUS = 0.5f;
     private static void PaintRaycast(Ray ray, Brush brush, float range = 50, bool multi = true)
     {
         RaycastHit hit;
@@ -332,7 +366,7 @@ public class PaintTarget : MonoBehaviour
             if (multi)
             {
                 // 12.27 PSC : 최적화 위해 SphereCastAll 범위 줄였음
-                RaycastHit[] hits = Physics.SphereCastAll(hit.point, 0.1f, ray.direction, hit.distance);
+                RaycastHit[] hits = Physics.SphereCastAll(hit.point, SPHERE_RADIUS, ray.direction, hit.distance- SPHERE_RADIUS*0.5f);
                 for (int h = 0; h < hits.Length; h++)
                 {
                     PaintTarget paintTarget = hits[h].collider.gameObject.GetComponent<PaintTarget>();
@@ -363,8 +397,8 @@ public class PaintTarget : MonoBehaviour
                 //RaycastHit[] hitsNpc = Physics.SphereCastAll(hit.point, brush.splatScale, ray.direction, hit.distance);
 
                 // 12.27 PSC : 최적화 위해 SphereCastAll 범위 줄였음
-                RaycastHit[] hits = Physics.SphereCastAll(hit.point, 0.1f, ray.direction, hit.distance);
-                RaycastHit[] hitsNpc = Physics.SphereCastAll(hit.point, 0.1f, ray.direction, hit.distance);
+                RaycastHit[] hits = Physics.SphereCastAll(hit.point, SPHERE_RADIUS, ray.direction, hit.distance- SPHERE_RADIUS * 0.5f);
+                RaycastHit[] hitsNpc = Physics.SphereCastAll(hit.point, SPHERE_RADIUS, ray.direction, hit.distance- SPHERE_RADIUS * 0.5f);
 
                 for (int h=0; h < hits.Length; h++)
                 {
@@ -444,6 +478,8 @@ public class PaintTarget : MonoBehaviour
         {
             target.splatTexPick = new Texture2D((int)target.paintTextureSize, (int)target.paintTextureSize, TextureFormat.ARGB32, false);
         }
+
+
         target.PaintSplat(newPaint);
     }
 
@@ -472,6 +508,7 @@ public class PaintTarget : MonoBehaviour
 
         if (!paintTarget.splatTexPick)
         {
+            return;
            // paintTarget.splatTexPick = new Texture2D((int)paintTarget.paintTextureSize, (int)paintTarget.paintTextureSize, TextureFormat.ARGB32, false);
         }
 
@@ -535,6 +572,13 @@ public class PaintTarget : MonoBehaviour
     private void Start()
     {
         CheckValid();
+        if (kernelID == -1 && ReadPixel != null)
+        {
+            kernelID = ReadPixel.FindKernel("ReadPixelAtCoordinates");
+            outputBuffer = new ComputeBuffer(1, sizeof(float) * 4);
+            ReadPixel.SetBuffer(kernelID, "outputBuffer", outputBuffer);
+            Debug.Log("ㅑㅜ");
+        }
         if (SetupOnStart) SetupPaint();
     }
 
@@ -545,6 +589,7 @@ public class PaintTarget : MonoBehaviour
         CreateTextures();
 
         RenderTextures();
+
         setupComplete = true;
     }
 
@@ -646,7 +691,6 @@ public class PaintTarget : MonoBehaviour
     public void ClearPaint()
     {
         m_Splats.Clear();
-        splatTexPick = null;
         if (setupComplete)
         {
             CommandBuffer cb = new CommandBuffer();
@@ -654,6 +698,7 @@ public class PaintTarget : MonoBehaviour
             cb.ClearRenderTarget(true, true, new Color(0, 0, 0, 0));
             cb.SetRenderTarget(splatTexAlt);
             cb.ClearRenderTarget(true, true, new Color(0, 0, 0, 0));
+
             renderCamera.AddCommandBuffer(CameraEvent.AfterEverything, cb);
             renderCamera.Render();
             renderCamera.RemoveAllCommandBuffers();
@@ -675,7 +720,7 @@ public class PaintTarget : MonoBehaviour
         if (!validTarget) return;
 
         if (m_Splats.Count > 0)
-        {            
+        {
             bPickDirty = true;
 
             if (!setupComplete) SetupPaint();
@@ -755,5 +800,11 @@ public class PaintTarget : MonoBehaviour
         }
         else
             PaintSplats();
+    }
+
+    void OnDestroy()
+    {
+        // Release the output buffer
+        outputBuffer?.Release();
     }
 }
