@@ -10,6 +10,14 @@ public class Coin : MonoBehaviour
 {
     [SerializeField] private CoinType mytype; // 인스펙터창에서 코인 타입 선택
 
+    const int FALSE = 0;
+    const int TRUE = 1;
+
+    [Header("코인별로 id값 설정")]
+    [SerializeField] private int id; // 겹치지 않도록 에디터에서 id 입력
+    private int isExist = TRUE; // 존재하는가
+
+
     // 코인 증가량
     private const int SMALL_COIN_VALUE = 5; // 작은코인 값
     private const int BIG_COIN_VALUE = 20; // 큰 코인 값
@@ -29,11 +37,14 @@ public class Coin : MonoBehaviour
     private void SaveData()
     {
         // TODO 코인 활성화 여부 저장
+        DataManager.instance.savedGamePlayData.coinAndRecordItem[id] = isExist;
     }
 
     private void LoadData()
     {
-        // TODO 코인 비활성화 여부 저장
+        // TODO 코인 활성화 여부 불러오기
+        isExist = DataManager.instance.savedGamePlayData.coinAndRecordItem[id];
+        CheckExistCoin();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -52,8 +63,18 @@ public class Coin : MonoBehaviour
 
             // 사운드 추가            
             SoundManager.instance.PlaySound(GroupList.Item, (int)ItemSoundList.GetCoinSound);
+            isExist = FALSE;
+            gameObject.SetActive(false); //비활성화로 변경
+        }
+    }
 
-            Destroy(this.gameObject);
+    // 코인이 존재하는지 체크
+    private void CheckExistCoin()
+    {
+        if(isExist == FALSE)
+        {
+            isExist = FALSE;
+            gameObject.SetActive(false); //비활성화로 변경
         }
     }
 }
