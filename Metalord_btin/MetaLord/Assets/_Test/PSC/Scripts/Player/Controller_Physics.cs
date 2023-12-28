@@ -371,6 +371,14 @@ public class Controller_Physics : MonoBehaviour
 
         GetComponent<Renderer>().material.color = trailColor;
 
+
+        // 레이지점 컬러 체크 테스트용
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            Debug.Log(PaintTarget.CursorColor()!=Color.black);
+        }
+
+
         if (gunController.CurrentMode.mode == GunMode.Paint)
         {
             gunController.CurrentMode.ShootGun();

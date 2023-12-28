@@ -43,11 +43,6 @@ public class SSC_PaintGun : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // 레이지점 컬러 체크 테스트용
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            Debug.Log(PaintTarget.CursorColor());
-        }
 
         Shoot();
 
