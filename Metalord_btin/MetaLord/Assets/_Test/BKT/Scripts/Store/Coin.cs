@@ -45,7 +45,7 @@ public class Coin : MonoBehaviour
         isExist = DataManager.instance.savedGamePlayData.coinAndRecordItem[id];
         if (isExist == FALSE)
         {
-            Debug.Log(transform.name+"/"+id);
+            Debug.Log(transform.name+"/"+ id);
         }
         CheckIsExist();
     }

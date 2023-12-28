@@ -44,16 +44,16 @@ public class PlayerData : MonoBehaviour
         transform.position = pos;
         transform.eulerAngles = rotation;
 
-        StartCoroutine(PlayerRigidbody());
+        //StartCoroutine(PlayerRigidbody());
 
         //Debug.Log($"{pos.x} + {pos.y} + {pos.z}");
         //Debug.Log($"{rotation.x} + {rotation.y} + {rotation.z}");
         //Debug.Log("값이 변경 됬나 ?");
     }
 
-    IEnumerator PlayerRigidbody()
-    {
-        yield return null;
-        GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
-    }
+    //IEnumerator PlayerRigidbody()
+    //{
+    //    yield return null;
+    //    GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
+    //}
 }
