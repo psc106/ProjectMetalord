@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SocialPlatforms;
 using UnityEngine.UI;
@@ -11,6 +10,7 @@ public class GunStateController : MonoBehaviour
     GunBase[] mode = new GunBase[3];
     GunBase currentMode;
     public GunBase CurrentMode { get { return currentMode; } private set { currentMode = value; } }
+
 
     public GunBase GetGunMode(int index)
     {

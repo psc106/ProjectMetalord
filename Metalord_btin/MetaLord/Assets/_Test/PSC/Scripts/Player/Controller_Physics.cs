@@ -1,5 +1,4 @@
 using System.Collections;
-using Unity.Android.Types;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 
@@ -194,35 +193,6 @@ public class Controller_Physics : MonoBehaviour
     #endregion
 
 
-    public void SetValue(SliderType type, float value)
-    {
-        switch (type)
-        {
-            case SliderType.Move: maxMoveSpeed = value; break;
-            case SliderType.Jump: jumpHeight = value; break;
-            case SliderType.Gravity: gravityMultiple = value; break;
-            case SliderType.OneShot: (gunController.GetGunMode((int)GunMode.Paint) as PaintGun).FirstShot = (int)value; break;
-            case SliderType.repeatShot: (gunController.GetGunMode((int)GunMode.Paint) as PaintGun).AutoShot = (int)value; break;
-            case SliderType.Grab: (gunController.GetGunMode((int)GunMode.Grab) as GrabGun).GrabShot = (int)value; break;
-            case SliderType.Range: gunController.Range = value; break;
-            case SliderType.Capacity: gunController.MaxAmmo = (int)value; break;
-        }
-    }
-    public float GetValue(SliderType type)
-    {
-        switch (type)
-        {
-            case SliderType.Move: return maxMoveSpeed; 
-            case SliderType.Jump: return jumpHeight;
-            case SliderType.Gravity: return gravityMultiple; 
-            case SliderType.OneShot: return (float)(gunController.GetGunMode((int)GunMode.Paint) as PaintGun).FirstShot;
-            case SliderType.repeatShot: return (float)(gunController.GetGunMode((int)GunMode.Paint) as PaintGun).AutoShot;
-            case SliderType.Grab: return (float)(gunController.GetGunMode((int)GunMode.Grab) as GrabGun).GrabShot;
-            case SliderType.Range: return gunController.Range;
-            case SliderType.Capacity: return gunController.MaxAmmo;
-        }
-        return -1;
-    }
 
 
     //에디터에서 처리
@@ -236,6 +206,8 @@ public class Controller_Physics : MonoBehaviour
 
     private void Awake()
     {
+        Application.targetFrameRate = 60;
+
         cameraPoint = Camera.main.transform;
         gravity = CustomGravity.GetGravity(rb.position, out upAxis); 
         
@@ -250,6 +222,8 @@ public class Controller_Physics : MonoBehaviour
 
     void Update()
     {
+        Debug.Log(canInput);
+        Debug.Log(PlayerInteractNpc.isTalking);
         #region 상점, 도감, 환경설정 키 누를경우 _ 231219 배경택
         if (canInput && !PlayerInteractNpc.isTalking)
         {
@@ -338,9 +312,6 @@ public class Controller_Physics : MonoBehaviour
         //대화나 메뉴에서 stop시킴
         if (stopState)
         {
-            animator.SetFloat(VelocityXHash, 0);
-            animator.SetFloat(VelocityYHash, 0);
-            rb.velocity += gravity * Time.deltaTime;
             return;
         }
 
@@ -429,7 +400,7 @@ public class Controller_Physics : MonoBehaviour
     IEnumerator DelayInput()
     {
         canInput = false; // 입력 불가
-        yield return new WaitForSeconds(INPUT_DELAYTIME); // 대기시간
+        yield return new WaitForSecondsRealtime(INPUT_DELAYTIME); // 대기시간
         canInput = true; // 입력 가능
     }
 
@@ -1117,15 +1088,48 @@ public class Controller_Physics : MonoBehaviour
             FindObjectOfType<Controller_Physics>().rb.velocity = Vector3.zero;
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+            Time.timeScale = 0;
         }
         else
         {
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
+            Time.timeScale = 1;
 
         }
     }
 
+    #region 관리자모드
+    public void SetValue(SliderType type, float value)
+    {
+        switch (type)
+        {
+            case SliderType.Move: maxMoveSpeed = value; break;
+            case SliderType.Jump: jumpHeight = value; break;
+            case SliderType.Gravity: gravityMultiple = value; break;
+            case SliderType.OneShot: (gunController.GetGunMode((int)GunMode.Paint) as PaintGun).FirstShot = (int)value; break;
+            case SliderType.repeatShot: (gunController.GetGunMode((int)GunMode.Paint) as PaintGun).AutoShot = (int)value; break;
+            case SliderType.Grab: (gunController.GetGunMode((int)GunMode.Grab) as GrabGun).GrabShot = (int)value; break;
+            case SliderType.Range: gunController.Range = value; break;
+            case SliderType.Capacity: gunController.MaxAmmo = (int)value; break;
+        }
+    }
+    public float GetValue(SliderType type)
+    {
+        switch (type)
+        {
+            case SliderType.Move: return maxMoveSpeed;
+            case SliderType.Jump: return jumpHeight;
+            case SliderType.Gravity: return gravityMultiple;
+            case SliderType.OneShot: return (float)(gunController.GetGunMode((int)GunMode.Paint) as PaintGun).FirstShot;
+            case SliderType.repeatShot: return (float)(gunController.GetGunMode((int)GunMode.Paint) as PaintGun).AutoShot;
+            case SliderType.Grab: return (float)(gunController.GetGunMode((int)GunMode.Grab) as GrabGun).GrabShot;
+            case SliderType.Range: return gunController.Range;
+            case SliderType.Capacity: return gunController.MaxAmmo;
+        }
+        return -1;
+    }
+    #endregion
 
 
     #region 애니메이션 이벤트
