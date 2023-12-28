@@ -3,8 +3,6 @@ using UnityEngine.Windows;
 
 public class PaintGun : GunBase
 {
-    float autoTime = 1f;
-    float rangeLimit = 4f;
     float timeCheck = 0f;
     float autotimeCheck = 0;
     int autoShot = -5;
@@ -84,19 +82,14 @@ public class PaintGun : GunBase
             }
 
             Ray muzzleRay = new Ray(state.startPoint, state.hit.point - state.startPoint);
-            /*            if(state.minDistance == true)
-                        {
-
-                            muzzleRay = new Ray(state.startPoint, state.hit.point - state.startPoint);
-                            UsedAmmo(muzzleRay, paintAmmo);
-
-                            fireStart = true;                
-                            return;
-                        }*/
 
             UsedAmmo(muzzleRay, paintAmmo);
            
             fireStart = true;
+        }
+        else
+        {            
+            state.CheckRangeCrossHair();
         }
     }
 
@@ -112,6 +105,10 @@ public class PaintGun : GunBase
 
                 UsedAmmo(muzzleRay, autoShot);                
                 timeCheck = 0f;
+            }
+            else
+            {
+                state.CheckRangeCrossHair();
             }
         }
     }

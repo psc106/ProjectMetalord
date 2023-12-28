@@ -8,9 +8,27 @@ using UnityEngine.UI;
 
 public class GunStateController : MonoBehaviour
 {
+    enum CrossHair { ABLE, UNABLE}
+
+    const int AmmoGaugeIdx = 2;
+    const int WarningImgIdx = 4;
+
     GunBase[] mode = new GunBase[3];
     GunBase currentMode;
     public GunBase CurrentMode { get { return currentMode; } private set { currentMode = value; } }
+
+    public void Shoot(GunMode _mode)
+    {
+        switch(_mode)
+        {
+            case GunMode.Paint:
+                mode[(int)GunMode.Paint].ShootGun();
+                break;
+            case GunMode.Grab:                
+                mode[(int)GunMode.Grab].ShootGun();
+                break;
+        }
+    }
 
     public GunBase GetGunMode(int index)
     {
@@ -20,6 +38,8 @@ public class GunStateController : MonoBehaviour
     [SerializeField] private Controller_Physics player;
     [SerializeField] private Image crossHair;
     [SerializeField] private Transform startPos;
+    [SerializeField] private GameObject GunUi;
+    [SerializeField] private Sprite[] crossHairSprite = new Sprite[2];
 
     public Rigidbody getconnect()
     {
@@ -35,10 +55,6 @@ public class GunStateController : MonoBehaviour
     public LayerMask gunLayer;
 
     [Header("도구 UI")]        
-    [SerializeField] private Image AmmoGauge;
-    [SerializeField] private Color[] ModeColor = new Color[3];
-    public int CloseUp_FontSize = 32;
-    public int CloseOff_FontSize = 27;
     [SerializeField] private AnimationCurve reloadCurve;
 
     [Header("도구 스텟")]
@@ -94,12 +110,20 @@ public class GunStateController : MonoBehaviour
     [HideInInspector] public static HashSet<NpcBase> npcList = new HashSet<NpcBase>();
 
 
+    /*  { LEGACY : 기획변경에 따른 폐기
     // UI 제어 추가문
     public GameObject[] ModeUI = new GameObject[3];
     string[,] modeText = { { "벽타기", "1" }, { "당기기", "2" }, {"붙이기  ", "3" } };    
     TextMeshProUGUI[] currentText;
     TextMeshProUGUI[] elseText1;
     TextMeshProUGUI[] elseText2;
+
+    */// } LEGACY : 기획변경에 따른 폐기
+
+    Image[] gunImage;
+    TextMeshProUGUI gunText;
+    RectTransform textRect;
+    Coroutine textFadeOut;
 
     // 프로퍼티 모음
     #region Property
@@ -150,11 +174,14 @@ public class GunStateController : MonoBehaviour
     #region CallBack
     private void Awake()
     {
-        lerpTime = Time.deltaTime;
+        lerpTime = Time.deltaTime;        
+        gunImage = GunUi.transform.GetChild(0).GetComponentsInChildren<Image>();
+        gunText = GunUi.transform.GetChild(1).GetComponentInChildren<TextMeshProUGUI>();
+        textRect = gunText.GetComponent<RectTransform>();
 
-        currentText = ModeUI[0].GetComponentsInChildren<TextMeshProUGUI>();
-        elseText1 = ModeUI[1].GetComponentsInChildren<TextMeshProUGUI>();
-        elseText2 = ModeUI[2].GetComponentsInChildren<TextMeshProUGUI>();
+        //currentText = ModeUI[0].GetComponentsInChildren<TextMeshProUGUI>();
+        //elseText1 = ModeUI[1].GetComponentsInChildren<TextMeshProUGUI>();
+        //elseText2 = ModeUI[2].GetComponentsInChildren<TextMeshProUGUI>();
 
         mode[(int)GunMode.Paint] = transform.GetComponent<PaintGun>();
         mode[(int)GunMode.Grab] = transform.GetComponent<GrabGun>();
@@ -166,7 +193,7 @@ public class GunStateController : MonoBehaviour
         }
 
         currentMode = mode[(int)GunMode.Paint];
-        SwapLayer();
+        SwapLayer();        
 
     }
 
@@ -181,8 +208,8 @@ public class GunStateController : MonoBehaviour
         UpdateState(MaxAmmo, GunState.READY);
         checkAmmo = Ammo;
 
-        ModeUI[1].transform.GetChild(1).GetChild(0).gameObject.SetActive(false);
-        ModeUI[2].transform.GetChild(1).GetChild(0).gameObject.SetActive(false);
+        //ModeUI[1].transform.GetChild(1).GetChild(0).gameObject.SetActive(false);
+        //ModeUI[2].transform.GetChild(1).GetChild(0).gameObject.SetActive(false);
     }
 
     private void Update()
@@ -193,11 +220,6 @@ public class GunStateController : MonoBehaviour
         if (onGrab || (reader.ShootKey && checkSuccessRay && CanFire && currentMode.CanFireAmmoCount()))
         {
             crossHair.color = Color.blue;
-        }
-
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            Debug.Log($"본드 리스트 수 : {bondList.Count}");
         }
     }
 
@@ -227,6 +249,8 @@ public class GunStateController : MonoBehaviour
 
         float distance = Vector3.Distance(Camera.main.transform.position, GetOriginPos());
 
+
+
         
         // 일반적인 상황의 사격
         if (Physics.Raycast(normalRay, out hit, range, gunLayer))
@@ -252,8 +276,20 @@ public class GunStateController : MonoBehaviour
                     // Debug.Log("플레이어->디폴트히트포인트");
                     startPoint = startPlayerPos;
                     checkSuccessRay = true;
-                    minDistance = false;
+                    minDistance = false;                    
                     crossHair.color = CanFire && currentMode.CanFireAmmoCount() ? Color.green : Color.red;
+
+                    if (!currentMode.CanFireAmmoCount() && !onGrab)
+                    {
+                        gunImage[WarningImgIdx].GetComponent<UiFadeOut>().InitFadeOut();
+                        ChangedCrossHair();
+                    }
+
+                    //Vector3 anchor = Camera.main.WorldToScreenPoint(hit.point);
+                    //if (RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)crossHair.transform.parent, anchor, null, out Vector2 localPoint))
+                    {
+                        //crossHair.rectTransform.anchoredPosition = localPoint;
+                    }
 
                     return;
                 }
@@ -269,13 +305,52 @@ public class GunStateController : MonoBehaviour
                 minDistance = false;
                 crossHair.color = CanFire && currentMode.CanFireAmmoCount() ? Color.green : Color.red;
 
+
+                //if (CanFire && textFadeOut == null)
+                //{                    
+                //    textFadeOut = FadeOutText();
+                //}
+
+                crossHair.sprite = crossHairSprite[(int)CrossHair.ABLE];
+
+                if (!currentMode.CanFireAmmoCount() && !onGrab)
+                {
+                    gunImage[WarningImgIdx].GetComponent<UiFadeOut>().InitFadeOut();
+                    ChangedCrossHair();
+                }
+
+                //if (crossHair.rectTransform.anchoredPosition != Vector2.zero)
+                {
+                   // crossHair.rectTransform.anchoredPosition = Vector2.zero;
+                }
+
                 return;
             }
         }
 
         player.SetAimPosition(Vector3.zero);
         checkSuccessRay = false;
-        crossHair.color = Color.red;
+
+        if (!currentMode.CanFireAmmoCount() && !onGrab)
+        {
+            gunImage[WarningImgIdx].GetComponent<UiFadeOut>().InitFadeOut();
+            ChangedCrossHair();
+        }
+        //else if (currentMode.CanFireAmmoCount())
+        //{
+        //    crossHair.sprite = crossHairSprite[(int)CrossHair.UNABLE];
+        //    crossHair.color = Color.red;
+        //}
+        else
+        {
+            crossHair.color = Color.green;
+            crossHair.sprite = crossHairSprite[(int)CrossHair.ABLE];
+        }
+        //if (CanFire && textFadeOut != null)
+        //{
+        //    StartCoroutine(textFadeOut);
+        //}
+
     }
 
     /// <summary>
@@ -306,52 +381,17 @@ public class GunStateController : MonoBehaviour
         return dir;
     }
 
-    public void SwapPaintGun()
-    {
-        if(state == GunState.RELOADING || onGrab)
-        {
-            return;
-        }
-
-        currentMode = mode[(int)GunMode.Paint];
-        SwapLayer();
-
-    }
-
-    public void SwapGrabGun()
-    {
-        if (state == GunState.RELOADING || !usedGrabGun)
-        {
-            return;
-        }
-
-        currentMode = mode[(int)GunMode.Grab];        
-        SwapLayer();
-    }
-
-    public void SwapBondGun()
-    {
-        if (state == GunState.RELOADING || onGrab || !usedBondGun)
-        {
-            return;
-        }
-
-        currentMode = mode[(int)GunMode.Bond];        
-        SwapLayer();
-    }
-
-
     public void UpdateState(int ammoValue, GunState updatedState)
     {
         Ammo = ammoValue;
-        state = updatedState;                
-        AmmoGauge.fillAmount = (float)Ammo / (float)maxUpgrade;
+        state = updatedState;
+        gunImage[AmmoGaugeIdx].fillAmount = (float)Ammo / (float)maxUpgrade;
     }
 
     public void UpdateState(int ammoValue)
     {        
-        Ammo = ammoValue;                
-        AmmoGauge.fillAmount = (float)Ammo / (float)maxUpgrade;
+        Ammo = ammoValue;
+        gunImage[AmmoGaugeIdx].fillAmount = (float)Ammo / (float)maxUpgrade;        
     }
 
     public void Reloading()
@@ -370,11 +410,17 @@ public class GunStateController : MonoBehaviour
         ClearNpcList();
         ClearAllPaint();
         currentMode.StopLerpGaguge();
+        StopAllCoroutines();
         StartCoroutine(ReloadingAmmo());
     }
 
     IEnumerator ReloadingAmmo()
     {
+        crossHair.gameObject.SetActive(false);
+
+        InitColorText();
+
+        textRect.position = crossHair.rectTransform.position;
         float currentAmmo = Ammo;
 
         float timeCheck = 0f;
@@ -387,6 +433,7 @@ public class GunStateController : MonoBehaviour
 
             int ammoValue = (int)Mathf.Lerp(currentAmmo, maxAmmo, reloadCurve.Evaluate(t));
             UpdateState(ammoValue);
+            UpdateText(timeCheck);
 
             yield return null;
 
@@ -394,8 +441,13 @@ public class GunStateController : MonoBehaviour
 
         checkAmmo = maxAmmo;
         UpdateState(maxAmmo, GunState.READY);
+        gunText.text = "";
+        crossHair.sprite = crossHairSprite[(int)CrossHair.ABLE];
+        crossHair.gameObject.SetActive(true);
     }
 
+    // 오버로딩 메소드 모음
+    #region 오버로딩 메소드 모음
     public static void AddList(SSC_BondObj obj)
     {
         bondList.Add(obj);
@@ -431,6 +483,8 @@ public class GunStateController : MonoBehaviour
         bondList.Clear();
     }
 
+    #endregion
+
     public void GunModeUnlock(GunMode gunMode)
     {
         switch (gunMode)
@@ -438,13 +492,13 @@ public class GunStateController : MonoBehaviour
             case GunMode.Paint:
                 break;
             case GunMode.Grab:
-                ModeUI[1].transform.GetChild(1).GetChild(1).gameObject.SetActive(false);
-                ModeUI[1].transform.GetChild(1).GetChild(0).gameObject.SetActive(true);
+                //ModeUI[1].transform.GetChild(1).GetChild(1).gameObject.SetActive(false);
+                //ModeUI[1].transform.GetChild(1).GetChild(0).gameObject.SetActive(true);
                 usedGrabGun = true;                
                 break;
             case GunMode.Bond:
-                ModeUI[2].transform.GetChild(1).GetChild(1).gameObject.SetActive(false);
-                ModeUI[2].transform.GetChild(1).GetChild(0).gameObject.SetActive(true);
+                //ModeUI[2].transform.GetChild(1).GetChild(1).gameObject.SetActive(false);
+                //ModeUI[2].transform.GetChild(1).GetChild(0).gameObject.SetActive(true);
                 usedBondGun = true;
                 break;
         }
@@ -483,50 +537,130 @@ public class GunStateController : MonoBehaviour
         int id = (int)GunSoundList.ChangeMod;
         SoundManager.instance.PlaySound(GroupList.Gun, id);
 
-        SwapTest(changeMode);
+        //SwapTest(changeMode);
         currentMode = mode[(int)changeMode];
         SwapLayer();
     }
 
-    void SwapTest(GunMode changeMode)
-    {        
-        string[] tempString = new string[2];
-        tempString[0] = currentText[0].text.Trim();
-        tempString[1] = currentText[1].text.Trim();
+    //void SwapTest(GunMode changeMode)
+    //{        
+    //    string[] tempString = new string[2];
+    //    tempString[0] = currentText[0].text.Trim();
+    //    tempString[1] = currentText[1].text.Trim();
 
-        for (int i = 0; i < 3; i++)
-        {
-            if (ModeUI[i].transform.GetComponentInChildren<TextMeshProUGUI>().text.Trim() == modeText[(int)changeMode, 0].Trim())
-            {
-                ModeUI[i].transform.GetComponentsInChildren<TextMeshProUGUI>()[0].text = tempString[0];
-                ModeUI[i].transform.GetComponentsInChildren<TextMeshProUGUI>()[1].text = tempString[1];
+    //    for (int i = 0; i < 3; i++)
+    //    {
+    //        if (ModeUI[i].transform.GetComponentInChildren<TextMeshProUGUI>().text.Trim() == modeText[(int)changeMode, 0].Trim())
+    //        {
+    //            ModeUI[i].transform.GetComponentsInChildren<TextMeshProUGUI>()[0].text = tempString[0];
+    //            ModeUI[i].transform.GetComponentsInChildren<TextMeshProUGUI>()[1].text = tempString[1];
 
-                break;
-            }        
-        }
+    //            break;
+    //        }        
+    //    }
 
-        for(int i = 0; i < 2; i++)
-        {
-            currentText[i].text = modeText[(int)changeMode, i];
-        }        
+    //    for(int i = 0; i < 2; i++)
+    //    {
+    //        currentText[i].text = modeText[(int)changeMode, i];
+    //    }        
 
-        ModeUI[1].GetComponent<UiFadeOut>().InitFadeOut();
-        ModeUI[2].GetComponent<UiFadeOut>().InitFadeOut();              
-    }
+    //    ModeUI[1].GetComponent<UiFadeOut>().InitFadeOut();
+    //    ModeUI[2].GetComponent<UiFadeOut>().InitFadeOut();              
+    //}
 
     public void ClearAllPaint()
     {
         foreach (PaintTarget target in paintList)
         {
-            //if (!target.validTarget) continue;
             target.ClearPaint();
-
-            // 12.13 SSC
-            // 페인트 초기화시 컬러값 초기화로 돌릴 origin값 저장 필드 추가
             target.splatTexPick = target.originTex;
         }
 
         paintList.Clear();
     }
 
+    void UpdateText(float time)
+    {
+        if(time >=  reloadTime * 0.66f)
+        {
+            gunText.text = "충전중...";
+        }
+        else if(time >= reloadTime * 0.33f)
+        {
+
+            gunText.text = "충전중..";
+        }
+        else
+        {
+            gunText.text = "충전중.";
+        }
+    }
+
+    public void ChangedCrossHair()
+    {
+        if(currentMode.CanFireAmmoCount())
+        {
+            crossHair.sprite = crossHairSprite[(int)CrossHair.ABLE];
+        }
+        else
+        {
+            InitColorText();
+            Vector3 tempVec = crossHair.rectTransform.position;
+            tempVec.y += 120f;
+            textRect.position = tempVec;
+            gunText.text = "접착제 부족!";
+            crossHair.sprite = crossHairSprite[(int)CrossHair.UNABLE];
+        }
+    }
+
+    IEnumerator IEFadeOutText()
+    {
+        Color tempColor = gunText.color;
+        tempColor.a = 1f;
+        gunText.color = tempColor;
+
+        Vector3 tempVec = crossHair.rectTransform.position;
+        tempVec.y += 120f;
+        textRect.position = tempVec;        
+        gunText.text = "너무 멀어!";
+
+        float timeCheck = 0f;
+        float fadeOutTime = 1f;
+        float t = 0f;
+        
+        while(timeCheck < fadeOutTime)
+        {
+            timeCheck += Time.deltaTime;
+            t = timeCheck / fadeOutTime;
+
+            tempColor.a = Mathf.Lerp(1, 0, t);
+            gunText.color = tempColor;
+
+            yield return null;
+        }        
+    }
+
+    void InitColorText()
+    {
+        Color tempColor = gunText.color;
+        tempColor.a = 1f;
+        gunText.color = tempColor;
+    }
+
+    // 
+    public void CheckRangeCrossHair()
+    {
+        if(!checkSuccessRay)
+        {
+            if (textFadeOut != null) StopCoroutine(textFadeOut);
+            textFadeOut = StartCoroutine(IEFadeOutText());            
+            crossHair.color = Color.red;
+            crossHair.sprite = crossHairSprite[(int)CrossHair.UNABLE];
+        }
+        else
+        {
+            crossHair.color = Color.green;
+            crossHair.sprite = crossHairSprite[(int)CrossHair.ABLE];
+        }
+    }
 }

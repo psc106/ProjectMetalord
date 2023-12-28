@@ -6,106 +6,103 @@ using UnityEngine.UI;
 
 public class UiFadeOut : MonoBehaviour
 {
-    float fadeOutspeed = 0.75f;
+    float fadeOutspeed = 1f;
 
-    TextMeshProUGUI[] myText;
-    Image[] myImage;
+    //TextMeshProUGUI[] myText;
+    Image myImage;
 
-    Color[] imageOrigin;
-    Color[] textOrigin;
+    Color imageOrigin;
+    //Color[] textOrigin;
 
-    IEnumerator fadeOut;
+
+    Coroutine fadeOut;
+    //IEnumerator fadeOut;
 
     private void Awake()
     {
-        myText = GetComponentsInChildren<TextMeshProUGUI>();
-        myImage = GetComponentsInChildren<Image>();
+        //myText = GetComponentsInChildren<TextMeshProUGUI>();
+        myImage = GetComponent<Image>();
 
-        imageOrigin = new Color[myImage.Length];
-        textOrigin = new Color[myText.Length];
+        imageOrigin = myImage.color;
+        //textOrigin = new Color[myText.Length];
 
-        for (int i = 0; i < myImage.Length; i++)
-        {
-            imageOrigin[i] = myImage[i].color;
-        }
+        //for (int i = 0; i < myImage.Length; i++)
+        //{
+        //    imageOrigin[i] = myImage[i].color;
+        //}
 
-        for (int i = 0; i < myText.Length; i++)
-        {
-            textOrigin[i] = myText[i].color;
-        }
+        //for (int i = 0; i < myText.Length; i++)
+        //{
+        //    textOrigin[i] = myText[i].color;
+        //}
     }
 
     private void Start()
     {
-        fadeOut = FadeOut();
-        InitFadeOut();
+        Color tempColor = myImage.color;
+        tempColor.a = 0f;
+        myImage.color = tempColor;
+        //fadeOut = FadeOut();
+        //InitFadeOut();
     }
-
-    //private void OnEnable()
-    //{
-    //    for (int i = 0; i < myImage.Length; i++)
-    //    {
-    //        myImage[i].color = imageOrigin[i];
-    //    }
-
-    //    for (int i = 0; i < myText.Length; i++)
-    //    {
-    //        myText[i].color = textOrigin[i];
-    //    }
-
-    //    StartCoroutine(FadeOut());
-    //}
 
     public void InitFadeOut()
     {
-        StopCoroutine(fadeOut);
-        fadeOut = FadeOut();
-
-        for (int i = 0; i < myImage.Length; i++)
-        {
-            myImage[i].color = imageOrigin[i];
+        if(fadeOut != null)
+        {            
+            return;
         }
 
-        for (int i = 0; i < myText.Length; i++)
-        {
-            myText[i].color = textOrigin[i];
-        }
+        myImage.color = imageOrigin;
+        fadeOut = StartCoroutine(FadeOut());
+        //StopCoroutine(fadeOut);
+        //fadeOut = FadeOut();
 
-        StartCoroutine(fadeOut);
+        //for (int i = 0; i < myImage.Length; i++)
+        //{
+        //    myImage[i].color = imageOrigin[i];
+        //}
+
+        //for (int i = 0; i < myText.Length; i++)
+        //{
+        //    myText[i].color = textOrigin[i];
+        //}
+
+        //StartCoroutine(fadeOut);
     }
 
     IEnumerator FadeOut()
     {
-        Color[] imageColor = new Color[myImage.Length];
-        Color[] textColor = new Color[myText.Length];
+        //Color[] imageColor = new Color[myImage.Length];
+        //Color[] textColor = new Color[myText.Length];
+        Color imageColor = myImage.color;
 
-        for (int i = 0; i < myImage.Length; i++)
+        //for (int i = 0; i < myImage.Length; i++)
+        //{
+        //    imageColor[i] = myImage[i].color;
+        //}
+
+        //for (int i = 0; i < myText.Length; i++)
+        //{
+        //    textColor[i] = myText[i].color;
+        //}
+
+        while (myImage.color.a >= 0f)
         {
-            imageColor[i] = myImage[i].color;
-        }
+            
+            imageColor.a -= Time.deltaTime * fadeOutspeed;            
+            myImage.color = imageColor;
 
-        for (int i = 0; i < myText.Length; i++)
-        {
-            textColor[i] = myText[i].color;
-        }
-
-        while (myImage[0].color.a >= 0f)
-        {
-            for(int i = 0; i < myImage.Length; i++)
-            {
-                imageColor[i].a -= Time.deltaTime * fadeOutspeed;
-                myImage[i].color = imageColor[i];
-            }
-
-            for (int i = 0; i < myText.Length; i++)
-            {
-                textColor[i].a -= Time.deltaTime * fadeOutspeed;
-                myText[i].color = textColor[i];
-            }
+            //for (int i = 0; i < myText.Length; i++)
+            //{
+            //    textColor[i].a -= Time.deltaTime * fadeOutspeed;
+            //    myText[i].color = textColor[i];
+            //}
 
             yield return null;
         }
 
+        fadeOut = null;
         //transform.gameObject.SetActive(false);
     }
 }
