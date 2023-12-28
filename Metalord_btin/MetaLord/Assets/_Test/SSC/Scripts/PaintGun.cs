@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.Windows;
 
 public class PaintGun : GunBase
@@ -6,7 +7,6 @@ public class PaintGun : GunBase
     float timeCheck = 0f;
     float autotimeCheck = 0;
     int autoShot = -5;
-    bool fireStart = false;
 
     public int AutoShot { get { return -autoShot; } set { autoShot = -value; } }
     public int FirstShot { get { return -ammo; }  set { ammo = -value; } }
@@ -22,7 +22,7 @@ public class PaintGun : GunBase
 
             return ammo;
         }
-    }
+    }        
 
     protected override void Awake()
     {
@@ -86,11 +86,9 @@ public class PaintGun : GunBase
             UsedAmmo(muzzleRay, paintAmmo);
            
             fireStart = true;
-        }
-        else
-        {            
-            state.CheckRangeCrossHair();
-        }
+        }      
+        
+        state.CheckRangeCrossHair();        
     }
 
     private void AutoFire()
@@ -105,17 +103,15 @@ public class PaintGun : GunBase
 
                 UsedAmmo(muzzleRay, autoShot);                
                 timeCheck = 0f;
-            }
-            else
-            {
-                state.CheckRangeCrossHair();
-            }
+            } 
+
+            state.CheckRangeCrossHair();            
         }
     }
 
     protected override bool CheckCanFire()
-    {
-        if (!state.CanFire || state.Ammo < -paintAmmo)
+    {        
+        if (!state.CanFire || state.Ammo < -paintAmmo || state.onGrab)
         {
             return false;
         }

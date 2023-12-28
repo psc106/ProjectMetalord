@@ -110,10 +110,10 @@ public class PaintTarget : MonoBehaviour
         }
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        return RayChannel(ray,0, new LayerMask());
+        return RayChannel(ray);
     }
 
-    public static int RayChannel(Ray ray, float temp, LayerMask layer)
+    public static int RayChannel(Ray ray)
     {
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, 10000))

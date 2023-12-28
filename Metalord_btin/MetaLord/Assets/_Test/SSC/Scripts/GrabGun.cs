@@ -24,9 +24,11 @@ public class GrabGun : GunBase
     
     float maxSpeed = 3f;
     public override void ShootGun()
-    {        
+    {
+        //state.onGrab = true;
+
         if(CheckCanFire() == false)
-        {
+        {            
             return;
         }
 
@@ -34,30 +36,19 @@ public class GrabGun : GunBase
     }
 
     void OneShotGrab()
-    {           
-        if (targetRigid || state.Ammo < - ammo)
-        {            
+    {
+        if (targetRigid || state.Ammo < -ammo)
+        {
             CancelObj();
             return;
         }
-                
+
         if (state.hit.transform == null)
         {
             return;
         }
 
         state.pickupPoint.position = state.hit.point;
-
-        //float distanceCheck = Vector3.Distance(state.startPoint, state.pickupPoint.position);
-        //float distanceCheck2 = Vector3.Distance(state.startPoint, state.hit.transform.position);
-
-        //if (distanceCheck <= rangeLimit ||
-        //    distanceCheck2 <= rangeLimit)
-        //{
-        //    Debug.Log("못드는 거리1 : " + distanceCheck);
-        //    Debug.Log("못드는 거리2 : " + distanceCheck2);
-        //    return;
-        //}
 
         FollowingObj();        
     }
@@ -77,20 +68,6 @@ public class GrabGun : GunBase
                 return;
             }    
 
-            // LEGACY : 휠 다운 오브젝트 당기는 기능 삭제
-            //float wheel = Input.GetAxis("Mouse ScrollWheel");
-            //if (wheel < 0f)
-            //{
-            //    PulledObj(wheel);
-            //}
-
-            //float distanceCheck = Vector3.Distance(state.checkPos.position, targetObj.transform.position);
-            //float distanceCheck2 = Vector3.Distance(state.checkPos.position, state.pickupPoint.position);
-
-            //Debug.Log("트랜스폼" + distanceCheck);            
-            //Debug.Log("픽업" + distanceCheck2);
-
-
             Vector3 dir = (state.pickupPoint.position - followPos) - targetRigid.position;
             float mag = dir.magnitude;
 
@@ -109,6 +86,7 @@ public class GrabGun : GunBase
 
     public void CancelObj()
     {
+        Debug.Log("여기에 도달하는건가?");
         if(targetRigid != null)
         {            
             targetRigid.constraints = RigidbodyConstraints.None;
@@ -123,19 +101,11 @@ public class GrabGun : GunBase
         state.onGrab = false;        
     }
 
-    public void CancleGrab()
-    {
-        targetObj.GetComponent<Collider>().material.dynamicFriction = 1f;
-        targetObj = null;
-        state.grabLine.enabled = false;
-        targetRigid = null;
-        state.onGrab = false;        
-    }
-
     void FollowingObj( )
     {
         state.onGrab = true;
         targetObj = state.hit.transform.gameObject;
+        targetObj.GetComponent<SSC_BondObj>().Invoke("StateChagned", 2f);
         state.pickupPoint.position = state.hit.point;
         followPos = state.pickupPoint.position - state.hit.transform.position;
         state.hit.transform.GetComponent<MeshCollider>().convex = true;
@@ -151,20 +121,6 @@ public class GrabGun : GunBase
             UsedAmmo(ammo);
         }
     }
-
-    // LEGACY : 휠 다운 오브젝트 당기는 기능 삭제
-    //void PulledObj(float wheelData)
-    //{
-    //    Vector3 dir = state.checkPos.localPosition - state.pickupPoint.localPosition;
-
-    //    if (Vector3.Distance(state.pickupPoint.position, state.startPoint) < rangeLimit + 5f)
-    //    {
-    //        return;
-    //    }
-
-    //    dir = dir.normalized * (wheelData * 2f);
-    //    state.pickupPoint.transform.localPosition -= dir;
-    //}
 
     protected override bool CheckCanFire()
     {
