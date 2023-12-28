@@ -111,8 +111,9 @@ public class GunStateController : MonoBehaviour
     [HideInInspector] public NpcBase targetNpc = null;
     [HideInInspector] public GunState state;
     [HideInInspector] public static HashSet<PaintTarget> paintList = new HashSet<PaintTarget>();
-    [HideInInspector] public static HashSet<SSC_BondObj> bondList = new HashSet<SSC_BondObj>();
+    [HideInInspector] public static HashSet<MovedObject> bondList = new HashSet<MovedObject>();
     [HideInInspector] public static HashSet<NpcBase> npcList = new HashSet<NpcBase>();
+    [HideInInspector] public static List<GameObject> catchList = new List<GameObject>();
 
     Image[] gunImage;
     TextMeshProUGUI gunText;
@@ -269,7 +270,7 @@ public class GunStateController : MonoBehaviour
 
                     if (!currentMode.CanFireAmmoCount() && !onGrab && !currentMode.fireStart)
                     {
-                        Debug.Log("1");
+                        //Debug.Log("1");
                         gunImage[WarningImgIdx].GetComponent<UiFadeOut>().InitFadeOut();
                         ChangedCrossHair();
                     }
@@ -296,7 +297,7 @@ public class GunStateController : MonoBehaviour
 
                 if (!currentMode.CanFireAmmoCount() && !onGrab && !currentMode.fireStart)
                 {
-                    Debug.Log("2");
+                    //Debug.Log("2");
                     gunImage[WarningImgIdx].GetComponent<UiFadeOut>().InitFadeOut();
                     ChangedCrossHair();
                 }
@@ -316,7 +317,7 @@ public class GunStateController : MonoBehaviour
         // 현재 상태에 맞게 크로스헤어 이미지 업데이트 해주는 조건문
         if (!onGrab && !currentMode.CanFireAmmoCount() && !currentMode.fireStart)
         {
-            Debug.Log("3");
+            //Debug.Log("3");
             // 내가 총알 잔량이 부족하면서, 그랩하고있는 상태가 아닐 때 재장전 필요 효과 발생
             gunImage[WarningImgIdx].GetComponent<UiFadeOut>().InitFadeOut();
             ChangedCrossHair();
@@ -383,9 +384,10 @@ public class GunStateController : MonoBehaviour
         SoundManager.instance.PlaySound(GroupList.Gun, id);
 
         state = GunState.RELOADING;
-        ClearBondList();
+        //ClearBondList();
         ClearNpcList();
         ClearAllPaint();
+        ClearCatchList();
         currentMode.StopLerpGaguge();
         StopAllCoroutines();
         StartCoroutine(ReloadingAmmo());
@@ -426,7 +428,7 @@ public class GunStateController : MonoBehaviour
 
     // 오버로딩 메소드 모음
     #region 오버로딩 메소드 모음
-    public static void AddList(SSC_BondObj obj)
+    public static void AddList(MovedObject obj)
     {
         bondList.Add(obj);
     }
@@ -439,6 +441,20 @@ public class GunStateController : MonoBehaviour
     public static void AddList(NpcBase obj)
     {
         npcList.Add(obj);
+    }
+
+    public static void AddList(GameObject obj)
+    {
+        for(int i = 0; i < catchList.Count; i++)
+        {
+            if(obj == catchList[i])
+            {
+                return;
+            }
+        }
+        
+        catchList.Add(obj);
+        
     }
 
     void ClearBondList()
@@ -459,6 +475,40 @@ public class GunStateController : MonoBehaviour
         }
 
         bondList.Clear();
+    }
+
+    void ClearCatchList()
+    {
+        foreach (var obj in catchList)
+        {
+            GameObject[] childObj = new GameObject[obj.transform.childCount];
+
+            for (int i = 0; i < obj.transform.childCount; i++)
+            {
+                obj.transform.GetChild(i).GetComponent<MovedObject>().CelarBond();
+                childObj[i] = obj.transform.GetChild(i).gameObject;
+            }
+
+            for (int i = 0; i < childObj.Length; i++)
+            {
+                childObj[i].transform.parent = null;
+            }
+
+            Destroy(obj);
+        }
+
+        //for(int i = 0; i < catchList.Count; i++)
+        //{
+        //    for(int j = 0; j < catchList[i].transform.childCount; j++)
+        //    {
+        //        catchList[i].transform.GetChild(j).GetComponent<MovedObject>().CelarBond();
+        //        Debug.Log(catchList[i].transform.GetChild(j));
+        //    }
+
+        //    Destroy(catchList[i]); ;
+        //}
+
+        catchList.Clear();
     }
 
     #endregion

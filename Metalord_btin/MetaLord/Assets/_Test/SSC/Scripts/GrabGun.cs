@@ -12,8 +12,7 @@ public class GrabGun : GunBase
         base.Awake();
         brush.splatChannel = 2;
         ammo = -55;
-        mode = GunMode.Grab;        
-        //myLayer = 1 << LayerMask.NameToLayer("MovedObject");
+        mode = GunMode.Grab;                
     }
 
     public int GrabShot { get { return -ammo; } set { ammo = -value; } }
@@ -25,10 +24,15 @@ public class GrabGun : GunBase
     float maxSpeed = 3f;
     public override void ShootGun()
     {
-        //state.onGrab = true;
-
         if(CheckCanFire() == false)
-        {            
+        {
+            // onGrab 상태에서도 들고있는 물건 그랩 해제를 위해
+            if (targetRigid || state.Ammo < -ammo)
+            {
+                CancelObj();
+                return;
+            }
+
             return;
         }
 
@@ -85,15 +89,26 @@ public class GrabGun : GunBase
     }
 
     public void CancelObj()
-    {
-        Debug.Log("여기에 도달하는건가?");
+    {        
         if(targetRigid != null)
         {            
             targetRigid.constraints = RigidbodyConstraints.None;
             targetRigid.useGravity = true;
             targetRigid.velocity = Vector3.zero;
             targetRigid = null;            
-            targetObj.GetComponent<Collider>().material.dynamicFriction = 1f;
+
+            if(targetObj.transform.childCount != 0)
+            {
+                for(int i = 0; i < targetObj.transform.childCount; i++)
+                {
+                    targetObj.transform.GetChild(i).GetComponent<MeshCollider>().material.dynamicFriction = 1f;
+                }
+
+            }
+            else
+            {
+                targetObj.GetComponent<Collider>().material.dynamicFriction = 1f;
+            }
         }
 
         targetObj = null;
@@ -105,20 +120,83 @@ public class GrabGun : GunBase
     {
         state.onGrab = true;
         targetObj = state.hit.transform.gameObject;
-        targetObj.GetComponent<SSC_BondObj>().Invoke("StateChagned", 2f);
+        Debug.Log("가장 처음 : " + targetObj);
+
+        // 합쳐진 오브젝트가 그랩 되었을 때
+        if(targetObj.transform.parent != null)
+        {
+            Debug.Log("1 " + targetObj);
+            switch (LayerMask.LayerToName(targetObj.transform.parent.gameObject.layer))
+            {
+                case "CatchObject":
+                    targetObj = targetObj.transform.parent.gameObject;
+                    int count = targetObj.transform.childCount;
+
+                    for (int i = 0; i < count; i++)
+                    {
+                        Destroy(targetObj.transform.GetChild(i).GetComponent<Rigidbody>());
+                        targetObj.transform.GetChild(i).GetComponent<MeshCollider>().convex = true;
+                    }
+
+                    targetObj.AddComponent<Rigidbody>();
+                    if (targetObj.GetComponent<MovedObject>() == null)
+                    {
+                        targetObj.AddComponent<MovedObject>().InitParentMovedObject();
+                    }
+                    break;
+                default:
+                    targetObj.transform.parent = null;
+                    targetObj.GetComponent<MovedObject>().Invoke("StateChagned", 2f);
+                    state.hit.transform.GetComponent<MeshCollider>().convex = true;
+                    state.hit.transform.AddComponent<Rigidbody>();                    
+                    state.hit.transform.GetComponent<MovedObject>().ChangedState();
+                    break;
+            }
+        }
+        else
+        {
+            // 합쳐진 오브젝트들을 부모 오브젝트로만 인식하게 될 때
+            if (targetObj.gameObject.layer == LayerMask.NameToLayer("CatchObject"))
+            {
+                Debug.Log("2 " + targetObj);
+                int count = targetObj.transform.childCount;
+
+                for (int i = 0; i < count; i++)
+                {
+                    if (targetObj.transform.GetChild(i).GetComponent<Rigidbody>() != null)
+                    {
+                        Destroy(targetObj.transform.GetChild(i).GetComponent<Rigidbody>());
+                    }
+
+                    targetObj.transform.GetChild(i).GetComponent<MeshCollider>().convex = true;
+                }
+
+                targetObj.AddComponent<Rigidbody>();
+                  
+                if (targetObj.GetComponent<MovedObject>() == null)
+                {                    
+                    targetObj.AddComponent<MovedObject>().InitParentMovedObject();
+                }
+            }
+            else
+            {
+                Debug.Log("3 " + targetObj);
+                targetObj.GetComponent<MovedObject>().Invoke("StateChagned", 2f);
+                state.hit.transform.GetComponent<MeshCollider>().convex = true;
+                state.hit.transform.AddComponent<Rigidbody>();
+                state.hit.transform.GetComponent<MovedObject>().ChangedState();
+            }
+        }
+
+        targetRigid = targetObj.GetComponent<Rigidbody>();
         state.pickupPoint.position = state.hit.point;
         followPos = state.pickupPoint.position - state.hit.transform.position;
-        state.hit.transform.GetComponent<MeshCollider>().convex = true;
-        state.hit.transform.AddComponent<Rigidbody>();
-        targetRigid = state.hit.rigidbody;
-        state.hit.transform.GetComponent<SSC_GrabObj>().ChangedState();
         targetRigid.constraints = RigidbodyConstraints.FreezeRotation;
         targetRigid.useGravity = false;
 
         if(state.Ammo > -ammo)
-        {
-            //state.UpdateState(ammo);
-            UsedAmmo(ammo);
+        {            
+            UsedAmmo(ammo);            
         }
     }
 
@@ -138,4 +216,5 @@ public class GrabGun : GunBase
 
         return true;
     }
+
 }

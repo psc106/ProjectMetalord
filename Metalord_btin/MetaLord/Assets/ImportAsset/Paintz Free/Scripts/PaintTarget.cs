@@ -73,6 +73,7 @@ public class PaintTarget : MonoBehaviour
     private static Texture2D Tex4;
 
     private static GameObject splatObject;
+    private bool isPainted = false;
 
     static public Color climbColor;
     static public Color bondColor;
@@ -373,6 +374,7 @@ public class PaintTarget : MonoBehaviour
                     if (paintTarget != null)
                     {
                         PaintObject(paintTarget, hit.point, hits[h].normal, brush);
+                        paintTarget.isPainted = true;
                     }
                 }
             }
@@ -381,6 +383,7 @@ public class PaintTarget : MonoBehaviour
                 PaintTarget paintTarget = hit.collider.gameObject.GetComponent<PaintTarget>();
                 if (!paintTarget) return;
                 PaintObject(paintTarget, hit.point, hit.normal, brush);
+                paintTarget.isPainted = true;
             }
         }
     }
@@ -420,6 +423,7 @@ public class PaintTarget : MonoBehaviour
                         }
                         // 12.27 SSC : 페인트칠시 GunStateController에서 HashSet으로 관리하기위해 추가
                         GunStateController.AddList(paintTarget);
+                        paintTarget.isPainted = true;
                     }
                 }
             }
@@ -432,6 +436,7 @@ public class PaintTarget : MonoBehaviour
                 
                 // 12.27 SSC : 페인트칠시 GunStateController에서 HashSet으로 관리하기위해 추가
                 GunStateController.AddList(paintTarget);
+                paintTarget.isPainted = true;
 
                 // 12.26 SSC : 페인트칠시 NPC 범위로 체크하기 위하여 조건문 추가
                 if (paintTarget.gameObject.GetComponent<NpcBase>() != null)
@@ -806,5 +811,15 @@ public class PaintTarget : MonoBehaviour
     {
         // Release the output buffer
         outputBuffer?.Release();
+    }
+
+    public bool CheckPainted()
+    {
+        return isPainted;
+    }
+
+    public void ClearisPainted()
+    {
+        isPainted = false;
     }
 }
