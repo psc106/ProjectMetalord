@@ -8,41 +8,41 @@ using UnityEngine;
 /// </summary>
 public class Coin : MonoBehaviour
 {
+
     [SerializeField] private CoinType mytype; // 인스펙터창에서 코인 타입 선택
+
+    [Header("작은코인 0~49, 큰 코인 50~99")]
+    [SerializeField] private int id; // 겹치지 않도록 에디터에서 id 입력
 
     const int FALSE = 0;
     const int TRUE = 1;
-
-    [Header("코인별로 id값 설정")]
-    [SerializeField] private int id; // 겹치지 않도록 에디터에서 id 입력
     private int isExist = TRUE; // 존재하는가
-
 
     // 코인 증가량
     private const int SMALL_COIN_VALUE = 5; // 작은코인 값
     private const int BIG_COIN_VALUE = 20; // 큰 코인 값
 
-    private void OnEnable()
+    private void Start()
     {
         GameEventsManager.instance.dataEvents.onSaveData += SaveData;
         GameEventsManager.instance.dataEvents.onLoadData += LoadData;
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
         GameEventsManager.instance.dataEvents.onSaveData -= SaveData;
         GameEventsManager.instance.dataEvents.onLoadData -= LoadData;
     }
 
+    // 코인 활성화 여부 저장
     private void SaveData()
     {
-        // TODO 코인 활성화 여부 저장
         DataManager.instance.savedGamePlayData.coinAndRecordItem[id] = isExist;
     }
 
+    // 코인 활성화 여부 불러오기
     private void LoadData()
     {
-        // TODO 코인 활성화 여부 불러오기
         isExist = DataManager.instance.savedGamePlayData.coinAndRecordItem[id];
         CheckIsExist();
     }
