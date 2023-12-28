@@ -7,10 +7,11 @@ using UnityEngine.EventSystems;
 
 public class RecordObject : MonoBehaviour,IPointerDownHandler
 {
-    public RecordObjectInfo recordInfo { get; set; }
+    public RecordObjectInfo recordInfo;
+    private bool isSelected;
 
     private void Awake()
-    {
+    {        
         GameEventsManager.instance.recordEvents.onSelectRecord += CheckSelected; // 선택여부 체크 추가
         GameEventsManager.instance.recordEvents.onChangeRecord += ReflectInfo; // 도감 변경알림시 갖고있는 정보 반영 추가
     }
@@ -24,7 +25,10 @@ public class RecordObject : MonoBehaviour,IPointerDownHandler
 
     private void Start()
     {
-        ReflectInfo(); // 초기화
+        //ReflectInfo(); // 초기화
+        transform.GetChild(0).GetComponent<Image>().sprite = Resources.Load<Sprite>("Object/" + recordInfo.id_Description);
+        transform.GetChild(2).gameObject.SetActive(false);
+
     }
 
     /// <summary>
@@ -32,13 +36,8 @@ public class RecordObject : MonoBehaviour,IPointerDownHandler
     /// </summary>
     private void ReflectInfo()
     {
-        transform.GetChild(0).GetComponent<Image>().sprite = Resources.Load<Sprite>("Object/" + recordInfo.id_Description);
-
         if(recordInfo.obtained == true) transform.GetChild(1).gameObject.SetActive(false);
         else transform.GetChild(1).gameObject.SetActive(true);
-
-        if (recordInfo.isSelected == true) transform.GetChild(2).gameObject.SetActive(true);
-        else transform.GetChild(2).gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -56,9 +55,9 @@ public class RecordObject : MonoBehaviour,IPointerDownHandler
         }
         else // 선택된 id값과 내 id값이 같고
         {
-            if (!recordInfo.isSelected) // 선택된 적이 없다면
+            if (!isSelected) // 선택된 적이 없다면
             {
-                ActiveChecking();
+                ActiveChecking();                
             }
             else // 선택된 적이 있다면
             {
@@ -72,7 +71,7 @@ public class RecordObject : MonoBehaviour,IPointerDownHandler
     /// </summary>
     public void InActiveChecking()
     {
-        recordInfo.isSelected = false;
+        isSelected = false;
         transform.GetChild(2).gameObject.SetActive(false);
     }
 
@@ -81,7 +80,7 @@ public class RecordObject : MonoBehaviour,IPointerDownHandler
     /// </summary>
     private void ActiveChecking()
     {
-        recordInfo.isSelected = true; //선택되었다고 표시
+        isSelected = true;
         transform.GetChild(2).gameObject.SetActive(true); //선택되었다고 표시
     }
 
