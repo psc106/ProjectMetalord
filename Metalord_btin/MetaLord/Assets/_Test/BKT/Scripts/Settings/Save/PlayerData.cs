@@ -23,7 +23,7 @@ public class PlayerData : MonoBehaviour
     // 오브젝트 저장
     public void SaveObject()
     {
-        pos = transform.localPosition;
+        pos = transform.position;
         rotation = transform.eulerAngles;
 
         string jsonData = JsonUtility.ToJson(GetComponent<PlayerData>());   // 저장할 Json Data        
@@ -39,11 +39,21 @@ public class PlayerData : MonoBehaviour
 
         JsonUtility.FromJsonOverwrite(jsonData, GetComponent<PlayerData>()); // json 파일 덮어쓰기
 
-        transform.localPosition = pos;
+        GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.None;
+
+        transform.position = pos;
         transform.eulerAngles = rotation;
+
+        StartCoroutine(PlayerRigidbody());
 
         //Debug.Log($"{pos.x} + {pos.y} + {pos.z}");
         //Debug.Log($"{rotation.x} + {rotation.y} + {rotation.z}");
         //Debug.Log("값이 변경 됬나 ?");
+    }
+
+    IEnumerator PlayerRigidbody()
+    {
+        yield return null;
+        GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
     }
 }

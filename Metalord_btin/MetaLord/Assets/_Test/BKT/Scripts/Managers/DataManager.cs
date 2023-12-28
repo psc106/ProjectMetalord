@@ -31,6 +31,7 @@ public class DataManager : MonoBehaviour
     //1.저장 알림 -> 2. json 파일에 데이터 저장
     public void SaveGameData()
     {
+        MainSceneManager.instance.InputIdToObject(); // 맵 오브젝트에 id값 부여
         GameEventsManager.instance.dataEvents.SaveData(); //전체에 저장 이벤트 발생
         SaveDataToFile(); // 매니저에서 저장
     }
@@ -38,6 +39,7 @@ public class DataManager : MonoBehaviour
     // 1.json 파일 데이터 불러오기 -> 2.불러오기 알림
     public void LoadGameData()
     {
+        MainSceneManager.instance.InputIdToObject(); // 맵 오브젝트에 id값 부여
         LoadDataFromFile();
         GameEventsManager.instance.dataEvents.LoadData(); //전체에 저장 이벤트 발생
     }
@@ -59,8 +61,7 @@ public class DataManager : MonoBehaviour
         string jsonFilePath = Path.Combine(saveFolderPath, "GameData.json"); // json 폴더 + 파일 명
         string jsonData = File.ReadAllText(jsonFilePath);
 
-        Debug.Log(jsonData);
-
+        Debug.Log("데이터 불러오기");        
         JsonUtility.FromJsonOverwrite(jsonData,savedGamePlayData); // json 파일 덮어쓰기
     }
 

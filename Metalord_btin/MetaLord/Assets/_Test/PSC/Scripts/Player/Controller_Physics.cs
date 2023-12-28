@@ -534,14 +534,14 @@ public class Controller_Physics : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
+    //private void OnTriggerEnter(Collider other)
+    //{
 
-        if (other.gameObject.layer == catchObject)
-        {
-            Destroy(other.gameObject);
-        }
-    }
+    //    if (other.gameObject.layer == catchObject)
+    //    {
+    //        Destroy(other.gameObject);
+    //    }
+    //}
 
 
     private void OnCollisionEnter(Collision collision)
