@@ -5,17 +5,14 @@ using UnityEngine;
 [System.Serializable]
 public class SavedGamePlayData
 {
-    // 획득한 수집아이템 리스트의 ID값
-    public List<int> obtainedItemIDList;
-
-    // 소지한 재화
+    // 소지한 재화 OK
     public int money;
 
     //[임시] 맵에 배치된 오브젝트(소품) 위치값 저장을 위한 변수
-    // 배열 Index번호에 맞춰서 ID값과 X,Y,Z값을 불러옴
+    // 배열 Index번호에 맞춰서 ID값과 X,Y,Z값을 불러옴 OK
     public string[] recordItemTransform = new string[100];
 
-    // 1~50 작은코인, 51~99 큰코인, 100~ 주방,200~ 거실, 300~ 아기방
+    // 1~50 작은코인, 51~99 큰코인, 100~ 주방,200~ 거실, 300~ 아기방 OK
     public int[] coinAndRecordItem = new int[400];
 
     //[임시] 활성화된 기능을 위한 변수

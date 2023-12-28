@@ -26,29 +26,24 @@ public class PlayerData : MonoBehaviour
         pos = transform.localPosition;
         rotation = transform.eulerAngles;
 
-        string fileName = gameObject.name;
-        string saveFolderPath = Path.Combine(Application.dataPath, "JsonData"); // json 폴더까지 경로
-        string jsonFilePath = Path.Combine(saveFolderPath, fileName + ".json"); // json 폴더 + 파일 명
-        string jsonData = JsonUtility.ToJson(GetComponent<MoveObjectData>());   // 저장할 Json Data        
+        string jsonData = JsonUtility.ToJson(GetComponent<PlayerData>());   // 저장할 Json Data        
 
-        File.WriteAllText(jsonFilePath, jsonData); //파일로 저장
+        DataManager.instance.savedGamePlayData.playerTransform = jsonData;
+
     }
 
     // 오브젝트 불러오기
     public void LoadObject()
     {
-        string fileName = gameObject.name;
-        string saveFolderPath = Path.Combine(Application.dataPath, "JsonData"); // json 폴더까지 경로
-        string jsonFilePath = Path.Combine(saveFolderPath, fileName + ".json"); // json 폴더 + 파일 명
-        string jsonData = File.ReadAllText(jsonFilePath);                       // 불러올 Json Data
+        string jsonData = DataManager.instance.savedGamePlayData.playerTransform;// 불러올 Json Data
 
-        JsonUtility.FromJsonOverwrite(jsonData, GetComponent<MoveObjectData>()); // json 파일 덮어쓰기
+        JsonUtility.FromJsonOverwrite(jsonData, GetComponent<PlayerData>()); // json 파일 덮어쓰기
 
         transform.localPosition = pos;
         transform.eulerAngles = rotation;
 
-        Debug.Log($"{pos.x} + {pos.y} + {pos.z}");
-        Debug.Log($"{rotation.x} + {rotation.y} + {rotation.z}");
-        Debug.Log("값이 변경 됬나 ?");
+        //Debug.Log($"{pos.x} + {pos.y} + {pos.z}");
+        //Debug.Log($"{rotation.x} + {rotation.y} + {rotation.z}");
+        //Debug.Log("값이 변경 됬나 ?");
     }
 }
