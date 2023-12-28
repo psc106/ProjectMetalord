@@ -49,14 +49,9 @@ public class DialogueUI : MonoBehaviour
         myAduio.clip = textSound;
         myTextEffect = GetComponent<DialogueTypingEffect>();
         
-        //CloseDialogueUI();
+        CloseDialogueUI();
         CloseTutoQuestion();
         //ChangeFontSize(6);
-        
-        //Debug.Log("테스트 시작");
-        string test = "그리고 말끝나면 E 사용해서 대화 끝내 / 그리고 너! 만약이라도 접착제 인형들한테 쏘지마라 ";
-
-        StartCoroutine(myTextEffect.WriteTest(test, dialogueText));
     }
   
     #region TODO 삭제예정
