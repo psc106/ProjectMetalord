@@ -27,16 +27,16 @@ public class RecordItem : MonoBehaviour
         GameEventsManager.instance.dataEvents.onLoadData -= LoadData;
     }
 
+    // 수집아이템 활성화 여부 저장
     private void SaveData()
     {
-        // TODO 수집아이템 활성화 여부 저장
         DataManager.instance.savedGamePlayData.coinAndRecordItem[(int)recordItem] = isExist;
 
     }
 
+    // 수집아이템 활성화 여부 불러오기
     private void LoadData()
     {
-        // TODO 수집아이템 비활성화 여부 저장
         isExist = DataManager.instance.savedGamePlayData.coinAndRecordItem[(int)recordItem];
         CheckIsExist();
     }
@@ -57,6 +57,7 @@ public class RecordItem : MonoBehaviour
         }
     }
 
+    // 코인 존재 여부 체크
     private void CheckIsExist()
     {
         if (isExist == FALSE)
