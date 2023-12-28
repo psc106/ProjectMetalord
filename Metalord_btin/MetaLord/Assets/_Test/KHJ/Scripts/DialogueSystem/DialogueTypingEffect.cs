@@ -105,11 +105,12 @@ public class DialogueTypingEffect : MonoBehaviour
                 //myAudioClip = ChooseRandomSound(toneNumber);
                 //myAduio.PlayOneShot(myAudioClip);
                 PlayNpcSound(toneNumber);
-                yield return new WaitForSeconds(0.085f);
+                yield return new WaitForSecondsRealtime(0.085f); // WaitForSeconds(0.085f);
             }
-           
-                yield return new WaitForSeconds(0.02f);
-            
+
+            yield return new WaitForSecondsRealtime(0.02f);//WaitForSeconds(0.02f);
+
+
         }
         //for (int i = 0;  i < textToType.Length; i++)
         //{

@@ -7,17 +7,19 @@ using UnityEngine;
 using UnityEngine.UI;
 public class InteractUI : MonoBehaviour
 {
-   
+    public GameObject player;
+
+    GameObject interactCanvas;
     //private TMP_Text interactText = default;
+    Image fadeImage = default;
+    Image idleImage = default;
     private readonly float fadeTime = 1f;
-    public Image fadeImage = default;
-    public Image idleImage = default;
 
     public bool isShowInteractUI = false;
 
     bool isFadeIn = false;
     bool isFadeOut = false;
-    
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
@@ -35,7 +37,18 @@ public class InteractUI : MonoBehaviour
         }
     }
 
-   
+    private void Start()
+    {
+        player = GameObject.Find("Player");
+        interactCanvas = transform.parent.transform.GetChild(0).gameObject;
+        fadeImage = interactCanvas.transform.GetChild(0).GetComponent<Image>();
+        idleImage = interactCanvas.transform.GetChild(1).GetComponent<Image>();
+    }
+    private void Update()
+    {
+        interactCanvas.transform.LookAt(player.transform);
+        interactCanvas.transform.rotation = new Quaternion(0f, interactCanvas.transform.rotation.y , 0f, 0f);
+    }
     private IEnumerator FadeInImage(Image changeImage)
     {
         if (isFadeIn)
@@ -87,6 +100,13 @@ public class InteractUI : MonoBehaviour
             yield return null;
         }
         isFadeOut = false;
+    }
+
+    private void LookPlayer()
+    {
+        
+
+        
     }
 
 }
