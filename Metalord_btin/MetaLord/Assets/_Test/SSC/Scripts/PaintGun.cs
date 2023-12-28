@@ -84,15 +84,15 @@ public class PaintGun : GunBase
             }
 
             Ray muzzleRay = new Ray(state.startPoint, state.hit.point - state.startPoint);
-/*            if(state.minDistance == true)
-            {
+            /*            if(state.minDistance == true)
+                        {
 
-                muzzleRay = new Ray(state.startPoint, state.hit.point - state.startPoint);
-                UsedAmmo(muzzleRay, paintAmmo);
+                            muzzleRay = new Ray(state.startPoint, state.hit.point - state.startPoint);
+                            UsedAmmo(muzzleRay, paintAmmo);
 
-                fireStart = true;                
-                return;
-            }*/
+                            fireStart = true;                
+                            return;
+                        }*/
 
             UsedAmmo(muzzleRay, paintAmmo);
            

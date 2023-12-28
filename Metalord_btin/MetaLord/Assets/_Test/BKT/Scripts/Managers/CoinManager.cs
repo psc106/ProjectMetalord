@@ -41,7 +41,6 @@ public class CoinManager : MonoBehaviour
         currentCoin += coin; // 코인을 현재 코인에 반영
         GameEventsManager.instance.coinEvents.ChangeCoin(currentCoin); // 코인 먹을 경우 코인 변경
 
-        Debug.Log(currentCoin);
     }
 
     public void UseCoin(int coin)
