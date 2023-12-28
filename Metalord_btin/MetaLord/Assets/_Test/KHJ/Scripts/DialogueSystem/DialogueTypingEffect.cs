@@ -42,6 +42,7 @@ public class DialogueTypingEffect : MonoBehaviour
     //}
     public IEnumerator WriteEffect(string textToType, TMP_Text textLabel)
     {
+        //여기는 진입함
         isTypingRunning = true;
         textLabel.text = string.Empty;
        
@@ -51,7 +52,9 @@ public class DialogueTypingEffect : MonoBehaviour
         string completeSentence = PrintCompleteSentence(textToType);
         for (int i = 0; i < nanugi.Length; i++)
         {
-            float duration = Time.deltaTime;
+            Debug.Log("55번줄 WriteEffect 코루틴 for문  진입 ");
+
+            float duration = Time.unscaledDeltaTime;
             int charIndex = 0;
             if (nanugi[i] == chechLineC)
             {
@@ -61,14 +64,14 @@ public class DialogueTypingEffect : MonoBehaviour
             }
             while (charIndex < nanugi[i].Length)
             {
-                duration += Time.deltaTime * textSpeed;
+                duration += Time.unscaledDeltaTime * textSpeed;
                 charIndex = Mathf.FloorToInt(duration);
                 charIndex = Mathf.Clamp(charIndex, 0, textToType.Length);
 
                 textLabel.text = sumText + nanugi[i].Substring(0, charIndex).Trim();
                 //Debug.Log(textLabel.text);
                 yield return null;
-                //Debug.LogFormat("{0} <== This is chaiIndex ", charIndex);
+                Debug.LogFormat("{0} <== This is chaiIndex ", charIndex);
             }
             sumText = string.Empty;  //아마 간소화 가능 
             sumText += textLabel.text + " ";
