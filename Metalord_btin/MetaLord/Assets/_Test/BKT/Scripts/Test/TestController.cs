@@ -7,7 +7,7 @@ public class TestController : MonoBehaviour
     public GameObject recordUI; // 여기에 UI GameObject를 연결합니다.
     public GameObject storeUI;
     public GameObject settingUI;
-    public GameObject testObject;
+    
     private bool isRecordUIVisible = false; 
     private bool isSettingUIVisible = false;
     private bool isStoreUIVisible = false;
@@ -43,17 +43,17 @@ public class TestController : MonoBehaviour
             settingUI.SetActive(isSettingUIVisible);
         }
 
-        //환경설정창
+        // 저장
         if (Input.GetKeyDown(KeyCode.Z))
         {
-            testObject.GetComponent<MoveObjectData>().SaveObject();
+            DataManager.instance.SaveGameData();
             
         }
 
-        //환경설정창
+        // 불러오기
         if (Input.GetKeyDown(KeyCode.X))
         {
-            testObject.GetComponent<MoveObjectData>().LoadObject();
+            DataManager.instance.LoadGameData();
 
         }
 

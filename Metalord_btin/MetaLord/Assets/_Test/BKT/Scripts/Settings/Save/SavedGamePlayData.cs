@@ -9,7 +9,7 @@ public class SavedGamePlayData
     public List<int> obtainedItemIDList;
 
     // 소지한 재화
-    public int Money;
+    public int money;
 
     //[임시] 맵에 배치된 오브젝트(소품) 위치값 저장을 위한 변수
     // 배열 Index번호에 맞춰서 ID값과 X,Y,Z값을 불러옴
@@ -17,7 +17,6 @@ public class SavedGamePlayData
 
     // 1~50 작은코인, 51~99 큰코인, 100~ 주방,200~ 거실, 300~ 아기방
     public int[] coinAndRecordItem = new int[400];
-
 
     //[임시] 활성화된 기능을 위한 변수
     public bool skill_Catch;  //잡기형 스킬

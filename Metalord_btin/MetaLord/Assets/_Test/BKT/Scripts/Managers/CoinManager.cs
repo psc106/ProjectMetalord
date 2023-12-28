@@ -43,14 +43,16 @@ public class CoinManager : MonoBehaviour
         GameEventsManager.instance.dataEvents.onLoadData -= LoadCoin;
     }
 
+    // 현재 코인 저장
     private void SaveCoin()
     {
-        //TODO 돈 저장
+        DataManager.instance.savedGamePlayData.money = currentCoin;
     }
 
+    // 코인 불러오기
     private void LoadCoin()
     {
-        //TODO 돈 적용
+        currentCoin = DataManager.instance.savedGamePlayData.money;
     }
 
     private void Start()
