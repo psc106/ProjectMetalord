@@ -57,12 +57,13 @@ public class RecordItem : MonoBehaviour
         }
     }
 
-    // 코인 존재 여부 체크
+    // 수집아이템 존재 여부 체크
     private void CheckIsExist()
     {
         if (isExist == FALSE)
         {
-            isExist = FALSE;
+            isExist = FALSE; // 존재 여부 False 적용
+            GameEventsManager.instance.recordEvents.GetRecordItem((int)recordItem); // 도감에 적용
             gameObject.SetActive(false); //비활성화로 변경
         }
     }

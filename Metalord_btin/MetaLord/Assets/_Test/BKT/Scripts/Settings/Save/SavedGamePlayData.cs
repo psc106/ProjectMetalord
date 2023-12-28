@@ -16,7 +16,7 @@ public class SavedGamePlayData
     public string[] recordItemTransform = new string[100];
 
     // 1~50 작은코인, 51~99 큰코인, 100~ 주방,200~ 거실, 300~ 아기방
-    public int[] coinAndRecordItem = new int[400]; //TODO Coin + RecordItem 전체 인덱스값
+    public int[] coinAndRecordItem = new int[400];
 
 
     //[임시] 활성화된 기능을 위한 변수
