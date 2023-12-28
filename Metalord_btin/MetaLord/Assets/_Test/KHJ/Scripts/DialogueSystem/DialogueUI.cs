@@ -52,11 +52,6 @@ public class DialogueUI : MonoBehaviour
         CloseDialogueUI();
         CloseTutoQuestion();
         //ChangeFontSize(6);
-        
-        //Debug.Log("테스트 시작");
-        //string test = "<color=#ff40FF>test</color> test";
-
-        //StartCoroutine(myTextEffect.WriteTest(test, dialogueText));
     }
   
     #region TODO 삭제예정
@@ -190,7 +185,8 @@ public class DialogueUI : MonoBehaviour
                 //만약 대화ID당 한사람만 말하는 것이 아니라면 이 안에다가 voice 를 넣어줘야할듯
                 yield return RunTypingEffect(dialogue, voice);
 
-                dialogueText.text = dialogue;
+                dialogueText.text = myTextEffect.PrintCompleteSentence(dialogue); //요거를 라인변경된 값으로 바꿔줘야함
+                
                 myTextEffect.fadeImgae.SetActive(true);
 
                 yield return null;

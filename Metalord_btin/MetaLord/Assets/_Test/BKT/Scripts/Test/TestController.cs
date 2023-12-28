@@ -7,6 +7,7 @@ public class TestController : MonoBehaviour
     public GameObject recordUI; // 여기에 UI GameObject를 연결합니다.
     public GameObject storeUI;
     public GameObject settingUI;
+    
     private bool isRecordUIVisible = false; 
     private bool isSettingUIVisible = false;
     private bool isStoreUIVisible = false;
@@ -40,6 +41,21 @@ public class TestController : MonoBehaviour
             // W 키를 누르면 UI를 켜기 or 끄기
             isSettingUIVisible = !isSettingUIVisible;
             settingUI.SetActive(isSettingUIVisible);
+        }
+
+        // 저장
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            DataManager.instance.SaveGameData();
+            Debug.Log("저장버튼 눌렸음");
+        }
+
+        // 불러오기
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            DataManager.instance.LoadGameData();
+            Debug.Log("불러오기버튼 눌렸음");
+
         }
 
         if (Input.GetKeyDown(KeyCode.Escape))

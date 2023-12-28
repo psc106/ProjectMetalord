@@ -27,18 +27,6 @@ abstract public class GunBase : MonoBehaviour
         }
     }
     abstract public void ShootGun();
-
-    // TODO : UsedAmmo랑 구조적으로 합칠수 있는지 생각해보기
-    //protected void PaintingNpc(Ray muzzleRay, int paintAmmo)
-    //{
-    //    //state.targetNpc = state.hit.transform.GetComponent<NpcBase>();
-    //    BoxCollider interactZone = state.targetNpc.GetComponent<BoxCollider>();
-    //    interactZone.enabled = false;
-    //    UsedAmmo(muzzleRay, paintAmmo);
-    //    interactZone.enabled = true;
-    //    //state.targetNpc.ChangedState(npcState.glued);
-    //    //GunStateController.AddList(state.targetNpc);
-    //}
     
     protected void UsedAmmo(Ray _ray, int _ammo)
     {
@@ -83,7 +71,7 @@ abstract public class GunBase : MonoBehaviour
 
     protected virtual bool CheckCanFire()
     {
-        if(!state.CanFire || state.Ammo < -ammo)
+        if(!state.CanFire || !CanFireAmmoCount())
         {
             return false;
         }
@@ -101,6 +89,7 @@ abstract public class GunBase : MonoBehaviour
     {
         if (shootCoroutine != null) { StopCoroutine(shootCoroutine); }
     }
+
 
     IEnumerator LerpGauge(int usingAmmo)
     {

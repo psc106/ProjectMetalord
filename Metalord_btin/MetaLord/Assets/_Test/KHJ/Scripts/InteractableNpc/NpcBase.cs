@@ -23,7 +23,7 @@ public class NpcBase : MonoBehaviour
         state = npcState.normal;                
     }
     
-    public void ChangedState(npcState _change)
+    public virtual void ChangedState(npcState _change)
     {
             Debug.LogFormat("{0} <==현재 변경될 상태, {1}<====현재 상태", _change, state);
         if(_change == npcState.objectAttached)

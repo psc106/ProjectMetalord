@@ -6,8 +6,8 @@ public class DinosaurNpc : NpcBase, IInteractNpc
 {
     public void InteractNpc()
     {
-        // 공룡 19
-        myDialogue.CheckStateDialogue(19, state);
+        // 공룡 18
+        myDialogue.CheckStateDialogue(18, state);
     }
 }
 
