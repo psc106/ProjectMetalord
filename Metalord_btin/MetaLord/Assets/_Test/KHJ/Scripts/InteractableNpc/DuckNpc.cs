@@ -6,8 +6,8 @@ public class DuckNpc : NpcBase, IInteractNpc
 {
     public void InteractNpc()
     {
-        //¿À¸® 40
-        myDialogue.CheckStateDialogue(40, state);
+        //ì˜¤ë¦¬ 39
+        myDialogue.CheckStateDialogue(39, state);
     }
 }
 

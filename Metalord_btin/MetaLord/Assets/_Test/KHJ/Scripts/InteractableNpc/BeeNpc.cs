@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class BeeNpc : NpcBase, IInteractNpc
 {
-    //꿀벌 : 16
+    //꿀벌 : 15
     public void InteractNpc()
     {
-        myDialogue.CheckStateDialogue(16,state);
+        myDialogue.CheckStateDialogue(15,state);
     }
 }

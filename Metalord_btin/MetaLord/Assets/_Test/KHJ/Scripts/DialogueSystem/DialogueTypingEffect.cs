@@ -44,19 +44,15 @@ public class DialogueTypingEffect : MonoBehaviour
     {
         isTypingRunning = true;
         textLabel.text = string.Empty;
-        
-        float duration = Time.deltaTime;
-        int charIndex = 0;
+       
         string chechLineC = "/";
         string[] nanugi = textToType.Split(new char[] { ' ' });
         string sumText = string.Empty;
-
+        string completeSentence = PrintCompleteSentence(textToType);
         for (int i = 0; i < nanugi.Length; i++)
         {
-            duration = Time.deltaTime;
-            charIndex = 0;
-            Debug.LogFormat("{0} <<< 이게 sumText", sumText);
-            //Debug.Log(nanugi[i]);
+            float duration = Time.deltaTime;
+            int charIndex = 0;
             if (nanugi[i] == chechLineC)
             {
                 //Debug.Log("같으면 들어오는건데");
@@ -69,20 +65,22 @@ public class DialogueTypingEffect : MonoBehaviour
                 charIndex = Mathf.FloorToInt(duration);
                 charIndex = Mathf.Clamp(charIndex, 0, textToType.Length);
 
-                textLabel.text = sumText + nanugi[i].Substring(0, charIndex);
+                textLabel.text = sumText + nanugi[i].Substring(0, charIndex).Trim();
                 //Debug.Log(textLabel.text);
                 yield return null;
                 //Debug.LogFormat("{0} <== This is chaiIndex ", charIndex);
             }
-            sumText = string.Empty;
+            sumText = string.Empty;  //아마 간소화 가능 
             sumText += textLabel.text + " ";
+            //Debug.LogFormat("{0} <<< 이게 sumText", sumText);
         }
 
         //StartCoroutine(TextSoundEffect(textToType,myAduio,textSound));
         isTypingRunning = false;
         Debug.Log("WriteEffect 끝났습니다?");
         fadeImgae.SetActive(true);
-        //textLabel.text = sumText;
+        textLabel.text = PrintCompleteSentence(completeSentence);
+        Debug.LogFormat("완전한 문장 : {0} ", completeSentence);
     }
 
     public IEnumerator TextSoundEffect(string textToType,AudioSource myAudio, int toneNumber)
@@ -91,17 +89,27 @@ public class DialogueTypingEffect : MonoBehaviour
         //Debug.Log(temporaryText.Length);
         for(int i = 0; i < temporaryText.Length; i++)
         {
+            if (temporaryText[i] == "/")
+            {
+                continue;
+            }
             //string[] row = testText[i].Split(new char[] { ' ' });
             //Debug.Log(temporaryText[i].Length);
             //Debug.LogFormat("{0} <=== 텍스트", temporaryText[i]);
             for (int j = 0; j < temporaryText[i].Length; j++)
             {
+                //if (temporaryText[i] == "/")
+                //{
+                //    continue;
+                //}
                 //myAudioClip = ChooseRandomSound(toneNumber);
                 //myAduio.PlayOneShot(myAudioClip);
                 PlayNpcSound(toneNumber);
                 yield return new WaitForSeconds(0.085f);
             }
-            yield return new WaitForSeconds(0.06f);
+           
+                yield return new WaitForSeconds(0.02f);
+            
         }
         //for (int i = 0;  i < textToType.Length; i++)
         //{
@@ -128,6 +136,27 @@ public class DialogueTypingEffect : MonoBehaviour
             randomNumber = 20 + UnityEngine.Random.Range(0, highTone.Length);
         }
         SoundManager.instance.PlaySound(GroupList.Npc, randomNumber);
+    }
+
+    public string PrintCompleteSentence(string text)
+    {
+        string[] nanugi = text.Split(new char[] { ' ' });
+        string completeSentence = string.Empty;
+        string chechLineC = "/";
+
+        for (int i = 0; i < nanugi.Length; i++)
+        {
+
+            //Debug.Log(nanugi[i]);
+            if (nanugi[i] == chechLineC)
+            {
+                //Debug.Log("같으면 들어오는건데");
+                completeSentence += "\n";
+                continue;
+            }
+            completeSentence += nanugi[i] + " ";
+        }
+        return completeSentence;
     }
 
     //TODO 삭제예정

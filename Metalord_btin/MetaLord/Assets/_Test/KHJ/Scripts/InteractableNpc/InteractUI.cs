@@ -11,6 +11,7 @@ public class InteractUI : MonoBehaviour
     //private TMP_Text interactText = default;
     private readonly float fadeTime = 1f;
     public Image fadeImage = default;
+    public Image idleImage = default;
 
     public bool isShowInteractUI = false;
 
@@ -21,19 +22,21 @@ public class InteractUI : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            StartCoroutine(FadeInImage());
+            StartCoroutine(FadeOutImage(idleImage));
+            StartCoroutine(FadeInImage(fadeImage));
         }
     }
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            StartCoroutine(FadeOutImage());
+            StartCoroutine(FadeInImage(idleImage));
+            StartCoroutine(FadeOutImage(fadeImage));
         }
     }
 
    
-    private IEnumerator FadeInImage()
+    private IEnumerator FadeInImage(Image changeImage)
     {
         if (isFadeIn)
         {
@@ -50,15 +53,15 @@ public class InteractUI : MonoBehaviour
             current += 2f * Time.deltaTime;
             percent = current / fadeTime;
 
-            Color color = fadeImage.color;
+            Color color = changeImage.color;
             color.a = Mathf.Lerp(start, end, percent);
-            fadeImage.color = color;
+            changeImage.color = color;
 
             yield return null;
         }
         isFadeIn = false;
     }
-    private IEnumerator FadeOutImage()
+    private IEnumerator FadeOutImage(Image changeImage)
     {
         if (isFadeOut)
         {
@@ -77,9 +80,9 @@ public class InteractUI : MonoBehaviour
             current += 2f * Time.deltaTime;
             percent = current / fadeTime;
 
-            Color color = fadeImage.color;
+            Color color = changeImage.color;
             color.a = Mathf.Lerp(start, end, percent);
-            fadeImage.color = color;
+            changeImage.color = color;
 
             yield return null;
         }

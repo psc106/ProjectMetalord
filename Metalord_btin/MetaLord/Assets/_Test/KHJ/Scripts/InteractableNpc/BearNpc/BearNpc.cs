@@ -6,8 +6,8 @@ public class BearNpc : NpcBase, IInteractNpc
 {
     public void InteractNpc()
     {
-        // 곰 37
-        myDialogue.CheckStateDialogue(37, state);
+        // 곰 36
+        myDialogue.CheckStateDialogue(36, state);
     }
 
 }
