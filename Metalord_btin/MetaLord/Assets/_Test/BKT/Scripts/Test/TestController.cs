@@ -47,13 +47,14 @@ public class TestController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Z))
         {
             DataManager.instance.SaveGameData();
-            
+            Debug.Log("저장버튼 눌렸음");
         }
 
         // 불러오기
         if (Input.GetKeyDown(KeyCode.X))
         {
             DataManager.instance.LoadGameData();
+            Debug.Log("불러오기버튼 눌렸음");
 
         }
 

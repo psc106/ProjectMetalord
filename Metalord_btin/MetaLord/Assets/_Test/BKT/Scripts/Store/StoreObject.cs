@@ -19,18 +19,17 @@ public class StoreObject : MonoBehaviour
         GameEventsManager.instance.coinEvents.onChangeCoin += ChangeButtonUI;       
     }
 
+    private void Start()
+    {
+        GameEventsManager.instance.dataEvents.onSaveData += SaveData;
+        GameEventsManager.instance.dataEvents.onLoadData += LoadData;
+        
+    }
+
     private void OnEnable()
     {
         ChangeButtonUI(0);
 
-        GameEventsManager.instance.dataEvents.onSaveData += SaveData;
-        GameEventsManager.instance.dataEvents.onLoadData += LoadData;
-    }
-
-    private void OnDisable()
-    {
-        GameEventsManager.instance.dataEvents.onSaveData -= SaveData;
-        GameEventsManager.instance.dataEvents.onLoadData -= LoadData;
     }
 
     protected virtual void SaveData()
@@ -47,6 +46,8 @@ public class StoreObject : MonoBehaviour
     {
         GameEventsManager.instance.coinEvents.onChangeCoin -= ChangeButtonUI;
 
+        GameEventsManager.instance.dataEvents.onSaveData -= SaveData;
+        GameEventsManager.instance.dataEvents.onLoadData -= LoadData;
 
     }
 

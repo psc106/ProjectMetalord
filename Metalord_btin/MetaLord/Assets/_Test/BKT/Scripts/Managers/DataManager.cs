@@ -11,8 +11,6 @@ public class DataManager : MonoBehaviour
 
     public SavedGamePlayData savedGamePlayData; // 게임 플레이에 관한 데이터
     public SavedSettingsData savedSettingsData; // 게임 환경설정에 관한 데이터
-    
-    private string path; // 로컬 저장경로
 
     private void Awake()
     {
@@ -49,7 +47,7 @@ public class DataManager : MonoBehaviour
     {
         string saveFolderPath = Path.Combine(Application.dataPath, "JsonData"); // json 폴더까지 경로
         string jsonFilePath = Path.Combine(saveFolderPath, "GameData.json"); // json 폴더 + 파일 명
-        string jsonData = JsonUtility.ToJson(savedGamePlayData);
+        string jsonData = JsonUtility.ToJson(savedGamePlayData,true);
 
         File.WriteAllText(jsonFilePath, jsonData); //파일로 저장
     }
@@ -60,6 +58,8 @@ public class DataManager : MonoBehaviour
         string saveFolderPath = Path.Combine(Application.dataPath, "JsonData"); // json 폴더까지 경로
         string jsonFilePath = Path.Combine(saveFolderPath, "GameData.json"); // json 폴더 + 파일 명
         string jsonData = File.ReadAllText(jsonFilePath);
+
+        Debug.Log(jsonData);
 
         JsonUtility.FromJsonOverwrite(jsonData,savedGamePlayData); // json 파일 덮어쓰기
     }
