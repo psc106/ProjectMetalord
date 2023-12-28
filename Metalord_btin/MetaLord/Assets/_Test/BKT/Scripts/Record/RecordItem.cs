@@ -10,13 +10,18 @@ public class RecordItem : MonoBehaviour
 {
     [SerializeField] RecordList recordItem;
 
-    private void OnEnable()
+    const int FALSE = 0;
+    const int TRUE = 1;
+    private int isExist = TRUE; // 존재하는가
+
+
+    private void Start()
     {
         GameEventsManager.instance.dataEvents.onSaveData += SaveData;
         GameEventsManager.instance.dataEvents.onLoadData += LoadData;
     }
-
-    private void OnDisable()
+ 
+    private void OnDestroy()
     {
         GameEventsManager.instance.dataEvents.onSaveData -= SaveData;
         GameEventsManager.instance.dataEvents.onLoadData -= LoadData;
@@ -25,11 +30,15 @@ public class RecordItem : MonoBehaviour
     private void SaveData()
     {
         // TODO 수집아이템 활성화 여부 저장
+        DataManager.instance.savedGamePlayData.coinAndRecordItem[(int)recordItem] = isExist;
+
     }
 
     private void LoadData()
     {
         // TODO 수집아이템 비활성화 여부 저장
+        isExist = DataManager.instance.savedGamePlayData.coinAndRecordItem[(int)recordItem];
+        CheckIsExist();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -43,7 +52,17 @@ public class RecordItem : MonoBehaviour
             SoundManager.instance.PlaySound(GroupList.Item, id);
 
             //Debug.Log($"수집품 ID : {(int)recordItem}, 이름 : {recordItem}");
-            Destroy(this.gameObject);
+            isExist = FALSE;
+            gameObject.SetActive(false);
+        }
+    }
+
+    private void CheckIsExist()
+    {
+        if (isExist == FALSE)
+        {
+            isExist = FALSE;
+            gameObject.SetActive(false); //비활성화로 변경
         }
     }
 }

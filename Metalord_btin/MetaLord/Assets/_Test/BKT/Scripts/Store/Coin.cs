@@ -44,7 +44,7 @@ public class Coin : MonoBehaviour
     {
         // TODO 코인 활성화 여부 불러오기
         isExist = DataManager.instance.savedGamePlayData.coinAndRecordItem[id];
-        CheckExistCoin();
+        CheckIsExist();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -69,7 +69,7 @@ public class Coin : MonoBehaviour
     }
 
     // 코인이 존재하는지 체크
-    private void CheckExistCoin()
+    private void CheckIsExist()
     {
         if(isExist == FALSE)
         {
