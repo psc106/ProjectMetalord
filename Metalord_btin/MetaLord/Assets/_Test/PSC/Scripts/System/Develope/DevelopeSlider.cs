@@ -1,4 +1,5 @@
 
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -11,7 +12,7 @@ public class DevelopeSlider : MonoBehaviour, IPointerUpHandler, IPointerDownHand
     [SerializeField]
     Slider slider;
     [SerializeField]
-    Text valueText;
+    TMP_InputField valueText;
 
     [SerializeField]
     SliderType type;
@@ -21,7 +22,7 @@ public class DevelopeSlider : MonoBehaviour, IPointerUpHandler, IPointerDownHand
         if(slider==null)
             slider = GetComponent<Slider>();
         if (valueText == null)
-            valueText = GetComponentInChildren<Text>();
+            valueText = GetComponentInChildren<TMP_InputField>();
     }
 
     private void OnEnable()
@@ -31,12 +32,29 @@ public class DevelopeSlider : MonoBehaviour, IPointerUpHandler, IPointerDownHand
 
     public void SlideValue()
     {
-        valueText.text = slider.value.ToString();
+        if (previousValue != slider.value)
+        {
+            previousValue = slider.value;
+            valueText.text = slider.value.ToString();
+            SetValue();
+        }
+    }
+    public void SetValue()
+    {
+        float.TryParse(valueText.text, out float result);
+        slider.value = result;
+        player.SetValue(type, result);
     }
 
+    float previousValue = 0;
     public void OnPointerUp(PointerEventData eventData)
     {
-        SetValue();
+        if(previousValue != slider.value) 
+        {
+            previousValue = slider.value;
+            valueText.text = slider.value.ToString();
+            SetValue();
+        }
     }
 
     public void OnPointerDown(PointerEventData eventData)
@@ -48,16 +66,10 @@ public class DevelopeSlider : MonoBehaviour, IPointerUpHandler, IPointerDownHand
         if (player == null)
             player = FindObjectOfType<Controller_Physics>();
         slider.value = player.GetValue(type);
-        valueText.text = slider.value.ToString();
-
+        valueText.text = player.GetValue(type).ToString();
+        previousValue = slider.value;
     }
 
-    void SetValue()
-    {
-        //slider.value = (slider.value);
-        player.SetValue(type, slider.value);
-        valueText.text = slider.value.ToString();
-    }
 }
 
 public enum SliderType

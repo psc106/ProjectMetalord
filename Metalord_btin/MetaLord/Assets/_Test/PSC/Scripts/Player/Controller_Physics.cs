@@ -356,7 +356,7 @@ public class Controller_Physics : MonoBehaviour
             gunController.Reloading();
         }
 
-        // 1번키 누르면 페인트건
+       /* // 1번키 누르면 페인트건
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             //SwapTest(GunMode.Paint);
@@ -378,7 +378,7 @@ public class Controller_Physics : MonoBehaviour
             //SwapTest(GunMode.Bond);
             gunController.SwapGunMode(GunMode.Bond);
             //SwapBondGun();
-        }
+        }*/
 
     }
 
@@ -449,8 +449,34 @@ public class Controller_Physics : MonoBehaviour
             velocity += gravity * Time.deltaTime;
         }
 
+        Vector3 limit = velocity;
+        /*if(velocity.y > 30)
+        {
+            limit.y = 30;
+        }
+        else if(rb.velocity.y< -50)
+        {
+            limit.y = -50;
+        }
+        if (velocity.x > 30)
+        {
+            limit.x = 30;
+        } 
+        else if (velocity.x < -30)
+        {
+            limit.x = -30;
+        }
+        if (velocity.z > 30)
+        {
+            limit.z = 30;
+        }
+        else if (velocity.z < -30)
+        {
+            limit.z = -30;
+        }*/
+
         //속도 적용
-        rb.velocity = velocity;
+        rb.velocity = limit;
 
         //상태 초기화
         ClearState();

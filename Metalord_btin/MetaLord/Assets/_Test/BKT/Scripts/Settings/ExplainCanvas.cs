@@ -44,6 +44,8 @@ public class ExplainCanvas : MonoBehaviour
     private void Awake()
     {
         isFirstOpen = true;
+        Controller_Physics.SwitchCameraLock(true);
+        Cursor.visible = false;
     }
 
     private void OnEnable()
