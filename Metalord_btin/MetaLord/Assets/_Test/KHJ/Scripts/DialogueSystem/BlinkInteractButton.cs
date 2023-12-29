@@ -5,8 +5,8 @@ using UnityEngine.UI;
 public class BlinkInteractButton : MonoBehaviour
 {
     [SerializeField]
-    private float fadeTime;  //ÆäÀÌµå µÇ´Â ½Ã°£
-    private Image fadeImage; //ÆäÀÌµå È¿°ú¿¡ »ç¿ëµÇ´Â ÀÌ¹ÌÁö
+    private float fadeTime;  //í˜ì´ë“œ ë˜ëŠ” ì‹œê°„
+    private Image fadeImage; //í˜ì´ë“œ íš¨ê³¼ì— ì‚¬ìš©ë˜ëŠ” ì´ë¯¸ì§€
                              // private Coroutine fadeInOut;
     private void Awake()
     {
