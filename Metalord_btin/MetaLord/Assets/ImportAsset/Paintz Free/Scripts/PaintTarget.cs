@@ -589,10 +589,11 @@ public class PaintTarget : MonoBehaviour
         setupComplete = true;
     }
 
+
     private void CreateComputeShader()
     {
         return;
-        Debug.Log(ReadPixel);
+        /*Debug.Log(ReadPixel);
 
         ReadPixel = Instantiate((ComputeShader)Resources.Load("Shader/ReadPixel"));
 
@@ -601,7 +602,7 @@ public class PaintTarget : MonoBehaviour
         ReadPixel.SetBuffer(kernelID, "outputBuffer", outputBuffer);
 
         ReadPixel.SetTexture(kernelID, "inputTextureEven", splatTex);
-        ReadPixel.SetTexture(kernelID, "inputTextureOdd", splatTexAlt);
+        ReadPixel.SetTexture(kernelID, "inputTextureOdd", splatTexAlt);*/
     }
 
     private void CreateMaterials()

@@ -22,9 +22,9 @@ public class StorySceneManager : MonoBehaviour
     bool canSkip = true;
 
     [SerializeField]
-    GameSceneManager.SceneList currentScene;
+    GameSceneController.SceneList currentScene;
     [SerializeField]
-    GameSceneManager.SceneList nextScene;
+    GameSceneController.SceneList nextScene;
 
     private void Start()
     {
@@ -72,7 +72,7 @@ public class StorySceneManager : MonoBehaviour
 
     public void LoadNextScene()
     {
-        StartCoroutine(GameSceneManager.LoadSceneAsync(currentScene, nextScene));
+        StartCoroutine(GameSceneController.LoadSceneAsync(currentScene, nextScene));
     }
 
 }

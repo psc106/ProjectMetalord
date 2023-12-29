@@ -11,14 +11,15 @@ public class UI_Sort : MonoBehaviour
     // 켜질때 정렬 초기화
     private void OnEnable()
     {
-        if(RecordManager.instance != null) RecordManager.instance.ResetRecord();
-        else Debug.Log("UI Sort OnEnable");
-
+        if (RecordManager.instance != null) RecordManager.instance.ResetRecord();
+        else// Debug.Log("UI Sort OnEnable");
+        { }
     }
 
     private void Start()
     {
         if (RecordManager.instance != null) RecordManager.instance.ResetRecord();
-        else Debug.Log("UI Sort Start");
+        else// Debug.Log("UI Sort Start");
+        { }
     }
 }
