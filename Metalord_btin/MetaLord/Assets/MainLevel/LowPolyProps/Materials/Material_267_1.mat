@@ -8,12 +8,12 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Material_267_1
-  m_Shader: {fileID: 4800000, guid: 2b0f5fce771a1c645adeaed55998c8f1, type: 3}
+  m_Shader: {fileID: 4800000, guid: a257d559b399108449394b3f092f2559, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords:
+  m_ValidKeywords:
   - _ALPHAPREMULTIPLY_ON
+  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -74,6 +74,8 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _Alpha: 1
+    - _AlphaDefault: 0
     - _BumpPower: 1
     - _BumpScale: 1
     - _Cutoff: 0.5

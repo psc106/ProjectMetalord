@@ -23,27 +23,27 @@ public class GrabGun : GunBase
     Vector3 followPos;
     
     float maxSpeed = 3f;
-    public override void ShootGun()
+    public override bool ShootGun()
     {        
         if(CheckCanFire() == false)
         {
-            return;
+            return false;
         }
 
-        OneShotGrab();
+        return OneShotGrab();
     }
 
-    void OneShotGrab()
+    bool OneShotGrab()
     {           
         if (targetRigid || state.Ammo < - ammo)
         {            
             CancelObj();
-            return;
+            return false;
         }
                 
         if (state.hit.transform == null)
         {
-            return;
+            return false;
         }
 
         state.pickupPoint.position = state.hit.point;
@@ -60,6 +60,7 @@ public class GrabGun : GunBase
         //}
 
         FollowingObj();        
+        return true;
     }
 
     private void Update()
@@ -71,7 +72,7 @@ public class GrabGun : GunBase
     {
         if (targetRigid)
         {
-            if (state.getconnect() == targetRigid)
+            if (state.GetConnectObject() == targetRigid)
             {
                 CancelObj();
                 return;
@@ -129,7 +130,8 @@ public class GrabGun : GunBase
         targetObj = null;
         state.grabLine.enabled = false;
         targetRigid = null;
-        state.onGrab = false;        
+        state.onGrab = false;
+        state.isShootingState = false;
     }
 
     void FollowingObj( )
@@ -144,8 +146,9 @@ public class GrabGun : GunBase
         state.hit.transform.GetComponent<SSC_GrabObj>().ChangedState();
         targetRigid.constraints = RigidbodyConstraints.FreezeRotation;
         targetRigid.useGravity = false;
+        state.isShootingState = true;
 
-        if(state.Ammo > -ammo)
+        if (state.Ammo > -ammo)
         {
             //state.UpdateState(ammo);
             UsedAmmo(ammo);
