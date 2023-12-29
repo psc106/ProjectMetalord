@@ -8,6 +8,7 @@ abstract public class GunBase : MonoBehaviour
     protected Brush brush = null;
     protected Transform AimTarget = null;
     protected int ammo;
+    public bool fireStart = false;
     public LayerMask myLayer;
     Coroutine shootCoroutine;
     
