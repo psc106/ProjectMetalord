@@ -66,8 +66,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb5c3a6d9dca6f34e87c96a478dcd13c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fadeImage: {fileID: 3673953700429976785}
-  idleImage: {fileID: 7868037160388538127}
+  player: {fileID: 0}
   isShowInteractUI: 0
 --- !u!1 &2996097611897435313
 GameObject:
@@ -313,6 +312,7 @@ MonoBehaviour:
   PaintAllSplats: 0
   debugTexture: 0
   splatTexPick: {fileID: 0}
+  ReadPixel: {fileID: 0}
   originTex: {fileID: 0}
 --- !u!1 &5571162846762206025
 GameObject:

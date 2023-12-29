@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -39,6 +40,7 @@ public class InteractUI : MonoBehaviour
 
     private void Start()
     {
+        playerCamera = Camera.main.transform;
         player = GameObject.Find("Player");
         interactCanvas = transform.parent.transform.GetChild(0).gameObject;
         fadeImage = interactCanvas.transform.GetChild(0).GetComponent<Image>();
@@ -46,8 +48,7 @@ public class InteractUI : MonoBehaviour
     }
     private void Update()
     {
-        interactCanvas.transform.LookAt(player.transform);
-        interactCanvas.transform.rotation = new Quaternion(0f, interactCanvas.transform.rotation.y , 0f, 0f);
+        LookPlayer();
     }
     private IEnumerator FadeInImage(Image changeImage)
     {
@@ -102,11 +103,10 @@ public class InteractUI : MonoBehaviour
         isFadeOut = false;
     }
 
+    Transform playerCamera;
     private void LookPlayer()
     {
-        
-
-        
+        interactCanvas.transform.forward = -new Vector3(playerCamera.forward.x, 0, playerCamera.forward.z);
     }
 
 }
