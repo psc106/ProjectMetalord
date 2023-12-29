@@ -331,6 +331,7 @@ public class Controller_Physics : MonoBehaviour
         {
             if (gunController.CurrentMode.ShootGun())
             {
+                gunController.Shoot(GunMode.Paint);
                 idleTime = 0;
             }
         }
@@ -340,8 +341,14 @@ public class Controller_Physics : MonoBehaviour
             desireFire = false;
             if(gunController.CurrentMode.ShootGun())
             {
+                gunController.Shoot(GunMode.Paint);
                 idleTime = 0;
             }
+        }
+
+        if(Input.GetMouseButtonDown(1))
+        {
+            gunController.Shoot(GunMode.Grab);
         }
 
         // 장전        

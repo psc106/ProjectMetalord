@@ -20,7 +20,7 @@ public class MovedObject : MonoBehaviour
         1 << LayerMask.NameToLayer("NPC") |
         1 << LayerMask.NameToLayer("StaticObject") |
         1 << LayerMask.NameToLayer("MovedObject") |
-        1 << LayerMask.NameToLayer("CatchObject");
+        1 << LayerMask.NameToLayer("GrabedObject");
     }
 
     public void InitParentMovedObject()
@@ -32,7 +32,7 @@ public class MovedObject : MonoBehaviour
         1 << LayerMask.NameToLayer("NPC") |
         1 << LayerMask.NameToLayer("StaticObject") |
         1 << LayerMask.NameToLayer("MovedObject") |
-        1 << LayerMask.NameToLayer("CatchObject");
+        1 << LayerMask.NameToLayer("GrabedObject");
     }
 
     private void Update()
@@ -91,7 +91,7 @@ public class MovedObject : MonoBehaviour
                 {                    
                     // 상위 오브젝트 생성
                     parentObj = new GameObject();
-                    parentObj.transform.gameObject.layer = LayerMask.NameToLayer("CatchObject");                    
+                    parentObj.transform.gameObject.layer = LayerMask.NameToLayer("GrabedObject");                    
                     CatchObject controll = parentObj.AddComponent<CatchObject>();
                     GunStateController.AddList(controll);
                     parentObj.transform.position = collision.contacts[i].point;
@@ -109,7 +109,7 @@ public class MovedObject : MonoBehaviour
                     GameObject contactObj = collision.gameObject;                    
 
                     // 부모가 상위 오브젝트 경우
-                    if(contactObj.transform.parent.gameObject.layer == LayerMask.NameToLayer("CatchObject"))
+                    if(contactObj.transform.parent.gameObject.layer == LayerMask.NameToLayer("GrabedObject"))
                     {                        
                         // HashSet 갱신    
                         transform.parent = contactObj.transform.parent;
@@ -121,7 +121,7 @@ public class MovedObject : MonoBehaviour
                     {                        
                         // 상위 오브젝트 생성
                         parentObj = new GameObject();
-                        parentObj.transform.gameObject.layer = LayerMask.NameToLayer("CatchObject");                        
+                        parentObj.transform.gameObject.layer = LayerMask.NameToLayer("GrabedObject");                        
                         CatchObject controll = parentObj.AddComponent<CatchObject>();                        
                         GunStateController.AddList(controll);
                         parentObj.transform.position = collision.contacts[i].point;

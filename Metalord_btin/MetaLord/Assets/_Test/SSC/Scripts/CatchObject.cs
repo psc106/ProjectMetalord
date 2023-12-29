@@ -16,7 +16,7 @@ public class CatchObject : MonoBehaviour
         1 << LayerMask.NameToLayer("NPC") |
         1 << LayerMask.NameToLayer("StaticObject") |
         1 << LayerMask.NameToLayer("MovedObject") |
-        1 << LayerMask.NameToLayer("CatchObject");
+        1 << LayerMask.NameToLayer("GrabedObject");
     }
 
     public void AddChild(MeshCollider _child)
@@ -83,7 +83,7 @@ public class CatchObject : MonoBehaviour
                     GameObject contactObj = collision.transform.parent.gameObject;
 
                     // 부모가 상위 오브젝트 경우
-                    if (contactObj.gameObject.layer == LayerMask.NameToLayer("CatchObject"))
+                    if (contactObj.gameObject.layer == LayerMask.NameToLayer("GrabedObject"))
                     {                                                                    
                         CareeToContact(contactObj);
                     }
