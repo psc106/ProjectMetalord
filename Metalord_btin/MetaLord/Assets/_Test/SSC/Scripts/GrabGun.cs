@@ -12,7 +12,7 @@ public class GrabGun : GunBase
         base.Awake();
         brush.splatChannel = 2;
         ammo = -55;
-        mode = GunMode.Grab;                
+        mode = GunMode.Grab;
     }
 
     public int GrabShot { get { return -ammo; } set { ammo = -value; } }
@@ -22,7 +22,7 @@ public class GrabGun : GunBase
     Vector3 followPos;
     
     float maxSpeed = 3f;
-    public override void ShootGun()
+    public override bool ShootGun()
     {
         if(CheckCanFire() == false)
         {
@@ -49,6 +49,12 @@ public class GrabGun : GunBase
 
         if (state.hit.transform == null)
         {
+            return false;
+        }
+        // TODO : 임시야매로 그랩건의 오브젝트 남발 방지
+        else if (state.hit.transform.gameObject.layer != LayerMask.NameToLayer("MovedObject") &&
+            state.hit.transform.gameObject.layer != LayerMask.NameToLayer("GrabedObject"))
+        {            
             return false;
         }
 
