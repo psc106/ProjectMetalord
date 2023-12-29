@@ -39,7 +39,8 @@ public class ReadyMenu : MonoBehaviour
     // 게임 저장
     public void SaveGame()
     {
-        GameEventsManager.instance.dataEvents.SaveData(); // 저장 이벤트 발생
+        //GameEventsManager.instance.dataEvents.SaveData(); // 저장 이벤트 발생
+        DataManager.instance.SaveGameData();
     }
 
     /// <summary>
@@ -48,7 +49,8 @@ public class ReadyMenu : MonoBehaviour
     /// </summary>
     public void LoadGame()
     {
-        GameEventsManager.instance.dataEvents.LoadData(); // 불러오기 이벤트 발생
+        //GameEventsManager.instance.dataEvents.LoadData(); // 불러오기 이벤트 발생
+        DataManager.instance.LoadGameData();
     }
 
     // 임시 버튼 사용 불가 소리
