@@ -2567,9 +2567,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 609743445}
-        m_TargetAssemblyTypeName: GameStartDisplay, Assembly-CSharp
-        m_MethodName: StartNewGame
+      - m_Target: {fileID: 1589571890}
+        m_TargetAssemblyTypeName: TitleController, Assembly-CSharp
+        m_MethodName: StartGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -8565,7 +8565,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &847900993
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8578,8 +8578,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30f8bdccdf7b8426b83831c3218240ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  anykeyDisplay: {fileID: 476080715}
-  titleDisplay: {fileID: 2085047059}
+  anykeyDisplay: {fileID: 1718373916}
+  titleDisplay: {fileID: 194120153}
 --- !u!4 &847900994
 Transform:
   m_ObjectHideFlags: 0
@@ -14373,6 +14373,7 @@ GameObject:
   - component: {fileID: 1589571889}
   - component: {fileID: 1589571888}
   - component: {fileID: 1589571887}
+  - component: {fileID: 1589571890}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -14454,6 +14455,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1589571890
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1589571886}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ffbbd848b58bd5a44a808f5182aff3b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1640691089
 GameObject:
   m_ObjectHideFlags: 0

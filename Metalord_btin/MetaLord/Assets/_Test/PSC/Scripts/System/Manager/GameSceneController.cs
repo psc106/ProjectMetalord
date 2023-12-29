@@ -30,6 +30,7 @@ public class GameSceneController
     {
         TitleScene,
         StoryScene,
-        MainScene
+        MainScene, 
+        KHJ_TestTitleScene1
     }
 }
