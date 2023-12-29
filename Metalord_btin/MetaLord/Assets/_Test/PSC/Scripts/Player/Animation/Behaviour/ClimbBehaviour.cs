@@ -7,13 +7,13 @@ using UnityEngine;
 public class ClimbBehaviour : StateMachineBehaviour
 {
     Controller_Physics player;
-    CameraManager cameraManager;
+    CameraController cameraManager;
     float enterTime = 0;
     bool check = false;
 
     private void OnEnable()
     {
-        cameraManager = FindObjectOfType<CameraManager>();
+        cameraManager = FindObjectOfType<CameraController>();
         player = FindObjectOfType<Controller_Physics>();
     }
 

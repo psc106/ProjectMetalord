@@ -40,9 +40,9 @@ public class GunStateController : MonoBehaviour
     [SerializeField] private GameObject GunUi;
     [SerializeField] private Sprite[] crossHairSprite = new Sprite[2];
 
-    public Rigidbody getconnect()
+    public Rigidbody GetConnectObject()
     {
-        return player.connectedBody;
+        return player.GetConnectRigidBody();
     }
 
     public InputReader reader;    
@@ -89,8 +89,10 @@ public class GunStateController : MonoBehaviour
     public float lerpTime= .1f;
     [HideInInspector]
     public int checkAmmo;
-    
 
+
+    [HideInInspector]
+    public bool isShootingState = false;
     [HideInInspector]
     public bool checkSuccessRay = false;
     [HideInInspector] 
