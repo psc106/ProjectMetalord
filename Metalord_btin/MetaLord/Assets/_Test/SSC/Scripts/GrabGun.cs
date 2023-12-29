@@ -96,19 +96,6 @@ public class GrabGun : GunBase
             targetRigid.useGravity = true;
             targetRigid.velocity = Vector3.zero;
             targetRigid = null;            
-
-            if(targetObj.transform.childCount != 0)
-            {
-                for(int i = 0; i < targetObj.transform.childCount; i++)
-                {
-                    targetObj.transform.GetChild(i).GetComponent<MeshCollider>().material.dynamicFriction = 1f;
-                }
-
-            }
-            else
-            {
-                targetObj.GetComponent<Collider>().material.dynamicFriction = 1f;
-            }
         }
 
         targetObj = null;
@@ -120,84 +107,127 @@ public class GrabGun : GunBase
     {
         state.onGrab = true;
         targetObj = state.hit.transform.gameObject;
-        Debug.Log("가장 처음 : " + targetObj);
 
-        // 합쳐진 오브젝트가 그랩 되었을 때
-        if(targetObj.transform.parent != null)
+        // 그랩 대상의 부모가 없다면
+        if (targetObj.transform.parent == null)
         {
-            Debug.Log("1 " + targetObj);
-            switch (LayerMask.LayerToName(targetObj.transform.parent.gameObject.layer))
-            {
-                case "CatchObject":
-                    targetObj = targetObj.transform.parent.gameObject;
-                    int count = targetObj.transform.childCount;
-
-                    for (int i = 0; i < count; i++)
-                    {
-                        Destroy(targetObj.transform.GetChild(i).GetComponent<Rigidbody>());
-                        targetObj.transform.GetChild(i).GetComponent<MeshCollider>().convex = true;
-                    }
-
-                    targetObj.AddComponent<Rigidbody>();
-                    if (targetObj.GetComponent<MovedObject>() == null)
-                    {
-                        targetObj.AddComponent<MovedObject>().InitParentMovedObject();
-                    }
-                    break;
-                default:
-                    targetObj.transform.parent = null;
-                    targetObj.GetComponent<MovedObject>().Invoke("StateChagned", 2f);
-                    state.hit.transform.GetComponent<MeshCollider>().convex = true;
-                    state.hit.transform.AddComponent<Rigidbody>();                    
-                    state.hit.transform.GetComponent<MovedObject>().ChangedState();
-                    break;
-            }
+            targetObj.GetComponent<MeshCollider>().convex = true;
+            targetObj.AddComponent<Rigidbody>();
+            targetObj.GetComponent<MovedObject>().ChangedState();
         }
+        // 그랩 대상의 부모가 있다면
         else
         {
-            // 합쳐진 오브젝트들을 부모 오브젝트로만 인식하게 될 때
-            if (targetObj.gameObject.layer == LayerMask.NameToLayer("CatchObject"))
-            {
-                Debug.Log("2 " + targetObj);
-                int count = targetObj.transform.childCount;
-
-                for (int i = 0; i < count; i++)
-                {
-                    if (targetObj.transform.GetChild(i).GetComponent<Rigidbody>() != null)
-                    {
-                        Destroy(targetObj.transform.GetChild(i).GetComponent<Rigidbody>());
-                    }
-
-                    targetObj.transform.GetChild(i).GetComponent<MeshCollider>().convex = true;
-                }
-
+            // 고정형 오브젝트 경우
+            if (targetObj.transform.parent.gameObject.layer == LayerMask.NameToLayer("Default"))
+            {                
+                // 종속해제
+                targetObj.transform.parent = null;
+                targetObj.GetComponent<MeshCollider>().convex = true;
                 targetObj.AddComponent<Rigidbody>();
-                  
-                if (targetObj.GetComponent<MovedObject>() == null)
-                {                    
-                    targetObj.AddComponent<MovedObject>().InitParentMovedObject();
-                }
+                targetObj.GetComponent<MovedObject>().ChangedState();
+
             }
-            else
-            {
-                Debug.Log("3 " + targetObj);
-                targetObj.GetComponent<MovedObject>().Invoke("StateChagned", 2f);
-                state.hit.transform.GetComponent<MeshCollider>().convex = true;
-                state.hit.transform.AddComponent<Rigidbody>();
-                state.hit.transform.GetComponent<MovedObject>().ChangedState();
+            // 상위 오브젝트 경우
+            else if (targetObj.transform.parent.gameObject.layer == LayerMask.NameToLayer("CatchObject"))
+            {                
+                // 그랩 대상을 상위 오브젝트로 변경
+                targetObj = targetObj.transform.parent.gameObject;
+                CatchObject controll = targetObj.GetComponent<CatchObject>();
+                controll.SetUpMesh();
+                targetObj.AddComponent<Rigidbody>();                
+                controll.ChangedState();
             }
         }
 
-        targetRigid = targetObj.GetComponent<Rigidbody>();
+        targetRigid = targetObj.GetComponent<Rigidbody>();        
         state.pickupPoint.position = state.hit.point;
         followPos = state.pickupPoint.position - state.hit.transform.position;
         targetRigid.constraints = RigidbodyConstraints.FreezeRotation;
         targetRigid.useGravity = false;
 
-        if(state.Ammo > -ammo)
-        {            
-            UsedAmmo(ammo);            
+        if (state.Ammo > -ammo)
+        {
+            UsedAmmo(ammo);
         }
+
+
+        //// 가장 처음 탐색하게 될 때 (오브젝트가 기존 레벨에 속해있는지 검출)
+        //if(targetObj.transform.parent != null)
+        //{            
+        //    switch (LayerMask.LayerToName(targetObj.transform.parent.gameObject.layer))
+        //    {
+        //        // 부모 오브젝트가 합치기 위해 만들어진 오브젝트라면
+        //        case "CatchObject":
+        //            // 그랩 오브젝트는 부모 오브젝트
+        //            targetObj = targetObj.transform.parent.gameObject;
+        //            int count = targetObj.transform.childCount;
+
+        //            // 그랩 오브젝트의 자식크기만큼 리지드바디 해제, convex 활성화
+        //            // 자신의 리지드바디 활성화
+        //            for (int i = 0; i < count; i++)
+        //            {
+        //                Destroy(targetObj.transform.GetChild(i).GetComponent<Rigidbody>());
+        //                targetObj.transform.GetChild(i).GetComponent<MeshCollider>().convex = true;
+        //            }
+        //            targetObj.AddComponent<Rigidbody>();
+
+        //            if (targetObj.GetComponent<MovedObject>() == null)
+        //            {
+        //                targetObj.AddComponent<MovedObject>().InitParentMovedObject();
+        //            }
+        //            break;
+
+        //            // 그외 오브젝트에 속한것이라면 (기존 레벨에 속해있다면)
+        //        default:
+        //            // 종속 해제, 일정시간 이후부터 충돌 검출
+        //            targetObj.transform.parent = null;
+        //            targetObj.GetComponent<MovedObject>().Invoke("StateChagned", 2f);
+        //            state.hit.transform.GetComponent<MeshCollider>().convex = true;
+        //            state.hit.transform.AddComponent<Rigidbody>();                    
+        //            state.hit.transform.GetComponent<MovedObject>().ChangedState();
+        //            break;
+        //    }
+        //}
+        //// 부모 오브젝트가 없을 때
+        //else
+        //{
+        //    // 합쳐진 오브젝트라면
+        //    if (targetObj.gameObject.layer == LayerMask.NameToLayer("CatchObject"))
+        //    {
+        //        Debug.Log("2 " + targetObj);
+        //        int count = targetObj.transform.childCount;
+
+        //        // 자식 수만큼 리지드바디 해제, convex 활성화
+        //        // 자신의 리지드바디 활성화
+        //        for (int i = 0; i < count; i++)
+        //        {
+        //            if (targetObj.transform.GetChild(i).GetComponent<Rigidbody>() != null)
+        //            {
+        //                Destroy(targetObj.transform.GetChild(i).GetComponent<Rigidbody>());
+        //            }
+
+        //            targetObj.transform.GetChild(i).GetComponent<MeshCollider>().convex = true;
+        //        }
+
+        //        targetObj.AddComponent<Rigidbody>();
+
+        //        if (targetObj.GetComponent<MovedObject>() == null)
+        //        {
+        //            targetObj.AddComponent<MovedObject>().InitParentMovedObject();
+        //        }
+        //    }
+
+        //    // 혼자인 오브젝트라면
+        //    else
+        //    {
+        //        Debug.Log("3 " + targetObj);
+        //        targetObj.GetComponent<MovedObject>().Invoke("StateChagned", 2f);
+        //        state.hit.transform.GetComponent<MeshCollider>().convex = true;
+        //        state.hit.transform.AddComponent<Rigidbody>();
+        //        state.hit.transform.GetComponent<MovedObject>().ChangedState();
+        //    }
+        //}
     }
 
     protected override bool CheckCanFire()

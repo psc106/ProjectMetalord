@@ -113,7 +113,7 @@ public class GunStateController : MonoBehaviour
     [HideInInspector] public static HashSet<PaintTarget> paintList = new HashSet<PaintTarget>();
     [HideInInspector] public static HashSet<MovedObject> bondList = new HashSet<MovedObject>();
     [HideInInspector] public static HashSet<NpcBase> npcList = new HashSet<NpcBase>();
-    [HideInInspector] public static List<GameObject> catchList = new List<GameObject>();
+    [HideInInspector] public static HashSet<CatchObject> catchList = new HashSet<CatchObject>();
 
     Image[] gunImage;
     TextMeshProUGUI gunText;
@@ -383,10 +383,10 @@ public class GunStateController : MonoBehaviour
         int id = (int)GunSoundList.Reload;
         SoundManager.instance.PlaySound(GroupList.Gun, id);
 
-        state = GunState.RELOADING;
-        //ClearBondList();
+        state = GunState.RELOADING;        
         ClearNpcList();
         ClearAllPaint();
+        //ClearBondList();
         ClearCatchList();
         currentMode.StopLerpGaguge();
         StopAllCoroutines();
@@ -443,22 +443,13 @@ public class GunStateController : MonoBehaviour
         npcList.Add(obj);
     }
 
-    public static void AddList(GameObject obj)
-    {
-        for(int i = 0; i < catchList.Count; i++)
-        {
-            if(obj == catchList[i])
-            {
-                return;
-            }
-        }
-        
-        catchList.Add(obj);
-        
+    public static void AddList(CatchObject obj)
+    {        
+        catchList.Add(obj);        
     }
 
     void ClearBondList()
-    {
+    {        
         foreach(var paint in bondList)
         {
             paint.CelarBond();
@@ -479,36 +470,28 @@ public class GunStateController : MonoBehaviour
 
     void ClearCatchList()
     {
+        // 저장한 HashSet 만큼의 상위 오브젝트 탐색
         foreach (var obj in catchList)
         {
-            GameObject[] childObj = new GameObject[obj.transform.childCount];
+            // 탐색한 상위 오브젝트마다 가지고 있는 자식오브젝트 체크
+            GameObject[] nullObj = new GameObject[obj.transform.childCount];            
 
-            for (int i = 0; i < obj.transform.childCount; i++)
+            // 자식 오브젝트들 parent 해제
+            for(int i = 0; i < nullObj.Length; i++)
             {
-                obj.transform.GetChild(i).GetComponent<MovedObject>().CelarBond();
-                childObj[i] = obj.transform.GetChild(i).gameObject;
+                nullObj[i] = obj.gameObject.transform.GetChild(i).gameObject;
+                nullObj[i].GetComponent<MovedObject>().CelarBond();
+            }
+            for (int i = 0; i < nullObj.Length; i++)
+            {                
+                nullObj[i].transform.parent = null;
             }
 
-            for (int i = 0; i < childObj.Length; i++)
-            {
-                childObj[i].transform.parent = null;
-            }
-
-            Destroy(obj);
+            // 이후 생성되었던 상위 오브젝트 파괴
+            Destroy(obj.gameObject);
         }
 
-        //for(int i = 0; i < catchList.Count; i++)
-        //{
-        //    for(int j = 0; j < catchList[i].transform.childCount; j++)
-        //    {
-        //        catchList[i].transform.GetChild(j).GetComponent<MovedObject>().CelarBond();
-        //        Debug.Log(catchList[i].transform.GetChild(j));
-        //    }
-
-        //    Destroy(catchList[i]); ;
-        //}
-
-        catchList.Clear();
+        catchList.Clear();        
     }
 
     #endregion
