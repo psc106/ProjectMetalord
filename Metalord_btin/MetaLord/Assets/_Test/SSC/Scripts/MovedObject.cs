@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor.TextCore.Text;
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class MovedObject : MonoBehaviour
 {
@@ -38,7 +39,7 @@ public class MovedObject : MonoBehaviour
     private void Update()
     {
         if(myRigid)
-        {
+        {            
             if (myRigid.IsSleeping())
             {
                 Destroy(myRigid);
@@ -72,6 +73,7 @@ public class MovedObject : MonoBehaviour
         // 이미 본드 동작을 하는 오브젝트를 다시 그랩하면 그랩하는순간 충돌면을 체크하여 그랩 해제됨에 따라 상태를 제어할 bool값 추가
         if (checkContact == false)
         {
+            
             return;
         }
 
@@ -118,20 +120,90 @@ public class MovedObject : MonoBehaviour
                     }
                     // 부모가 고정형 오브젝트 경우
                     else if(contactObj.transform.parent.gameObject.layer == LayerMask.NameToLayer("Default"))
-                    {                        
-                        // 상위 오브젝트 생성
-                        parentObj = new GameObject();
-                        parentObj.transform.gameObject.layer = LayerMask.NameToLayer("GrabedObject");                        
-                        CatchObject controll = parentObj.AddComponent<CatchObject>();                        
-                        GunStateController.AddList(controll);
-                        parentObj.transform.position = collision.contacts[i].point;
+                    {                       
+                        // 부딪힌 오브젝트도 고정형이면
+                        if(contactObj.layer == LayerMask.NameToLayer("Default"))
+                        {
+                            if (contactObj.transform.parent.GetComponent<CatchObject>() )
+                            {
+                                if(contactObj.transform.parent.gameObject.layer == LayerMask.NameToLayer("Default"))
+                                {
+                                    if (transform.parent.GetComponent<CatchObject>())
+                                    {
+                                        for(int k = transform.childCount-1; k >= 0; k--)
+                                        {
 
-                        // 그랩한 오브젝트와 충돌한 오브젝트 모두 상위 오브젝트 종속, HashSet 갱신    
-                        transform.parent = parentObj.transform;
-                        collision.transform.parent = parentObj.transform;
-                        //GunStateController.AddList(collision.gameObject.GetComponent<MovedObject>());
-                        controll.AddChild(transform.GetComponent<MeshCollider>());
-                        controll.AddChild(collision.transform.GetComponent<MeshCollider>());                        
+                                            transform.GetChild(k).SetParent( contactObj.transform.parent);
+                                        }
+                                        //자식 옮기기
+                                    }
+                                    else
+                                    {
+                                        transform.SetParent(contactObj.transform.parent);
+                                        //자신 옮기기
+                                    }
+
+                                }
+                                else if(contactObj.transform.parent.gameObject.layer == LayerMask.NameToLayer("GrabedObject"))
+                                {
+                                    if (transform.parent.GetComponent<CatchObject>())
+                                    {
+                                        for (int k = transform.childCount - 1; k >= 0; k--)
+                                        {
+
+                                            transform.GetChild(k).SetParent(contactObj.transform.parent);
+                                        }
+                                        //자식 옮기기
+                                    }
+                                    else
+                                    {
+                                        transform.SetParent(contactObj.transform.parent);
+                                        //자신 옮기기
+                                    }
+                                }
+                            }
+                            else 
+                            {
+                                // 상위 오브젝트 생성
+                                parentObj = new GameObject();
+                                parentObj.transform.gameObject.layer = LayerMask.NameToLayer("Default");
+                                CatchObject controll = parentObj.AddComponent<CatchObject>();
+                                GunStateController.AddList(controll);
+                                parentObj.transform.position = collision.contacts[i].point;
+
+                                // 그랩한 오브젝트 상위 고정형 오브젝트 종속, HashSet 갱신    
+                                transform.parent = parentObj.transform; 
+                                controll.AddChild(transform.GetComponent<MeshCollider>());
+
+                            }
+                        }
+                        else
+                        {
+                            // 충돌한 이동형 오브젝트가 고정형에 집합된 형태라면 
+                            if(contactObj.transform.parent.GetComponent<CatchObject>() != null &&
+                                contactObj.transform.parent.gameObject.layer == LayerMask.NameToLayer("Default"))
+                            {
+                                transform.parent = contactObj.transform.parent;
+                                checkContact = false;                                
+                                ClearState();
+                                GrabGun.instance.CancelObj();
+                                return;
+                            }
+                            // 상위 오브젝트 생성
+                            parentObj = new GameObject();
+                            parentObj.transform.gameObject.layer = LayerMask.NameToLayer("GrabedObject");                        
+                            CatchObject controll = parentObj.AddComponent<CatchObject>();                        
+                            GunStateController.AddList(controll);
+                            parentObj.transform.position = collision.contacts[i].point;
+
+                            // 그랩한 오브젝트와 충돌한 오브젝트 모두 상위 오브젝트 종속, HashSet 갱신    
+                            transform.parent = parentObj.transform;
+                            collision.transform.parent = parentObj.transform;
+                            //GunStateController.AddList(collision.gameObject.GetComponent<MovedObject>());
+                            controll.AddChild(transform.GetComponent<MeshCollider>());
+                            controll.AddChild(collision.transform.GetComponent<MeshCollider>());                        
+
+                        }
                     }
 
                 }

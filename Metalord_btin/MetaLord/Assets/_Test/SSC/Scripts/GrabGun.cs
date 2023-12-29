@@ -105,6 +105,11 @@ public class GrabGun : GunBase
             targetRigid = null;            
         }
 
+        if(targetObj.GetComponent<MeshCollider>() != null)
+        {
+            targetObj.GetComponent<MeshCollider>().material.dynamicFriction = 1f;
+        }
+
         targetObj = null;
         state.grabLine.enabled = false;
         state.onGrab = false;        
@@ -128,9 +133,17 @@ public class GrabGun : GunBase
         // 그랩 대상의 부모가 없다면
         if (targetObj.transform.parent == null)
         {
-            targetObj.GetComponent<MeshCollider>().convex = true;
-            targetObj.AddComponent<Rigidbody>();
-            targetObj.GetComponent<MovedObject>().ChangedState();
+            // 공중에서 떨어지는 대상일 때 
+            if(targetObj.transform.GetComponent<Rigidbody>() != null)
+            {
+                /* PASS */
+            }
+            else
+            {
+                targetObj.GetComponent<MeshCollider>().convex = true;
+                targetObj.AddComponent<Rigidbody>();
+                targetObj.GetComponent<MovedObject>().ChangedState();
+            }
         }
         // 그랩 대상의 부모가 있다면
         else
@@ -138,6 +151,13 @@ public class GrabGun : GunBase
             // 고정형 오브젝트 경우
             if (targetObj.transform.parent.gameObject.layer == LayerMask.NameToLayer("Default"))
             {                
+                // 고정형 부모 오브젝트에 클래스를 검사하여 그랩 취소
+                if(targetObj.transform.parent.gameObject.GetComponent<CatchObject>() != null)
+                {
+                    state.onGrab = false;
+                    return;
+                }
+
                 // 종속해제
                 targetObj.transform.parent = null;
                 targetObj.GetComponent<MeshCollider>().convex = true;
@@ -146,7 +166,7 @@ public class GrabGun : GunBase
 
             }
             // 상위 오브젝트 경우
-            else if (targetObj.transform.parent.gameObject.layer == LayerMask.NameToLayer("CatchObject"))
+            else if (targetObj.transform.parent.gameObject.layer == LayerMask.NameToLayer("GrabedObject"))
             {                
                 // 그랩 대상을 상위 오브젝트로 변경
                 targetObj = targetObj.transform.parent.gameObject;
@@ -156,7 +176,7 @@ public class GrabGun : GunBase
                 controll.ChangedState();
             }
         }
-
+        
         targetRigid = targetObj.GetComponent<Rigidbody>();        
         state.pickupPoint.position = state.hit.point;
         followPos = state.pickupPoint.position - state.hit.transform.position;
