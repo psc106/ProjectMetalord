@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class InteractImageFade : MonoBehaviour
 {
     public Transform playerTransform;
-    public float distanceThreshold = 5f; // Á¶ÀıÇÏ°íÀÚ ÇÏ´Â °Å¸® ÀÓ°è°ª
+    public float distanceThreshold = 5f; // ì¡°ì ˆí•˜ê³ ì í•˜ëŠ” ê±°ë¦¬ ì„ê³„ê°’
     public Image image;
 
     private void OnTriggerEnter(Collider other)
@@ -25,17 +25,17 @@ public class InteractImageFade : MonoBehaviour
     }
     void Update()
     {
-        FadeNpcInteractImage();
+        //FadeNpcInteractImage();
     }
 
     private void FadeNpcInteractImage()
     {
         if(playerTransform != null) 
         {
-            // NPC¿Í ÇÃ·¹ÀÌ¾î °£ÀÇ °Å¸® °è»ê
+            // NPCì™€ í”Œë ˆì´ì–´ ê°„ì˜ ê±°ë¦¬ ê³„ì‚°
             float distance = Vector3.Distance(transform.position, playerTransform.position);
 
-            // °Å¸®¿¡ µû¶ó ¾ËÆÄ °ª Á¶Àı
+            // ê±°ë¦¬ì— ë”°ë¼ ì•ŒíŒŒ ê°’ ì¡°ì ˆ
             float alphaValue = Mathf.InverseLerp(0f, distanceThreshold, distance);
             image.color = new Color(image.color.r, image.color.g, image.color.b, alphaValue);
         }

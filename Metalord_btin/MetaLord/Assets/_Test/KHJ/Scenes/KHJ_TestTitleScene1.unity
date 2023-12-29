@@ -1456,6 +1456,7 @@ GameObject:
   - component: {fileID: 98575521}
   - component: {fileID: 98575523}
   - component: {fileID: 98575522}
+  - component: {fileID: 98575524}
   m_Layer: 5
   m_Name: Anykey Press
   m_TagString: Untagged
@@ -1579,6 +1580,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 98575520}
   m_CullTransparentMesh: 1
+--- !u!114 &98575524
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 98575520}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21df9ad1890eaf942b5dfd989ceafba8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fadeTime: 1
 --- !u!114 &105792585 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3529525162777837617, guid: c0219f10de8d5ca43a2fedfff38a4481, type: 3}
@@ -15729,6 +15743,7 @@ GameObject:
   - component: {fileID: 1722883257}
   - component: {fileID: 1722883256}
   - component: {fileID: 1722883255}
+  - component: {fileID: 1722883258}
   m_Layer: 5
   m_Name: Button(Start)
   m_TagString: Untagged
@@ -15862,6 +15877,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1722883253}
   m_CullTransparentMesh: 1
+--- !u!114 &1722883258
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1722883253}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 749b837342f9a4542bc6298c7c8392d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1725814743
 GameObject:
   m_ObjectHideFlags: 0
