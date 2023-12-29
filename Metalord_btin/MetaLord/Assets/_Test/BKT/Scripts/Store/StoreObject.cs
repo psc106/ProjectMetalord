@@ -34,12 +34,12 @@ public class StoreObject : MonoBehaviour
 
     protected virtual void SaveData()
     {
-        // TODO 공통 저장 부분이 있다면 적용
+        /* pass */
     }
 
     protected virtual void LoadData()
-    {
-        // TODO 공통 불러오기 부분이 있다면 적용
+    {        
+        ChangeButtonUI(0);
     }
 
     private void OnDestroy()

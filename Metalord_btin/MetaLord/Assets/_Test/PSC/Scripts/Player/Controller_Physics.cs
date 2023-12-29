@@ -352,13 +352,21 @@ public class Controller_Physics : MonoBehaviour
 
         if (gunController.CurrentMode.mode == GunMode.Paint)
         {
-            gunController.CurrentMode.ShootGun();
+            //gunController.CurrentMode.ShootGun();
+            gunController.Shoot(GunMode.Paint);
         }
 
         else if (desireFire)
         {
             desireFire = false;
-            gunController.CurrentMode.ShootGun();
+            //gunController.CurrentMode.ShootGun();
+            gunController.Shoot(GunMode.Paint);            
+        }
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            gunController.Shoot(GunMode.Grab);
+
         }
 
         // 장전        
