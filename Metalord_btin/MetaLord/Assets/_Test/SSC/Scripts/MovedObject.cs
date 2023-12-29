@@ -72,8 +72,7 @@ public class MovedObject : MonoBehaviour
     {
         // 이미 본드 동작을 하는 오브젝트를 다시 그랩하면 그랩하는순간 충돌면을 체크하여 그랩 해제됨에 따라 상태를 제어할 bool값 추가
         if (checkContact == false)
-        {
-            
+        {            
             return;
         }
 
@@ -132,7 +131,6 @@ public class MovedObject : MonoBehaviour
                                     {
                                         for(int k = transform.childCount-1; k >= 0; k--)
                                         {
-
                                             transform.GetChild(k).SetParent( contactObj.transform.parent);
                                         }
                                         //자식 옮기기

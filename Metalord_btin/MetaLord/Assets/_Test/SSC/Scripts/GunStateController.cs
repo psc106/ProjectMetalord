@@ -319,8 +319,7 @@ public class GunStateController : MonoBehaviour
 
         // 현재 상태에 맞게 크로스헤어 이미지 업데이트 해주는 조건문
         if (!onGrab && !currentMode.CanFireAmmoCount() && !currentMode.fireStart)
-        {
-            //Debug.Log("3");
+        {            
             // 내가 총알 잔량이 부족하면서, 그랩하고있는 상태가 아닐 때 재장전 필요 효과 발생
             gunImage[WarningImgIdx].GetComponent<UiFadeOut>().InitFadeOut();
             ChangedCrossHair();
@@ -371,8 +370,15 @@ public class GunStateController : MonoBehaviour
 
     public void UpdateState(int ammoValue)
     {        
+        
         Ammo = ammoValue;
-        gunImage[AmmoGaugeIdx].fillAmount = (float)Ammo / (float)maxUpgrade;        
+        gunImage[AmmoGaugeIdx].fillAmount = (float)Ammo / (float)maxUpgrade;    
+        
+        if(currentMode.CanFireAmmoCount())
+        {
+            state = GunState.READY;
+            ChangedCrossHair();
+        }
     }
 
     public void Reloading()
@@ -583,9 +589,10 @@ public class GunStateController : MonoBehaviour
     public void ChangedCrossHair()
     {
         if(currentMode.CanFireAmmoCount())
-        {
+        {            
             crossHair.sprite = crossHairSprite[(int)CrossHair.ABLE];
             crossHair.color = Color.green;
+            gunText.text = "";
         }
         else
         {
