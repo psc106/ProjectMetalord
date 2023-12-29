@@ -22,7 +22,7 @@ public class GrabGun : GunBase
     Vector3 followPos;
     
     float maxSpeed = 3f;
-    public override void ShootGun()
+    public override bool ShootGun()
     {
         if(CheckCanFire() == false)
         {
