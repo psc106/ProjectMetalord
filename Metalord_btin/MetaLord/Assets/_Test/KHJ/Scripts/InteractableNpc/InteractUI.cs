@@ -7,33 +7,49 @@ using UnityEngine;
 using UnityEngine.UI;
 public class InteractUI : MonoBehaviour
 {
-   
+    public GameObject player;
+
+    GameObject interactCanvas;
     //private TMP_Text interactText = default;
+    Image fadeImage = default;
+    Image idleImage = default;
     private readonly float fadeTime = 1f;
-    public Image fadeImage = default;
 
     public bool isShowInteractUI = false;
 
     bool isFadeIn = false;
     bool isFadeOut = false;
-    
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            StartCoroutine(FadeInImage());
+            StartCoroutine(FadeOutImage(idleImage));
+            StartCoroutine(FadeInImage(fadeImage));
         }
     }
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            StartCoroutine(FadeOutImage());
+            StartCoroutine(FadeInImage(idleImage));
+            StartCoroutine(FadeOutImage(fadeImage));
         }
     }
 
-   
-    private IEnumerator FadeInImage()
+    private void Start()
+    {
+        player = GameObject.Find("Player");
+        interactCanvas = transform.parent.transform.GetChild(0).gameObject;
+        fadeImage = interactCanvas.transform.GetChild(0).GetComponent<Image>();
+        idleImage = interactCanvas.transform.GetChild(1).GetComponent<Image>();
+    }
+    private void Update()
+    {
+        interactCanvas.transform.LookAt(player.transform);
+        interactCanvas.transform.rotation = new Quaternion(0f, interactCanvas.transform.rotation.y , 0f, 0f);
+    }
+    private IEnumerator FadeInImage(Image changeImage)
     {
         if (isFadeIn)
         {
@@ -50,15 +66,15 @@ public class InteractUI : MonoBehaviour
             current += 2f * Time.deltaTime;
             percent = current / fadeTime;
 
-            Color color = fadeImage.color;
+            Color color = changeImage.color;
             color.a = Mathf.Lerp(start, end, percent);
-            fadeImage.color = color;
+            changeImage.color = color;
 
             yield return null;
         }
         isFadeIn = false;
     }
-    private IEnumerator FadeOutImage()
+    private IEnumerator FadeOutImage(Image changeImage)
     {
         if (isFadeOut)
         {
@@ -77,13 +93,20 @@ public class InteractUI : MonoBehaviour
             current += 2f * Time.deltaTime;
             percent = current / fadeTime;
 
-            Color color = fadeImage.color;
+            Color color = changeImage.color;
             color.a = Mathf.Lerp(start, end, percent);
-            fadeImage.color = color;
+            changeImage.color = color;
 
             yield return null;
         }
         isFadeOut = false;
+    }
+
+    private void LookPlayer()
+    {
+        
+
+        
     }
 
 }

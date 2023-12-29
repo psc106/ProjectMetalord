@@ -6,8 +6,8 @@ public class ObiruWillberNpc : NpcBase, IInteractNpc
 {
     public void InteractNpc()
     {
-        //¿Àºñ¸£ Àª¹ö
-        myDialogue.CheckStateDialogue(22, state);
+        //ì˜¤ë¹„ë¥´ ìœŒë²„ 21
+        myDialogue.CheckStateDialogue(21, state);
     }
 }
 

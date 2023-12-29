@@ -6,7 +6,7 @@ public class RobotNpc : NpcBase, IInteractNpc
 {
     public void InteractNpc()
     {
-        // ·Îº¿ 31
-        myDialogue.CheckStateDialogue(31, state);
+        // ë¡œë´‡ 33
+        myDialogue.CheckStateDialogue(33, state);
     }
 }

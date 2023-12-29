@@ -7,6 +7,7 @@ public class PaintTargetEditor : Editor
     private static Texture2D logo;
     private GUIStyle guiStyle = new GUIStyle(); //create a new variable
 
+
     public override void OnInspectorGUI()
     {
         PaintTarget script = (PaintTarget)target;
@@ -40,7 +41,8 @@ public class PaintTargetEditor : Editor
             script.renderTextureSize = (TextureSize)EditorGUILayout.EnumPopup("Render Texture", script.renderTextureSize);
             script.SetupOnStart = GUILayout.Toggle(script.SetupOnStart, "Setup On Start");
             script.PaintAllSplats = GUILayout.Toggle(script.PaintAllSplats, "Paint All Splats");
-            
+
+
             GUILayout.EndVertical();
 
             if (render == null)

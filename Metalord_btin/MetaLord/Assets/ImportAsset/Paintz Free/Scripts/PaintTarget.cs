@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -40,9 +41,9 @@ public class PaintTarget : MonoBehaviour
     private RenderTexture splatTexAlt;
     public Texture2D splatTexPick;
 
-    public static ComputeShader ReadPixel;
-    private static ComputeBuffer outputBuffer;
-    private static int kernelID = -1;
+    public ComputeShader ReadPixel = null;
+    private ComputeBuffer outputBuffer;
+    private int kernelID = -1;
 
     // 12.13 SSC
     // 페인트 초기화시 컬러값 초기화로 돌릴 origin값 저장 필드 추가
@@ -82,9 +83,7 @@ public class PaintTarget : MonoBehaviour
     // 페인트 초기화시 컬러값 초기화로 돌릴 origin값 저장 필드 추가
     private void Awake()
     {
-        ReadPixel = (ComputeShader)Resources.Load("Shader/ReadPixel");
-
-
+        ReadPixel = null;
         originTex = splatTexPick;
         bondColor = new Color(1, 0, 0, 1);
     }
@@ -178,8 +177,8 @@ public class PaintTarget : MonoBehaviour
             int y = (int)(hit.textureCoord2.y * tc.height);
 
 
-            Color pc = GetColorByComputeShader(paintTarget, x, y);
-            //Color pc = tc.GetPixel(x, y);
+            //Color pc = GetColorByComputeShader(paintTarget, x, y);
+            Color pc = tc.GetPixel(x, y);
 
             int l = -1;
             if (pc.r > .4) l = 0;
@@ -217,7 +216,9 @@ public class PaintTarget : MonoBehaviour
 
             int x = (int)(hit.textureCoord2.x * tc.width);
             int y = (int)(hit.textureCoord2.y * tc.height);
-            Color pc = GetColorByComputeShader(paintTarget, x, y);
+
+            //Color pc = GetColorByComputeShader(paintTarget, x, y);
+            Color pc = tc.GetPixel(x, y);
             Debug.Log(paintTarget.name + " : " + x + ", " + y + "(" + pc + ")");
 
             Color c1 = r.sharedMaterial.GetColor("_SplatColor1");
@@ -236,25 +237,25 @@ public class PaintTarget : MonoBehaviour
     private static Color GetColorByComputeShader(PaintTarget paintTarget, int x, int y)
     {
         // Set the input texture and output buffer to the shader
-        ReadPixel.SetTexture(kernelID, "inputTextureEven", paintTarget.splatTex);
-        ReadPixel.SetTexture(kernelID, "inputTextureOdd", paintTarget.splatTexAlt);
 
-        ReadPixel.SetInt("frame", paintTarget.evenFrame ? 1 : 0);
-        ReadPixel.SetInt("coord_x", x);
-        ReadPixel.SetInt("coord_y", y);
+        if(!paintTarget.ReadPixel) return Color.black;
+
+        paintTarget.ReadPixel.SetInt("frame", paintTarget.evenFrame ? 1 : 0);
+        paintTarget.ReadPixel.SetInt("coord_x", x);
+        paintTarget.ReadPixel.SetInt("coord_y", y);
 
         // Dispatch the compute shader
-        ReadPixel.Dispatch(kernelID, 1, 1, 1);
+        paintTarget.ReadPixel.Dispatch(paintTarget.kernelID, 1, 1, 1);
 
         // Read the result from the output buffer
         float[] outputArray = new float[4];
-        outputBuffer.GetData(outputArray);
-
+        paintTarget.outputBuffer.GetData(outputArray);
 
         // Extract the color components from the output array
         Color pc = new Color(outputArray[0], outputArray[1], outputArray[2], outputArray[3]);
         return pc;
     }
+
 
     public static Color RayColor(RaycastHit hit)
     {
@@ -577,13 +578,7 @@ public class PaintTarget : MonoBehaviour
     private void Start()
     {
         CheckValid();
-        if (kernelID == -1 && ReadPixel != null)
-        {
-            kernelID = ReadPixel.FindKernel("ReadPixelAtCoordinates");
-            outputBuffer = new ComputeBuffer(1, sizeof(float) * 4);
-            ReadPixel.SetBuffer(kernelID, "outputBuffer", outputBuffer);
-            Debug.Log("ㅑㅜ");
-        }
+
         if (SetupOnStart) SetupPaint();
     }
 
@@ -594,8 +589,25 @@ public class PaintTarget : MonoBehaviour
         CreateTextures();
 
         RenderTextures();
+        CreateComputeShader();
 
         setupComplete = true;
+    }
+
+
+    private void CreateComputeShader()
+    {
+        return;
+        /*Debug.Log(ReadPixel);
+
+        ReadPixel = Instantiate((ComputeShader)Resources.Load("Shader/ReadPixel"));
+
+        kernelID = ReadPixel.FindKernel("ReadPixelAtCoordinates");
+        outputBuffer = new ComputeBuffer(1, sizeof(float) * 4);
+        ReadPixel.SetBuffer(kernelID, "outputBuffer", outputBuffer);
+
+        ReadPixel.SetTexture(kernelID, "inputTextureEven", splatTex);
+        ReadPixel.SetTexture(kernelID, "inputTextureOdd", splatTexAlt);*/
     }
 
     private void CreateMaterials()
@@ -707,6 +719,17 @@ public class PaintTarget : MonoBehaviour
             renderCamera.AddCommandBuffer(CameraEvent.AfterEverything, cb);
             renderCamera.Render();
             renderCamera.RemoveAllCommandBuffers();
+            RemoveComputeShader();
+        }
+    }
+
+    private void RemoveComputeShader()
+    {
+        if (ReadPixel)
+        {
+            outputBuffer?.Release();
+            Destroy(ReadPixel);
+            ReadPixel = null;
         }
     }
 
@@ -731,6 +754,8 @@ public class PaintTarget : MonoBehaviour
             if (!setupComplete) SetupPaint();
 
             if (this.transform.hasChanged) RenderTextures();
+
+            if (!ReadPixel) CreateComputeShader();
 
             Matrix4x4[] SplatMatrixArray = new Matrix4x4[10];
             Vector4[] SplatScaleBiasArray = new Vector4[10];

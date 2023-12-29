@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SocialPlatforms;
 using UnityEngine.UI;
@@ -47,9 +46,9 @@ public class GunStateController : MonoBehaviour
     [SerializeField] private GameObject GunUi;
     [SerializeField] private Sprite[] crossHairSprite = new Sprite[2];
 
-    public Rigidbody getconnect()
+    public Rigidbody GetConnectObject()
     {
-        return player.connectedBody;
+        return player.GetConnectRigidBody();
     }
 
     public InputReader reader;    
@@ -95,8 +94,11 @@ public class GunStateController : MonoBehaviour
     [HideInInspector]
     public float lerpTime= .1f;
     [HideInInspector]
-    public int checkAmmo;    
+    public int checkAmmo;
 
+
+    [HideInInspector]
+    public bool isShootingState = false;
     [HideInInspector]
     public bool checkSuccessRay = false;
     [HideInInspector] 
@@ -247,7 +249,7 @@ public class GunStateController : MonoBehaviour
             float distancePlayerToHit = Vector3.Distance(startPlayerPos, hit.point);
 
             //카메라->끝점 range 이하 경우
-            if (hit.distance <= distance)
+            /*if (hit.distance <= distance)
             {
                 // TODO : 목표지점이 너무 가까운 상태일때 UI 변경을 생각해야함
                 checkSuccessRay = false;
@@ -256,7 +258,8 @@ public class GunStateController : MonoBehaviour
                 return;
             }
 
-            else if (distanceCameraToHit <= cameraMinRange)
+            else*/
+            if (distanceCameraToHit <= cameraMinRange)
             {
                 if (Physics.Raycast(defaultRay, out hit, distancePlayerToHit, gunLayer))
                 {

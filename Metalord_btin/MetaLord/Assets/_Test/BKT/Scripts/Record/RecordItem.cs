@@ -62,7 +62,7 @@ public class RecordItem : MonoBehaviour
     {
         if (isExist == FALSE)
         {
-            isExist = FALSE; // 존재 여부 False 적용
+            //isExist = FALSE; // 존재 여부 False 적용
             GameEventsManager.instance.recordEvents.GetRecordItem((int)recordItem); // 도감에 적용
             gameObject.SetActive(false); //비활성화로 변경
         }

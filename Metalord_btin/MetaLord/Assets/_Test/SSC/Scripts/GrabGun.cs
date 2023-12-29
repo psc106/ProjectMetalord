@@ -30,31 +30,32 @@ public class GrabGun : GunBase
             if (targetRigid || state.Ammo < -ammo)
             {
                 CancelObj();
-                return;
+                return false;
             }
 
-            return;
+            return false;
         }
 
-        OneShotGrab();
+        return OneShotGrab();
     }
 
-    void OneShotGrab()
-    {
-        if (targetRigid || state.Ammo < -ammo)
-        {
+    bool OneShotGrab()
+    {           
+        if (targetRigid || state.Ammo < - ammo)
+        {            
             CancelObj();
-            return;
+            return false;
         }
 
         if (state.hit.transform == null)
         {
-            return;
+            return false;
         }
 
         state.pickupPoint.position = state.hit.point;
 
         FollowingObj();        
+        return true;
     }
 
     private void Update()
@@ -66,7 +67,7 @@ public class GrabGun : GunBase
     {
         if (targetRigid)
         {
-            if (state.getconnect() == targetRigid)
+            if (state.GetConnectObject() == targetRigid)
             {
                 CancelObj();
                 return;
@@ -101,6 +102,16 @@ public class GrabGun : GunBase
         targetObj = null;
         state.grabLine.enabled = false;
         state.onGrab = false;        
+    }
+
+    public void CancleGrab()
+    {
+        targetObj.GetComponent<Collider>().material.dynamicFriction = 1f;
+        targetObj = null;
+        state.grabLine.enabled = false;
+        targetRigid = null;
+        state.onGrab = false;
+        state.isShootingState = false;
     }
 
     void FollowingObj( )
@@ -145,6 +156,7 @@ public class GrabGun : GunBase
         followPos = state.pickupPoint.position - state.hit.transform.position;
         targetRigid.constraints = RigidbodyConstraints.FreezeRotation;
         targetRigid.useGravity = false;
+        state.isShootingState = true;
 
         if (state.Ammo > -ammo)
         {
