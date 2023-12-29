@@ -55,8 +55,9 @@ public class DialogueTypingEffect : MonoBehaviour
 
         isTypingRunning = true; //타이핑 시작
         textLabel.text = string.Empty; //한번 비워줌
-       
-        string chechLineC = "/"; //특정 문자열 판별을 위한 스트링 변수  /  char 로 비교하는게 좋을지 고민중   string 배열 안에서 멤버들을 비교하다보니 string로 쓰는게 나은 것 같음
+
+        string checkComma = "*";
+        string checkLineC = "/"; //특정 문자열 판별을 위한 스트링 변수  /  char 로 비교하는게 좋을지 고민중   string 배열 안에서 멤버들을 비교하다보니 string로 쓰는게 나은 것 같음
         string[] nanugi = textToType.Split(new char[] { ' ' }); //string textToType 을 나눈 뒤 담아두는 배열 nanugi //이름 별로면 ... 변경 예정
         
         string sumText = string.Empty; //아래와 같은 방식으로 사용하면 삭제해도 무방한 라인
@@ -68,9 +69,14 @@ public class DialogueTypingEffect : MonoBehaviour
             float duration = Time.unscaledDeltaTime;  //타이핑 진행도 체크를 위한 변수
             int charIndex = 0;                        //substring 하기 위한 int
             
-            if (nanugi[i] == chechLineC)              //특정 문자와 비교 후 같으면 조건문으로 들어가서 특정 행위 실행 후 continue
+            if (nanugi[i] == checkLineC)              //특정 문자와 비교 후 같으면 조건문으로 들어가서 특정 행위 실행 후 continue
             {
                 sumText += "\n";
+                continue;
+            }
+            else if (nanugi[i] == checkComma)
+            {
+                sumText += ",";
                 continue;
             }
 
@@ -219,7 +225,8 @@ public class DialogueTypingEffect : MonoBehaviour
     //    //string colorEnterCheck = "<color=#80A0FF>";
     //    //string colorExitCheck = "</color>";
     //    string chechLineC = "/";
-    //    string[] nanugi = textToType.Split(new char[] {' '});
+    //    string checkComma = "*";
+    //    string[] nanugi = textToType.Split(new char[] { ' ' });
     //    string sumText = string.Empty;
 
     //    for (int i = 0; i < nanugi.Length; i++)
@@ -232,6 +239,11 @@ public class DialogueTypingEffect : MonoBehaviour
     //        {
     //            //Debug.Log("같으면 들어오는건데");
     //            sumText += "\n";
+    //            continue;
+    //        }
+    //        else if (nanugi[i] == checkComma)
+    //        {
+    //            sumText += ",";
     //            continue;
     //        }
     //        #region 굵기 및 색깔 조건 쓸 경우 주석처리
@@ -277,12 +289,12 @@ public class DialogueTypingEffect : MonoBehaviour
     //        sumText += textLabel.text + " ";
     //    }
 
-        ////StartCoroutine(TextSoundEffect(textToType,myAduio,textSound));
+    //    //StartCoroutine(TextSoundEffect(textToType,myAduio,textSound));
 
 
-        //isTypingRunning = false;
-        ////Debug.Log("지금 writeEffect 언제 되는거지?");
-        //fadeImgae.SetActive(true);
-        ////textLabel.text = textToType;
-//}
+    //    isTypingRunning = false;
+    //    //Debug.Log("지금 writeEffect 언제 되는거지?");
+    //    fadeImgae.SetActive(true);
+    //    //textLabel.text = textToType;
+    //}
 }

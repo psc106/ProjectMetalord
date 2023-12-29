@@ -49,7 +49,8 @@ public class DialogueUI : MonoBehaviour
         myAduio = GetComponent<AudioSource>();
         myAduio.clip = textSound;
         myTextEffect = GetComponent<DialogueTypingEffect>();
-        
+
+       
         //대화 관련 ui 다 비활성화 시켜줍니다.
         CloseDialogueUI(); 
         CloseTutoQuestion();
