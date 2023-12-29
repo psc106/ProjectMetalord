@@ -61,9 +61,9 @@ public class Store_WeaponStatus : StoreObject
 
     protected override void LoadData()
     {
-        base.LoadData();        
         stepIndex = DataManager.instance.savedGamePlayData.upgrade[(int)upgradeCategory];
         ReflectLoadUpgradeInfo();
+        base.LoadData();        
     }
 
     // 불러온 업그레이드 정보 적용

@@ -27,8 +27,7 @@ public class CoinManager : MonoBehaviour
             Destroy(instance.gameObject);
         }
         DontDestroyOnLoad(this.gameObject);
-        currentCoin = startCoin; // 시작시 코인 세팅
-        storeUI.SetActive(false);
+        currentCoin = startCoin; // 시작시 코인 세팅        
     }
 
     private void OnEnable()
@@ -53,6 +52,7 @@ public class CoinManager : MonoBehaviour
     private void LoadCoin()
     {
         currentCoin = DataManager.instance.savedGamePlayData.money;
+        GameEventsManager.instance.coinEvents.ChangeCoin(currentCoin); // 코인 먹을 경우 코인 변경
     }
 
     private void Start()

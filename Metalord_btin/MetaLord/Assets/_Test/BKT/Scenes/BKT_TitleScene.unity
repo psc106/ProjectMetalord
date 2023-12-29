@@ -285,6 +285,14 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -2.5
       objectReference: {fileID: 0}
+    - target: {fileID: 456569761734704785, guid: 87662185c93c75d4baf62f5362925909, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 456569761734704785, guid: 87662185c93c75d4baf62f5362925909, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.000000009837094
+      objectReference: {fileID: 0}
     - target: {fileID: 1495894723469854142, guid: 87662185c93c75d4baf62f5362925909, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -338,6 +346,10 @@ PrefabInstance:
       value: -1.25
       objectReference: {fileID: 0}
     - target: {fileID: 2592835164850461221, guid: 87662185c93c75d4baf62f5362925909, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2592835164850461221, guid: 87662185c93c75d4baf62f5362925909, type: 3}
       propertyPath: m_LocalRotation.z
       value: -0.000000009837094
       objectReference: {fileID: 0}
@@ -356,6 +368,10 @@ PrefabInstance:
     - target: {fileID: 8855990219950753929, guid: 87662185c93c75d4baf62f5362925909, type: 3}
       propertyPath: m_LocalPosition.z
       value: -1.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 8855990219950753929, guid: 87662185c93c75d4baf62f5362925909, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 8855990219950753929, guid: 87662185c93c75d4baf62f5362925909, type: 3}
       propertyPath: m_LocalRotation.z
@@ -10170,7 +10186,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &2085047060
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10492,6 +10508,10 @@ PrefabInstance:
     - target: {fileID: 6855757528923699409, guid: c0219f10de8d5ca43a2fedfff38a4481, type: 3}
       propertyPath: m_Name
       value: Canvases
+      objectReference: {fileID: 0}
+    - target: {fileID: 6855757528923699409, guid: c0219f10de8d5ca43a2fedfff38a4481, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7424368835373499507, guid: c0219f10de8d5ca43a2fedfff38a4481, type: 3}
       propertyPath: m_AnchorMax.y

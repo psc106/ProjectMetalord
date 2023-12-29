@@ -28,18 +28,20 @@ public class StoreObject : MonoBehaviour
 
     private void OnEnable()
     {
-        ChangeButtonUI(0);
+        //ChangeButtonUI(0);
 
     }
 
     protected virtual void SaveData()
     {
-        // TODO 공통 저장 부분이 있다면 적용
+        /* pass */
     }
 
     protected virtual void LoadData()
     {
-        // TODO 공통 불러오기 부분이 있다면 적용
+        Debug.Log("켜졌다");
+        gameObject.SetActive(true);
+        ChangeButtonUI(0);
     }
 
     private void OnDestroy()

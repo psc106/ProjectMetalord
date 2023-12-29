@@ -111,9 +111,6 @@ public class RecordManager : MonoBehaviour
         GameEventsManager.instance.recordEvents.onGetRecordItem += GetItem;
         GameEventsManager.instance.recordEvents.onSelectRecord += InputRecordInfo;
 
-        GameEventsManager.instance.dataEvents.onSaveData += SaveRecordObject;
-        GameEventsManager.instance.dataEvents.onLoadData += LoadRecordObject;
-
         ResetRecord();
     }
 
@@ -121,19 +118,6 @@ public class RecordManager : MonoBehaviour
     {
         GameEventsManager.instance.recordEvents.onGetRecordItem -= GetItem;
         GameEventsManager.instance.recordEvents.onSelectRecord -= InputRecordInfo;
-
-        GameEventsManager.instance.dataEvents.onSaveData -= SaveRecordObject;
-        GameEventsManager.instance.dataEvents.onLoadData -= LoadRecordObject;
-    }
-
-    private void SaveRecordObject()
-    {
-        //TODO 수집품 저장
-    }
-
-    private void LoadRecordObject()
-    {
-        //TODO 수집품 적용
     }
 
     /// <summary>
