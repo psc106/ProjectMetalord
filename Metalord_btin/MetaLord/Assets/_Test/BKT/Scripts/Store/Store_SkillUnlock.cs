@@ -43,18 +43,15 @@ public class Store_SkillUnlock : StoreObject
 
     protected override void SaveData()
     {
-        base.SaveData();
-        // TODO 데이터 저장
-        DataManager.instance.savedGamePlayData.skill_Catch = isCanBuy;
-        
+        base.SaveData();       
+        DataManager.instance.savedGamePlayData.skill_Catch = isCanBuy;   
     }
 
     protected override void LoadData()
     {
-        base.LoadData();
-        // TODO 데이터 불러오기
         isCanBuy = DataManager.instance.savedGamePlayData.skill_Catch;
         ReflectToPlayer();
+        base.LoadData();   
     }
 
 
@@ -69,12 +66,8 @@ public class Store_SkillUnlock : StoreObject
         else PlayCanBuySound();
 
 
-        base.BuyStoreObject();
-        
-        //soldOutObject.enabled = true;
-        //costObject.text = "구매완료";
-        //GameEventsManager.instance.coinEvents.UnlockGunMode(gunMode);
         isCanBuy = false;
+        base.BuyStoreObject();
         ReflectToPlayer();
     }
 
