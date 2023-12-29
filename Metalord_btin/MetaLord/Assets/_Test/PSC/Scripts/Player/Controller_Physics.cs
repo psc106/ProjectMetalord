@@ -222,8 +222,8 @@ public class Controller_Physics : MonoBehaviour
 
     void Update()
     {
-        Debug.Log(canInput);
-        Debug.Log(PlayerInteractNpc.isTalking);
+        //Debug.Log(canInput);
+        //Debug.Log(PlayerInteractNpc.isTalking);
         #region 상점, 도감, 환경설정 키 누를경우 _ 231219 배경택
         if (canInput && !PlayerInteractNpc.isTalking)
         {

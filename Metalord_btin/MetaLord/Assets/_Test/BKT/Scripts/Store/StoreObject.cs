@@ -28,7 +28,7 @@ public class StoreObject : MonoBehaviour
 
     private void OnEnable()
     {
-        ChangeButtonUI(0);
+        //ChangeButtonUI(0);
 
     }
 
@@ -38,7 +38,9 @@ public class StoreObject : MonoBehaviour
     }
 
     protected virtual void LoadData()
-    {        
+    {
+        Debug.Log("켜졌다");
+        gameObject.SetActive(true);
         ChangeButtonUI(0);
     }
 
