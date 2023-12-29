@@ -299,11 +299,11 @@ public class DialogueUI : MonoBehaviour
 
         if (_state == npcState.objectAttached)
         {
-            ShowStateDialogue(12);
+            ShowStateDialogue(11);
         }
         else if (_state == npcState.glued)
         {
-            ShowStateDialogue(11);
+            ShowStateDialogue(10);
         }
         else
         {
