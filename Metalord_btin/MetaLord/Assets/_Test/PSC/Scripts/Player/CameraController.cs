@@ -152,7 +152,11 @@ public class CameraController : MonoBehaviour
         if (player.IsMove)
         {
             Debug.Log(1);
-            if (rotateCoroutine!=null) StopCoroutine(rotateCoroutine);
+            if (rotateCoroutine != null) 
+            {
+                StopCoroutine(rotateCoroutine);
+                rotateCoroutine = null;
+            }
             targetY.transform.rotation = Quaternion.Euler(0, newRotationY, 0);
         }
         else if (Quaternion.Angle(targetY.transform.rotation, Quaternion.Euler(0, newRotationY, 0)) >= rotateAngle)
@@ -168,14 +172,19 @@ public class CameraController : MonoBehaviour
 
             if (rotateCoroutine == null)
             {
+                Debug.Log(21);
                 rotateCoroutine = StartCoroutine(RotateBodyRoutine(newRotationY, rotateTime));
             }
             else
             {
-                currRotateTime = 0; 
+                Debug.Log(22);
                 targetRotation = Quaternion.Euler(0, newRotationY, 0);
             }
 
+        }
+        else
+        {
+            Debug.Log(3);
         }
 
         //targetY.transform.eulerAngles = new Vector3(0, newRotationY, 0);
@@ -247,11 +256,12 @@ public class CameraController : MonoBehaviour
         while(currRotateTime <= time)
         {
 
+            Debug.Log(currRotateTime);
             targetY.transform.rotation = Quaternion.Lerp(targetY.transform.rotation, targetRotation, Time.deltaTime * smoothRotationSpeed);
             yield return new WaitForSeconds(Time.deltaTime);
             currRotateTime += Time.deltaTime;
         }
-
+        Debug.Log("?");
         rotateCoroutine = null;
         currRotateTime = 0;
     }
