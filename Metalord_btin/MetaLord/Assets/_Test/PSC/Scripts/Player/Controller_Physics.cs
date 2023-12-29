@@ -316,7 +316,6 @@ public class Controller_Physics : MonoBehaviour
             return;
         }
 
-        idleTime = 0;
         UpdateInputState();
         UpdateAnimationParameter();
         UpdateAxis();
