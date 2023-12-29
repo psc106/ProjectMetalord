@@ -75,6 +75,7 @@ public class CatchObject : MonoBehaviour
                     
                     // 자식 메쉬콜라이더 갱신
                     AddChild(collision.transform.GetComponent<MeshCollider>());
+                    collision.transform.GetComponent<MeshCollider>().convex = true;
                 }
                 // 부모가 존재할 경우
                 else
