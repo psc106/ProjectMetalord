@@ -316,6 +316,7 @@ public class Controller_Physics : MonoBehaviour
             return;
         }
 
+        idleTime = 0;
         UpdateInputState();
         UpdateAnimationParameter();
         UpdateAxis();
@@ -326,11 +327,11 @@ public class Controller_Physics : MonoBehaviour
             Debug.Log(PaintTarget.CursorColor() != Color.black);
         }
 
-
         if (gunController.CurrentMode.mode == GunMode.Paint)
         {
             if (gunController.CurrentMode.ShootGun())
             {
+                gunController.Shoot(GunMode.Paint);
                 idleTime = 0;
             }
         }
@@ -340,8 +341,14 @@ public class Controller_Physics : MonoBehaviour
             desireFire = false;
             if(gunController.CurrentMode.ShootGun())
             {
+                gunController.Shoot(GunMode.Paint);
                 idleTime = 0;
             }
+        }
+
+        if(Input.GetMouseButtonDown(1))
+        {
+            gunController.Shoot(GunMode.Grab);
         }
 
         // 장전        
@@ -911,6 +918,7 @@ public class Controller_Physics : MonoBehaviour
         connectionLocalPosition = connectedBody.transform.InverseTransformPoint(connectionWorldPosition);
 
     }
+
     private void UpdateInputState()
     {
         input.x = reader.Direction.x;
@@ -1240,13 +1248,15 @@ public class Controller_Physics : MonoBehaviour
 
     private void BindHandler()
     {
-        reader.Fire += PressKey;
+        reader.Fire += PressFire;
+        reader.Grab += PressGrab;
         reader.Run += ToggleRun;
     }
 
     bool desireFire;
+    bool desireGrab;
 
-    public void PressKey(float input)
+    public void PressFire(float input)
     {
         if (input == 1)
         {
@@ -1256,8 +1266,19 @@ public class Controller_Physics : MonoBehaviour
         {
             desireFire = false;
         }
-
     }
+    public void PressGrab(float input)
+    {
+        if (input == 1)
+        {
+            desireGrab = true;
+        }
+        else
+        {
+            desireGrab = false;
+        }
+    }
+
     void ToggleRun()
     {
         desireRun = !desireRun;

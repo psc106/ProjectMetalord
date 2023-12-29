@@ -51,6 +51,12 @@ public class GrabGun : GunBase
         {
             return false;
         }
+        // TODO : 임시야매로 그랩건의 오브젝트 남발 방지
+        else if (state.hit.transform.gameObject.layer != LayerMask.NameToLayer("MovedObject") &&
+            state.hit.transform.gameObject.layer != LayerMask.NameToLayer("GrabedObject"))
+        {            
+            return false;
+        }
 
         state.pickupPoint.position = state.hit.point;
 

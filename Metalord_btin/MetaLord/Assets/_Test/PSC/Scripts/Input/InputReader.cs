@@ -17,6 +17,7 @@ public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions
     public event UnityAction<float> Jump = delegate { };
     public event UnityAction Run = delegate { };
     public event UnityAction<float> Fire = delegate { };
+    public event UnityAction<float> Grab = delegate { };
 
     public event UnityAction<float> Store = delegate { }; // 231219 배경택
     public event UnityAction<float> Record = delegate { }; // 231219 배경택
@@ -29,7 +30,6 @@ public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions
     public bool JumpKey => inputActions.Player.Jump.ReadValue<float>()==1f;
     public bool ShootKey => inputActions.Player.Fire.ReadValue<float>() == 1f 
         && inputActions.Player.MouseControlCamera.phase==InputActionPhase.Waiting;
-
     public bool GrabKey => inputActions.Player.Grab.ReadValue<float>() == 1f
         && inputActions.Player.MouseControlCamera.phase == InputActionPhase.Waiting;
     public bool ReloadKey => inputActions.Player.Reload.ReadValue<float>() == 1f;
@@ -146,6 +146,14 @@ public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions
 
     public void OnGrab(InputAction.CallbackContext context)
     {
-        throw new System.NotImplementedException();
+        switch (context.phase)
+        {
+            case InputActionPhase.Started:
+                Grab.Invoke(1);
+                break;
+            case InputActionPhase.Canceled:
+                Grab.Invoke(0);
+                break;
+        }
     }
 }
