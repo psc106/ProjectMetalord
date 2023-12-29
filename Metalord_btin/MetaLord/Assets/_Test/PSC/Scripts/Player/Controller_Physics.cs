@@ -21,8 +21,8 @@ public class Controller_Physics : MonoBehaviour
     Rigidbody rb;
     [SerializeField]
     Transform playerInputSpace = default;
-    [SerializeField]
-    Transform playerCenter = default;
+    //[SerializeField]
+    //Transform playerCenter = default;
     //[SerializeField]
     //TrailRenderer trailRenderer;
     [SerializeField]
@@ -36,13 +36,13 @@ public class Controller_Physics : MonoBehaviour
     [SerializeField]
     MeshRenderer backGunRender;
     [SerializeField]
-    CameraManager cameraManager;
+    CameraController cameraManager;
 
     #region Private Reference
 
     RaycastHit groundHit;
 
-    public Rigidbody connectedBody;
+    Rigidbody connectedBody;
     Rigidbody previousConnectedBody;
 
     Vector3 input = Vector3.zero;
@@ -74,6 +74,8 @@ public class Controller_Physics : MonoBehaviour
     //float currMouseSpeed = 0;
     float moveMultiple = default;
 
+    float idleTime = 0;
+
     bool desireClimb = false;
     //bool desireOutClimb = false;
     bool desireJump = false;
@@ -85,7 +87,7 @@ public class Controller_Physics : MonoBehaviour
     bool canFire = false;
 
     bool playingReloadAnimation = false;
-    bool playingEquipAnimation = false;
+    //bool playingEquipAnimation = false;
 
     int jumpPhase = 0;
     int stepsSinceLastGrounded = 0;
@@ -96,11 +98,11 @@ public class Controller_Physics : MonoBehaviour
     int steepContactCount = 0;
     int climbContactCount = 0;
 
-    int catchObject;
+    //int catchObject;
 
     #endregion
 
-    public bool isMove { get; private set; }
+    public bool IsMove => (input.magnitude != 0);
     public static bool stopState { get; private set; }
     public bool CanFire => canFire && CanReload;
 
@@ -182,6 +184,7 @@ public class Controller_Physics : MonoBehaviour
     private const float INPUT_DELAYTIME = 0.3f; // 입력 후 대기 시간
 
     #region Animator Hash
+    private readonly int IdleTimeHash = Animator.StringToHash("IdleTime");
     private readonly int VelocityXHash = Animator.StringToHash("VelocityX");
     private readonly int VelocityYHash = Animator.StringToHash("VelocityY");
     private readonly int JumpTriggerHash = Animator.StringToHash("Jump");
@@ -201,7 +204,7 @@ public class Controller_Physics : MonoBehaviour
         minGroundDotProduct = Mathf.Cos(maxGroundAngle * Mathf.Deg2Rad);
         minObjectDotProduct = Mathf.Cos(maxObjectAngle * Mathf.Deg2Rad);
         minClimbDotProduct = Mathf.Cos(maxClimbAngle * Mathf.Deg2Rad);
-        catchObject = LayerMask.NameToLayer("CatchObject");
+        //catchObject = LayerMask.NameToLayer("CatchObject");
     }
 
     private void Awake()
@@ -222,8 +225,6 @@ public class Controller_Physics : MonoBehaviour
 
     void Update()
     {
-        Debug.Log(canInput);
-        Debug.Log(PlayerInteractNpc.isTalking);
         #region 상점, 도감, 환경설정 키 누를경우 _ 231219 배경택
         if (canInput && !PlayerInteractNpc.isTalking)
         {
@@ -315,50 +316,39 @@ public class Controller_Physics : MonoBehaviour
             return;
         }
 
-
-        input.x = reader.Direction.x;
-        input.z = reader.Direction.y;
-        input.y = 0;
-
-        //입력값 변환
-        input = Vector3.ClampMagnitude(input, 1);
-        isMove |= (input.magnitude != 0);
-
-        desireJump |= reader.JumpKey && (OnClimb || OnGround);
-        desireJump &= canJump;
-
-        //달리기 토글
-
-        multipleState = OnGround && OnSteep && OnClimb;
-
+        UpdateInputState();
         UpdateAnimationParameter();
         UpdateAxis();
-
-        //디버그
-        Color trailColor = new Color(0, 0, 0, 1);
-        trailColor.r = OnGround ? 1 : 0;
-        trailColor.g = OnSteep ? 1 : 0;
-        trailColor.b = OnClimb ? 1 : 0;
-
-        GetComponent<Renderer>().material.color = trailColor;
-
 
         // 레이지점 컬러 체크 테스트용
         if (Input.GetKeyDown(KeyCode.T))
         {
-            Debug.Log(PaintTarget.CursorColor()!=Color.black);
+            Debug.Log(PaintTarget.CursorColor() != Color.black);
         }
 
 
         if (gunController.CurrentMode.mode == GunMode.Paint)
         {
-            gunController.CurrentMode.ShootGun();
+            if (gunController.CurrentMode.ShootGun())
+            {
+                gunController.Shoot(GunMode.Paint);
+                idleTime = 0;
+            }
         }
 
         else if (desireFire)
         {
             desireFire = false;
-            gunController.CurrentMode.ShootGun();
+            if(gunController.CurrentMode.ShootGun())
+            {
+                gunController.Shoot(GunMode.Paint);
+                idleTime = 0;
+            }
+        }
+
+        if(Input.GetMouseButtonDown(1))
+        {
+            gunController.Shoot(GunMode.Grab);
         }
 
         // 장전        
@@ -393,9 +383,7 @@ public class Controller_Physics : MonoBehaviour
 
     }
 
-
-    public static int a = 0;
-
+   
     // 입력 대기시간 코루틴
     IEnumerator DelayInput()
     {
@@ -930,6 +918,28 @@ public class Controller_Physics : MonoBehaviour
         connectionLocalPosition = connectedBody.transform.InverseTransformPoint(connectionWorldPosition);
 
     }
+    private void UpdateInputState()
+    {
+        input.x = reader.Direction.x;
+        input.z = reader.Direction.y;
+        input.y = 0;
+
+        //입력값 변환
+        input = Vector3.ClampMagnitude(input, 1);
+
+        desireJump |= reader.JumpKey && (OnClimb || OnGround);
+        desireJump &= canJump;
+
+        multipleState = OnGround && OnSteep && OnClimb;
+        if (input.magnitude == 0 && OnGround && !OnClimb && CanReload)
+        {
+            idleTime += Time.deltaTime;
+        }
+        else
+        {
+            idleTime = 0;
+        }
+    }
 
     //플레이어의 축을 변경한다(앞뒤/좌우)
     void UpdateAxis()
@@ -949,6 +959,7 @@ public class Controller_Physics : MonoBehaviour
     //애니메이션의 파라미터를 추가한다.
     private void UpdateAnimationParameter()
     {
+        animator.SetFloat(IdleTimeHash, idleTime);
         animator.SetFloat(VelocityXHash, input.x * (desireRun ? 2 : 1));
         animator.SetFloat(VelocityYHash, input.z * (desireRun ? 2 : 1));
         animator.SetBool(EquipStateHash, !multipleState && OnClimb);
@@ -1041,6 +1052,11 @@ public class Controller_Physics : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    public Rigidbody GetConnectRigidBody()
+    {
+        return connectedBody;
     }
 
     public Vector3 GetClimbNormal()
@@ -1174,7 +1190,7 @@ public class Controller_Physics : MonoBehaviour
         frontGunRender.enabled = false;
         backGunRender.enabled = (false);
 
-        playingEquipAnimation = true;
+       // playingEquipAnimation = true;
         aimRig.weight = 0;
         animator.SetTrigger(EquipTriggerHash);
     }
@@ -1185,7 +1201,7 @@ public class Controller_Physics : MonoBehaviour
         frontGunRender.enabled = false;
         backGunRender.enabled = (true);
 
-        playingEquipAnimation = false;
+       // playingEquipAnimation = false;
         aimRig.weight = 1;
 
     }
@@ -1210,7 +1226,7 @@ public class Controller_Physics : MonoBehaviour
         frontGunRender.enabled = true;
         backGunRender.enabled = (false);
 
-        playingEquipAnimation = false;
+       // playingEquipAnimation = false;
         aimRig.weight = 1;
     }
     public void StartClimbAnimation()

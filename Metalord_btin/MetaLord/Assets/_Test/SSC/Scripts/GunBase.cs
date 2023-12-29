@@ -1,5 +1,4 @@
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 
 abstract public class GunBase : MonoBehaviour
@@ -9,6 +8,7 @@ abstract public class GunBase : MonoBehaviour
     protected Brush brush = null;
     protected Transform AimTarget = null;
     protected int ammo;
+    public bool fireStart = false;
     public LayerMask myLayer;
     Coroutine shootCoroutine;
     
@@ -26,7 +26,7 @@ abstract public class GunBase : MonoBehaviour
             brush.splatsY = 4;
         }
     }
-    abstract public void ShootGun();
+    abstract public bool ShootGun();
     
     protected void UsedAmmo(Ray _ray, int _ammo)
     {

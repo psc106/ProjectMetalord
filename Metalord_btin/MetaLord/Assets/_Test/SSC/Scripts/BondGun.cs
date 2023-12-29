@@ -13,17 +13,17 @@ public class BondGun : GunBase
         mode = GunMode.Bond;
     }
 
-    public override void ShootGun()
+    public override bool ShootGun()
     {
         if (CheckCanFire() == false)
         {
-            return;
+            return false;
         }
 
-        ShootBond();
+        return ShootBond();
     }
 
-    public void ShootBond()
+    public bool ShootBond()
     {
         if (state.checkSuccessRay)
         {
@@ -38,6 +38,8 @@ public class BondGun : GunBase
             }*/
 
             UsedAmmo(muzzleRay, ammo);            
+            return true;
         }
+        return false;
     }
 }

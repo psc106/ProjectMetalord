@@ -11,6 +11,11 @@ public class UI_Store : MonoBehaviour
 {
     [SerializeField] private GameObject currentCoinUI;
 
+    private void Start()
+    {
+        gameObject.SetActive(false);
+    }
+
     private void OnEnable()
     {
         Debug.Log("UI 상점 켜졌다.;");
