@@ -223,7 +223,8 @@ public class RecordManager : MonoBehaviour
             int tempIndex = i / PAGE_FULL_ITEMCOUNT;
 
             _recordObjectList[i].SetActive(true);
-            _recordObjectList[i].transform.parent = pageList[tempIndex].transform;
+            _recordObjectList[i].transform.SetParent(pageList[tempIndex].transform, false);
+            //_recordObjectList[i].transform.parent = pageList[tempIndex].transform;
         }
     }
 

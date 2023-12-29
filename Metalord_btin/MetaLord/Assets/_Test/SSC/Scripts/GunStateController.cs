@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SocialPlatforms;
 using UnityEngine.UI;
@@ -259,7 +258,7 @@ public class GunStateController : MonoBehaviour
             float distancePlayerToHit = Vector3.Distance(startPlayerPos, hit.point);
 
             //카메라->끝점 range 이하 경우
-            if (hit.distance <= distance)
+            /*if (hit.distance <= distance)
             {
                 checkSuccessRay = false;
                 crossHair.color = Color.red;
@@ -267,7 +266,8 @@ public class GunStateController : MonoBehaviour
                 return;
             }
 
-            else if (distanceCameraToHit <= cameraMinRange)
+            else*/
+            if (distanceCameraToHit <= cameraMinRange)
             {
                 if (Physics.Raycast(defaultRay, out hit, distancePlayerToHit, gunLayer))
                 {
