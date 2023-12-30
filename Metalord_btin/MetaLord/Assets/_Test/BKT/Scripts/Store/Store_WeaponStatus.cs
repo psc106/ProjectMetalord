@@ -20,8 +20,8 @@ public class Store_WeaponStatus : StoreObject
     private TMP_Text nameObject;
     private TMP_Text costObject;
 
+    private GameObject maxImage;
     private GameObject coinImage;
-    private GameObject soldOutText;
 
 
     private  const int MAX_STEP = 13; // 최대 단계
@@ -44,9 +44,8 @@ public class Store_WeaponStatus : StoreObject
 
         nameObject = Utility.FindChildObj(this.gameObject, "Text(Name)").GetComponent<TMP_Text>();
         costObject = Utility.FindChildObj(this.gameObject, "Text(Cost)").GetComponent<TMP_Text>();
-        coinImage = Utility.FindChildObj(this.gameObject, "Coin_Image");
-        soldOutText = Utility.FindChildObj(this.gameObject, "Text(SoldOut)");
-
+        coinImage = Utility.FindChildObj(this.gameObject, "Coin_Image");        
+        maxImage = Utility.FindChildObj(this.gameObject, "Image(Max)");
         // 스킬 정보 입력
         nameObject.text = skillName;
         costObject.text = stepCost[stepIndex].ToString() + "개";
@@ -118,9 +117,9 @@ public class Store_WeaponStatus : StoreObject
         if (stepIndex < MAX_STEP - 1) costObject.text = stepCost[stepIndex + 1].ToString() + "개"; // 다음 스텝의 금액을 반영
         else
         {
-            coinImage.SetActive(false);
-            soldOutText.SetActive(true);
-            costObject.enabled = false;
+            //coinImage.SetActive(false);
+            maxImage.SetActive(true);
+            costObject.text = "-개";
         }
     }
 

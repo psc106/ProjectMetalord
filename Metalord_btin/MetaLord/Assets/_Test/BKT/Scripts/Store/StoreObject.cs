@@ -10,14 +10,14 @@ using UnityEngine.UI;
 public class StoreObject : MonoBehaviour
 {
     protected int price;
-    private GameObject cantBuyImage;
+    //private GameObject cantBuyImage;
     private GameObject button; 
 
     protected bool isCanBuy = true;
 
     protected virtual void Awake()
     {        
-        cantBuyImage = Utility.FindChildObj(this.gameObject, "Image(CantBuy)");
+        //cantBuyImage = Utility.FindChildObj(this.gameObject, "Image(CantBuy)");
         button = Utility.FindChildObj(this.gameObject, "Button");
         GameEventsManager.instance.coinEvents.onChangeCoin += ChangeButtonUI;       
     }
