@@ -306,7 +306,7 @@ public class Controller_Physics : MonoBehaviour
                     explainUI.SetActive(false);
                 }
 
-                if(firstCoinExPlainUI == true)
+                if(firstCoinExPlainUI.activeSelf == true)
                 {
                     SwitchCameraLock(true);
                     firstCoinExPlainUI.SetActive(false);

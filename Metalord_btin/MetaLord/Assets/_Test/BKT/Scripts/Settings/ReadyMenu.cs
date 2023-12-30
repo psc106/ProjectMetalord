@@ -17,6 +17,8 @@ public class ReadyMenu : MonoBehaviour
     {
         gameObject.SetActive(false);
         CanUseSound();
+
+        Controller_Physics.SwitchCameraLock(false);
     }
 
     // 도움말 버튼
