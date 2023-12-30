@@ -179,7 +179,7 @@ public class Controller_Physics : MonoBehaviour
     [SerializeField] GameObject storeUI; // 상점 UI 오브젝트
     [SerializeField] GameObject recordUI; // 도감 UI 오브젝트
     [SerializeField] GameObject settingsUI; // 환경설정 UI 오브젝트
-    [SerializeField] GameObject explainUI; // 도움말 UI 오브젝트
+    [SerializeField] GameObject explainUI; // 도움말 UI 오브젝트    
     [SerializeField] GameObject firstCoinExPlainUI; // 첫 코인 도움말 UI 오브젝트
     private bool canInput = true; // 입력 가능여부
     private const float INPUT_DELAYTIME = 0.3f; // 입력 후 대기 시간
@@ -267,7 +267,7 @@ public class Controller_Physics : MonoBehaviour
 
             }
 
-            if (!storeUI.activeSelf && !recordUI.activeSelf && reader.SettingsKey) //설정 키 누를 경우 _231219 배경택
+            if (IsAnyUISetActiveFalse() && reader.SettingsKey) //설정 키 누를 경우 _231219 배경택
             {
                 if (settingsUI.activeSelf == true)
                 {
@@ -298,7 +298,7 @@ public class Controller_Physics : MonoBehaviour
                 {
                     SwitchCameraLock(false);
                     recordUI.SetActive(false);
-                }
+                }               
 
                 if (explainUI.activeSelf == true)
                 {
@@ -387,6 +387,17 @@ public class Controller_Physics : MonoBehaviour
             //SwapBondGun();
         }
 
+    }
+
+    bool IsAnyUISetActiveFalse()
+    {
+        if (storeUI.activeSelf ||
+            recordUI.activeSelf ||            
+            explainUI.activeSelf ||
+            firstCoinExPlainUI.activeSelf
+            ) return false;
+
+        return true;
     }
 
    
