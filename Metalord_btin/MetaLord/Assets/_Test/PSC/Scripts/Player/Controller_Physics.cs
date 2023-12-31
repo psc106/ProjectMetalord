@@ -322,9 +322,9 @@ public class Controller_Physics : MonoBehaviour
                 }
 
                 if(savingUI.activeSelf == true && savingUI.GetComponent<SavingCanvas>().isSaved)
-                {
-                    SwitchCameraLock(true);
+                {                    
                     savingUI.SetActive(false);
+                    readyMenuUI.SetActive(true);
                 }
 
                 StartCoroutine(DelayInput());
