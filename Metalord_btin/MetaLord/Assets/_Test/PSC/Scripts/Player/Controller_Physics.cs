@@ -183,6 +183,7 @@ public class Controller_Physics : MonoBehaviour
     private GameObject explainUI; // 도움말 UI 오브젝트    
     private GameObject firstCoinExPlainUI; // 첫 코인 도움말 UI 오브젝트
     private GameObject savingUI; // 첫 코인 도움말 UI 오브젝트
+    private GameObject firstKeyExplainUI; // 첫 코인 도움말 UI 오브젝트
     private bool canInput = true; // 입력 가능여부
     private const float INPUT_DELAYTIME = 0.3f; // 입력 후 대기 시간
 
@@ -229,8 +230,8 @@ public class Controller_Physics : MonoBehaviour
         readyMenuUI = Utility.FindChildObj(canvases, "ReadyCanvas");
         explainUI = Utility.FindChildObj(canvases, "ExplainCanvas");
         firstCoinExPlainUI = Utility.FindChildObj(canvases, "CoinExplainCanvas");
+        firstKeyExplainUI = Utility.FindChildObj(canvases, "KeyExplainCanvas");
         savingUI = Utility.FindChildObj(canvases, "SavingCanvas");
-
     }
 
     void Update()
@@ -327,6 +328,12 @@ public class Controller_Physics : MonoBehaviour
                     readyMenuUI.SetActive(true);
                 }
 
+                if(firstKeyExplainUI.activeSelf == true)
+                {
+                    SwitchCameraLock(true);
+                    firstKeyExplainUI.SetActive(false);
+                }
+
                 StartCoroutine(DelayInput());
             }
         }
@@ -406,11 +413,12 @@ public class Controller_Physics : MonoBehaviour
 
     bool IsAnyUISetActiveFalse()
     {
-        if (storeUI.activeSelf ||
-            recordUI.activeSelf ||            
-            explainUI.activeSelf ||
-            firstCoinExPlainUI.activeSelf ||
-            savingUI.activeSelf
+        if (storeUI.activeSelf
+            || recordUI.activeSelf
+            || explainUI.activeSelf
+            || firstCoinExPlainUI.activeSelf
+            || savingUI.activeSelf
+            || firstKeyExplainUI.activeSelf
             ) return false;
 
         return true;
