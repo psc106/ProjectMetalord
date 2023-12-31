@@ -52,31 +52,11 @@ public class ReadyMenu : MonoBehaviour
 
     // 게임 저장
     public void SaveGame()
-    {
-        //GameEventsManager.instance.dataEvents.SaveData(); // 저장 이벤트 발생
-        DataManager.instance.SaveGameData();
-        //gameObject.SetActive(false); // 대기메뉴 창 꺼짐
-        StartCoroutine(PopSavingUI());
+    {        
+        DataManager.instance.SaveGameData();        
+        savingCanvas.GetComponent<SavingCanvas>().StartSave();
+        gameObject.SetActive(false);
     }
-
-    // 저장 UI창 띄우기
-    IEnumerator PopSavingUI()
-    {
-        savingCanvas.SetActive(true);
-        string dot = default;
-        for(int i = 0; i < 3; i++)
-        {
-            dot += ".";
-            Debug.Log(dot);
-            savingCanvas.transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>().text = dot;
-            yield return new WaitForSecondsRealtime(1f);
-            Debug.Log("코루틴");
-        }
-        savingCanvas.transform.GetChild(0).gameObject.SetActive(false);
-        savingCanvas.transform.GetChild(1).gameObject.SetActive(true);
-    }
-
-
 
     /// <summary>
     /// 게임 불러오기

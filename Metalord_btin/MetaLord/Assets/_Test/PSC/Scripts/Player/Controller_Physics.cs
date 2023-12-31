@@ -182,6 +182,7 @@ public class Controller_Physics : MonoBehaviour
     private GameObject readyMenuUI; // 대기모드 UI 오브젝트
     private GameObject explainUI; // 도움말 UI 오브젝트    
     private GameObject firstCoinExPlainUI; // 첫 코인 도움말 UI 오브젝트
+    private GameObject savingUI; // 첫 코인 도움말 UI 오브젝트
     private bool canInput = true; // 입력 가능여부
     private const float INPUT_DELAYTIME = 0.3f; // 입력 후 대기 시간
 
@@ -198,8 +199,6 @@ public class Controller_Physics : MonoBehaviour
     #endregion
 
 
-
-
     //에디터에서 처리
     private void OnValidate()
     {
@@ -214,8 +213,8 @@ public class Controller_Physics : MonoBehaviour
         //Application.targetFrameRate = 60;
 
         cameraPoint = Camera.main.transform;
-        gravity = CustomGravity.GetGravity(rb.position, out upAxis); 
-        
+        gravity = CustomGravity.GetGravity(rb.position, out upAxis);
+
         OnValidate();
 
         BindHandler();
@@ -224,19 +223,14 @@ public class Controller_Physics : MonoBehaviour
         canFire = false;
         fireDelay = StartCoroutine(fireDelayRoutine(fireDelayTime));
 
-
-    }
-
-    private void Start()
-    {
         // 231231 배경택
         storeUI = Utility.FindChildObj(canvases, "StoreCanvas");
         recordUI = Utility.FindChildObj(canvases, "RecordCanvas");
         readyMenuUI = Utility.FindChildObj(canvases, "ReadyCanvas");
         explainUI = Utility.FindChildObj(canvases, "ExplainCanvas");
         firstCoinExPlainUI = Utility.FindChildObj(canvases, "CoinExplainCanvas");
+        savingUI = Utility.FindChildObj(canvases, "SavingCanvas");
 
-        
     }
 
     void Update()
@@ -327,6 +321,12 @@ public class Controller_Physics : MonoBehaviour
                     firstCoinExPlainUI.SetActive(false);
                 }
 
+                if(savingUI.activeSelf == true && savingUI.GetComponent<SavingCanvas>().isSaved)
+                {
+                    SwitchCameraLock(true);
+                    savingUI.SetActive(false);
+                }
+
                 StartCoroutine(DelayInput());
             }
         }
@@ -409,7 +409,8 @@ public class Controller_Physics : MonoBehaviour
         if (storeUI.activeSelf ||
             recordUI.activeSelf ||            
             explainUI.activeSelf ||
-            firstCoinExPlainUI.activeSelf
+            firstCoinExPlainUI.activeSelf ||
+            savingUI.activeSelf
             ) return false;
 
         return true;
