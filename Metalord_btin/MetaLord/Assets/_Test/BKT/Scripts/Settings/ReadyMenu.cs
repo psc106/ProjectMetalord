@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 /// <summary>
 /// 대기화면 메뉴
@@ -9,8 +10,19 @@ using UnityEngine;
 public class ReadyMenu : MonoBehaviour
 {
 
-    [SerializeField] GameObject gameExplainCanvas;
-    [SerializeField] GameObject SettingsCanvas;
+    [SerializeField] private GameObject canvases;
+
+    private GameObject gameExplainCanvas;
+    private GameObject settingsCanvas;
+    private GameObject savingCanvas;
+
+
+    private void Awake()
+    {
+        gameExplainCanvas = Utility.FindChildObj(canvases, "ExplainCanvas");
+        settingsCanvas = Utility.FindChildObj(canvases, "SettingCanvas");
+        savingCanvas = Utility.FindChildObj(canvases, "SavingCanvas");
+    }
 
     // 돌아가기 버튼
     public void BackToGame()
@@ -33,7 +45,7 @@ public class ReadyMenu : MonoBehaviour
     // 환경설정창으로 이동
     public void GoSettings()
     {
-        SettingsCanvas.SetActive(true);
+        settingsCanvas.SetActive(true);
         gameObject.SetActive(false);
         CanUseSound();
     }
@@ -43,7 +55,28 @@ public class ReadyMenu : MonoBehaviour
     {
         //GameEventsManager.instance.dataEvents.SaveData(); // 저장 이벤트 발생
         DataManager.instance.SaveGameData();
+        //gameObject.SetActive(false); // 대기메뉴 창 꺼짐
+        StartCoroutine(PopSavingUI());
     }
+
+    // 저장 UI창 띄우기
+    IEnumerator PopSavingUI()
+    {
+        savingCanvas.SetActive(true);
+        string dot = default;
+        for(int i = 0; i < 3; i++)
+        {
+            dot += ".";
+            Debug.Log(dot);
+            savingCanvas.transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>().text = dot;
+            yield return new WaitForSecondsRealtime(1f);
+            Debug.Log("코루틴");
+        }
+        savingCanvas.transform.GetChild(0).gameObject.SetActive(false);
+        savingCanvas.transform.GetChild(1).gameObject.SetActive(true);
+    }
+
+
 
     /// <summary>
     /// 게임 불러오기

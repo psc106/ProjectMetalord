@@ -176,11 +176,12 @@ public class Controller_Physics : MonoBehaviour
 
     //231219 배경택
     [Header("UI 상점, 도감, 환경설정")]
-    [SerializeField] GameObject storeUI; // 상점 UI 오브젝트
-    [SerializeField] GameObject recordUI; // 도감 UI 오브젝트
-    [SerializeField] GameObject settingsUI; // 환경설정 UI 오브젝트
-    [SerializeField] GameObject explainUI; // 도움말 UI 오브젝트    
-    [SerializeField] GameObject firstCoinExPlainUI; // 첫 코인 도움말 UI 오브젝트
+    [SerializeField] private GameObject canvases;
+    private GameObject storeUI; // 상점 UI 오브젝트
+    private GameObject recordUI; // 도감 UI 오브젝트
+    private GameObject readyMenuUI; // 대기모드 UI 오브젝트
+    private GameObject explainUI; // 도움말 UI 오브젝트    
+    private GameObject firstCoinExPlainUI; // 첫 코인 도움말 UI 오브젝트
     private bool canInput = true; // 입력 가능여부
     private const float INPUT_DELAYTIME = 0.3f; // 입력 후 대기 시간
 
@@ -222,6 +223,20 @@ public class Controller_Physics : MonoBehaviour
 
         canFire = false;
         fireDelay = StartCoroutine(fireDelayRoutine(fireDelayTime));
+
+
+    }
+
+    private void Start()
+    {
+        // 231231 배경택
+        storeUI = Utility.FindChildObj(canvases, "StoreCanvas");
+        recordUI = Utility.FindChildObj(canvases, "RecordCanvas");
+        readyMenuUI = Utility.FindChildObj(canvases, "ReadyCanvas");
+        explainUI = Utility.FindChildObj(canvases, "ExplainCanvas");
+        firstCoinExPlainUI = Utility.FindChildObj(canvases, "CoinExplainCanvas");
+
+        
     }
 
     void Update()
@@ -241,7 +256,7 @@ public class Controller_Physics : MonoBehaviour
                     SwitchCameraLock(true);
                     storeUI.SetActive(true);
                     recordUI.SetActive(false);
-                    settingsUI.SetActive(false);
+                    readyMenuUI.SetActive(false);
                 }
 
                 StartCoroutine(DelayInput());
@@ -260,7 +275,7 @@ public class Controller_Physics : MonoBehaviour
                     SwitchCameraLock(true);
                     recordUI.SetActive(true);
                     storeUI.SetActive(false);
-                    settingsUI.SetActive(false);
+                    readyMenuUI.SetActive(false);
                 }
 
                 StartCoroutine(DelayInput());
@@ -269,15 +284,15 @@ public class Controller_Physics : MonoBehaviour
 
             if (IsAnyUISetActiveFalse() && reader.SettingsKey) //설정 키 누를 경우 _231219 배경택
             {
-                if (settingsUI.activeSelf == true)
+                if (readyMenuUI.activeSelf == true)
                 {
                     SwitchCameraLock(false);
-                    settingsUI.SetActive(false); // 중복 버튼을 누를경우 꺼짐
+                    readyMenuUI.SetActive(false); // 중복 버튼을 누를경우 꺼짐
                 }
                 else
                 {
                     SwitchCameraLock(true);
-                    settingsUI.SetActive(true);
+                    readyMenuUI.SetActive(true);
                     recordUI.SetActive(false);
                     storeUI.SetActive(false);
                 }
