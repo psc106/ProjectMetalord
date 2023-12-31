@@ -22,7 +22,7 @@ public class RecordManager : MonoBehaviour
     private GameObject zone; //페이지 우측 지역 text
     private GameObject description; //페이지 우측 설명 text
     private GameObject labelSortGot;
-    private GameObject labelSortZone;
+    //private GameObject labelSortZone;
 
     private GameObject itemUIObjectPrefab; // 복사하여 생성할 프리펩
     private GameObject pagePrefab; // 복사하여 생성할 프리펩
@@ -89,7 +89,7 @@ public class RecordManager : MonoBehaviour
         description = Utility.FindChildObj(recordCanvas, "Text(Info_Description)");
         pagePanel = Utility.FindChildObj(recordCanvas, "RecordPagePanel");
         labelSortGot = Utility.FindChildObj(recordCanvas, "Sort(Got)");
-        labelSortZone = Utility.FindChildObj(recordCanvas, "Sort(Zone)");
+        //labelSortZone = Utility.FindChildObj(recordCanvas, "Sort(Zone)");
 
         itemUIObjectPrefab = Resources.Load<GameObject>("Prefabs/Object_ForRecordObject");
         pagePrefab = Resources.Load<GameObject>("Prefabs/Object_ForPage");
@@ -333,7 +333,6 @@ public class RecordManager : MonoBehaviour
         PlayButtonSound();
     }
 
-
     /// <summary>
     /// 전체 정렬 함수
     /// 231206 배경택
@@ -386,10 +385,10 @@ public class RecordManager : MonoBehaviour
         pageIndex = 0; // 페이지 인덱스 초기화
         MakeRecordObject(SortTotal());
 
-        labelSortZone.GetComponent<TMP_Dropdown>().value = 0;
-        labelSortZone.GetComponent<TMP_Dropdown>().value = 0;
+        //labelSortZone.GetComponent<TMP_Dropdown>().value = 0;
+        labelSortGot.GetComponent<TMP_Dropdown>().value = 0;
 
-        labelSortZone.GetComponent<TMP_Dropdown>().captionText.text = "지역";
+        //labelSortZone.GetComponent<TMP_Dropdown>().captionText.text = "지역";
         labelSortGot.GetComponent<TMP_Dropdown>().captionText.text = "획득 여부";
 
         if(selectedObject != null) selectedObject.InActiveChecking(); // 선택표시 비활성화
