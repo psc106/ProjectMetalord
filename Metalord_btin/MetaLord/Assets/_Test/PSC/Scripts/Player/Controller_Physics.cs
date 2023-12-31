@@ -312,13 +312,13 @@ public class Controller_Physics : MonoBehaviour
 
                 if (explainUI.activeSelf == true)
                 {
-                    SwitchCameraLock(true);
+                    SwitchCameraLock(false);
                     explainUI.SetActive(false);
                 }
 
                 if(firstCoinExPlainUI.activeSelf == true)
                 {
-                    SwitchCameraLock(true);
+                    SwitchCameraLock(false);
                     firstCoinExPlainUI.SetActive(false);
                 }
 
@@ -330,7 +330,7 @@ public class Controller_Physics : MonoBehaviour
 
                 if(firstKeyExplainUI.activeSelf == true)
                 {
-                    SwitchCameraLock(true);
+                    SwitchCameraLock(false);
                     firstKeyExplainUI.SetActive(false);
                 }
 
