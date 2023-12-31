@@ -22,6 +22,7 @@ public class RecordManager : MonoBehaviour
     private GameObject zone; //페이지 우측 지역 text
     private GameObject description; //페이지 우측 설명 text
     private GameObject labelSortGot;
+    private TMP_Text pageDisPlayText; // 전체페이지 및 현재페이지 알려주는 텍스트
     //private GameObject labelSortZone;
 
     private GameObject itemUIObjectPrefab; // 복사하여 생성할 프리펩
@@ -67,7 +68,7 @@ public class RecordManager : MonoBehaviour
             pageList[_pageIndex].SetActive(false);
             _pageIndex = value;
             pageList[_pageIndex].SetActive(true);
-
+            ChangePageDisPlayText();
         }
     }
 
@@ -89,7 +90,7 @@ public class RecordManager : MonoBehaviour
         description = Utility.FindChildObj(recordCanvas, "Text(Info_Description)");
         pagePanel = Utility.FindChildObj(recordCanvas, "RecordPagePanel");
         labelSortGot = Utility.FindChildObj(recordCanvas, "Sort(Got)");
-        //labelSortZone = Utility.FindChildObj(recordCanvas, "Sort(Zone)");
+        pageDisPlayText = Utility.FindChildObj(recordCanvas, "Text(Page)").GetComponent<TMP_Text>();
 
         itemUIObjectPrefab = Resources.Load<GameObject>("Prefabs/Object_ForRecordObject");
         pagePrefab = Resources.Load<GameObject>("Prefabs/Object_ForPage");
@@ -318,6 +319,7 @@ public class RecordManager : MonoBehaviour
     {
         gotSortIndex = optionIndex; //정렬 인덱스 저장        
         MakeRecordObject(SortTotal());
+        ChangePageDisPlayText();
         PlayButtonSound();
     }
 
@@ -330,7 +332,20 @@ public class RecordManager : MonoBehaviour
     {
         zoneSortIndex = optionIndex; // 정렬 인덱스 저장        
         MakeRecordObject(SortTotal());
+        ChangePageDisPlayText();
         PlayButtonSound();
+    }
+
+    /// <summary>
+    /// 현재 페이지 /  전체페이지 텍스트 표시 함수
+    /// 231231 배경택
+    /// </summary>
+    public void ChangePageDisPlayText()
+    {
+        Debug.Log(maxPageIndex);
+
+        if (maxPageIndex < 0) pageDisPlayText.text = "0/0";
+        else pageDisPlayText.text = (_pageIndex + 1).ToString() + "/" + (maxPageIndex + 1).ToString();
     }
 
     /// <summary>
