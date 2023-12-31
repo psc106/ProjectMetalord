@@ -22,6 +22,7 @@ public class Controller_UI : MonoBehaviour
     private GameObject firstCoinExPlainUI; // 첫 코인 도움말 UI 오브젝트
     private GameObject savingUI; // 첫 코인 도움말 UI 오브젝트
     private GameObject firstKeyExplainUI; // 첫 코인 도움말 UI 오브젝트
+    private GameObject recordPopUpItemUI; // 아이템 팝업
     private bool canInput = true; // 입력 가능여부
     private const float INPUT_DELAYTIME = 0.3f; // 입력 후 대기 시간
 
@@ -35,6 +36,7 @@ public class Controller_UI : MonoBehaviour
         firstCoinExPlainUI = Utility.FindChildObj(canvases, "CoinExplainCanvas");
         firstKeyExplainUI = Utility.FindChildObj(canvases, "KeyExplainCanvas");
         savingUI = Utility.FindChildObj(canvases, "SavingCanvas");
+        recordPopUpItemUI = Utility.FindChildObj(canvases, "RecordPopUpCanvas");
     }
 
     private void Update()

@@ -29,7 +29,12 @@ public class RecordManager : MonoBehaviour
     private List<Dictionary<string, object>> objectCSV = new List<Dictionary<string, object>>();
     private List<GameObject> pageList;
 
-    private Dictionary<int,RecordObjectInfo> recordObjectInfos; // 도감 정보 전체가 저장된 원본    
+    private Dictionary<int,RecordObjectInfo> _recordObjectInfos; // 도감 정보 전체가 저장된 원본
+    public Dictionary<int, RecordObjectInfo> recordObjectInfos
+    {
+        get { return _recordObjectInfos;}
+    }
+
     private List<GameObject> recordObjectList; // 도감 오브젝트가 저장된 리스트
 
     private RecordObject selectedObject;
@@ -92,7 +97,7 @@ public class RecordManager : MonoBehaviour
         checkRecordInfoId = ID_RESET;
 
         objectCSV = CSVReader_KT.Read("CSV/ObjectCSV"); // CSV 파일 읽어들이기 TODO 데이터베이스
-        recordObjectInfos = new Dictionary<int, RecordObjectInfo>();        
+        _recordObjectInfos = new Dictionary<int, RecordObjectInfo>();        
         pageList = new List<GameObject>();
 
         recordObjectList = new List<GameObject>();
@@ -128,9 +133,9 @@ public class RecordManager : MonoBehaviour
     private void GetItem(int _id)
     {
 
-        if (recordObjectInfos[_id].id == _id)
+        if (_recordObjectInfos[_id].id == _id)
         {
-            recordObjectInfos[_id].obtained = true;
+            _recordObjectInfos[_id].obtained = true;
             GameEventsManager.instance.recordEvents.ReflectRecord(); // 정보 반영 이벤트 발생
         }
         
@@ -161,7 +166,7 @@ public class RecordManager : MonoBehaviour
             recordInfo.obtained = bool.Parse(objectCSV[index]["Obtained"].ToString());
             recordInfo.description = objectCSV[index]["Description"].ToString();            
 
-            recordObjectInfos[recordInfo.id] = recordInfo; // 도감 정보를 저장해서 Dictionary로 관리
+            _recordObjectInfos[recordInfo.id] = recordInfo; // 도감 정보를 저장해서 Dictionary로 관리
 
             // 생성된 오브젝트는 매니저 하위에서 관리
             GameObject recordObject = Instantiate(itemUIObjectPrefab, this.transform);
@@ -197,7 +202,7 @@ public class RecordManager : MonoBehaviour
     /// 도감 목록 생성
     /// 231204 배경택, 231227 배경택 수정
     /// </summary>
-    /// <param name="_recordObjectInfos"> 수집 아이템 정보 List </param>
+    /// <param name="__recordObjectInfos"> 수집 아이템 정보 List </param>
     private void MakeRecordObject(List<GameObject> _recordObjectList)
     {
         CalMaxPageCount(_recordObjectList);
@@ -230,16 +235,16 @@ public class RecordManager : MonoBehaviour
     /// </summary>
     public void InputRecordInfo(int selectedId)
     {
-        if (checkRecordInfoId == recordObjectInfos[selectedId].id) // 중복으로 같은 아이디값이 들어올 경우
+        if (checkRecordInfoId == _recordObjectInfos[selectedId].id) // 중복으로 같은 아이디값이 들어올 경우
         {
             DeleteRecordInfo(); // 도감 우측 텍스트정보 지우기
             return;
         }
-        checkRecordInfoId = recordObjectInfos[selectedId].id; // 도감 ID값 저장
+        checkRecordInfoId = _recordObjectInfos[selectedId].id; // 도감 ID값 저장
 
-        itemName.GetComponent<TMP_Text>().text = recordObjectInfos[selectedId].item_Name;
+        itemName.GetComponent<TMP_Text>().text = _recordObjectInfos[selectedId].item_Name;
 
-        switch (recordObjectInfos[selectedId].zone)
+        switch (_recordObjectInfos[selectedId].zone)
         {
             case 1:
                 zone.GetComponent<TMP_Text>().text = "부엌";
@@ -253,7 +258,7 @@ public class RecordManager : MonoBehaviour
         }        
 
         // 얻은 도감아이템일 경우에만 설명이 출력됨
-        if (recordObjectInfos[selectedId].obtained) description.GetComponent<TMP_Text>().text = recordObjectInfos[selectedId].description;
+        if (_recordObjectInfos[selectedId].obtained) description.GetComponent<TMP_Text>().text = _recordObjectInfos[selectedId].description;
         else description.GetComponent<TMP_Text>().text = "???";
     }
 
@@ -330,7 +335,7 @@ public class RecordManager : MonoBehaviour
     /// </summary>
     private List<GameObject> SortTotal()
     {        
-        List<GameObject> tempRecordObjectInfos = new List<GameObject>();  
+        List<GameObject> temp_recordObjectInfos = new List<GameObject>();  
 
         bool check = false; // 비교를 위한 임시 변수
         pageIndex = 0;        
@@ -350,19 +355,19 @@ public class RecordManager : MonoBehaviour
 
             if (tempInfo.obtained == check && tempInfo.zone == zoneSortIndex) // 정렬 둘다 선택되었다면
             {
-                tempRecordObjectInfos.Add(recordObject);
+                temp_recordObjectInfos.Add(recordObject);
             }
             else if (tempInfo.obtained == check && zoneSortIndex == 0) // 획득유무만 선택되었다면
             {
-                tempRecordObjectInfos.Add(recordObject);
+                temp_recordObjectInfos.Add(recordObject);
             }
             else if (gotSortIndex == 0 && tempInfo.zone == zoneSortIndex) // 지역만 선택되었다면
             {
-                tempRecordObjectInfos.Add(recordObject);
+                temp_recordObjectInfos.Add(recordObject);
             }
         }
 
-        return tempRecordObjectInfos;
+        return temp_recordObjectInfos;
     }
 
     /// <summary>
