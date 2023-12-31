@@ -145,7 +145,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Settings"",
+                    ""name"": ""ReadyMenu"",
                     ""type"": ""Button"",
                     ""id"": ""7bef05ac-ebad-4df3-b181-4df26e507c74"",
                     ""expectedControlType"": ""Button"",
@@ -360,7 +360,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Settings"",
+                    ""action"": ""ReadyMenu"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -456,7 +456,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
         m_Player_Store = m_Player.FindAction("Store", throwIfNotFound: true);
         m_Player_Record = m_Player.FindAction("Record", throwIfNotFound: true);
-        m_Player_Settings = m_Player.FindAction("Settings", throwIfNotFound: true);
+        m_Player_ReadyMenu = m_Player.FindAction("ReadyMenu", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -531,7 +531,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Interact;
     private readonly InputAction m_Player_Store;
     private readonly InputAction m_Player_Record;
-    private readonly InputAction m_Player_Settings;
+    private readonly InputAction m_Player_ReadyMenu;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -549,7 +549,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @Interact => m_Wrapper.m_Player_Interact;
         public InputAction @Store => m_Wrapper.m_Player_Store;
         public InputAction @Record => m_Wrapper.m_Player_Record;
-        public InputAction @Settings => m_Wrapper.m_Player_Settings;
+        public InputAction @ReadyMenu => m_Wrapper.m_Player_ReadyMenu;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -598,9 +598,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Record.started += instance.OnRecord;
             @Record.performed += instance.OnRecord;
             @Record.canceled += instance.OnRecord;
-            @Settings.started += instance.OnSettings;
-            @Settings.performed += instance.OnSettings;
-            @Settings.canceled += instance.OnSettings;
+            @ReadyMenu.started += instance.OnReadyMenu;
+            @ReadyMenu.performed += instance.OnReadyMenu;
+            @ReadyMenu.canceled += instance.OnReadyMenu;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -644,9 +644,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Record.started -= instance.OnRecord;
             @Record.performed -= instance.OnRecord;
             @Record.canceled -= instance.OnRecord;
-            @Settings.started -= instance.OnSettings;
-            @Settings.performed -= instance.OnSettings;
-            @Settings.canceled -= instance.OnSettings;
+            @ReadyMenu.started -= instance.OnReadyMenu;
+            @ReadyMenu.performed -= instance.OnReadyMenu;
+            @ReadyMenu.canceled -= instance.OnReadyMenu;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -724,6 +724,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnInteract(InputAction.CallbackContext context);
         void OnStore(InputAction.CallbackContext context);
         void OnRecord(InputAction.CallbackContext context);
-        void OnSettings(InputAction.CallbackContext context);
+        void OnReadyMenu(InputAction.CallbackContext context);
     }
 }

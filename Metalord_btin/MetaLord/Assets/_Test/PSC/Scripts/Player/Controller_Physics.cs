@@ -276,7 +276,7 @@ public class Controller_Physics : MonoBehaviour
 
             }
 
-            if (IsAnyUISetActiveFalse() && reader.SettingsKey) //설정 키 누를 경우 _231219 배경택
+            if (IsAnyUISetActiveFalse() && reader.ReadyMenuKey) //대기메뉴 키 누를 경우 _231231 배경택
             {
                 if (readyMenuUI.activeSelf == true)
                 {
