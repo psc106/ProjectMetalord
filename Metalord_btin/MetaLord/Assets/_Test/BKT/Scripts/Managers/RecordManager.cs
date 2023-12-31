@@ -44,9 +44,9 @@ public class RecordManager : MonoBehaviour
 
 
     // 우측 도감 설명 초기화 텍스트
-    private const string RESET_NAME = "Not Select";
-    private const string RESET_Zone = "Not Select";
-    private const string RESET_Description = "Not Select";
+    private const string RESET_NAME = "선택정보 없음";
+    private const string RESET_Zone = "선택정보 없음";
+    private const string RESET_Description = "선택정보 없음";
 
     private int checkRecordInfoId;
     private const int ID_RESET = -1;
@@ -255,10 +255,15 @@ public class RecordManager : MonoBehaviour
             case 3:
                 zone.GetComponent<TMP_Text>().text = "아기방";
                 break;
-        }        
+        }
 
         // 얻은 도감아이템일 경우에만 설명이 출력됨
-        if (_recordObjectInfos[selectedId].obtained) description.GetComponent<TMP_Text>().text = _recordObjectInfos[selectedId].description;
+        if (_recordObjectInfos[selectedId].obtained)
+        {
+            string temp_text = recordObjectInfos[selectedId].description.Replace("/","\n");                       
+
+            description.GetComponent<TMP_Text>().text = temp_text;
+        }
         else description.GetComponent<TMP_Text>().text = "???";
     }
 
