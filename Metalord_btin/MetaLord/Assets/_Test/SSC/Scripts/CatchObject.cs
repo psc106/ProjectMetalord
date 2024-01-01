@@ -91,7 +91,18 @@ public class CatchObject : MonoBehaviour
                     // 부모가 고정형 오브젝트 경우
                     else if (contactObj.gameObject.layer == LayerMask.NameToLayer("Default"))
                     {
-                        // TODO : 스태틱 오브젝트와 어떤 연계를 할 것인지
+                        // 합쳐진 상위 오브젝트일 경우
+                        if(contactObj.transform.GetComponent<CatchObject>() != null)
+                        {
+                            CareeToContact(contactObj);
+                        }
+                        // 단순 고정형 오브젝트일경우
+                        else
+                        {
+                            // TODO : 스태틱 오브젝트와 어떤 연계를 할 것인지                        
+                            transform.gameObject.layer = LayerMask.NameToLayer("Default");
+                            Destroy(myRigid);
+                        }
                     }
 
                 }
