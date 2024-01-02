@@ -48,6 +48,25 @@ public class CatchObject : MonoBehaviour
         }
     }
 
+
+    //// 그랩한 물건이 이동형 오브젝트와 부딪힐때마다 물리력 행사 콜백
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("MovedObject"))
+        {
+            if (collision.gameObject.GetComponent<PaintTarget>().CheckPainted())
+            {
+                return;
+            }
+
+            if (collision.gameObject.GetComponent<OverapObject>() == null)
+            {
+                collision.gameObject.AddComponent<OverapObject>().InitOverap();
+            }
+        }
+    }
+
     private void OnCollisionStay(Collision collision)
     {
         // 이미 본드 동작을 하는 오브젝트를 다시 그랩하면 그랩하는순간 충돌면을 체크하여 그랩 해제됨에 따라 상태를 제어할 bool값 추가
@@ -55,18 +74,16 @@ public class CatchObject : MonoBehaviour
         {
             return;
         }
-
+        
         // 충돌이 일어나는 지점을 모두 체크
         for (int i = 0; i < collision.contactCount; i++)
         {
             Vector3 dir = collision.contacts[i].normal;
 
-            Ray ray = new Ray(collision.contacts[i].point + dir, -dir);
+            Ray ray = new Ray(collision.contacts[i].point + dir, -dir);                               
 
             if (PaintTarget.RayChannel(ray, 1.5f, layerMask) == 0 && collision.gameObject.GetComponent<Controller_Physics>() == null && checkContact)
-            {
-                GameObject parentObj = null;
-
+            {                                
                 // 충돌한 오브젝트의 부모가 없을경우
                 if (collision.transform.parent == null)
                 {                                        
@@ -90,8 +107,25 @@ public class CatchObject : MonoBehaviour
                     }
                     // 부모가 고정형 오브젝트 경우
                     else if (contactObj.gameObject.layer == LayerMask.NameToLayer("Default"))
-                    {
-                        // TODO : 스태틱 오브젝트와 어떤 연계를 할 것인지
+                    {                        
+                        // 합쳐진 상위 오브젝트일 경우
+                        if(contactObj.transform.GetComponent<CatchObject>() != null)
+                        {                            
+                            CareeToContact(contactObj);
+                        }
+                        // 단순 고정형 오브젝트일경우
+                        else
+                        {
+                            // TODO : 스태틱 오브젝트와 어떤 연계를 할 것인지                        
+                            transform.gameObject.layer = LayerMask.NameToLayer("Default");
+
+                            for (int j = 0; j < transform.childCount; j++)
+                            {                                
+                                transform.GetChild(j).GetComponent<MeshCollider>().convex = false;
+                            }
+
+                            Destroy(myRigid);
+                        }
                     }
 
                 }

@@ -189,83 +189,6 @@ public class GrabGun : GunBase
             UsedAmmo(ammo);
         }
 
-
-        //// 가장 처음 탐색하게 될 때 (오브젝트가 기존 레벨에 속해있는지 검출)
-        //if(targetObj.transform.parent != null)
-        //{            
-        //    switch (LayerMask.LayerToName(targetObj.transform.parent.gameObject.layer))
-        //    {
-        //        // 부모 오브젝트가 합치기 위해 만들어진 오브젝트라면
-        //        case "CatchObject":
-        //            // 그랩 오브젝트는 부모 오브젝트
-        //            targetObj = targetObj.transform.parent.gameObject;
-        //            int count = targetObj.transform.childCount;
-
-        //            // 그랩 오브젝트의 자식크기만큼 리지드바디 해제, convex 활성화
-        //            // 자신의 리지드바디 활성화
-        //            for (int i = 0; i < count; i++)
-        //            {
-        //                Destroy(targetObj.transform.GetChild(i).GetComponent<Rigidbody>());
-        //                targetObj.transform.GetChild(i).GetComponent<MeshCollider>().convex = true;
-        //            }
-        //            targetObj.AddComponent<Rigidbody>();
-
-        //            if (targetObj.GetComponent<MovedObject>() == null)
-        //            {
-        //                targetObj.AddComponent<MovedObject>().InitParentMovedObject();
-        //            }
-        //            break;
-
-        //            // 그외 오브젝트에 속한것이라면 (기존 레벨에 속해있다면)
-        //        default:
-        //            // 종속 해제, 일정시간 이후부터 충돌 검출
-        //            targetObj.transform.parent = null;
-        //            targetObj.GetComponent<MovedObject>().Invoke("StateChagned", 2f);
-        //            state.hit.transform.GetComponent<MeshCollider>().convex = true;
-        //            state.hit.transform.AddComponent<Rigidbody>();                    
-        //            state.hit.transform.GetComponent<MovedObject>().ChangedState();
-        //            break;
-        //    }
-        //}
-        //// 부모 오브젝트가 없을 때
-        //else
-        //{
-        //    // 합쳐진 오브젝트라면
-        //    if (targetObj.gameObject.layer == LayerMask.NameToLayer("CatchObject"))
-        //    {
-        //        Debug.Log("2 " + targetObj);
-        //        int count = targetObj.transform.childCount;
-
-        //        // 자식 수만큼 리지드바디 해제, convex 활성화
-        //        // 자신의 리지드바디 활성화
-        //        for (int i = 0; i < count; i++)
-        //        {
-        //            if (targetObj.transform.GetChild(i).GetComponent<Rigidbody>() != null)
-        //            {
-        //                Destroy(targetObj.transform.GetChild(i).GetComponent<Rigidbody>());
-        //            }
-
-        //            targetObj.transform.GetChild(i).GetComponent<MeshCollider>().convex = true;
-        //        }
-
-        //        targetObj.AddComponent<Rigidbody>();
-
-        //        if (targetObj.GetComponent<MovedObject>() == null)
-        //        {
-        //            targetObj.AddComponent<MovedObject>().InitParentMovedObject();
-        //        }
-        //    }
-
-        //    // 혼자인 오브젝트라면
-        //    else
-        //    {
-        //        Debug.Log("3 " + targetObj);
-        //        targetObj.GetComponent<MovedObject>().Invoke("StateChagned", 2f);
-        //        state.hit.transform.GetComponent<MeshCollider>().convex = true;
-        //        state.hit.transform.AddComponent<Rigidbody>();
-        //        state.hit.transform.GetComponent<MovedObject>().ChangedState();
-        //    }
-        //}
     }
 
     protected override bool CheckCanFire()
@@ -277,7 +200,7 @@ public class GrabGun : GunBase
         Physics.SphereCast(checkRay, 2f, out hit, 20f, myLayer);        
 
         // 플레이어 밑에 있는 오브젝트가 내 조준점에 담긴 오브젝트라면 그랩시도 X
-        if (!state.CanFire || hit.transform?.gameObject == state.hit.transform?.gameObject)
+        if (!state.CanFire || hit.transform?.gameObject == state.hit.transform?.gameObject || !state.UsedGrabGun())
         {            
             return false;        
         }
