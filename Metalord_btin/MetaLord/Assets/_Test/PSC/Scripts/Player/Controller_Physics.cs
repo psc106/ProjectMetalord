@@ -179,21 +179,8 @@ public class Controller_Physics : MonoBehaviour
 
     RaycastHit aimHit;
 
-    [Header("UI 컨트롤러")]
-    [SerializeField] private Controller_UI controller_UI;
-    
-    ////231219 배경택
-    //[Header("UI 상점, 도감, 환경설정")]
-    //[SerializeField] private GameObject canvases;
-    //private GameObject storeUI; // 상점 UI 오브젝트
-    //private GameObject recordUI; // 도감 UI 오브젝트
-    //private GameObject readyMenuUI; // 대기모드 UI 오브젝트
-    //private GameObject explainUI; // 도움말 UI 오브젝트    
-    //private GameObject firstCoinExPlainUI; // 첫 코인 도움말 UI 오브젝트
-    //private GameObject savingUI; // 첫 코인 도움말 UI 오브젝트
-    //private GameObject firstKeyExplainUI; // 첫 코인 도움말 UI 오브젝트
-    //private bool canInput = true; // 입력 가능여부
-    //private const float INPUT_DELAYTIME = 0.3f; // 입력 후 대기 시간
+    // UI 컨트롤러 _ 240102배경택
+    private Controller_UI controller_UI;
 
     #region Animator Hash
     private readonly int IdleTimeHash = Animator.StringToHash("IdleTime");
@@ -213,8 +200,7 @@ public class Controller_Physics : MonoBehaviour
     {
         minGroundDotProduct = Mathf.Cos(maxGroundAngle * Mathf.Deg2Rad);
         minObjectDotProduct = Mathf.Cos(maxObjectAngle * Mathf.Deg2Rad);
-        minClimbDotProduct = Mathf.Cos(maxClimbAngle * Mathf.Deg2Rad);
-        //catchObject = LayerMask.NameToLayer("CatchObject");
+        minClimbDotProduct = Mathf.Cos(maxClimbAngle * Mathf.Deg2Rad);        
     }
 
     private void Awake()
@@ -231,209 +217,11 @@ public class Controller_Physics : MonoBehaviour
 
         canFire = false;
         fireDelay = StartCoroutine(fireDelayRoutine(fireDelayTime));
-
-        //// 231231 배경택
-        //storeUI = Utility.FindChildObj(canvases, "StoreCanvas");
-        //recordUI = Utility.FindChildObj(canvases, "RecordCanvas");
-        //readyMenuUI = Utility.FindChildObj(canvases, "ReadyCanvas");
-        //explainUI = Utility.FindChildObj(canvases, "ExplainCanvas");
-        //firstCoinExPlainUI = Utility.FindChildObj(canvases, "CoinExplainCanvas");
-        //firstKeyExplainUI = Utility.FindChildObj(canvases, "KeyExplainCanvas");
-        //savingUI = Utility.FindChildObj(canvases, "SavingCanvas");
+        controller_UI = GetComponent<Controller_UI>();
     }
 
     void Update()
     {
-/*
-
-        #region 상점, 도감, 환경설정 키 누를경우 _ 231219 배경택
-        if (canInput && !PlayerInteractNpc.isTalking)
-        {
-            if (reader.StoreKey) // 상점 키 누를 경우 _231219 배경택
-            {
-                if (storeUI.activeSelf == true)
-                {
-                    SwitchCameraLock(false);
-                    storeUI.SetActive(false); // 중복 버튼을 누를경우 꺼짐    
-                }
-                else
-                {
-                    SwitchCameraLock(true);
-                    storeUI.SetActive(true);
-                    recordUI.SetActive(false);
-                    settingsUI.SetActive(false);
-                }
-
-                StartCoroutine(DelayInput());
-            }
-
-            if (reader.RecordKey) // 도감 키 누를 경우 _231219 배경택
-            {
-                if (recordUI.activeSelf == true)
-                {
-                    SwitchCameraLock(false);
-                    recordUI.SetActive(false); // 중복 버튼을 누를경우 꺼짐
-                }
-
-                else
-                {
-                    SwitchCameraLock(true);
-                    recordUI.SetActive(true);
-                    storeUI.SetActive(false);
-                    settingsUI.SetActive(false);
-                }
-
-                StartCoroutine(DelayInput());
-
-            }
-
-            if (!storeUI.activeSelf && !recordUI.activeSelf && reader.SettingsKey) //설정 키 누를 경우 _231219 배경택
-            {
-                if (settingsUI.activeSelf == true)
-                {
-                    SwitchCameraLock(false);
-                    settingsUI.SetActive(false); // 중복 버튼을 누를경우 꺼짐
-                }
-                else
-                {
-                    SwitchCameraLock(true);
-                    settingsUI.SetActive(true);
-                    recordUI.SetActive(false);
-                    storeUI.SetActive(false);
-                }
-
-                StartCoroutine(DelayInput());
-
-            }
-
-            if (Input.GetKeyDown(KeyCode.Escape)) // 그냥 ESC키 누를경우 꺼짐 (환경설정키가 ESC로 되어있음에 따라 환경설정키는 조건에서 제외)
-            {
-                if (storeUI.activeSelf == true)
-                {
-                    SwitchCameraLock(false);
-                    storeUI.SetActive(false);
-                }
-
-                if (recordUI.activeSelf == true)
-                {
-                    SwitchCameraLock(false);
-                    recordUI.SetActive(false);
-                }
-
-                if (explainUI.activeSelf == true)
-                {
-                    SwitchCameraLock(true);
-                    explainUI.SetActive(false);
-                }
-
-                StartCoroutine(DelayInput());
-            }
-        }
-        #endregion
-*/
-        //#region 상점, 도감, 환경설정 키 누를경우 _ 231219 배경택
-        //if (canInput && !PlayerInteractNpc.isTalking)
-        //{
-        //    if (reader.StoreKey) // 상점 키 누를 경우 _231219 배경택
-        //    {
-        //        if (storeUI.activeSelf == true)
-        //        {
-        //            SwitchCameraLock(false);
-        //            storeUI.SetActive(false); // 중복 버튼을 누를경우 꺼짐    
-        //        }
-        //        else
-        //        {
-        //            SwitchCameraLock(true);
-        //            storeUI.SetActive(true);
-        //            recordUI.SetActive(false);
-        //            readyMenuUI.SetActive(false);
-        //        }
-
-        //        StartCoroutine(DelayInput());
-        //    }
-
-        //    if (reader.RecordKey) // 도감 키 누를 경우 _231219 배경택
-        //    {
-        //        if (recordUI.activeSelf == true)
-        //        {
-        //            SwitchCameraLock(false);
-        //            recordUI.SetActive(false); // 중복 버튼을 누를경우 꺼짐
-        //        }
-
-        //        else
-        //        {
-        //            SwitchCameraLock(true);
-        //            recordUI.SetActive(true);
-        //            storeUI.SetActive(false);
-        //            readyMenuUI.SetActive(false);
-        //        }
-
-        //        StartCoroutine(DelayInput());
-
-        //    }
-
-        //    if (IsAnyUISetActiveFalse() && reader.ReadyMenuKey) //대기메뉴 키 누를 경우 _231231 배경택
-        //    {
-        //        if (readyMenuUI.activeSelf == true)
-        //        {
-        //            SwitchCameraLock(false);
-        //            readyMenuUI.SetActive(false); // 중복 버튼을 누를경우 꺼짐
-        //        }
-        //        else
-        //        {
-        //            SwitchCameraLock(true);
-        //            readyMenuUI.SetActive(true);
-        //            recordUI.SetActive(false);
-        //            storeUI.SetActive(false);
-        //        }
-
-        //        StartCoroutine(DelayInput());
-
-        //    }
-
-        //    if (Input.GetKeyDown(KeyCode.Escape)) // 그냥 ESC키 누를경우 꺼짐 (환경설정키가 ESC로 되어있음에 따라 환경설정키는 조건에서 제외)
-        //    {
-        //        if (storeUI.activeSelf == true)
-        //        {
-        //            SwitchCameraLock(false);
-        //            storeUI.SetActive(false);
-        //        }
-
-        //        if (recordUI.activeSelf == true)
-        //        {
-        //            SwitchCameraLock(false);
-        //            recordUI.SetActive(false);
-        //        }               
-
-        //        if (explainUI.activeSelf == true)
-        //        {
-        //            SwitchCameraLock(false);
-        //            explainUI.SetActive(false);
-        //        }
-
-        //        if(firstCoinExPlainUI.activeSelf == true)
-        //        {
-        //            SwitchCameraLock(false);
-        //            firstCoinExPlainUI.SetActive(false);
-        //        }
-
-        //        if(savingUI.activeSelf == true && savingUI.GetComponent<SavingCanvas>().isSaved)
-        //        {                    
-        //            savingUI.SetActive(false);
-        //            readyMenuUI.SetActive(true);
-        //        }
-
-        //        if(firstKeyExplainUI.activeSelf == true)
-        //        {
-        //            SwitchCameraLock(false);
-        //            firstKeyExplainUI.SetActive(false);
-        //        }
-
-        //        StartCoroutine(DelayInput());
-        //    }
-        //}
-        //#endregion
-
         //대화나 메뉴에서 stop시킴
         if (stopState)
         {
@@ -513,38 +301,6 @@ public class Controller_Physics : MonoBehaviour
             checkedFrame = 0;
         checkedFrame += 1;
     }
-
-    /*
-    // 입력 대기시간 코루틴
-    IEnumerator DelayInput()
-    {
-        canInput = false; // 입력 불가
-        yield return new WaitForSecondsRealtime(INPUT_DELAYTIME); // 대기시간
-        canInput = true; // 입력 가능
-    }
-    */
-    
-    //bool IsAnyUISetActiveFalse()
-    //{
-    //    if (storeUI.activeSelf
-    //        || recordUI.activeSelf
-    //        || explainUI.activeSelf
-    //        || firstCoinExPlainUI.activeSelf
-    //        || savingUI.activeSelf
-    //        || firstKeyExplainUI.activeSelf
-    //        ) return false;
-
-    //    return true;
-    //}
-
-   
-    //// 입력 대기시간 코루틴
-    //IEnumerator DelayInput()
-    //{
-    //    canInput = false; // 입력 불가
-    //    yield return new WaitForSecondsRealtime(INPUT_DELAYTIME); // 대기시간
-    //    canInput = true; // 입력 가능
-    //}
 
     private void FixedUpdate()
     {
@@ -673,16 +429,6 @@ public class Controller_Physics : MonoBehaviour
             }
         }
     }
-
-    //private void OnTriggerEnter(Collider other)
-    //{
-
-    //    if (other.gameObject.layer == catchObject)
-    //    {
-    //        Destroy(other.gameObject);
-    //    }
-    //}
-
 
     private void OnCollisionEnter(Collision collision)
     {
