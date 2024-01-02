@@ -6,10 +6,6 @@ using UnityEngine;
 /// </summary>
 public class RecordEvents
 {
-    public RecordEvents()
-    {
-    }
-
     /// <summary>
     /// 아이템을 먹었을때 발생하는 이벤트
     /// 231130 배경택

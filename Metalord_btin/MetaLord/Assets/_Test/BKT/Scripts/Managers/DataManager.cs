@@ -32,7 +32,7 @@ public class DataManager : MonoBehaviour
     public void SaveGameData()
     {
         //MainSceneManager.instance.InputIdToObject(); // 맵 오브젝트에 id값 부여
-        GameEventsManager.instance.dataEvents.SaveData(); //전체에 저장 이벤트 발생
+        GameEventsManager.instance.dataEvents.SaveData(); //전체에 저장 이벤트 발생        
         SaveDataToFile(); // 매니저에서 저장
     }
 

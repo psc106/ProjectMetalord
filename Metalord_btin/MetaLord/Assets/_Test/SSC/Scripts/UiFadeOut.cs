@@ -1,6 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -27,7 +25,7 @@ public class UiFadeOut : MonoBehaviour
 
     public void InitFadeOut()
     {
-        if(fadeOut != null)
+        if(fadeOut != null || !gameObject.activeInHierarchy)
         {            
             return;
         }
@@ -42,12 +40,21 @@ public class UiFadeOut : MonoBehaviour
 
         while (myImage.color.a >= 0f)
         {                        
-            imageColor.a -= Time.deltaTime * fadeOutspeed;            
+            imageColor.a -= Time.unscaledDeltaTime * fadeOutspeed;            
             myImage.color = imageColor;
 
             yield return null;
         }
 
         fadeOut = null;        
+    }
+
+
+    private void OnDisable()
+    {
+        fadeOut = null;
+        Color tempColor = myImage.color;
+        tempColor.a = 0f;
+        myImage.color = tempColor;
     }
 }

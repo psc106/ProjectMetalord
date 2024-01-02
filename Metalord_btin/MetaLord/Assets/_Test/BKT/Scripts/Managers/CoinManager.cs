@@ -11,10 +11,15 @@ public class CoinManager : MonoBehaviour
     [Header("상점 UI")]
     [SerializeField] private GameObject storeUI;
 
+    [Header("게임 시작 코인")]
     [SerializeField] private int startCoin = 10; // 시작 코인
+
+    [Header("코인 설명 UI")]
+    [SerializeField] private GameObject coinExplain;
 
 
     public int currentCoin = 0;
+    private bool isFirst = true;
 
     private void Awake()
     {
@@ -27,7 +32,8 @@ public class CoinManager : MonoBehaviour
             Destroy(instance.gameObject);
         }
         DontDestroyOnLoad(this.gameObject);
-        currentCoin = startCoin; // 시작시 코인 세팅        
+        currentCoin = startCoin; // 시작시 코인 세팅
+        isFirst = true;                                 
     }
 
     private void OnEnable()
@@ -62,6 +68,12 @@ public class CoinManager : MonoBehaviour
 
     public void GetCoin(int coin)
     {
+        if (isFirst) // 첫 획득시 설명을 띄워줌
+        {
+            isFirst = false;
+            Controller_Physics.SwitchCameraLock(false);
+            coinExplain.SetActive(true);
+        }
         currentCoin += coin; // 코인을 현재 코인에 반영
         GameEventsManager.instance.coinEvents.ChangeCoin(currentCoin); // 코인 먹을 경우 코인 변경
 
