@@ -415,10 +415,11 @@ public class PaintTarget : MonoBehaviour
                          // 12.26 SSC : 페인트칠시 NPC 범위로 체크하기 위하여 조건문 추가
                         for(int i = 0; i < hitsNpc.Length; i++)
                         {
-                            if (hitsNpc[i].collider.gameObject.GetComponent<NpcBase>() != null)
+                            NpcBase currNpc = hitsNpc[i].collider.gameObject.GetComponent<NpcBase>();
+                            if (currNpc != null)
                             {
-                                hitsNpc[i].collider.gameObject.GetComponent<NpcBase>().ChangedState(npcState.glued);
-                                GunStateController.AddList(hitsNpc[i].collider.gameObject.GetComponent<NpcBase>());                                
+                                currNpc.ChangedState(npcState.glued);
+                                GunStateController.AddList(currNpc);                                
                             }
 
                         }

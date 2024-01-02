@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 
@@ -98,6 +99,8 @@ public class Controller_Physics : MonoBehaviour
     int steepContactCount = 0;
     int climbContactCount = 0;
 
+    bool beforeColored = false;
+    byte checkedFrame = 0;
     //int catchObject;
 
     #endregion
@@ -159,6 +162,8 @@ public class Controller_Physics : MonoBehaviour
     [SerializeField, Range(90, 180f)]
     float maxClimbAngle = default;
 
+    [SerializeField, Range(1, 10)]
+    byte checkFrameRate = 2;
 
     [Header("RigController")]
     [SerializeField] Transform startPoint;
@@ -225,6 +230,7 @@ public class Controller_Physics : MonoBehaviour
 
     void Update()
     {
+
         #region 상점, 도감, 환경설정 키 누를경우 _ 231219 배경택
         if (canInput && !PlayerInteractNpc.isTalking)
         {
@@ -316,6 +322,7 @@ public class Controller_Physics : MonoBehaviour
             return;
         }
 
+        UpdateFrameState();
         UpdateInputState();
         UpdateAnimationParameter();
         UpdateAxis();
@@ -338,14 +345,14 @@ public class Controller_Physics : MonoBehaviour
         else if (desireFire)
         {
             desireFire = false;
-            if(gunController.CurrentMode.ShootGun())
+            if (gunController.CurrentMode.ShootGun())
             {
                 gunController.Shoot(GunMode.Paint);
                 idleTime = 0;
             }
         }
 
-        if(Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButtonDown(1))
         {
             gunController.Shoot(GunMode.Grab);
         }
@@ -356,33 +363,40 @@ public class Controller_Physics : MonoBehaviour
             gunController.Reloading();
         }
 
-       /* // 1번키 누르면 페인트건
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            //SwapTest(GunMode.Paint);
-            gunController.SwapGunMode(GunMode.Paint);
-            //SwapPaintGun();
-        }
+        /* // 1번키 누르면 페인트건
+         if (Input.GetKeyDown(KeyCode.Alpha1))
+         {
+             //SwapTest(GunMode.Paint);
+             gunController.SwapGunMode(GunMode.Paint);
+             //SwapPaintGun();
+         }
 
-        // 2번키 누르면 그랩건
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            //SwapTest(GunMode.Grab);
-            gunController.SwapGunMode(GunMode.Grab);
-            //SwapGrabGun();
-        }
+         // 2번키 누르면 그랩건
+         if (Input.GetKeyDown(KeyCode.Alpha2))
+         {
+             //SwapTest(GunMode.Grab);
+             gunController.SwapGunMode(GunMode.Grab);
+             //SwapGrabGun();
+         }
 
-        // 3번키 누르면 본드건
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            //SwapTest(GunMode.Bond);
-            gunController.SwapGunMode(GunMode.Bond);
-            //SwapBondGun();
-        }*/
+         // 3번키 누르면 본드건
+         if (Input.GetKeyDown(KeyCode.Alpha3))
+         {
+             //SwapTest(GunMode.Bond);
+             gunController.SwapGunMode(GunMode.Bond);
+             //SwapBondGun();
+         }*/
 
     }
 
-   
+    private void UpdateFrameState()
+    {
+        if (checkedFrame == checkFrameRate)
+            checkedFrame = 0;
+        checkedFrame += 1;
+    }
+
+
     // 입력 대기시간 코루틴
     IEnumerator DelayInput()
     {
@@ -771,9 +785,16 @@ public class Controller_Physics : MonoBehaviour
             float upDot = Vector3.Dot(upAxis, normal);
 
             //색칠된 벽을 확인
-            //TODO : paintTarget 데이터들에서 1번 체크하는 함수 추가
-            bool isColoredWall = CheckPaintedWall(collision.contacts[i], normal);
+            bool isColoredWall = beforeColored;
+            desireClimb = beforeColored;
 
+            //n프레임마다 검사
+            //색칠 리스트에 추가 되어있을 경우만 검사
+            if (checkedFrame==checkFrameRate && ToolFunc<PaintTarget>.ConatainsCollision(GunStateController.paintList, collision))
+            {
+                isColoredWall = CheckPaintedWall(collision.contacts[i], normal);
+                beforeColored = isColoredWall;
+            }
             //cos에서 y값은 1->-1로 가므로 높을수록 각도는 낮은 각도
             //만약 접촉 표면의 각도가 최소 각도를 만족할 경우
             if (upDot >= minDot)
@@ -928,7 +949,10 @@ public class Controller_Physics : MonoBehaviour
         {
             moveMultiple = walkMultiple;
         }
+
     }
+
+
 
     //연결된 플랫폼이 있을 경우
     void UpdateConnectionState()
