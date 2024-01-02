@@ -200,7 +200,8 @@ public class Controller_Physics : MonoBehaviour
     private readonly int VelocityXHash = Animator.StringToHash("VelocityX");
     private readonly int VelocityYHash = Animator.StringToHash("VelocityY");
     private readonly int JumpTriggerHash = Animator.StringToHash("Jump");
-    private readonly int ClimbTriggerHash = Animator.StringToHash("OnClimb");
+    private readonly int ClimbHash = Animator.StringToHash("OnClimb");
+    private readonly int GroundHash = Animator.StringToHash("OnGround");
     private readonly int ReloadTriggerHash = Animator.StringToHash("Reload");
     private readonly int EquipStateHash = Animator.StringToHash("EquipState");
     private readonly int EquipTriggerHash = Animator.StringToHash("EquipTrigger");
@@ -440,10 +441,18 @@ public class Controller_Physics : MonoBehaviour
             return;
         }
 
+        TrailRenderer t = GetComponent<TrailRenderer>();
+        Color color = new Color(0, 0, 0, 1);
+        color.r = OnGround ? 1 : 0;
+        color.g = OnSteep ? 1 : 0;
+        color.b = OnClimb ? 1 : 0;
+        t.material.color = color;
+
         UpdateFrameState();
         UpdateInputState();
         UpdateAnimationParameter();
         UpdateAxis();
+
 
         // 레이지점 컬러 체크 테스트용
         if (Input.GetKeyDown(KeyCode.T))
@@ -509,7 +518,7 @@ public class Controller_Physics : MonoBehaviour
 
     private void UpdateFrameState()
     {
-        if (checkedFrame == checkFrameRate)
+        if (checkedFrame >= checkFrameRate)
             checkedFrame = 0;
         checkedFrame += 1;
     }
@@ -553,11 +562,11 @@ public class Controller_Physics : MonoBehaviour
         //대화나 메뉴에서 stop시킴
         if (stopState)
         {
-            rb.velocity += new Vector3(0, gravity.y*Time.deltaTime, 0);
+            /*rb.velocity += new Vector3(0, gravity.y*Time.deltaTime, 0);
             if (rb.velocity.y > 10)
             {
                 velocity = Vector3.zero;
-            }
+            }*/
             return;
         }
         //상태 업데이트
@@ -567,9 +576,12 @@ public class Controller_Physics : MonoBehaviour
         //점프 계산
         AdjustJump();
 
+        //Debug.Log("1 "+velocity);
+
         //점프 상태일 경우 2배의 그래비티 적용
         if (!isJump && !OnGround && !desireClimb)
         {
+            //Debug.Log("점프상태");
             velocity += gravity * gravityMultiple * Time.deltaTime;
         }
 
@@ -583,19 +595,21 @@ public class Controller_Physics : MonoBehaviour
         {
             //Debug.Log("등산");
             //등산중에 접촉면으로 끌어당김
-            velocity -= contactNormal * (maxClimbAcceleration * 0.99f * Time.deltaTime);
+            Debug.LogWarning(velocity+"/"+contactNormal);
+            velocity -= contactNormal.normalized * maxClimbAcceleration * 0.99f * Time.deltaTime;
         }
-        else if (desireClimb && OnGround)
+        else if (desireClimb && OnGround )
         {
-            //Debug.Log("지상, 등산");
+            Debug.Log("지상, 등산");
             //땅에 있을 경우 + 이동 상태 일 경우 중력+접촉면으로 끌어당김 동시에 적용
-            velocity += (gravity - contactNormal * maxClimbAcceleration * 0.9f) * Time.deltaTime;
+            velocity += (gravity - contactNormal.normalized * maxClimbAcceleration * 0.9f) * Time.deltaTime;
+            //velocity += gravity * Time.deltaTime;
         }
         else if (OnGround && velocity.sqrMagnitude < 0.01f)
         {
             //Debug.Log("지상, 정지");
             //땅에 있을 경우 + 정지상태일 경우 밀려나지않는 상태
-            velocity += contactNormal * (Vector3.Dot(gravity, contactNormal) * Time.deltaTime);
+            velocity += contactNormal.normalized * (Vector3.Dot(gravity, contactNormal) * Time.deltaTime);
         }
         else
         {
@@ -604,30 +618,35 @@ public class Controller_Physics : MonoBehaviour
             velocity += gravity * Time.deltaTime;
         }
 
+        Debug.Log("2 " + velocity);
+
         Vector3 limit = velocity;
-        /*if(velocity.y > 30)
+
+       /* if (limit.y < -40)
         {
-            limit.y = 30;
+            limit.y = -40;
         }
-        else if(rb.velocity.y< -50)
+        else if(limit.y > 40)
         {
-            limit.y = -50;
+            limit.y = 40;
         }
-        if (velocity.x > 30)
+
+        if (limit.z<-30)
         {
-            limit.x = 30;
-        } 
-        else if (velocity.x < -30)
-        {
-            limit.x = -30;
+            limit.z = -30;
         }
-        if (velocity.z > 30)
+        else if (limit.z > 30)
         {
             limit.z = 30;
         }
-        else if (velocity.z < -30)
+
+        if(limit.x < -30)
         {
-            limit.z = -30;
+            limit.x = -30;
+        }
+        else if (limit.x > 30)
+        {
+            limit.x = 30;
         }*/
 
         //속도 적용
@@ -735,6 +754,7 @@ public class Controller_Physics : MonoBehaviour
         {
             acceleration = OnGround ? maxAcceleration : maxAirAcceleration;
             speed = OnGround && desireClimb? maxClimbSpeed: maxMoveSpeed;
+            //speed = maxMoveSpeed;
             //기본 상태일 경우 플레이어의 좌/우 측을 따른다.
             xAxis = rightAxis;
             //기본 상태일 경우 플레이어의 앞/뒤 축을 따른다.
@@ -917,6 +937,7 @@ public class Controller_Physics : MonoBehaviour
         //현재 충돌한 오브젝트의 최소 각도를 가져온다.
         float minDot = GetMinDot(layer);
 
+
         //모든 contact를 검사하여 일정 각도 이상의 평면을 모두 저장한다.
         for (int i = 0; i < collision.contactCount; i++)
         {
@@ -926,15 +947,12 @@ public class Controller_Physics : MonoBehaviour
             float upDot = Vector3.Dot(upAxis, normal);
 
             //색칠된 벽을 확인
-            bool isColoredWall = beforeColored;
-            desireClimb = beforeColored;
+            bool isColoredWall = false;
 
-            //n프레임마다 검사
             //색칠 리스트에 추가 되어있을 경우만 검사
-            if (checkedFrame==checkFrameRate && ToolFunc<PaintTarget>.ConatainsCollision(GunStateController.paintList, collision))
+            if ( ToolFunc<PaintTarget>.ConatainsCollision(GunStateController.paintList, collision))
             {
                 isColoredWall = CheckPaintedWall(collision.contacts[i], normal);
-                beforeColored = isColoredWall;
             }
             //cos에서 y값은 1->-1로 가므로 높을수록 각도는 낮은 각도
             //만약 접촉 표면의 각도가 최소 각도를 만족할 경우
@@ -1013,9 +1031,6 @@ public class Controller_Physics : MonoBehaviour
 
     private void UpdateState()
     {
-        // 지상<->등산 애니메이션 결정
-        animator.SetBool(ClimbTriggerHash, !multipleState && OnClimb);
-
 
         //마지막 그라운드에서 몇 프레임이 지났는지 저장하기 위한 변수
         stepsSinceLastGrounded += 1;
@@ -1090,6 +1105,11 @@ public class Controller_Physics : MonoBehaviour
         {
             moveMultiple = walkMultiple;
         }
+
+
+        // 지상<->등산 애니메이션 결정
+        animator.SetBool(ClimbHash, !multipleState && OnClimb);
+        animator.SetBool(GroundHash, stepsSinceLastGrounded==0);
 
     }
 
@@ -1214,7 +1234,11 @@ public class Controller_Physics : MonoBehaviour
             if (upDot >= minGroundDotProduct)
             {
                 groundContactCount = 1;
-                contactNormal = steepNormal;
+                if (contactNormal == Vector3.zero)
+                {
+                    contactNormal = steepNormal;
+
+                }
                 return true;
             }
         }
@@ -1292,7 +1316,6 @@ public class Controller_Physics : MonoBehaviour
         stopState = check;
         if (stopState)
         {
-            FindObjectOfType<Controller_Physics>().rb.velocity = Vector3.zero;
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             Time.timeScale = 0;
