@@ -21,7 +21,7 @@ public class UI_CurrentCoin : MonoBehaviour
     private  void Awake()
     {
         coinText = GetComponent<TMP_Text>();
-        canvasGroup = transform.parent.GetComponent<CanvasGroup>();
+        canvasGroup = transform.parent.parent.GetComponent<CanvasGroup>();
         canvasGroup.alpha = 0f;
     }
 

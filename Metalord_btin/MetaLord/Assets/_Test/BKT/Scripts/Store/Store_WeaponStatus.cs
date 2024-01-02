@@ -24,7 +24,7 @@ public class Store_WeaponStatus : StoreObject
     private GameObject coinImage;
 
 
-    private  const int MAX_STEP = 13; // 최대 단계
+    private  const int MAX_STEP = 6; // 최대 단계
     private int stepIndex; // 스텝을 가리키는 index
 
     [Header("업그레이드 단계별 정보")]
@@ -71,6 +71,7 @@ public class Store_WeaponStatus : StoreObject
         for(int i = 0; i < stepIndex; i++) // 스텝 인덱스까지 이미지 적용
         {
             ReflectStepImage(i);
+            GameEventsManager.instance.coinEvents.UpgradeGun(upgradeCategory, stepIncreaseAmount[i]); // 건 업그레이드에 전달
         }
         ReflectCostText(stepIndex); // 금액 적용
         ReflectCost(stepIndex); // 금액 적용

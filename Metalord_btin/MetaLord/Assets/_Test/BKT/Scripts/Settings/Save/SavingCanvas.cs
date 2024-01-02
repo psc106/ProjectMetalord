@@ -17,7 +17,7 @@ public class SavingCanvas : MonoBehaviour
     public void StartSave()
     {
         gameObject.SetActive(true);
-        Controller_Physics.SwitchCameraLock(false);
+        Controller_Physics.SwitchCameraLock(true);
         StartCoroutine(PopSavingUI());
     }
 
@@ -30,11 +30,12 @@ public class SavingCanvas : MonoBehaviour
             dot += ".";
             Debug.Log(dot);
             transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>().text = dot;
-            yield return new WaitForSecondsRealtime(1f);
+            yield return new WaitForSecondsRealtime(0.8f);
             Debug.Log("코루틴");
         }
         transform.GetChild(0).gameObject.SetActive(false);
         transform.GetChild(1).gameObject.SetActive(true);
+        Controller_Physics.SwitchCameraLock(false);
         isSaved = true;
     }
 }

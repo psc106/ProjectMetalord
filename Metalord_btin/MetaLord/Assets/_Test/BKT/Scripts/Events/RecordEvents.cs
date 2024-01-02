@@ -32,13 +32,12 @@ public class RecordEvents
         }
     }
 
+    // 도감 선택시 발생하는 이벤트
     public event Action<int> onSelectRecord;
     public void SelectRecord(int _id)
     {
         if(onSelectRecord != null)
         {
-            Debug.Log(onSelectRecord);
-
             onSelectRecord(_id);
         }
     }
