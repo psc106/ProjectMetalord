@@ -107,6 +107,12 @@ public class GunStateController : MonoBehaviour
     public bool minDistance = false;
 
     bool usedGrabGun = false;
+
+    public bool UsedGrabGun()
+    {
+        return usedGrabGun;
+    }
+
     bool usedBondGun = false;
     int maxUpgrade = 405;
 

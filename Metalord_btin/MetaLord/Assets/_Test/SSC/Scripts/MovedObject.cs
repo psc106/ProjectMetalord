@@ -1,9 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
-using UnityEditor.TextCore.Text;
 using UnityEngine;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class MovedObject : MonoBehaviour
 {
@@ -49,23 +47,23 @@ public class MovedObject : MonoBehaviour
         }
     }
 
-    // 그랩한 물건이 이동형 오브젝트와 부딪힐때마다 물리력 행사 콜백
+    //// 그랩한 물건이 이동형 오브젝트와 부딪힐때마다 물리력 행사 콜백
 
-    //private void OnCollisionEnter(Collision collision)
-    //{
-    //    if (collision.gameObject.layer == LayerMask.NameToLayer("MovedObject"))
-    //    {
-    //        if(collision.gameObject.GetComponent<PaintTarget>().CheckPainted())
-    //        {
-    //            return;
-    //        }
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("MovedObject"))
+        {
+            if (collision.gameObject.GetComponent<PaintTarget>().CheckPainted())
+            {
+                return;
+            }
 
-    //        if (collision.gameObject.GetComponent<OverapObject>() == null)
-    //        {
-    //            collision.gameObject.AddComponent<OverapObject>().InitOverap();
-    //        }
-    //    }
-    //}
+            if (collision.gameObject.GetComponent<OverapObject>() == null)
+            {
+                collision.gameObject.AddComponent<OverapObject>().InitOverap();
+            }
+        }
+    }
 
     // 충돌지점 본드 체크
     private void OnCollisionStay(Collision collision)
@@ -82,6 +80,8 @@ public class MovedObject : MonoBehaviour
             Vector3 dir = collision.contacts[i].normal;
 
             Ray ray = new Ray(collision.contacts[i].point + dir, -dir);
+            Ray reflectRay = new Ray(collision.contacts[i].point, dir);
+            Debug.DrawLine(collision.contacts[i].point, dir, Color.red);
 
             if (PaintTarget.RayChannel(ray, 1.5f, layerMask) == 0 && collision.gameObject.GetComponent<Controller_Physics>() == null && checkContact)
             {
@@ -106,15 +106,13 @@ public class MovedObject : MonoBehaviour
                 }
                 // 부모가 존재할 경우
                 else
-                {
-                    Debug.Log(1111);
+                {                    
                     GameObject contactObj = collision.gameObject;                    
 
                     // TODO : 레이어 체크가 아닌 CatchObject 스크립트로 여부 확인
                     // 부모가 상위 오브젝트 경우
                     if(contactObj.transform.parent.gameObject.layer == LayerMask.NameToLayer("GrabedObject"))
                     {                                        
-                        Debug.Log(2222);
                         // HashSet 갱신    
                         transform.parent = contactObj.transform.parent;
                         contactObj.transform.parent.GetComponent<CatchObject>().AddChild(transform.GetComponent<MeshCollider>());        
@@ -123,16 +121,12 @@ public class MovedObject : MonoBehaviour
                     // 부모가 고정형 오브젝트 경우
                     else if(contactObj.transform.parent.gameObject.layer == LayerMask.NameToLayer("Default"))
                     {
-                        Debug.Log(3333);
-                        Debug.Log("여긴데??");
                         // 부딪힌 오브젝트도 고정형이면
                         if(contactObj.transform.gameObject.layer == LayerMask.NameToLayer("Default"))
                         {
-                            Debug.Log(4444);
                             // 클래스 여부로 기존 고정형 오브젝트인지 합쳐진 오브젝트인지
-                            if (contactObj.transform.parent.GetComponent<CatchObject>())
+                            if(contactObj.transform.parent.GetComponent<CatchObject>())
                             {
-                                Debug.Log("여기 들어오냐?");
                                 transform.SetParent(contactObj.transform.parent);
                                 //if(contactObj.transform.parent.gameObject.layer == LayerMask.NameToLayer("Default"))
                                 //{                                    
@@ -170,7 +164,6 @@ public class MovedObject : MonoBehaviour
                             }
                             else 
                             {
-                                Debug.Log("여기는?");
                                 // 상위 오브젝트 생성
                                 parentObj = new GameObject();
                                 parentObj.transform.gameObject.layer = LayerMask.NameToLayer("Default");
@@ -186,10 +179,12 @@ public class MovedObject : MonoBehaviour
                         }
                         else
                         {
+                            //Debug.Log("여기");
                             // 충돌한 이동형 오브젝트가 고정형에 집합된 형태라면 
                             if(contactObj.transform.parent.GetComponent<CatchObject>() != null &&
                                 contactObj.transform.parent.gameObject.layer == LayerMask.NameToLayer("Default"))
                             {
+                                //Debug.Log("===");
                                 transform.parent = contactObj.transform.parent;
                                 checkContact = false;                                
                                 ClearState();
@@ -221,6 +216,7 @@ public class MovedObject : MonoBehaviour
                 GrabGun.instance.CancelObj();
                 
             }
+
         }
     }
 
