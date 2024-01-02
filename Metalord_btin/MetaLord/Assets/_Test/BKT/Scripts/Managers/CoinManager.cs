@@ -71,7 +71,7 @@ public class CoinManager : MonoBehaviour
         if (isFirst) // 첫 획득시 설명을 띄워줌
         {
             isFirst = false;
-            Controller_Physics.SwitchCameraLock(false);
+            Controller_Physics.SwitchCameraLock(true);
             coinExplain.SetActive(true);
         }
         currentCoin += coin; // 코인을 현재 코인에 반영

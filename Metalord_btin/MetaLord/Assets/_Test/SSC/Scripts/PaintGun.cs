@@ -6,6 +6,8 @@ public class PaintGun : GunBase
 {
     float timeCheck = 0f;
     float autotimeCheck = 0;
+    
+    [SerializeField]
     int autoShot = -5;
 
     public int AutoShot { get { return -autoShot; } set { autoShot = -value; } }
@@ -31,7 +33,7 @@ public class PaintGun : GunBase
         mode = GunMode.Paint;
         brush.splatChannel = 0;
         brush.splatScale = state.ClimbeSize;
-        ammo = -50;
+        //ammo = -50;
 
         AimTarget = state.AimTarget;
     }

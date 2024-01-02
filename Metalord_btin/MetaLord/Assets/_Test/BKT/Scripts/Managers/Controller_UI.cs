@@ -40,8 +40,7 @@ public class Controller_UI : MonoBehaviour
     }
 
     private void Update()
-    {
-        #region 상점, 도감, 환경설정 키 누를경우 _ 231219 배경택
+    {        
         if (canInput && !PlayerInteractNpc.isTalking)
         {
             if (reader.StoreKey) // 상점 키 누를 경우 _231219 배경택
@@ -141,8 +140,7 @@ public class Controller_UI : MonoBehaviour
 
                 StartCoroutine(DelayInput());
             }
-        }
-        #endregion
+        }        
     }
 
     public bool IsAnyUISetActiveFalse()

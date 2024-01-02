@@ -12,8 +12,7 @@ enum ExplainPage
     Upgrade,
     GetItem,
     Record,
-    NPC,
-    NOTE,
+    NPC,    
 }
 
 /// <summary>
@@ -40,8 +39,7 @@ public class ExplainCanvas : MonoBehaviour
 
     private void OnEnable()
     {
-        pageIndex = (int)ExplainPage.PC;
-        transform.GetChild((int)ExplainPage.NOTE).gameObject.SetActive(true);
+        pageIndex = (int)ExplainPage.PC;        
     }
 
     public void Click_PC()

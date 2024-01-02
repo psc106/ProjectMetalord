@@ -179,28 +179,16 @@ public class Controller_Physics : MonoBehaviour
 
     RaycastHit aimHit;
 
-    [Header("UI 컨트롤러")]
-    [SerializeField] private Controller_UI controller_UI;
-    
-    ////231219 배경택
-    //[Header("UI 상점, 도감, 환경설정")]
-    //[SerializeField] private GameObject canvases;
-    //private GameObject storeUI; // 상점 UI 오브젝트
-    //private GameObject recordUI; // 도감 UI 오브젝트
-    //private GameObject readyMenuUI; // 대기모드 UI 오브젝트
-    //private GameObject explainUI; // 도움말 UI 오브젝트    
-    //private GameObject firstCoinExPlainUI; // 첫 코인 도움말 UI 오브젝트
-    //private GameObject savingUI; // 첫 코인 도움말 UI 오브젝트
-    //private GameObject firstKeyExplainUI; // 첫 코인 도움말 UI 오브젝트
-    //private bool canInput = true; // 입력 가능여부
-    //private const float INPUT_DELAYTIME = 0.3f; // 입력 후 대기 시간
+    // UI 컨트롤러 _ 240102배경택
+    private Controller_UI controller_UI;
 
     #region Animator Hash
     private readonly int IdleTimeHash = Animator.StringToHash("IdleTime");
     private readonly int VelocityXHash = Animator.StringToHash("VelocityX");
     private readonly int VelocityYHash = Animator.StringToHash("VelocityY");
     private readonly int JumpTriggerHash = Animator.StringToHash("Jump");
-    private readonly int ClimbTriggerHash = Animator.StringToHash("OnClimb");
+    private readonly int ClimbHash = Animator.StringToHash("OnClimb");
+    private readonly int GroundHash = Animator.StringToHash("OnGround");
     private readonly int ReloadTriggerHash = Animator.StringToHash("Reload");
     private readonly int EquipStateHash = Animator.StringToHash("EquipState");
     private readonly int EquipTriggerHash = Animator.StringToHash("EquipTrigger");
@@ -213,8 +201,7 @@ public class Controller_Physics : MonoBehaviour
     {
         minGroundDotProduct = Mathf.Cos(maxGroundAngle * Mathf.Deg2Rad);
         minObjectDotProduct = Mathf.Cos(maxObjectAngle * Mathf.Deg2Rad);
-        minClimbDotProduct = Mathf.Cos(maxClimbAngle * Mathf.Deg2Rad);
-        //catchObject = LayerMask.NameToLayer("CatchObject");
+        minClimbDotProduct = Mathf.Cos(maxClimbAngle * Mathf.Deg2Rad);        
     }
 
     private void Awake()
@@ -231,219 +218,29 @@ public class Controller_Physics : MonoBehaviour
 
         canFire = false;
         fireDelay = StartCoroutine(fireDelayRoutine(fireDelayTime));
-
-        //// 231231 배경택
-        //storeUI = Utility.FindChildObj(canvases, "StoreCanvas");
-        //recordUI = Utility.FindChildObj(canvases, "RecordCanvas");
-        //readyMenuUI = Utility.FindChildObj(canvases, "ReadyCanvas");
-        //explainUI = Utility.FindChildObj(canvases, "ExplainCanvas");
-        //firstCoinExPlainUI = Utility.FindChildObj(canvases, "CoinExplainCanvas");
-        //firstKeyExplainUI = Utility.FindChildObj(canvases, "KeyExplainCanvas");
-        //savingUI = Utility.FindChildObj(canvases, "SavingCanvas");
+        controller_UI = GetComponent<Controller_UI>();
     }
 
     void Update()
     {
-/*
-
-        #region 상점, 도감, 환경설정 키 누를경우 _ 231219 배경택
-        if (canInput && !PlayerInteractNpc.isTalking)
-        {
-            if (reader.StoreKey) // 상점 키 누를 경우 _231219 배경택
-            {
-                if (storeUI.activeSelf == true)
-                {
-                    SwitchCameraLock(false);
-                    storeUI.SetActive(false); // 중복 버튼을 누를경우 꺼짐    
-                }
-                else
-                {
-                    SwitchCameraLock(true);
-                    storeUI.SetActive(true);
-                    recordUI.SetActive(false);
-                    settingsUI.SetActive(false);
-                }
-
-                StartCoroutine(DelayInput());
-            }
-
-            if (reader.RecordKey) // 도감 키 누를 경우 _231219 배경택
-            {
-                if (recordUI.activeSelf == true)
-                {
-                    SwitchCameraLock(false);
-                    recordUI.SetActive(false); // 중복 버튼을 누를경우 꺼짐
-                }
-
-                else
-                {
-                    SwitchCameraLock(true);
-                    recordUI.SetActive(true);
-                    storeUI.SetActive(false);
-                    settingsUI.SetActive(false);
-                }
-
-                StartCoroutine(DelayInput());
-
-            }
-
-            if (!storeUI.activeSelf && !recordUI.activeSelf && reader.SettingsKey) //설정 키 누를 경우 _231219 배경택
-            {
-                if (settingsUI.activeSelf == true)
-                {
-                    SwitchCameraLock(false);
-                    settingsUI.SetActive(false); // 중복 버튼을 누를경우 꺼짐
-                }
-                else
-                {
-                    SwitchCameraLock(true);
-                    settingsUI.SetActive(true);
-                    recordUI.SetActive(false);
-                    storeUI.SetActive(false);
-                }
-
-                StartCoroutine(DelayInput());
-
-            }
-
-            if (Input.GetKeyDown(KeyCode.Escape)) // 그냥 ESC키 누를경우 꺼짐 (환경설정키가 ESC로 되어있음에 따라 환경설정키는 조건에서 제외)
-            {
-                if (storeUI.activeSelf == true)
-                {
-                    SwitchCameraLock(false);
-                    storeUI.SetActive(false);
-                }
-
-                if (recordUI.activeSelf == true)
-                {
-                    SwitchCameraLock(false);
-                    recordUI.SetActive(false);
-                }
-
-                if (explainUI.activeSelf == true)
-                {
-                    SwitchCameraLock(true);
-                    explainUI.SetActive(false);
-                }
-
-                StartCoroutine(DelayInput());
-            }
-        }
-        #endregion
-*/
-        //#region 상점, 도감, 환경설정 키 누를경우 _ 231219 배경택
-        //if (canInput && !PlayerInteractNpc.isTalking)
-        //{
-        //    if (reader.StoreKey) // 상점 키 누를 경우 _231219 배경택
-        //    {
-        //        if (storeUI.activeSelf == true)
-        //        {
-        //            SwitchCameraLock(false);
-        //            storeUI.SetActive(false); // 중복 버튼을 누를경우 꺼짐    
-        //        }
-        //        else
-        //        {
-        //            SwitchCameraLock(true);
-        //            storeUI.SetActive(true);
-        //            recordUI.SetActive(false);
-        //            readyMenuUI.SetActive(false);
-        //        }
-
-        //        StartCoroutine(DelayInput());
-        //    }
-
-        //    if (reader.RecordKey) // 도감 키 누를 경우 _231219 배경택
-        //    {
-        //        if (recordUI.activeSelf == true)
-        //        {
-        //            SwitchCameraLock(false);
-        //            recordUI.SetActive(false); // 중복 버튼을 누를경우 꺼짐
-        //        }
-
-        //        else
-        //        {
-        //            SwitchCameraLock(true);
-        //            recordUI.SetActive(true);
-        //            storeUI.SetActive(false);
-        //            readyMenuUI.SetActive(false);
-        //        }
-
-        //        StartCoroutine(DelayInput());
-
-        //    }
-
-        //    if (IsAnyUISetActiveFalse() && reader.ReadyMenuKey) //대기메뉴 키 누를 경우 _231231 배경택
-        //    {
-        //        if (readyMenuUI.activeSelf == true)
-        //        {
-        //            SwitchCameraLock(false);
-        //            readyMenuUI.SetActive(false); // 중복 버튼을 누를경우 꺼짐
-        //        }
-        //        else
-        //        {
-        //            SwitchCameraLock(true);
-        //            readyMenuUI.SetActive(true);
-        //            recordUI.SetActive(false);
-        //            storeUI.SetActive(false);
-        //        }
-
-        //        StartCoroutine(DelayInput());
-
-        //    }
-
-        //    if (Input.GetKeyDown(KeyCode.Escape)) // 그냥 ESC키 누를경우 꺼짐 (환경설정키가 ESC로 되어있음에 따라 환경설정키는 조건에서 제외)
-        //    {
-        //        if (storeUI.activeSelf == true)
-        //        {
-        //            SwitchCameraLock(false);
-        //            storeUI.SetActive(false);
-        //        }
-
-        //        if (recordUI.activeSelf == true)
-        //        {
-        //            SwitchCameraLock(false);
-        //            recordUI.SetActive(false);
-        //        }               
-
-        //        if (explainUI.activeSelf == true)
-        //        {
-        //            SwitchCameraLock(false);
-        //            explainUI.SetActive(false);
-        //        }
-
-        //        if(firstCoinExPlainUI.activeSelf == true)
-        //        {
-        //            SwitchCameraLock(false);
-        //            firstCoinExPlainUI.SetActive(false);
-        //        }
-
-        //        if(savingUI.activeSelf == true && savingUI.GetComponent<SavingCanvas>().isSaved)
-        //        {                    
-        //            savingUI.SetActive(false);
-        //            readyMenuUI.SetActive(true);
-        //        }
-
-        //        if(firstKeyExplainUI.activeSelf == true)
-        //        {
-        //            SwitchCameraLock(false);
-        //            firstKeyExplainUI.SetActive(false);
-        //        }
-
-        //        StartCoroutine(DelayInput());
-        //    }
-        //}
-        //#endregion
-
         //대화나 메뉴에서 stop시킴
         if (stopState)
         {
             return;
         }
 
+        TrailRenderer t = GetComponent<TrailRenderer>();
+        Color color = new Color(0, 0, 0, 1);
+        color.r = OnGround ? 1 : 0;
+        color.g = OnSteep ? 1 : 0;
+        color.b = OnClimb ? 1 : 0;
+        t.material.color = color;
+
         UpdateFrameState();
         UpdateInputState();
         UpdateAnimationParameter();
         UpdateAxis();
+
 
         // 레이지점 컬러 체크 테스트용
         if (Input.GetKeyDown(KeyCode.T))
@@ -509,42 +306,10 @@ public class Controller_Physics : MonoBehaviour
 
     private void UpdateFrameState()
     {
-        if (checkedFrame == checkFrameRate)
+        if (checkedFrame >= checkFrameRate)
             checkedFrame = 0;
         checkedFrame += 1;
     }
-
-    /*
-    // 입력 대기시간 코루틴
-    IEnumerator DelayInput()
-    {
-        canInput = false; // 입력 불가
-        yield return new WaitForSecondsRealtime(INPUT_DELAYTIME); // 대기시간
-        canInput = true; // 입력 가능
-    }
-    */
-    
-    //bool IsAnyUISetActiveFalse()
-    //{
-    //    if (storeUI.activeSelf
-    //        || recordUI.activeSelf
-    //        || explainUI.activeSelf
-    //        || firstCoinExPlainUI.activeSelf
-    //        || savingUI.activeSelf
-    //        || firstKeyExplainUI.activeSelf
-    //        ) return false;
-
-    //    return true;
-    //}
-
-   
-    //// 입력 대기시간 코루틴
-    //IEnumerator DelayInput()
-    //{
-    //    canInput = false; // 입력 불가
-    //    yield return new WaitForSecondsRealtime(INPUT_DELAYTIME); // 대기시간
-    //    canInput = true; // 입력 가능
-    //}
 
     private void FixedUpdate()
     {
@@ -553,11 +318,11 @@ public class Controller_Physics : MonoBehaviour
         //대화나 메뉴에서 stop시킴
         if (stopState)
         {
-            rb.velocity += new Vector3(0, gravity.y*Time.deltaTime, 0);
+            /*rb.velocity += new Vector3(0, gravity.y*Time.deltaTime, 0);
             if (rb.velocity.y > 10)
             {
                 velocity = Vector3.zero;
-            }
+            }*/
             return;
         }
         //상태 업데이트
@@ -567,9 +332,12 @@ public class Controller_Physics : MonoBehaviour
         //점프 계산
         AdjustJump();
 
+        //Debug.Log("1 "+velocity);
+
         //점프 상태일 경우 2배의 그래비티 적용
         if (!isJump && !OnGround && !desireClimb)
         {
+            //Debug.Log("점프상태");
             velocity += gravity * gravityMultiple * Time.deltaTime;
         }
 
@@ -583,19 +351,21 @@ public class Controller_Physics : MonoBehaviour
         {
             //Debug.Log("등산");
             //등산중에 접촉면으로 끌어당김
-            velocity -= contactNormal * (maxClimbAcceleration * 0.99f * Time.deltaTime);
+            Debug.LogWarning(velocity+"/"+contactNormal);
+            velocity -= contactNormal.normalized * maxClimbAcceleration * 0.99f * Time.deltaTime;
         }
-        else if (desireClimb && OnGround)
+        else if (desireClimb && OnGround )
         {
-            //Debug.Log("지상, 등산");
+            Debug.Log("지상, 등산");
             //땅에 있을 경우 + 이동 상태 일 경우 중력+접촉면으로 끌어당김 동시에 적용
-            velocity += (gravity - contactNormal * maxClimbAcceleration * 0.9f) * Time.deltaTime;
+            velocity += (gravity - contactNormal.normalized * maxClimbAcceleration * 0.9f) * Time.deltaTime;
+            //velocity += gravity * Time.deltaTime;
         }
         else if (OnGround && velocity.sqrMagnitude < 0.01f)
         {
             //Debug.Log("지상, 정지");
             //땅에 있을 경우 + 정지상태일 경우 밀려나지않는 상태
-            velocity += contactNormal * (Vector3.Dot(gravity, contactNormal) * Time.deltaTime);
+            velocity += contactNormal.normalized * (Vector3.Dot(gravity, contactNormal) * Time.deltaTime);
         }
         else
         {
@@ -604,30 +374,35 @@ public class Controller_Physics : MonoBehaviour
             velocity += gravity * Time.deltaTime;
         }
 
+        Debug.Log("2 " + velocity);
+
         Vector3 limit = velocity;
-        /*if(velocity.y > 30)
+
+       /* if (limit.y < -40)
         {
-            limit.y = 30;
+            limit.y = -40;
         }
-        else if(rb.velocity.y< -50)
+        else if(limit.y > 40)
         {
-            limit.y = -50;
+            limit.y = 40;
         }
-        if (velocity.x > 30)
+
+        if (limit.z<-30)
         {
-            limit.x = 30;
-        } 
-        else if (velocity.x < -30)
-        {
-            limit.x = -30;
+            limit.z = -30;
         }
-        if (velocity.z > 30)
+        else if (limit.z > 30)
         {
             limit.z = 30;
         }
-        else if (velocity.z < -30)
+
+        if(limit.x < -30)
         {
-            limit.z = -30;
+            limit.x = -30;
+        }
+        else if (limit.x > 30)
+        {
+            limit.x = 30;
         }*/
 
         //속도 적용
@@ -673,16 +448,6 @@ public class Controller_Physics : MonoBehaviour
             }
         }
     }
-
-    //private void OnTriggerEnter(Collider other)
-    //{
-
-    //    if (other.gameObject.layer == catchObject)
-    //    {
-    //        Destroy(other.gameObject);
-    //    }
-    //}
-
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -735,6 +500,7 @@ public class Controller_Physics : MonoBehaviour
         {
             acceleration = OnGround ? maxAcceleration : maxAirAcceleration;
             speed = OnGround && desireClimb? maxClimbSpeed: maxMoveSpeed;
+            //speed = maxMoveSpeed;
             //기본 상태일 경우 플레이어의 좌/우 측을 따른다.
             xAxis = rightAxis;
             //기본 상태일 경우 플레이어의 앞/뒤 축을 따른다.
@@ -917,6 +683,7 @@ public class Controller_Physics : MonoBehaviour
         //현재 충돌한 오브젝트의 최소 각도를 가져온다.
         float minDot = GetMinDot(layer);
 
+
         //모든 contact를 검사하여 일정 각도 이상의 평면을 모두 저장한다.
         for (int i = 0; i < collision.contactCount; i++)
         {
@@ -926,15 +693,12 @@ public class Controller_Physics : MonoBehaviour
             float upDot = Vector3.Dot(upAxis, normal);
 
             //색칠된 벽을 확인
-            bool isColoredWall = beforeColored;
-            desireClimb = beforeColored;
+            bool isColoredWall = false;
 
-            //n프레임마다 검사
             //색칠 리스트에 추가 되어있을 경우만 검사
-            if (checkedFrame==checkFrameRate && ToolFunc<PaintTarget>.ConatainsCollision(GunStateController.paintList, collision))
+            if ( ToolFunc<PaintTarget>.ConatainsCollision(GunStateController.paintList, collision))
             {
                 isColoredWall = CheckPaintedWall(collision.contacts[i], normal);
-                beforeColored = isColoredWall;
             }
             //cos에서 y값은 1->-1로 가므로 높을수록 각도는 낮은 각도
             //만약 접촉 표면의 각도가 최소 각도를 만족할 경우
@@ -1013,9 +777,6 @@ public class Controller_Physics : MonoBehaviour
 
     private void UpdateState()
     {
-        // 지상<->등산 애니메이션 결정
-        animator.SetBool(ClimbTriggerHash, !multipleState && OnClimb);
-
 
         //마지막 그라운드에서 몇 프레임이 지났는지 저장하기 위한 변수
         stepsSinceLastGrounded += 1;
@@ -1090,6 +851,11 @@ public class Controller_Physics : MonoBehaviour
         {
             moveMultiple = walkMultiple;
         }
+
+
+        // 지상<->등산 애니메이션 결정
+        animator.SetBool(ClimbHash, !multipleState && OnClimb);
+        animator.SetBool(GroundHash, stepsSinceLastGrounded==0);
 
     }
 
@@ -1214,7 +980,11 @@ public class Controller_Physics : MonoBehaviour
             if (upDot >= minGroundDotProduct)
             {
                 groundContactCount = 1;
-                contactNormal = steepNormal;
+                if (contactNormal == Vector3.zero)
+                {
+                    contactNormal = steepNormal;
+
+                }
                 return true;
             }
         }
@@ -1292,7 +1062,6 @@ public class Controller_Physics : MonoBehaviour
         stopState = check;
         if (stopState)
         {
-            FindObjectOfType<Controller_Physics>().rb.velocity = Vector3.zero;
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             Time.timeScale = 0;

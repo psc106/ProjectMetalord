@@ -408,6 +408,7 @@ public class RecordManager : MonoBehaviour
 
         if(selectedObject != null) selectedObject.InActiveChecking(); // 선택표시 비활성화
         DeleteRecordInfo();
+        ChangePageDisPlayText();
     }
 
     /// <summary>
