@@ -7,6 +7,7 @@ abstract public class GunBase : MonoBehaviour
     protected GunStateController state;
     protected Brush brush = null;
     protected Transform AimTarget = null;
+    [SerializeField]
     protected int ammo;
     public bool fireStart = false;
     public LayerMask myLayer;
