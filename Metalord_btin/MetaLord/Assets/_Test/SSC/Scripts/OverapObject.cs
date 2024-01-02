@@ -13,7 +13,7 @@ public class OverapObject : MonoBehaviour
     {
         if (myScript == null)
         { 
-            myScript = this;
+            myScript = GetComponent<OverapObject>();
         }
 
         if(myRigid == null)

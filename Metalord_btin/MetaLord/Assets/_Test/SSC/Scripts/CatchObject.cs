@@ -28,6 +28,7 @@ public class CatchObject : MonoBehaviour
     {
         foreach (MeshCollider col in childColid)
         {
+            Debug.Log(col.gameObject.name);
             col.convex = true;
         }
     }
@@ -99,6 +100,7 @@ public class CatchObject : MonoBehaviour
                 {
                     // 지정 오브젝트는 충돌한 오브젝트의 부모
                     GameObject contactObj = collision.transform.parent.gameObject;
+                    Debug.Log("진입 시작점");
 
                     // 부모가 상위 오브젝트 경우
                     if (contactObj.gameObject.layer == LayerMask.NameToLayer("GrabedObject"))
@@ -112,6 +114,11 @@ public class CatchObject : MonoBehaviour
                         if(contactObj.transform.GetComponent<CatchObject>() != null)
                         {                            
                             CareeToContact(contactObj);
+                        }
+                        else if (collision.transform.gameObject.layer == LayerMask.NameToLayer("NPC"))
+                        {                            
+                            collision.transform.GetComponent<NpcBase>().ChangedState(npcState.objectAttached);
+                            Destroy(myRigid);
                         }
                         // 단순 고정형 오브젝트일경우
                         else

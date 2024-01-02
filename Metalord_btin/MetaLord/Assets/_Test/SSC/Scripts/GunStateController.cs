@@ -375,8 +375,7 @@ public class GunStateController : MonoBehaviour
     }
 
     public void UpdateState(int ammoValue)
-    {        
-        
+    {                
         Ammo = ammoValue;
         gunImage[AmmoGaugeIdx].fillAmount = (float)Ammo / (float)maxUpgrade;    
         
