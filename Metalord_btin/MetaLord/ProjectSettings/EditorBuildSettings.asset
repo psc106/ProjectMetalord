@@ -5,13 +5,13 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/_Test/KHJ/Scenes/KHJ_TestTitleScene1.unity
     guid: 03b901e15743cc3438645874ebcc44d4
-  - enabled: 1
+  - enabled: 0
     path: Assets/_Test/PSC/Scenes/StoryScene.unity
     guid: 6e5895a8f55c1644182b39b53f36ec89
-  - enabled: 1
+  - enabled: 0
     path: Assets/MainLevel/MainScene/MainScene.unity
     guid: f41960c0b0d284640a9c17e0c73f6d46
   m_configObjects: {}
