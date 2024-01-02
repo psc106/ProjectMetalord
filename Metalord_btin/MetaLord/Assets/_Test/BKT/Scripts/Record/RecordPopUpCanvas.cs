@@ -27,6 +27,8 @@ public class RecordPopUpCanvas : MonoBehaviour
     // 획득시 UI 팝업
     private void PopUI(int _id)
     {
+        if (DataManager.instance.savedGamePlayData.coinAndRecordItem[_id] == 1) return;
+
         ReflectItemID(_id);
         gameObject.SetActive(true);
         Controller_Physics.SwitchCameraLock(true);
