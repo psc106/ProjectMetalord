@@ -1,6 +1,5 @@
 
 using Unity.VisualScripting;
-using UnityEditor.Animations.Rigging;
 using UnityEngine;
 
 public class MovedObject : MonoBehaviour

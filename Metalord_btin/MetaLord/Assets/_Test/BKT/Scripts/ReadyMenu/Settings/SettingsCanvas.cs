@@ -4,15 +4,9 @@ using UnityEngine;
 
 public class SettingsCanvas : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    // 설정 초기화
+    public void ResetSettings()
     {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }
