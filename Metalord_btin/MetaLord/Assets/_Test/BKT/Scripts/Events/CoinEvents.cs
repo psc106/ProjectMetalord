@@ -7,10 +7,6 @@ using UnityEngine;
 /// </summary>
 public class CoinEvents
 {
-    public CoinEvents()
-    {
-    }
-
     // 코인 얻었을때 호출되는 이벤트
     public event Action<int> onChangeCoin;
     public void ChangeCoin(int coin)
