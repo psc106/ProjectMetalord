@@ -1,6 +1,4 @@
-using JetBrains.Annotations;
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
 
 public enum npcState
@@ -25,10 +23,10 @@ public class NpcBase : MonoBehaviour
     
     public virtual void ChangedState(npcState _change)
     {
-            Debug.LogFormat("{0} <==현재 변경될 상태, {1}<====현재 상태", _change, state);
+           // Debug.LogFormat("{0} <==현재 변경될 상태, {1}<====현재 상태", _change, state);
         if(_change == npcState.objectAttached)
         {
-            Debug.LogFormat("변경될 상태가 오브젝트 붙은 상태일떄 실행되는 메서드 {0} <==현재 변경될 상태, {1}<====현재 상태", _change, state);
+            //Debug.LogFormat("변경될 상태가 오브젝트 붙은 상태일떄 실행되는 메서드 {0} <==현재 변경될 상태, {1}<====현재 상태", _change, state);
 
             if (state == npcState.glued || state == npcState.objectAttached)
             { 
@@ -41,7 +39,7 @@ public class NpcBase : MonoBehaviour
         }
         else if (_change == npcState.glued)
         {
-            Debug.LogFormat("본드 상태일때 들어오는 상태{0} <==현재 변경될 상태, {1}<====현재 상태", _change, state);
+            //Debug.LogFormat("본드 상태일때 들어오는 상태{0} <==현재 변경될 상태, {1}<====현재 상태", _change, state);
 
             if (state == npcState.objectAttached)
             {

@@ -4,8 +4,7 @@ using UnityEngine;
 
 enum ExplainPage
 {
-    Panel = 0,
-    FirstKey,
+    Panel = 0,    
     PC,
     Shoot,
     Move,
@@ -13,8 +12,7 @@ enum ExplainPage
     Upgrade,
     GetItem,
     Record,
-    NPC,
-    NOTE,
+    NPC,    
 }
 
 /// <summary>
@@ -22,9 +20,7 @@ enum ExplainPage
 /// 231226 배경택
 /// </summary>
 public class ExplainCanvas : MonoBehaviour
-{
-    private bool isFirstOpen;
-
+{    
     private int _pageIndex;
     private int pageIndex
     {
@@ -41,24 +37,9 @@ public class ExplainCanvas : MonoBehaviour
         }
     }
 
-    private void Awake()
-    {
-        isFirstOpen = true;
-    }
-
     private void OnEnable()
     {
-        if (!isFirstOpen)
-        {
-            pageIndex = (int)ExplainPage.PC;
-            transform.GetChild((int)ExplainPage.NOTE).gameObject.SetActive(true);            
-        }
-        else
-        {
-            isFirstOpen = false;
-            pageIndex = (int)ExplainPage.FirstKey;
-            transform.GetChild((int)ExplainPage.Panel).gameObject.SetActive(true);
-        }
+        pageIndex = (int)ExplainPage.PC;        
     }
 
     public void Click_PC()

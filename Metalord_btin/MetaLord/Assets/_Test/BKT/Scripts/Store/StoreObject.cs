@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// 상점 구매물품에 들어가는 스크립트
@@ -9,13 +10,15 @@ using UnityEngine;
 public class StoreObject : MonoBehaviour
 {
     protected int price;
-    private GameObject cantBuyImage;
+    //private GameObject cantBuyImage;
+    private GameObject button; 
 
     protected bool isCanBuy = true;
 
     protected virtual void Awake()
     {        
-        cantBuyImage = Utility.FindChildObj(this.gameObject, "Image(CantBuy)");
+        //cantBuyImage = Utility.FindChildObj(this.gameObject, "Image(CantBuy)");
+        button = Utility.FindChildObj(this.gameObject, "Button");
         GameEventsManager.instance.coinEvents.onChangeCoin += ChangeButtonUI;       
     }
 
@@ -29,7 +32,6 @@ public class StoreObject : MonoBehaviour
     private void OnEnable()
     {
         //ChangeButtonUI(0);
-
     }
 
     protected virtual void SaveData()
@@ -64,8 +66,16 @@ public class StoreObject : MonoBehaviour
     /// </summary>
     protected void ChangeButtonUI(int temp)
     {
-        if (IsCanBuy()) cantBuyImage.SetActive(false);
-        else cantBuyImage.SetActive(true);
+        if (IsCanBuy())
+        {
+            Debug.Log("구매 가능");
+            button.GetComponent<Image>().color = new Color(251/255f, 229/255f, 214/255f, 1); //cantBuyImage.SetActive(false);
+        }
+        else
+        {
+            Debug.Log("구매 불가");
+            button.GetComponent<Image>().color = new Color(231/255f, 230/255f, 230/255f, 1); //cantBuyImage.SetActive(true);
+        }
     }
 
     // 구매 가능여부를 체크하는 함수

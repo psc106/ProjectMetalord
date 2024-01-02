@@ -21,7 +21,7 @@ public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions
 
     public event UnityAction<float> Store = delegate { }; // 231219 배경택
     public event UnityAction<float> Record = delegate { }; // 231219 배경택
-    public event UnityAction<float> Settings = delegate { }; // 231219 배경택
+    public event UnityAction<float> ReadyMenu = delegate { }; // 231219 배경택
 
     public PlayerInputActions inputActions;
 
@@ -36,7 +36,7 @@ public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions
     public bool InteractKey => inputActions.Player.Interact.ReadValue<float>() == 1f;
     public bool StoreKey => inputActions.Player.Store.ReadValue<float>() == 1f; // 231219 배경택
     public bool RecordKey => inputActions.Player.Record.ReadValue<float>() == 1f; //231219 배경택
-    public bool SettingsKey => inputActions.Player.Settings.ReadValue<float>() == 1f; //231219 배경택
+    public bool ReadyMenuKey => inputActions.Player.ReadyMenu.ReadValue<float>() == 1f; //231219 배경택
 
 
     private void OnEnable()
@@ -139,9 +139,9 @@ public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions
         Record.Invoke(context.ReadValue<float>());
     }
 
-    public void OnSettings(InputAction.CallbackContext context) // 231219 배경택
+    public void OnReadyMenu(InputAction.CallbackContext context) // 231231 배경택
     {
-        Settings.Invoke(context.ReadValue<float>());
+        ReadyMenu.Invoke(context.ReadValue<float>());
     }
 
     public void OnGrab(InputAction.CallbackContext context)
