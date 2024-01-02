@@ -204,7 +204,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1495894723469854142}
   - component: {fileID: 3785254182038594230}
-  - component: {fileID: 8009529737389873613}
+  - component: {fileID: 1299676153653878084}
   - component: {fileID: 3742653360604592892}
   - component: {fileID: 5076636948133282176}
   - component: {fileID: 2987880109812575175}
@@ -266,7 +266,7 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 112
   m_CollisionDetection: 0
---- !u!114 &8009529737389873613
+--- !u!114 &1299676153653878084
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
