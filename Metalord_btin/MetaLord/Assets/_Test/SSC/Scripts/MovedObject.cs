@@ -1,5 +1,6 @@
 
 using Unity.VisualScripting;
+using UnityEditor.Animations.Rigging;
 using UnityEngine;
 
 public class MovedObject : MonoBehaviour
@@ -8,6 +9,8 @@ public class MovedObject : MonoBehaviour
     Rigidbody myRigid;
     MeshCollider myColid;    
     public LayerMask layerMask;
+    NpcBase targetNpc;
+    GunStateController state;
 
     private void Awake()
     {
@@ -48,6 +51,15 @@ public class MovedObject : MonoBehaviour
 
     //// 그랩한 물건이 이동형 오브젝트와 부딪힐때마다 물리력 행사 콜백
 
+    private void OnCollisionExit(Collision collision)
+    {
+        // TODO : 붙인 오브젝트가 벗어날 때 NPC 상태변화 호출?
+        if (collision.gameObject.layer == LayerMask.NameToLayer("NPC") && targetNpc)
+        {
+            targetNpc = null;
+        }
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("MovedObject"))
@@ -62,6 +74,23 @@ public class MovedObject : MonoBehaviour
                 collision.gameObject.AddComponent<OverapObject>().InitOverap();
             }
         }
+
+        if(collision.gameObject.layer == LayerMask.NameToLayer("Player"))
+        {            
+            if(state)
+            {
+                state.UpdateState(state.Ammo + 55);
+                state = null;
+            }
+
+            GrabGun.instance.CancelObj();
+        }
+
+        //if (collision.gameObject.layer == LayerMask.NameToLayer("Default") && !state.onGrab)
+        //{
+        //    Debug.Log("강제 슬립");
+        //    Invoke("SleepObj", 2.0f);
+        //}
     }
 
     // 충돌지점 본드 체크
@@ -176,9 +205,22 @@ public class MovedObject : MonoBehaviour
 
                             }
                         }
-                        else
+                        else if(contactObj.transform.gameObject.layer == LayerMask.NameToLayer("NPC"))
                         {
-                            //Debug.Log("여기");
+                            parentObj = new GameObject();
+                            parentObj.transform.gameObject.layer = LayerMask.NameToLayer("GrabedObject");
+                            CatchObject controll = parentObj.AddComponent<CatchObject>();
+                            GunStateController.AddList(controll);
+                            parentObj.transform.position = collision.contacts[i].point;
+
+                            // 그랩한 오브젝트 상위 오브젝트 종속, HashSet 갱신    
+                            transform.parent = parentObj.transform;                                                        
+                            controll.AddChild(transform.GetComponent<MeshCollider>());
+                            targetNpc = collision.transform.GetComponent<NpcBase>();
+                            targetNpc.ChangedState(npcState.objectAttached);
+                        }
+                        else
+                        {                            
                             // 충돌한 이동형 오브젝트가 고정형에 집합된 형태라면 
                             if(contactObj.transform.parent.GetComponent<CatchObject>() != null &&
                                 contactObj.transform.parent.gameObject.layer == LayerMask.NameToLayer("Default"))
@@ -199,8 +241,7 @@ public class MovedObject : MonoBehaviour
 
                             // 그랩한 오브젝트와 충돌한 오브젝트 모두 상위 오브젝트 종속, HashSet 갱신    
                             transform.parent = parentObj.transform;
-                            collision.transform.parent = parentObj.transform;
-                            //GunStateController.AddList(collision.gameObject.GetComponent<MovedObject>());
+                            collision.transform.parent = parentObj.transform;                            
                             controll.AddChild(transform.GetComponent<MeshCollider>());
                             controll.AddChild(collision.transform.GetComponent<MeshCollider>());                        
 
@@ -209,8 +250,7 @@ public class MovedObject : MonoBehaviour
 
                 }
 
-                checkContact = false;
-                //GunStateController.AddList(this);
+                //checkContact = false;                
                 ClearState();
                 GrabGun.instance.CancelObj();
                 
@@ -219,8 +259,13 @@ public class MovedObject : MonoBehaviour
         }
     }
 
-    public void ChangedState()
+    public void ChangedState(GunStateController _state)
     {
+        if(state == null)
+        {
+            state = _state;
+        }
+
         myRigid = GetComponent<Rigidbody>();
         myRigid.mass = 1000f;
         myColid.material.dynamicFriction = 0f;
@@ -251,7 +296,15 @@ public class MovedObject : MonoBehaviour
             Destroy(myRigid);
         }
 
+        checkContact = false;
         myColid.convex = false;
     }
 
+    void SleepObj()
+    {
+        checkContact = false;
+        Destroy(myRigid);
+        myRigid = null;
+        myColid.convex = false;        
+    }
 }

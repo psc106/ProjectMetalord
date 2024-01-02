@@ -128,7 +128,7 @@ public class GrabGun : GunBase
     void FollowingObj( )
     {
         state.onGrab = true;
-        targetObj = state.hit.transform.gameObject;
+        targetObj = state.hit.transform.gameObject;        
 
         // 그랩 대상의 부모가 없다면
         if (targetObj.transform.parent == null)
@@ -139,10 +139,10 @@ public class GrabGun : GunBase
                 /* PASS */
             }
             else
-            {
+            {                
                 targetObj.GetComponent<MeshCollider>().convex = true;
                 targetObj.AddComponent<Rigidbody>();
-                targetObj.GetComponent<MovedObject>().ChangedState();
+                targetObj.GetComponent<MovedObject>().ChangedState(state);
             }
         }
         // 그랩 대상의 부모가 있다면
@@ -162,7 +162,7 @@ public class GrabGun : GunBase
                 targetObj.transform.parent = null;
                 targetObj.GetComponent<MeshCollider>().convex = true;
                 targetObj.AddComponent<Rigidbody>();
-                targetObj.GetComponent<MovedObject>().ChangedState();
+                targetObj.GetComponent<MovedObject>().ChangedState(state);
 
             }
             // 상위 오브젝트 경우
