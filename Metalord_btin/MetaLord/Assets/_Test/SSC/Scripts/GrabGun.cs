@@ -11,7 +11,7 @@ public class GrabGun : GunBase
         instance = this;
         base.Awake();
         brush.splatChannel = 2;
-        ammo = -55;
+        //ammo = -55;
         mode = GunMode.Grab;
     }
 

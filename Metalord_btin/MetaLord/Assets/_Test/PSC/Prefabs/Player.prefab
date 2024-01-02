@@ -204,6 +204,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1495894723469854142}
   - component: {fileID: 3785254182038594230}
+  - component: {fileID: 1299676153653878084}
   - component: {fileID: 3742653360604592892}
   - component: {fileID: 5076636948133282176}
   - component: {fileID: 2987880109812575175}
@@ -265,6 +266,20 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!114 &1299676153653878084
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 283528363170913266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc78e2baf7e1547f9b52770193aa5149, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  reader: {fileID: 11400000, guid: 75abd6246b51f9e48a0d52dae45fab3f, type: 2}
+  canvases: {fileID: 0}
 --- !u!114 &3742653360604592892
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -325,7 +340,6 @@ MonoBehaviour:
   aimRange: 50
   aimRig: {fileID: 2281247576654416274}
   rotateRig: {fileID: 2299312033654190962}
-  controller_UI: {fileID: 0}
   onUnequip: 0
   reader: {fileID: 11400000, guid: 75abd6246b51f9e48a0d52dae45fab3f, type: 2}
 --- !u!96 &5076636948133282176
@@ -336,7 +350,7 @@ TrailRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 283528363170913266}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
