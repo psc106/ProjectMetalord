@@ -24,7 +24,6 @@ public class SavedGamePlayData
     //플레이어 위치값 저장을 위한 변수 OK
     public string playerTransform;
 
-
     // 첫 키 설명 UI
     public bool ui_keyExplain;
 

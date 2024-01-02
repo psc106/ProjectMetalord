@@ -10,8 +10,8 @@ public class RecordItem : MonoBehaviour
 {
     [SerializeField] RecordList recordItem;
 
-    const int FALSE = 0;
-    const int TRUE = 1;
+    const int FALSE = 1;
+    const int TRUE = 0;
     private int isExist = TRUE; // 존재하는가
 
 
