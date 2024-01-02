@@ -149,36 +149,37 @@ public class CameraController : MonoBehaviour
             }
         }
 
-        if (player.IsMove)
-        {
-            if (rotateCoroutine != null) 
-            {
-                StopCoroutine(rotateCoroutine);
-                rotateCoroutine = null;
-            }
-            targetY.transform.rotation = Quaternion.Euler(0, newRotationY, 0);
-        }
-        else if (Quaternion.Angle(targetY.transform.rotation, Quaternion.Euler(0, newRotationY, 0)) >= rotateAngle)
-        {
-            /* // 이전 회전 각도
-             Quaternion currentRotation = targetY.transform.rotation;
+        targetY.rotation = Quaternion.Euler(0, newRotationY, 0);
+        /* if (player.IsMove)
+         {
+             if (rotateCoroutine != null) 
+             {
+                 StopCoroutine(rotateCoroutine);
+                 rotateCoroutine = null;
+             }
+             targetY.transform.rotation = Quaternion.Euler(0, newRotationY, 0);
+         }
+         else if (Quaternion.Angle(targetY.transform.rotation, Quaternion.Euler(0, newRotationY, 0)) >= rotateAngle)
+         {
+             *//* // 이전 회전 각도
+              Quaternion currentRotation = targetY.transform.rotation;
 
-             // 목표 회전 각도
-             Quaternion targetRotation = Quaternion.Euler(0, newRotationY, 0);
+              // 목표 회전 각도
+              Quaternion targetRotation = Quaternion.Euler(0, newRotationY, 0);
 
-             // 부드러운 회전 보간
-             targetY.transform.rotation = Quaternion.Lerp(currentRotation, targetRotation, Time.deltaTime * smoothRotationSpeed);*/
+              // 부드러운 회전 보간
+              targetY.transform.rotation = Quaternion.Lerp(currentRotation, targetRotation, Time.deltaTime * smoothRotationSpeed);*//*
 
-            if (rotateCoroutine == null)
-            {
-                rotateCoroutine = StartCoroutine(RotateBodyRoutine(newRotationY, rotateTime));
-            }
-            else
-            {
-                targetRotation = Quaternion.Euler(0, newRotationY, 0);
-            }
+             if (rotateCoroutine == null)
+             {
+                 rotateCoroutine = StartCoroutine(RotateBodyRoutine(newRotationY, rotateTime));
+             }
+             else
+             {
+                 targetRotation = Quaternion.Euler(0, newRotationY, 0);
+             }
 
-        }
+         }*/
 
         //targetY.transform.eulerAngles = new Vector3(0, newRotationY, 0);
         //targetY.transform.eulerAngles = new Vector3(0, Mathf.Lerp(targetY.transform.eulerAngles.y, newRotationY, 15 * Time.deltaTime), 0);
