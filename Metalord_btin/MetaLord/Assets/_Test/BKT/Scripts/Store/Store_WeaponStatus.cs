@@ -107,8 +107,13 @@ public class Store_WeaponStatus : StoreObject
     // 업그레이드 이미지 채워지는거 반영
     private void ReflectStepImage(int _index)
     {
-        Image stepImage = Utility.FindChildObj(this.gameObject,"Steps").transform.GetChild(_index).GetComponent<Image>();
-        stepImage.sprite = stackOn;
+        GameObject objectSteps = Utility.FindChildObj(this.gameObject, "Steps").transform.GetChild(_index).gameObject;
+
+        Image stepImage0 = objectSteps.transform.GetChild(0).GetComponent<Image>();
+        Image stepImage1 = objectSteps.transform.GetChild(1).GetComponent<Image>();
+
+        stepImage0.sprite = stackOn;
+        stepImage1.sprite = stackOn;
     }
 
     // 업그레이드 텍스트 반영
