@@ -8,7 +8,11 @@ using UnityEngine;
 /// </summary>
 public class DisplaySetting : MonoBehaviour
 {
-    private int isFullScreen;
+    private int _isFullScreen;
+    public int isFullScreen
+    {
+        get { return _isFullScreen; }
+    }
 
     private void Awake()
     {
@@ -17,7 +21,7 @@ public class DisplaySetting : MonoBehaviour
             LoadData(); // 저장되어있는 데이터가 있다면
             Debug.Log(PlayerPrefs.GetInt("DisplaySetting"));
         }
-        else isFullScreen = 1; // 없다면
+        else _isFullScreen = 1; // 없다면
         ChangeScreenMode();
     }
 
@@ -31,9 +35,9 @@ public class DisplaySetting : MonoBehaviour
     {
         Debug.Log("버튼 클릭 됨");
 
-        if (isFullScreen == 1)
+        if (_isFullScreen == 1)
         {
-            isFullScreen = 0;
+            _isFullScreen = 0;
 
             transform.GetChild(0).gameObject.SetActive(true);
             transform.GetChild(1).gameObject.SetActive(false);
@@ -42,7 +46,7 @@ public class DisplaySetting : MonoBehaviour
         }
         else
         {
-            isFullScreen = 1;
+            _isFullScreen = 1;
 
             transform.GetChild(1).gameObject.SetActive(true);
             transform.GetChild(0).gameObject.SetActive(false);
@@ -54,13 +58,13 @@ public class DisplaySetting : MonoBehaviour
     // 데이터 저장
     private void SaveData()
     {
-        PlayerPrefs.SetInt("DisplaySetting", isFullScreen);
+        PlayerPrefs.SetInt("DisplaySetting", _isFullScreen);
     }
 
 
     // 데이터 불러오기
     private void LoadData()
     {
-       isFullScreen = PlayerPrefs.GetInt("DisplaySetting");
+       _isFullScreen = PlayerPrefs.GetInt("DisplaySetting");
     }
 }
