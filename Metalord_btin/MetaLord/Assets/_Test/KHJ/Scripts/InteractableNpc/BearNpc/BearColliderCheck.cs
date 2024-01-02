@@ -7,7 +7,7 @@ public class BearColliderCheck : MonoBehaviour
     public SphereCollider interactCollider;
     public LayerMask waterLayer;
     public BearInteractUI interactUI;
-    bool isAim = false;
+    //bool isAim = false;
     // Start is called before the first frame update
 
     void Start()

@@ -50,7 +50,8 @@ public class DialogueUI : MonoBehaviour
         myAduio.clip = textSound;
         myTextEffect = GetComponent<DialogueTypingEffect>();
 
-       
+        //string text = "안녕하세요(1) 테스트를(2) 위해서(3) 합니다.(4)";
+        //StartCoroutine(myTextEffect.WriteTest(text ,dialogueText));
         //대화 관련 ui 다 비활성화 시켜줍니다.
         CloseDialogueUI(); 
         CloseTutoQuestion();
