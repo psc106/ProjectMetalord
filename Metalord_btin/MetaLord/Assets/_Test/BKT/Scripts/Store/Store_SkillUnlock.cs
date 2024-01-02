@@ -18,7 +18,7 @@ public class Store_SkillUnlock : StoreObject
     private TMP_Text nameObject;
     private TMP_Text costObject;
     private TMP_Text explainObject;
-    private TMP_Text soldOutObject;
+    private GameObject soldOutObject;
 
     [SerializeField] private GunMode gunMode;
 
@@ -29,13 +29,13 @@ public class Store_SkillUnlock : StoreObject
         nameObject = Utility.FindChildObj(this.gameObject, "Text(Name)").GetComponent<TMP_Text>();
         costObject = Utility.FindChildObj(this.gameObject, "Text(Cost)").GetComponent<TMP_Text>();
         explainObject = Utility.FindChildObj(this.gameObject, "Text(Explain)").GetComponent<TMP_Text>();
-        soldOutObject = Utility.FindChildObj(this.gameObject, "Text(SoldOut)").GetComponent<TMP_Text>();
+        soldOutObject = Utility.FindChildObj(this.gameObject, "SoldOut");
 
         // 스킬 정보 입력
         nameObject.text = skillName;
         costObject.text = cost.ToString() + "개";
         explainObject.text = skillExplain;
-        soldOutObject.enabled = false;
+        soldOutObject.SetActive(false);
 
         // 금액에 코스트 반영
         price = cost;
@@ -75,8 +75,8 @@ public class Store_SkillUnlock : StoreObject
     {
         if (isCanBuy) return; // 구매 가능한 경우
 
-        soldOutObject.enabled = true;
-        costObject.text = "구매완료";
+        soldOutObject.SetActive(true);
+        costObject.text = "-개";
         GameEventsManager.instance.coinEvents.UnlockGunMode(gunMode);
     }
 }
