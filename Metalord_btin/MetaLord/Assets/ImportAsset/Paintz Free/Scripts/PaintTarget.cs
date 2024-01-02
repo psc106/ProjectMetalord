@@ -157,20 +157,20 @@ public class PaintTarget : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, Length, layer))
         {
-            PaintTarget paintTarget = hit.collider.gameObject.GetComponent<PaintTarget>();
+            PaintTarget paintTarget = hit.collider.gameObject.GetComponent<PaintTarget>();            
             if (!paintTarget) return -1;
             if (!paintTarget.validTarget) return -1;
             if (!paintTarget.bHasMeshCollider) return -1;
 
-            Renderer r = paintTarget.GetComponent<Renderer>();
+            Renderer r = paintTarget.GetComponent<Renderer>();           
             if (!r) return -1;
 
-            RenderTexture rt = (RenderTexture)r.sharedMaterial.GetTexture("_SplatTex");
+            RenderTexture rt = (RenderTexture)r.sharedMaterial.GetTexture("_SplatTex");            
             if (!rt) return -1;
 
             UpdatePickColors(paintTarget, rt);
 
-            Texture2D tc = paintTarget.splatTexPick;
+            Texture2D tc = paintTarget.splatTexPick;            
             if (!tc) return -1;
 
             int x = (int)(hit.textureCoord2.x * tc.width);
@@ -178,13 +178,13 @@ public class PaintTarget : MonoBehaviour
 
 
             //Color pc = GetColorByComputeShader(paintTarget, x, y);
-            Color pc = tc.GetPixel(x, y);
+            Color pc = tc.GetPixel(x, y);            
 
             int l = -1;
             if (pc.r > .4) l = 0;
             if (pc.g > .5) l = 1;
             if (pc.b > .5) l = 2;
-            if (pc.a > .5) l = 3;
+            if (pc.a > .5) l = 3;            
 
             return l;
         }

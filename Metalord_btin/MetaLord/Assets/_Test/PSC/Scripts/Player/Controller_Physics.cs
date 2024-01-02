@@ -229,12 +229,12 @@ public class Controller_Physics : MonoBehaviour
             return;
         }
 
-        TrailRenderer t = GetComponent<TrailRenderer>();
+        /*TrailRenderer t = GetComponent<TrailRenderer>();
         Color color = new Color(0, 0, 0, 1);
         color.r = OnGround ? 1 : 0;
         color.g = OnSteep ? 1 : 0;
         color.b = OnClimb ? 1 : 0;
-        t.material.color = color;
+        t.material.color = color;*/
 
         UpdateFrameState();
         UpdateInputState();
@@ -356,7 +356,7 @@ public class Controller_Physics : MonoBehaviour
         }
         else if (desireClimb && OnGround )
         {
-            Debug.Log("지상, 등산");
+            //Debug.Log("지상, 등산");
             //땅에 있을 경우 + 이동 상태 일 경우 중력+접촉면으로 끌어당김 동시에 적용
             velocity += (gravity - contactNormal.normalized * maxClimbAcceleration * 0.9f) * Time.deltaTime;
             //velocity += gravity * Time.deltaTime;
@@ -373,8 +373,6 @@ public class Controller_Physics : MonoBehaviour
             //일반 중력 적용
             velocity += gravity * Time.deltaTime;
         }
-
-        Debug.Log("2 " + velocity);
 
         Vector3 limit = velocity;
 

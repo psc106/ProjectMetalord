@@ -46,31 +46,30 @@ public class MovedObject : MonoBehaviour
         }
     }
 
-    // 그랩한 물건이 이동형 오브젝트와 부딪힐때마다 물리력 행사 콜백
+    //// 그랩한 물건이 이동형 오브젝트와 부딪힐때마다 물리력 행사 콜백
 
-    //private void OnCollisionEnter(Collision collision)
-    //{
-    //    if (collision.gameObject.layer == LayerMask.NameToLayer("MovedObject"))
-    //    {
-    //        if(collision.gameObject.GetComponent<PaintTarget>().CheckPainted())
-    //        {
-    //            return;
-    //        }
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("MovedObject"))
+        {
+            if (collision.gameObject.GetComponent<PaintTarget>().CheckPainted())
+            {
+                return;
+            }
 
-    //        if (collision.gameObject.GetComponent<OverapObject>() == null)
-    //        {
-    //            collision.gameObject.AddComponent<OverapObject>().InitOverap();
-    //        }
-    //    }
-    //}
+            if (collision.gameObject.GetComponent<OverapObject>() == null)
+            {
+                collision.gameObject.AddComponent<OverapObject>().InitOverap();
+            }
+        }
+    }
 
     // 충돌지점 본드 체크
     private void OnCollisionStay(Collision collision)
     {
         // 이미 본드 동작을 하는 오브젝트를 다시 그랩하면 그랩하는순간 충돌면을 체크하여 그랩 해제됨에 따라 상태를 제어할 bool값 추가
         if (checkContact == false)
-        {
-            
+        {            
             return;
         }
 
@@ -80,6 +79,8 @@ public class MovedObject : MonoBehaviour
             Vector3 dir = collision.contacts[i].normal;
 
             Ray ray = new Ray(collision.contacts[i].point + dir, -dir);
+            Ray reflectRay = new Ray(collision.contacts[i].point, dir);
+            Debug.DrawLine(collision.contacts[i].point, dir, Color.red);
 
             if (PaintTarget.RayChannel(ray, 1.5f, layerMask) == 0 && collision.gameObject.GetComponent<Controller_Physics>() == null && checkContact)
             {
@@ -104,12 +105,13 @@ public class MovedObject : MonoBehaviour
                 }
                 // 부모가 존재할 경우
                 else
-                {
+                {                    
                     GameObject contactObj = collision.gameObject;                    
 
+                    // TODO : 레이어 체크가 아닌 CatchObject 스크립트로 여부 확인
                     // 부모가 상위 오브젝트 경우
                     if(contactObj.transform.parent.gameObject.layer == LayerMask.NameToLayer("GrabedObject"))
-                    {                        
+                    {                                        
                         // HashSet 갱신    
                         transform.parent = contactObj.transform.parent;
                         contactObj.transform.parent.GetComponent<CatchObject>().AddChild(transform.GetComponent<MeshCollider>());        
@@ -117,47 +119,47 @@ public class MovedObject : MonoBehaviour
                     }
                     // 부모가 고정형 오브젝트 경우
                     else if(contactObj.transform.parent.gameObject.layer == LayerMask.NameToLayer("Default"))
-                    {                       
+                    {
                         // 부딪힌 오브젝트도 고정형이면
-                        if(contactObj.layer == LayerMask.NameToLayer("Default"))
+                        if(contactObj.transform.gameObject.layer == LayerMask.NameToLayer("Default"))
                         {
-                            if (contactObj.transform.parent.GetComponent<CatchObject>() )
+                            // 클래스 여부로 기존 고정형 오브젝트인지 합쳐진 오브젝트인지
+                            if(contactObj.transform.parent.GetComponent<CatchObject>())
                             {
-                                if(contactObj.transform.parent.gameObject.layer == LayerMask.NameToLayer("Default"))
-                                {
-                                    if (transform.parent.GetComponent<CatchObject>())
-                                    {
-                                        for(int k = transform.childCount-1; k >= 0; k--)
-                                        {
-
-                                            transform.GetChild(k).SetParent( contactObj.transform.parent);
-                                        }
-                                        //자식 옮기기
-                                    }
-                                    else
-                                    {
-                                        transform.SetParent(contactObj.transform.parent);
-                                        //자신 옮기기
-                                    }
-
-                                }
-                                else if(contactObj.transform.parent.gameObject.layer == LayerMask.NameToLayer("GrabedObject"))
-                                {
-                                    if (transform.parent.GetComponent<CatchObject>())
-                                    {
-                                        for (int k = transform.childCount - 1; k >= 0; k--)
-                                        {
-
-                                            transform.GetChild(k).SetParent(contactObj.transform.parent);
-                                        }
-                                        //자식 옮기기
-                                    }
-                                    else
-                                    {
-                                        transform.SetParent(contactObj.transform.parent);
-                                        //자신 옮기기
-                                    }
-                                }
+                                transform.SetParent(contactObj.transform.parent);
+                                //if(contactObj.transform.parent.gameObject.layer == LayerMask.NameToLayer("Default"))
+                                //{                                    
+                                //    if (contactObj.transform.GetComponent<CatchObject>())
+                                //    {
+                                //        Debug.Log("222");
+                                //        //for(int k = transform.childCount-1; k >= 0; k--)
+                                //        //{
+                                //        //    transform.GetChild(k).SetParent( contactObj.transform);
+                                //        //}
+                                //        ////자식 옮기기
+                                //    }
+                                //    else
+                                //    {
+                                //        Debug.Log("333");
+                                //        transform.SetParent(contactObj.transform.parent);
+                                //    }
+                                //}
+                                //else if(contactObj.transform.parent.gameObject.layer == LayerMask.NameToLayer("GrabedObject"))
+                                //{
+                                //    if (transform.parent.GetComponent<CatchObject>())
+                                //    {
+                                //        for (int k = transform.childCount - 1; k >= 0; k--)
+                                //        {
+                                //            transform.GetChild(k).SetParent(contactObj.transform.parent);
+                                //        }
+                                //        //자식 옮기기
+                                //    }
+                                //    else
+                                //    {
+                                //        transform.SetParent(contactObj.transform.parent);
+                                //        //자신 옮기기
+                                //    }
+                                //}
                             }
                             else 
                             {
@@ -176,10 +178,12 @@ public class MovedObject : MonoBehaviour
                         }
                         else
                         {
+                            //Debug.Log("여기");
                             // 충돌한 이동형 오브젝트가 고정형에 집합된 형태라면 
                             if(contactObj.transform.parent.GetComponent<CatchObject>() != null &&
                                 contactObj.transform.parent.gameObject.layer == LayerMask.NameToLayer("Default"))
                             {
+                                //Debug.Log("===");
                                 transform.parent = contactObj.transform.parent;
                                 checkContact = false;                                
                                 ClearState();
@@ -209,133 +213,9 @@ public class MovedObject : MonoBehaviour
                 //GunStateController.AddList(this);
                 ClearState();
                 GrabGun.instance.CancelObj();
-
-                //switch(LayerMask.LayerToName(collision.gameObject.layer))
-                //{
-                //    case "CatchObject":
-                //        Debug.Log("케이스1");
-                //        if(transform.gameObject.layer == LayerMask.NameToLayer("CatchObject"))
-                //        {                     
-                //            // { 충돌한 합쳐져 있는 오브젝트의 자식수만큼 옮기기
-                //            GameObject[] careeObj = new GameObject[collision.transform.childCount];
-
-                //            for (int j = 0; j < careeObj.Length; j++)
-                //            {
-                //                careeObj[j] = collision.transform.parent.GetChild(j).gameObject;
-                //            }
-
-                //            for (int j = 0; j < careeObj.Length; j++)
-                //            {
-                //                careeObj[j].transform.parent = transform;
-                //                careeObj[j].GetComponent<MeshCollider>().convex = false;
-                //            }
-                //            // } 충돌한 합쳐져 있는 오브젝트의 자식수만큼 옮기기
-                //        }
-                //        else
-                //        {                            
-                //            transform.parent = collision.transform;
-                //            myColid.convex = false;
-                //        }
-                //        Destroy(myRigid);
-                //        GrabGun.instance.CancelObj();
-                //        checkContact = false;
-                //        break;
-                //    case "Default":
-                //        Debug.Log("케이스2");
-                //        if (transform.gameObject.layer == LayerMask.NameToLayer("CatchObject"))
-                //        {
-                //            //Vector3 pos = transform.position - collision.contacts[i].point;
-                //            //transform.position -= pos;
-                //            Destroy(myRigid);
-                //            for (int j = 0; j < childColid.Count; j++)
-                //            {
-                //                childColid[j].convex = false;
-                //            }                            
-                //        }
-                //        else
-                //        {
-                //            parentObj = new GameObject();
-                //            GunStateController.AddList(parentObj);
-                //            parentObj.layer = LayerMask.NameToLayer("CatchObject");
-                //            parentObj.transform.position = collision.contacts[i].point;
-                //            transform.parent = parentObj.transform;
-                //            Destroy(myRigid);
-                //            myColid.convex = false;
-
-                //        }
-                //        GrabGun.instance.CancelObj();
-                //        checkContact = false;
-                //        break;
-                //    case "MovedObject":
-                //        Debug.Log("케이스3");
-
-                //        // 충돌한 대상의 부모가 존재하고, 그 부모가 합치려고 만들어진 오브젝트라면
-                //        if (collision.gameObject.transform.parent != null &&
-                //            collision.transform.parent.gameObject.layer == LayerMask.NameToLayer("CatchObject"))
-                //        {
-                //            Debug.Log("11111");
-                //            // { 닿은 오브젝트의 자식 수만큼 옮기기
-                //            GameObject[] careeObj = new GameObject[collision.transform.childCount];
-
-                //            for (int j = 0; j < careeObj.Length; j++)
-                //            {
-                //                careeObj[j] = collision.transform.parent.GetChild(j).gameObject;
-                //            }
-
-                //            for (int j = 0; j < careeObj.Length; j++)
-                //            {
-                //                careeObj[j].transform.parent = transform;
-                //            }
-
-                //            // } 닿은 오브젝트의 자식 수만큼 옮기기                                                                                  
-
-                //            for(int j = 0; j < transform.childCount; j++)
-                //            {
-                //                transform.GetChild(j).GetComponent<MeshCollider>().convex = false;
-                //                //careeObj[j].GetComponent<MeshCollider>().convex = false;
-                //            }
-                //        }
-
-                //        // 나는 합쳐진 대상이고, 충돌한 오브젝트는 종속되지 않은 오브젝트라면
-                //        else if(transform.gameObject.layer == LayerMask.NameToLayer("CatchObject") &&
-                //            collision.transform.parent.gameObject.layer !=
-                //            LayerMask.NameToLayer("CatchObject"))
-                //        {
-                //            Debug.Log("22222");
-                //            collision.transform.parent = transform;
-                //        }
-                //        else
-                //        {
-                //            Debug.Log("33333");
-                //            parentObj = new GameObject();
-                //            GunStateController.AddList(parentObj);
-                //            parentObj.layer = LayerMask.NameToLayer("CatchObject");
-                //            parentObj.transform.position = collision.contacts[i].point;
-                //            transform.parent = parentObj.transform;
-                //            collision.transform.parent = parentObj.transform;
-
-                //        }
-
-                //        if (childColid.Count != 0)
-                //        {
-                //            for (int j = 0; j < childColid.Count; j++)
-                //            {
-                //                childColid[j].convex = false;
-                //            }
-
-                //        }
-                //        else
-                //        {
-                //            myColid.convex = false;
-
-                //        }
-
-                //        Destroy(myRigid);
-                //        GrabGun.instance.CancelObj();
-                //        checkContact = false;
-                //        break;
-                //}
+                
             }
+
         }
     }
 
