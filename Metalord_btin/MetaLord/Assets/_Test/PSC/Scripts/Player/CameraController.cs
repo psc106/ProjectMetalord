@@ -70,7 +70,7 @@ public class CameraController : MonoBehaviour
 
     private void Update()
     {
-        crossHair.gameObject.SetActive(!player.OnClimb);
+        crossHair.gameObject.SetActive(!player.OnClimbAnimation);
     }
 
     public void UpdateFixedAngle()
@@ -189,6 +189,7 @@ public class CameraController : MonoBehaviour
         //targetX.rotation = Quaternion.Euler(newRotationX, Mathf.Lerp(targetX.eulerAngles.y, newRotationY, 15 * Time.deltaTime), targetX.eulerAngles.z);
         targetX.rotation = Quaternion.Euler(newRotationX, newRotationY, targetX.eulerAngles.z);
     }
+
 
 
     void OnLook(Vector2 cameraMovement, bool isDeviceMouse)

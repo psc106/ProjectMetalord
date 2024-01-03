@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 
@@ -22,8 +21,8 @@ public class Controller_Physics : MonoBehaviour
     Rigidbody rb;
     [SerializeField]
     Transform playerInputSpace = default;
-    //[SerializeField]
-    //Transform playerCenter = default;
+    [SerializeField]
+    Transform playerCenter = default;
     //[SerializeField]
     //TrailRenderer trailRenderer;
     [SerializeField]
@@ -65,6 +64,8 @@ public class Controller_Physics : MonoBehaviour
     Vector3 climbNormal;
     Vector3 lastClimbNormal;
 
+    Vector3 beforePosition;
+
     Coroutine fireDelay = null;
     #endregion
 
@@ -95,6 +96,7 @@ public class Controller_Physics : MonoBehaviour
     int stepsSinceLastJump = 0;
     int stepsSinceLastClimb = 0;
 
+    int allContactCount = 0;
     int groundContactCount = 0;
     int steepContactCount = 0;
     int climbContactCount = 0;
@@ -116,7 +118,10 @@ public class Controller_Physics : MonoBehaviour
     public bool OnGround => groundContactCount > 0;
     public bool OnSteep => steepContactCount > 0;
     public bool OnClimb => climbContactCount > 0;
+    public bool OnClimbAnimation => animator.GetCurrentAnimatorStateInfo(0).IsName("Climb");
 
+    [SerializeField, Range(0, 360)]
+    float viewAngle = 90;
 
 
     [Header("Player Setting")]
@@ -193,6 +198,7 @@ public class Controller_Physics : MonoBehaviour
     private readonly int EquipStateHash = Animator.StringToHash("EquipState");
     private readonly int EquipTriggerHash = Animator.StringToHash("EquipTrigger");
     private readonly int ClimbWaitHash = Animator.StringToHash("ClimbWait");
+    private readonly int ClimbFrameHash = Animator.StringToHash("ClimbFrame");
     #endregion
 
 
@@ -223,18 +229,23 @@ public class Controller_Physics : MonoBehaviour
 
     void Update()
     {
+        // Debug.Log("업데이트" + transform.position);
         //대화나 메뉴에서 stop시킴
         if (stopState)
         {
             return;
         }
 
-        /*TrailRenderer t = GetComponent<TrailRenderer>();
-        Color color = new Color(0, 0, 0, 1);
-        color.r = OnGround ? 1 : 0;
-        color.g = OnSteep ? 1 : 0;
-        color.b = OnClimb ? 1 : 0;
-        t.material.color = color;*/
+        TrailRenderer t = GetComponent<TrailRenderer>();
+        if (t)
+        {
+
+            Color color = new Color(0, 0, 0, 1);
+            color.r = OnGround ? 1 : 0;
+            color.g = OnSteep ? 1 : 0;
+            color.b = OnClimb ? 1 : 0;
+            t.material.color = color;
+        }
 
         UpdateFrameState();
         UpdateInputState();
@@ -313,6 +324,13 @@ public class Controller_Physics : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if(OnClimb)
+        {
+            lastClimbNormal = climbNormal;
+        }
+
+        beforePosition = transform.position;
+        //Debug.Log("픽스드" + transform.position);
         //Debug.Log(connectedBody?.name);
 
         //대화나 메뉴에서 stop시킴
@@ -351,7 +369,6 @@ public class Controller_Physics : MonoBehaviour
         {
             //Debug.Log("등산");
             //등산중에 접촉면으로 끌어당김
-            Debug.LogWarning(velocity+"/"+contactNormal);
             velocity -= contactNormal.normalized * maxClimbAcceleration * 0.99f * Time.deltaTime;
         }
         else if (desireClimb && OnGround )
@@ -411,10 +428,8 @@ public class Controller_Physics : MonoBehaviour
     }
 
 
-
     void LateUpdate()
     {
-
         if (playingReloadAnimation)
         {
             frontGunRender.enabled = true;
@@ -449,12 +464,14 @@ public class Controller_Physics : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        //Debug.Log("엔터" + transform.position);
         EvaluateCollision(collision);
     }
 
 
     private void OnCollisionStay(Collision collision)
     {
+        //Debug.Log("스테이" + transform.position);
         EvaluateCollision(collision);
     }
 
@@ -557,6 +574,24 @@ public class Controller_Physics : MonoBehaviour
         }
     }
 
+    //버그
+    //수정해줬으면 좋겠는거
+    //추가하고싶은거(복잡한거) <- 목 ~ 금요일
+
+        
+
+    //디벨롭모드
+
+    //소리
+
+    //바라보는 각도
+
+    //그림자
+
+    //추가낙하속도
+    //팅기는 횟수
+    //팅기고 난 뒤에 fixed
+
     void Jump(Vector3 gravity)
     {
         Vector3 jumpDirection;
@@ -599,7 +634,7 @@ public class Controller_Physics : MonoBehaviour
         {
             //점프 불가
             jumpDirection = Vector3.zero;
-            jumpPhase = 0;
+            //jumpPhase = 0;
             return;
         }
 
@@ -672,6 +707,7 @@ public class Controller_Physics : MonoBehaviour
         animator.SetBool(ClimbWaitHash, false);
     }
 
+
     void EvaluateCollision(Collision collision)
     {
         //여기서 현재 평면이 이동 가능한 절벽인지 체크
@@ -681,10 +717,17 @@ public class Controller_Physics : MonoBehaviour
         //현재 충돌한 오브젝트의 최소 각도를 가져온다.
         float minDot = GetMinDot(layer);
 
-
         //모든 contact를 검사하여 일정 각도 이상의 평면을 모두 저장한다.
         for (int i = 0; i < collision.contactCount; i++)
         {
+            Vector3 target = collision.GetContact(i).point;
+            Vector3 dirToTarget = (target - beforePosition);
+            dirToTarget.y = 0f;
+            dirToTarget.Normalize();
+
+            //float angle = dirToTarget == Vector3.zero ? 180 : Vector3.Angle(animator.transform.forward, dirToTarget);
+            float angle = Vector3.Angle(animator.transform.forward, dirToTarget);
+
             //접촉 표면을 가져온다.
             Vector3 normal = collision.GetContact(i).normal;
             //접촉 표면의 각도를 가져온다.(내적)
@@ -693,17 +736,24 @@ public class Controller_Physics : MonoBehaviour
             //색칠된 벽을 확인
             bool isColoredWall = false;
 
+          /*  Debug.Log((stepsSinceLastGrounded <= 1 && angle <= viewAngle * 0.5f));
+            Debug.Log(stepsSinceLastGrounded + "/" + angle);
+            Debug.Log(stepsSinceLastClimb);*/
+
             //색칠 리스트에 추가 되어있을 경우만 검사
-            if ( ToolFunc<PaintTarget>.ConatainsCollision(GunStateController.paintList, collision))
+            if ((angle <= viewAngle * 0.5f) || stepsSinceLastClimb<=1 && ToolFunc<PaintTarget>.ConatainsCollision(GunStateController.paintList, collision))
             {
+               
                 isColoredWall = CheckPaintedWall(collision.contacts[i], normal);
             }
+            
             //cos에서 y값은 1->-1로 가므로 높을수록 각도는 낮은 각도
             //만약 접촉 표면의 각도가 최소 각도를 만족할 경우
             if (upDot >= minDot)
             {
                 //땅에 있다고 판단
                 groundContactCount += 1;
+                allContactCount += 1;
                 contactNormal += normal;
 
                 //collision의 rigidbody를 연결
@@ -715,6 +765,7 @@ public class Controller_Physics : MonoBehaviour
                 if (upDot > -0.01f)
                 {
                     steepContactCount += 1;
+                    allContactCount += 1;
                     steepNormal += normal;
                     if (groundContactCount == 0)
                     {
@@ -726,9 +777,12 @@ public class Controller_Physics : MonoBehaviour
                 if (isColoredWall && upDot >= minClimbDotProduct && (climbMask & (1 << layer)) != 0 && !isJump)
                 {
                     climbContactCount += 1;
+                    allContactCount += 1;
                     climbNormal += normal;
-                    lastClimbNormal += normal;
-                    connectedBody = collision.rigidbody;
+                    if (groundContactCount == 0)
+                    {
+                        connectedBody = collision.rigidbody;
+                    }
                 }
             }
 
@@ -741,6 +795,16 @@ public class Controller_Physics : MonoBehaviour
         //하나라도 색이 다를 경우 접착제 붙인 상태
         Ray ray = new Ray(point.point + normal, -normal);
         int channel = PaintTarget.RayChannel(ray, 1.5f, colorCheckLayer);
+        bool isColoredWall = channel == 0;
+        desireClimb |= isColoredWall;
+        return isColoredWall;
+    }
+    private bool CheckPaintedWall(ContactPoint point, Vector3 normal, out int channel)
+    {
+        //접촉 표면의 색을 가져와서 판단한다.
+        //하나라도 색이 다를 경우 접착제 붙인 상태
+        Ray ray = new Ray(point.point + normal, -normal);
+        channel = PaintTarget.RayChannel(ray, 1.5f, colorCheckLayer);
         bool isColoredWall = channel == 0;
         desireClimb |= isColoredWall;
         return isColoredWall;
@@ -760,6 +824,8 @@ public class Controller_Physics : MonoBehaviour
         climbContactCount = 0;
         previousClimbNormal = climbNormal;
         climbNormal = Vector3.zero;
+
+        allContactCount = 0;
 
         connectionVelocity = Vector3.zero;
         previousConnectedBody = connectedBody;
@@ -850,14 +916,18 @@ public class Controller_Physics : MonoBehaviour
             moveMultiple = walkMultiple;
         }
 
-
         // 지상<->등산 애니메이션 결정
-        animator.SetBool(ClimbHash, !multipleState && OnClimb);
-        animator.SetBool(GroundHash, stepsSinceLastGrounded==0);
+        //animator.SetBool(ClimbHash, !multipleState && OnClimb);
+        // bool condition =  stepsSinceLastClimb <= 1;
 
+        // frame = condition ? frame+1 : 0;
+        animator.SetInteger(ClimbFrameHash, stepsSinceLastClimb);
+        animator.SetBool(EquipStateHash,  (!multipleState && OnClimb));
+        animator.SetBool(ClimbHash,  (!multipleState && OnClimb));
+        animator.SetBool(GroundHash, stepsSinceLastGrounded==0);
     }
 
-
+   
 
     //연결된 플랫폼이 있을 경우
     void UpdateConnectionState()
@@ -886,6 +956,7 @@ public class Controller_Physics : MonoBehaviour
         desireJump &= canJump;
 
         multipleState = OnGround && OnSteep && OnClimb;
+
         if (input.magnitude == 0 && OnGround && !OnClimb && CanReload)
         {
             idleTime += Time.deltaTime;
@@ -917,7 +988,6 @@ public class Controller_Physics : MonoBehaviour
         animator.SetFloat(IdleTimeHash, idleTime);
         animator.SetFloat(VelocityXHash, input.x * (desireRun ? 2 : 1));
         animator.SetFloat(VelocityYHash, input.z * (desireRun ? 2 : 1));
-        animator.SetBool(EquipStateHash, !multipleState && OnClimb);
     }
 
     //땅을 벗어날 경우 특정상황에서 땅에 붙이기 위한 기능
@@ -1010,6 +1080,8 @@ public class Controller_Physics : MonoBehaviour
             contactNormal = climbNormal;
             return true;
         }
+
+
         return false;
     }
 
@@ -1086,6 +1158,7 @@ public class Controller_Physics : MonoBehaviour
             case SliderType.Grab: (gunController.GetGunMode((int)GunMode.Grab) as GrabGun).GrabShot = (int)value; break;
             case SliderType.Range: gunController.Range = value; break;
             case SliderType.Capacity: gunController.MaxAmmo = (int)value; break;
+            case SliderType.ObjGravity: MovedObject.gravityMultiple = value; break;
         }
     }
     public float GetValue(SliderType type)
@@ -1100,6 +1173,7 @@ public class Controller_Physics : MonoBehaviour
             case SliderType.Grab: return (float)(gunController.GetGunMode((int)GunMode.Grab) as GrabGun).GrabShot;
             case SliderType.Range: return gunController.Range;
             case SliderType.Capacity: return gunController.MaxAmmo;
+            case SliderType.ObjGravity: return MovedObject.gravityMultiple;
         }
         return -1;
     }
@@ -1165,6 +1239,13 @@ public class Controller_Physics : MonoBehaviour
     }
     public void PlayEquipAnimation()
     {
+        /*Debug.LogWarning(stepsSinceLastGrounded + " " + stepsSinceLastClimb);
+
+        Debug.LogWarning(multipleState + " " + allContactCount);
+        Debug.LogWarning(OnGround+" "+groundContactCount);
+        Debug.LogWarning(OnClimb + " " + climbContactCount);
+        Debug.LogWarning(OnSteep + " " + steepContactCount);*/
+        //Debug.Break();
         handGunRender.enabled = false;
         frontGunRender.enabled = true;
         backGunRender.enabled = (false);
@@ -1189,9 +1270,16 @@ public class Controller_Physics : MonoBehaviour
     }
     public void StartClimbAnimation()
     {
+        /*Debug.LogAssertion(stepsSinceLastGrounded + " " + stepsSinceLastClimb);
+
+        Debug.LogAssertion(multipleState + " " + allContactCount);
+        Debug.LogAssertion(OnGround + " " + groundContactCount);
+        Debug.LogAssertion(OnClimb + " " + climbContactCount);
+        Debug.LogAssertion(OnSteep + " " + steepContactCount);*/
+
         canJump = false;
     }
-    public void UpdateClimbAnimation()
+    public void EndClimbAnimation()
     {
         canJump = true;
     }

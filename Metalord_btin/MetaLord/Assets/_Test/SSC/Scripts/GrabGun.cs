@@ -121,7 +121,7 @@ public class GrabGun : GunBase
 
         }
 
-        if(targetObj != null && targetObj.GetComponent<MeshCollider>() != null)
+        if(targetObj?.GetComponent<MeshCollider>() != null)
         {
             targetObj.GetComponent<MeshCollider>().material.dynamicFriction = 1f;
         }

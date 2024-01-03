@@ -368,7 +368,7 @@ public class RecordManager : MonoBehaviour
         foreach(var recordObject in recordObjectList)
         {
             recordObject.SetActive(false);
-            recordObject.transform.parent = this.transform;
+            recordObject.transform.SetParent(transform);
 
             RecordObjectInfo tempInfo = recordObject.GetComponent<RecordObject>().recordInfo; // 임시 정보에 저장
 

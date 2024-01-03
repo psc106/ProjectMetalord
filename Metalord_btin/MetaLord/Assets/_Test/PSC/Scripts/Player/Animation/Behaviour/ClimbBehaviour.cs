@@ -37,7 +37,7 @@ public class ClimbBehaviour : StateMachineBehaviour
             if (enterTime > .5f)
             {
                 check = true;
-                player.UpdateClimbAnimation();
+                player.EndClimbAnimation();
             }
         }
 
@@ -46,7 +46,7 @@ public class ClimbBehaviour : StateMachineBehaviour
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        player.UpdateClimbAnimation();
+        player.EndClimbAnimation();
         player.PlayEquipAnimation();
         cameraManager.ChangePriorityCamera(CameraType.Climb, 1);
 

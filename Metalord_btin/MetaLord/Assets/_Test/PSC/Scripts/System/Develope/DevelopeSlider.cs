@@ -81,5 +81,6 @@ public enum SliderType
     repeatShot,
     Grab,
     Range,
-    Capacity
+    Capacity,
+    ObjGravity
 }
