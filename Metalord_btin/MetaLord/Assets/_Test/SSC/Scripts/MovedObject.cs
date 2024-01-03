@@ -23,42 +23,44 @@ public class MovedObject : MonoBehaviour
         1 << LayerMask.NameToLayer("GrabedObject");
     }
 
-    public void InitParentMovedObject()
-    {        
-        myRigid = GetComponent<Rigidbody>();
-        myRigid.mass = 1000f;
-
-        layerMask = 1 << LayerMask.NameToLayer("Default") |
-        1 << LayerMask.NameToLayer("NPC") |
-        1 << LayerMask.NameToLayer("StaticObject") |
-        1 << LayerMask.NameToLayer("MovedObject") |
-        1 << LayerMask.NameToLayer("GrabedObject");
-    }
-
     private void Update()
     {
         if(myRigid)
         {            
             if (myRigid.IsSleeping())
             {
+                myRigid.velocity = Vector3.zero;
                 Destroy(myRigid);
+                Destroy(GetComponent<Rigidbody>());
                 myRigid = null;
                 myColid.convex = false;
+
+                if(GetComponent<OverapObject>() != null)
+                {
+                    Destroy(GetComponent<OverapObject>());
+                }
+
+                if(state)
+                {
+                    state = null;
+                }
             }
         }
     }
 
+
+
+    //private void OnCollisionExit(Collision collision)
+    //{
+    //    // TODO : 붙인 오브젝트가 벗어날 때 NPC 상태변화 호출?
+    //    if (collision.gameObject.layer == LayerMask.NameToLayer("NPC") && targetNpc)
+    //    {
+    //        Debug.Log("벗어남");
+    //        targetNpc = null;
+    //    }
+    //}
+
     //// 그랩한 물건이 이동형 오브젝트와 부딪힐때마다 물리력 행사 콜백
-
-    private void OnCollisionExit(Collision collision)
-    {
-        // TODO : 붙인 오브젝트가 벗어날 때 NPC 상태변화 호출?
-        if (collision.gameObject.layer == LayerMask.NameToLayer("NPC") && targetNpc)
-        {
-            targetNpc = null;
-        }
-    }
-
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("MovedObject"))
@@ -70,31 +72,36 @@ public class MovedObject : MonoBehaviour
 
             if (collision.gameObject.GetComponent<OverapObject>() == null)
             {
-                collision.gameObject.AddComponent<OverapObject>().InitOverap();
+                collision.gameObject.AddComponent<OverapObject>().InitOverap(state);
             }
         }
 
         if(collision.gameObject.layer == LayerMask.NameToLayer("Player"))
-        {            
-            if(state)
-            {
-                state.UpdateState(state.Ammo + 55);
-                state = null;
-            }
-
-            GrabGun.instance.CancelObj();
+        {
+            state = FindAnyObjectByType<GunStateController>();
         }
-
-        //if (collision.gameObject.layer == LayerMask.NameToLayer("Default") && !state.onGrab)
-        //{
-        //    Debug.Log("강제 슬립");
-        //    Invoke("SleepObj", 2.0f);
-        //}
     }
 
     // 충돌지점 본드 체크
     private void OnCollisionStay(Collision collision)
     {
+        //if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
+        //{
+        //    if(state != null && state.onGrab)
+        //    {                
+        //        Vector3 dir = (state.pickupPoint.position - transform.position).normalized;
+        //        Vector3 dir2 = (state.pickupPoint.position - state.checkPos.position).normalized;
+
+        //        Debug.Log(dir);
+                
+        //        if (dir.y <= -0.2f)
+        //        {
+        //            Debug.Log("캔슬");
+        //            GrabGun.instance.CancelObj();
+        //        }
+        //    }            
+        //}
+
         // 이미 본드 동작을 하는 오브젝트를 다시 그랩하면 그랩하는순간 충돌면을 체크하여 그랩 해제됨에 따라 상태를 제어할 bool값 추가
         if (checkContact == false)
         {            
@@ -107,8 +114,6 @@ public class MovedObject : MonoBehaviour
             Vector3 dir = collision.contacts[i].normal;
 
             Ray ray = new Ray(collision.contacts[i].point + dir, -dir);
-            Ray reflectRay = new Ray(collision.contacts[i].point, dir);
-            Debug.DrawLine(collision.contacts[i].point, dir, Color.red);
 
             if (PaintTarget.RayChannel(ray, 1.5f, layerMask) == 0 && collision.gameObject.GetComponent<Controller_Physics>() == null && checkContact)
             {
@@ -207,7 +212,8 @@ public class MovedObject : MonoBehaviour
                         else if(contactObj.transform.gameObject.layer == LayerMask.NameToLayer("NPC"))
                         {
                             parentObj = new GameObject();
-                            parentObj.transform.gameObject.layer = LayerMask.NameToLayer("GrabedObject");
+                            parentObj.transform.gameObject.layer = LayerMask.NameToLayer("NPC");
+                            transform.gameObject.layer = LayerMask.NameToLayer("NPC");
                             CatchObject controll = parentObj.AddComponent<CatchObject>();
                             GunStateController.AddList(controll);
                             parentObj.transform.position = collision.contacts[i].point;
@@ -248,13 +254,11 @@ public class MovedObject : MonoBehaviour
                     }
 
                 }
-
-                //checkContact = false;                
+                        
                 ClearState();
                 GrabGun.instance.CancelObj();
                 
             }
-
         }
     }
 
@@ -299,11 +303,18 @@ public class MovedObject : MonoBehaviour
         myColid.convex = false;
     }
 
+    // 강제 슬립?
     void SleepObj()
     {
         checkContact = false;
         Destroy(myRigid);
         myRigid = null;
         myColid.convex = false;        
+    }
+
+    public void CareeState(GunStateController _state, Rigidbody _rigid)
+    {
+        state = _state;
+        myRigid = _rigid;
     }
 }

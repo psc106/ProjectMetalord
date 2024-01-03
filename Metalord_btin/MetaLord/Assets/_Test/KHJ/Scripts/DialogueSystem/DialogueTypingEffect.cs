@@ -12,8 +12,8 @@ public class DialogueTypingEffect : MonoBehaviour
 
     //private float textSpeed = 10f; //텍스트 타이핑 속도 변경 멤버
 
-    float oneLetterSpeed = 0.085f;
-    float spaceLetterSpeed = 0.02f;
+    float oneLetterSpeed = 0.1f; //한 글자 사이의 텀
+    float spaceLetterSpeed = 0.02f; //스페이스 공백 텀
 
     WaitForSecondsRealtime oneLetterWait; 
     WaitForSecondsRealtime spaceLetterWait;   
@@ -90,7 +90,7 @@ public class DialogueTypingEffect : MonoBehaviour
         //이걸 스트링 빌더로 바꿔야하는데
 
 
-        string completeSentence = PrintCompleteSentence(textToType); // 타이핑 반복문이 끝나면 완전한 문장을 tmp.text 에 출력하기 위해서 사용하는 메서드이며 특정 문자가 비교된 후의 완전한 문장을 리턴함.
+        //string completeSentence = PrintCompleteSentence(textToType); // 타이핑 반복문이 끝나면 완전한 문장을 tmp.text 에 출력하기 위해서 사용하는 메서드이며 특정 문자가 비교된 후의 완전한 문장을 리턴함.
         
         for (int i = 0; i < nanugi.Length; i++)  //split된 string[] 의 길이만큼 반복
         {
@@ -109,6 +109,7 @@ public class DialogueTypingEffect : MonoBehaviour
                 textBuilder.Append(",");
                 continue;
             }
+            textBuilder.Append(" ");
             for (int j = 0; j < nanugi[i].Length; j++)
             {
                 textBuilder.Append(nanugi[i][j].ToString());
@@ -116,7 +117,6 @@ public class DialogueTypingEffect : MonoBehaviour
                 //yield return new WaitForSecondsRealtime(0.085f); //한 글자 출력되는 텀
                 yield return oneLetterWait;
             }
-            textBuilder.Append(" ");
             textLabel.text = textBuilder.ToString();
             yield return spaceLetterWait;
             //yield return new WaitForSecondsRealtime(0.02f); // 스페이스 띄는 시간
@@ -142,7 +142,7 @@ public class DialogueTypingEffect : MonoBehaviour
         isTypingRunning = false;                //타이핑 코루틴 종료
         //Debug.Log("WriteEffect 끝났습니다?");
         fadeImgae.SetActive(true);              //켜지면 onenable 되서 fadein  fadeout 반복
-        textLabel.text = PrintCompleteSentence(completeSentence); //바로 탈출하게 되면 완전한 문장 출력을 위한 구문
+        textLabel.text = PrintCompleteSentence(textToType); //바로 탈출하게 되면 완전한 문장 출력을 위한 구문
         //Debug.LogFormat("완전한 문장 : {0} ", completeSentence);
     }
 
@@ -153,7 +153,7 @@ public class DialogueTypingEffect : MonoBehaviour
         //Debug.Log(temporaryText.Length);
         for(int i = 0; i < temporaryText.Length; i++)                   //나누어진 수 만큼 반복문 돌아감
         {
-            if (temporaryText[i] == "/")        //특정 문자 만나면 사운드 재생을 안하고 넘김.  마침표 및 특정 문자도 추가할지 고민중
+            if (temporaryText[i] == "/" || temporaryText[i] == "*")        //특정 문자 만나면 사운드 재생을 안하고 넘김.  마침표 및 특정 문자도 추가할지 고민중
             {
                 continue;
             }
@@ -208,22 +208,39 @@ public class DialogueTypingEffect : MonoBehaviour
     //완전한 문장을 특정 문자 비교후 반환하는 메서드
     public string PrintCompleteSentence(string text)
     {
+        textBuilder.Clear();
         string[] nanugi = text.Split(new char[] { ' ' });
-        string completeSentence = string.Empty;
+        string completeSentence;
         string chechLineC = "/";
+        string checkComma = "*";
 
         for (int i = 0; i < nanugi.Length; i++)
         {
-
             //Debug.Log(nanugi[i]);
             if (nanugi[i] == chechLineC)
             {
                 //Debug.Log("같으면 들어오는건데");
-                completeSentence += "\n";
-                continue;
+                //completeSentence += "\n";
+                textBuilder.Append("\n");
+                //continue;
             }
-            completeSentence += nanugi[i] + " ";
+            else if (nanugi[i] == checkComma)
+            {
+                //sumText += ",";
+                //completeSentence += ", ";
+                //textBuilder.Append(", ");
+                textBuilder.Append(',');
+                //continue;
+            }
+            else
+            {
+                textBuilder.Append(" ");
+                textBuilder.Append(nanugi[i]);
+            }
+            //Debug.Log(textBuilder.ToString());
+            //completeSentence += nanugi[i] + " ";
         }
+        completeSentence = textBuilder.ToString(); 
         return completeSentence;
     }
 

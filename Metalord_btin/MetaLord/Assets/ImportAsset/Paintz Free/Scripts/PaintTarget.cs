@@ -709,6 +709,7 @@ public class PaintTarget : MonoBehaviour
     public void ClearPaint()
     {
         m_Splats.Clear();
+        isPainted = false;
         if (setupComplete)
         {
             CommandBuffer cb = new CommandBuffer();
@@ -844,8 +845,4 @@ public class PaintTarget : MonoBehaviour
         return isPainted;
     }
 
-    public void ClearisPainted()
-    {
-        isPainted = false;
-    }
 }

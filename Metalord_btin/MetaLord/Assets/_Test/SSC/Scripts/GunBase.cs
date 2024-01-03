@@ -34,26 +34,6 @@ abstract public class GunBase : MonoBehaviour
         int id = (int)GunSoundList.FireSound;
         SoundManager.instance.PlaySound(GroupList.Gun, id);
 
-        // 여기 NPC 체크하는 구간 아예 필요 없을듯?
-        // PaintTarget에서 SpherCastAll로 NPC 체크중
-        // LEGACY
-
-        //Collider[] npcCheck = Physics.OverlapSphere(state.hit.point, 20f, 1 << LayerMask.NameToLayer("NPC"));
-        //foreach (Collider c in npcCheck)
-        //{
-        //    if (c != null)
-        //    {
-        //        Debug.Log("NPC 체크?");
-        //        BoxCollider interactZone = c.GetComponent<BoxCollider>();
-        //        interactZone.enabled = false;
-        //        StopLerpGaguge();
-        //        shootCoroutine = StartCoroutine(LerpGauge(_ammo));
-        //        PaintTarget.PaintRay(_ray, brush, myLayer, state.range);
-        //        interactZone.enabled = true;
-        //        return;
-        //    }
-        //}
-
         // 코루틴 돌고있는지 체크
         StopLerpGaguge();
         shootCoroutine = StartCoroutine(LerpGauge(_ammo));        
