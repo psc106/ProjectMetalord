@@ -8,12 +8,15 @@ public class OverapObject : MonoBehaviour
     Rigidbody myRigid;
     MeshCollider myColid;
     OverapObject myScript;
+    MovedObject myMoved;
 
-    public void InitOverap()
+    public void InitOverap(GunStateController _state)
     {
         if (myScript == null)
-        { 
+        {
+            myScript = this;
             myScript = GetComponent<OverapObject>();
+            myMoved  = GetComponent<MovedObject>();
         }
 
         if(myRigid == null)
@@ -29,23 +32,9 @@ public class OverapObject : MonoBehaviour
             myColid = GetComponent<MeshCollider>();
             myColid.material.dynamicFriction = 1f;
             myColid.convex = true;
-
         }
+
+        myMoved.CareeState(_state, myRigid);
+             
     }
-
-    private void Update()
-    {
-        if (myRigid)
-        {
-            if (myRigid.IsSleeping())
-            {                
-                Destroy(myRigid);
-                myColid.convex = false;
-                myColid.material.dynamicFriction = 0.1f;
-                Destroy(myScript);
-            }
-        }
-    }
-
-
 }
