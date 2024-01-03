@@ -14,6 +14,11 @@ public class TitleSceneManager : MonoBehaviour
 
     private void Update()
     {
+        if (Input.GetMouseButtonDown(0))
+        {
+            AudioManager.instance.PlaySFX(AudioManager.instance.clip_Click);
+        }
+
         if (!isPushAnyKey && Input.anyKeyDown) //아무키나 누르면 타이틀 화면이 나옴
         {
             isPushAnyKey = true;
