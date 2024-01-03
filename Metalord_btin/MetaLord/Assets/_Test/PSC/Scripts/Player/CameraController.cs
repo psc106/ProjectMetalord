@@ -70,7 +70,7 @@ public class CameraController : MonoBehaviour
 
     private void Update()
     {
-        crossHair.gameObject.SetActive(!player.OnClimb);
+        crossHair.gameObject.SetActive(!player.OnClimbAnimation);
     }
 
     public void UpdateFixedAngle()
