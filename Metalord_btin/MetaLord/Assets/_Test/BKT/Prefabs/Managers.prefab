@@ -33,8 +33,61 @@ Transform:
   - {fileID: 3212286565387435217}
   - {fileID: 7330118352304616952}
   - {fileID: 1213696549728255080}
+  - {fileID: 1289740277108926817}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1703063461299232228
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1289740277108926817}
+  - component: {fileID: 6469665049613412341}
+  m_Layer: 0
+  m_Name: SettingsManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1289740277108926817
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1703063461299232228}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4370120021980189805}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6469665049613412341
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1703063461299232228}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd6c4d4716eeb45b8bb946ec0cc17c58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  brightnessSlider: {fileID: 0}
+  brightnessTextValue: {fileID: 0}
+  defaultBrightness: 1
+  resolutionDropdown: {fileID: 0}
+  volumeTextValue: {fileID: 0}
+  volumeSlider: {fileID: 0}
+  defaultVolume: 1
+  comfirmationPrompt: {fileID: 0}
 --- !u!1 &2012379356062290181
 GameObject:
   m_ObjectHideFlags: 0
@@ -303,6 +356,8 @@ MonoBehaviour:
     skill_Catch: 0
     upgrade: 0000000000000000
     playerTransform: 
+    ui_keyExplain: 0
+    ui_coinExplain: 0
 --- !u!1 &4538783096631347159
 GameObject:
   m_ObjectHideFlags: 0
@@ -349,4 +404,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   storeUI: {fileID: 0}
   startCoin: 590
+  coinExplain: {fileID: 0}
   currentCoin: 0

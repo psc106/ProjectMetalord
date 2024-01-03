@@ -342,7 +342,7 @@ public class RecordManager : MonoBehaviour
     /// </summary>
     public void ChangePageDisPlayText()
     {
-        Debug.Log(maxPageIndex);
+        //Debug.Log(maxPageIndex);
 
         if (maxPageIndex < 0) pageDisPlayText.text = "0/0";
         else pageDisPlayText.text = (_pageIndex + 1).ToString() + "/" + (maxPageIndex + 1).ToString();
