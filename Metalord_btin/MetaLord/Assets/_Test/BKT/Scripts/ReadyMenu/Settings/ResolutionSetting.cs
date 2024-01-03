@@ -12,15 +12,14 @@ public class ResolutionSetting : MonoBehaviour
 {
     [SerializeField] private DisplaySetting displaySetting; // 화면모드를 가져올 변수
 
-    //private Resolution[] resolutions; // 해상도를 담을 변수
     private List<string> str_resolution = new List<string>();
     private TMP_Text resText; // 해상도 표현 텍스트
     private int resIndex; // 해상도를 가리킬 인덱스값
 
-    private Vector2Int[] resolutionXY = new Vector2Int[] { new Vector2Int (1920,1080), new Vector2Int(1600, 900), new Vector2Int(1360, 768), new Vector2Int(1280, 720)};
+    //private Resolution[] resolutions; // 해상도를 담을 변수
+    //private Vector2Int[] resolutionXY = new Vector2Int[] { new Vector2Int (1920,1080), new Vector2Int(1600, 900), new Vector2Int(1360, 768), new Vector2Int(1280, 720)};
 
     private (int width,int height)[] resolutions = { (1920, 1080), (1600, 900), (1360, 768), (1280, 720) };
-
 
     private void Awake()
     {        

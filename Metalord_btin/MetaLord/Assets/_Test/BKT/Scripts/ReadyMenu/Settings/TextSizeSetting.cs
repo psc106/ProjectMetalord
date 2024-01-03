@@ -24,10 +24,10 @@ public class TextSizeSetting : MonoBehaviour
         for (int i = 0; i < originTexts.Length; i++)
         {            
             fontSizes.Add(originTexts[i].fontSize);
-            Debug.Log(originTexts[i].name);
+            //Debug.Log(originTexts[i].name);
         }
 
-        Debug.Log(originTexts.Length);
+        //Debug.Log(originTexts.Length);
     }
 
     private void Start()
