@@ -3452,6 +3452,7 @@ MonoBehaviour:
   crossHairSprite:
   - {fileID: 21300000, guid: 198f95985e362c14298976314dc9608e, type: 3}
   - {fileID: 21300000, guid: c590f353fe3afc146b4b3096952ef47b, type: 3}
+  - {fileID: 21300000, guid: a24c6600aef84514ba5e1da2dba6d05e, type: 3}
   reader: {fileID: 11400000, guid: 75abd6246b51f9e48a0d52dae45fab3f, type: 2}
   checkPos: {fileID: 7900184379219393653}
   pickupPoint: {fileID: 364788840478490789}

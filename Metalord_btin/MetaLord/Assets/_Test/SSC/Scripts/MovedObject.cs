@@ -78,31 +78,31 @@ public class MovedObject : MonoBehaviour
             }
         }
 
-        if(collision.gameObject.layer == LayerMask.NameToLayer("Player"))
-        {
-            state = FindAnyObjectByType<GunStateController>();
-        }
+        //if(collision.gameObject.layer == LayerMask.NameToLayer("Player"))
+        //{
+        //    state = FindAnyObjectByType<GunStateController>();
+        //}
     }
 
     // 충돌지점 본드 체크
     private void OnCollisionStay(Collision collision)
     {
-        //if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
-        //{
-        //    if(state != null && state.onGrab)
-        //    {                
-        //        Vector3 dir = (state.pickupPoint.position - transform.position).normalized;
-        //        Vector3 dir2 = (state.pickupPoint.position - state.checkPos.position).normalized;
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
+        {
+            if (state != null && state.onGrab)
+            {
+                GrabGun.instance.CancelObj();
+                //Vector3 dir = (state.pickupPoint.position - transform.position).normalized;
+                //Vector3 dir2 = (state.pickupPoint.position - state.checkPos.position).normalized;
 
-        //        Debug.Log(dir);
-                
-        //        if (dir.y <= -0.2f)
-        //        {
-        //            Debug.Log("캔슬");
-        //            GrabGun.instance.CancelObj();
-        //        }
-        //    }            
-        //}
+                //Debug.Log(dir);
+
+                //if (dir.y <= -0.2f)
+                //{
+                //    Debug.Log("캔슬");
+                //}
+            }
+        }
 
         // 이미 본드 동작을 하는 오브젝트를 다시 그랩하면 그랩하는순간 충돌면을 체크하여 그랩 해제됨에 따라 상태를 제어할 bool값 추가
         if (checkContact == false)
