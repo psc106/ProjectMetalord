@@ -38,7 +38,6 @@ public class PaintGun : GunBase
         AimTarget = state.AimTarget;
     }
 
-
     public override bool ShootGun()
     {
         if(CheckCanFire() == false || !state.CanFire)

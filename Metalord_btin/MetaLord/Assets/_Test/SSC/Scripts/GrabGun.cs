@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 
 public class GrabGun : GunBase
@@ -24,6 +25,17 @@ public class GrabGun : GunBase
     float maxSpeed = 3f;
     public override bool ShootGun()
     {
+        // 언락전 우클릭 입력시 UI 텍스트 출력
+        if(!state.UsedGrabGun())
+        {
+            if(state.CanFire)
+            {
+                state.CheckUnlockUi();       
+            }
+
+            return false;
+        }
+
         if(CheckCanFire() == false)
         {
             // onGrab 상태에서도 들고있는 물건 그랩 해제를 위해
@@ -33,6 +45,7 @@ public class GrabGun : GunBase
                 return false;
             }
 
+            state.CheckRangeCrossHair();
             return false;
         }
 
@@ -58,9 +71,10 @@ public class GrabGun : GunBase
             return false;
         }
 
-        state.pickupPoint.position = state.hit.point;
+        //state.pickupPoint.position = state.hit.point;
+        //state.pickupPoint.position = state.hit.transform.position;
 
-        FollowingObj();        
+        FollowingObj();
         return true;
     }
 
@@ -77,9 +91,10 @@ public class GrabGun : GunBase
             {
                 CancelObj();
                 return;
-            }    
+            }
 
             Vector3 dir = (state.pickupPoint.position - followPos) - targetRigid.position;
+            //Vector3 dir = state.pickupPoint.position - targetRigid.position;
             float mag = dir.magnitude;
 
             if (mag >= maxSpeed)
@@ -103,12 +118,14 @@ public class GrabGun : GunBase
             targetRigid.useGravity = true;
             targetRigid.velocity = Vector3.zero;
             targetRigid = null;            
+
         }
 
-        if(targetObj.GetComponent<MeshCollider>() != null)
+        if(targetObj != null && targetObj.GetComponent<MeshCollider>() != null)
         {
             targetObj.GetComponent<MeshCollider>().material.dynamicFriction = 1f;
         }
+
 
         targetObj = null;
         state.grabLine.enabled = false;
@@ -173,7 +190,7 @@ public class GrabGun : GunBase
                 CatchObject controll = targetObj.GetComponent<CatchObject>();
                 controll.SetUpMesh();
                 targetObj.AddComponent<Rigidbody>();                
-                controll.ChangedState();
+                controll.ChangedState(state);
             }
         }
         
@@ -199,9 +216,8 @@ public class GrabGun : GunBase
         RaycastHit hit;
         Physics.SphereCast(checkRay, 2f, out hit, 20f, myLayer);        
 
-        // 플레이어 밑에 있는 오브젝트가 내 조준점에 담긴 오브젝트라면 그랩시도 X
         if (!state.CanFire || hit.transform?.gameObject == state.hit.transform?.gameObject || !state.UsedGrabGun())
-        {            
+        {
             return false;        
         }
 

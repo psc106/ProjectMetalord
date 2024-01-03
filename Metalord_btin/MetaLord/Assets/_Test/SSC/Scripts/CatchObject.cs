@@ -8,6 +8,7 @@ public class CatchObject : MonoBehaviour
     HashSet<MeshCollider> childColid = new HashSet<MeshCollider>();
     bool checkContact;
     LayerMask layerMask;
+    GunStateController state;
 
     private void Awake()
     {
@@ -27,8 +28,7 @@ public class CatchObject : MonoBehaviour
     public void SetUpMesh()
     {
         foreach (MeshCollider col in childColid)
-        {
-            Debug.Log(col.gameObject.name);
+        {            
             col.convex = true;
         }
     }
@@ -63,7 +63,7 @@ public class CatchObject : MonoBehaviour
 
             if (collision.gameObject.GetComponent<OverapObject>() == null)
             {
-                collision.gameObject.AddComponent<OverapObject>().InitOverap();
+                collision.gameObject.AddComponent<OverapObject>().InitOverap(state);
             }
         }
     }
@@ -99,8 +99,7 @@ public class CatchObject : MonoBehaviour
                 else
                 {
                     // 지정 오브젝트는 충돌한 오브젝트의 부모
-                    GameObject contactObj = collision.transform.parent.gameObject;
-                    Debug.Log("진입 시작점");
+                    GameObject contactObj = collision.transform.parent.gameObject;                    
 
                     // 부모가 상위 오브젝트 경우
                     if (contactObj.gameObject.layer == LayerMask.NameToLayer("GrabedObject"))
@@ -118,6 +117,13 @@ public class CatchObject : MonoBehaviour
                         else if (collision.transform.gameObject.layer == LayerMask.NameToLayer("NPC"))
                         {                            
                             collision.transform.GetComponent<NpcBase>().ChangedState(npcState.objectAttached);
+
+                            Debug.Log("??");
+                            for (int j = 0; j < transform.childCount; j++)
+                            {
+                                transform.GetChild(j).GetComponent<MeshCollider>().convex = false;
+                                transform.GetChild(j).gameObject.layer = LayerMask.NameToLayer("NPC");
+                            }
                             Destroy(myRigid);
                         }
                         // 단순 고정형 오브젝트일경우
@@ -143,8 +149,13 @@ public class CatchObject : MonoBehaviour
         }
     }
 
-    public void ChangedState()
+    public void ChangedState(GunStateController _state)
     {
+        if (state == null)
+        {
+            state = _state;
+        }
+
         myRigid = GetComponent<Rigidbody>();
         myRigid.mass = 1000f;
         Invoke("ChangedCheck", 1f);
