@@ -9,6 +9,8 @@ using UnityEngine.Audio;
 /// </summary>
 public class AudioManager : MonoBehaviour
 {
+    public static AudioManager instance;
+
     [Header("오디오 소스")]
     [SerializeField] AudioSource musicSource;
     [SerializeField] AudioSource SFXSource;
@@ -16,9 +18,13 @@ public class AudioManager : MonoBehaviour
 
     [Header("오디오 클립"),Tooltip("필요한 오디오 클립을 끌어다 넣어주세요")]
     public AudioClip clip_Background;
-    public AudioClip clip_Getcoin;
-    public AudioClip clip_Jump;
+    public AudioClip clip_Click;
     //TODO 필요한 음악 클립 추가
+
+    private void Awake()
+    {
+        instance = this;
+    }
 
     private void Start()
     {
@@ -49,4 +55,5 @@ public class AudioManager : MonoBehaviour
         if (clip != null) SFXSource.PlayOneShot(clip);
         else Debug.Log("오디오 파일이 없습니다.");
     }
+
 }
