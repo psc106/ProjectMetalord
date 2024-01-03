@@ -128,8 +128,18 @@ public enum GunMode
     Bond,
 }
 
+// 업그레이드 종류
 public enum UpgradeCategory
 {
     Range = 0,
     Amount = 1
+}
+
+
+// 환경설정 버튼 사이즈
+public enum ButtonSize
+{
+    Small = 0,
+    Middle,
+    Large
 }

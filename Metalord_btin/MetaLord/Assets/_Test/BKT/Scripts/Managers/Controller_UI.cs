@@ -12,8 +12,7 @@ public class Controller_UI : MonoBehaviour
     [SerializeField]
     InputReader reader;
 
-    //231219 배경택
-    [Header("UI 상점, 도감, 환경설정")]
+    //231219 배경택    
     [SerializeField] private GameObject canvases;
     private GameObject storeUI; // 상점 UI 오브젝트
     private GameObject recordUI; // 도감 UI 오브젝트
@@ -23,6 +22,7 @@ public class Controller_UI : MonoBehaviour
     private GameObject savingUI; // 첫 코인 도움말 UI 오브젝트
     private GameObject firstKeyExplainUI; // 첫 코인 도움말 UI 오브젝트
     private GameObject recordPopUpItemUI; // 아이템 팝업
+    private GameObject settingsUI; // 설정창 UI 오브젝트
     private bool canInput = true; // 입력 가능여부
     private const float INPUT_DELAYTIME = 0.3f; // 입력 후 대기 시간
 
@@ -37,6 +37,7 @@ public class Controller_UI : MonoBehaviour
         firstKeyExplainUI = Utility.FindChildObj(canvases, "KeyExplainCanvas");
         savingUI = Utility.FindChildObj(canvases, "SavingCanvas");
         recordPopUpItemUI = Utility.FindChildObj(canvases, "RecordPopUpCanvas");
+        settingsUI = Utility.FindChildObj(canvases, "SettingCanvas");
     }
 
     private void Update()
