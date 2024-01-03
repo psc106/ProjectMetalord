@@ -29,11 +29,12 @@ public class BrightnessSetting : MonoBehaviour
 
     private void Start()
     {
-        if(PlayerPrefs.HasKey("BrightnessSetting"))
-        {
-            LoadData();
-        }
-        else
+        // TODO 타이틀씬 로드시 재작성
+        //if(PlayerPrefs.HasKey("BrightnessSetting"))
+        //{
+        //    LoadData();
+        //}
+        //else
         {
             brightnessValue = 1f;
             brightnessSlider.value = brightnessValue;
@@ -43,7 +44,8 @@ public class BrightnessSetting : MonoBehaviour
 
     private void OnDisable()
     {
-        SaveData();
+        // TODO 타이틀씬 로드시 재작성
+        //SaveData();
     }
 
     // 밝기 조절 함수 _ 슬라이더로 조절
@@ -62,7 +64,7 @@ public class BrightnessSetting : MonoBehaviour
         percentText.text = ((int)(_value * 100)).ToString() + "%";
 
         brightnessValue = _value;
-        Debug.Log(_value);
+        //Debug.Log(_value);
     }
 
     // 데이터 저장
