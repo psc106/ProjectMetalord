@@ -30,6 +30,7 @@ public class AnimationEventsController : MonoBehaviour
 
     private void OnEnable()
     {
+
         reloadEnd += player.EndReloadAnimation;
         unequipEnd += player.EndUnEquipAnimation;
         equipEnd += player.EndEquipAnimation;
