@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   questionCsv: {fileID: 4900000, guid: 65f363368efdf7f4b9963e8656f9ff84, type: 3}
-  dialogueStatusCsv: {fileID: 4900000, guid: 7a1a32436b92c9a4791ac378078afbbe, type: 3}
+  dialogueStatusCsv: {fileID: 4900000, guid: d290a1bcb2260a74dbe0f7080951f7ca, type: 3}
   dialogueQuestions: []
 --- !u!114 &6358891445633362818
 MonoBehaviour:
