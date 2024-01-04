@@ -1,9 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
-using System.Drawing;
 using System.Text;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class DialogueTypingEffect : MonoBehaviour
@@ -191,16 +188,16 @@ public class DialogueTypingEffect : MonoBehaviour
     {
         if(toneNumber == 0)
         {
-            randomNumber = UnityEngine.Random.Range(0, boldTone.Length);
+            randomNumber = Random.Range(0, boldTone.Length);
             
         }
         else if( toneNumber == 1) 
         {
-            randomNumber = 10 + UnityEngine.Random.Range(0, middleTone.Length);
+            randomNumber = 10 + Random.Range(0, middleTone.Length);
         }
         else
         {
-            randomNumber = 20 + UnityEngine.Random.Range(0, highTone.Length);
+            randomNumber = 20 + Random.Range(0, highTone.Length);
         }
         SoundManager.instance.PlaySound(GroupList.Npc, randomNumber);
     }

@@ -34,7 +34,7 @@ public class ClimbBehaviour : StateMachineBehaviour
         if (!check)
         {
             enterTime += Time.deltaTime;
-            if (enterTime > .5f)
+            if (enterTime > .2f)
             {
                 check = true;
                 player.EndClimbAnimation();
