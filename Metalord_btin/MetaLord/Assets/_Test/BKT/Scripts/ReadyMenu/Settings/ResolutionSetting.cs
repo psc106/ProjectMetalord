@@ -43,7 +43,7 @@ public class ResolutionSetting : MonoBehaviour
             resIndex--;
 
             InputText(resIndex);
-            Screen.SetResolution(resolutions[resIndex].width, resolutions[resIndex].height, Convert.ToBoolean(displaySetting.isFullScreen));
+            Screen.SetResolution(resolutions[resIndex].width, resolutions[resIndex].height, !Convert.ToBoolean(displaySetting.isFullScreen));
         } 
     }
 
@@ -55,7 +55,7 @@ public class ResolutionSetting : MonoBehaviour
             resIndex++;
 
             InputText(resIndex);
-            Screen.SetResolution(resolutions[resIndex].width, resolutions[resIndex].height, Convert.ToBoolean(displaySetting.isFullScreen));
+            Screen.SetResolution(resolutions[resIndex].width, resolutions[resIndex].height, !Convert.ToBoolean(displaySetting.isFullScreen));
         }
 
     }
@@ -71,6 +71,6 @@ public class ResolutionSetting : MonoBehaviour
     {
         resIndex = 0;
         InputText(resIndex);
-        Screen.SetResolution(resolutions[resIndex].width, resolutions[resIndex].height, Convert.ToBoolean(displaySetting.isFullScreen));
+        Screen.SetResolution(resolutions[resIndex].width, resolutions[resIndex].height, !Convert.ToBoolean(displaySetting.isFullScreen));
     }
 }
