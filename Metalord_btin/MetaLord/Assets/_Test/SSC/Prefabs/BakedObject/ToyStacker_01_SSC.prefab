@@ -15,7 +15,6 @@ GameObject:
   - component: {fileID: 4743801091358374458}
   - component: {fileID: 7974397732948964093}
   - component: {fileID: 93344958473211335}
-  - component: {fileID: 4582957953886119530}
   m_Layer: 10
   m_Name: ToyStacker_01_SSC
   m_TagString: Untagged
@@ -10500,6 +10499,7 @@ MonoBehaviour:
   PaintAllSplats: 0
   debugTexture: 0
   splatTexPick: {fileID: 0}
+  ReadPixel: {fileID: 0}
   originTex: {fileID: 0}
 --- !u!114 &93344958473211335
 MonoBehaviour:
@@ -10513,19 +10513,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cba9ab1348e9bd43bef077c2c0dc7d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &4582957953886119530
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2181923399357198694}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8398ff50ee11f0f49a59823c5d0488a7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 0
-  myRigid: {fileID: 0}

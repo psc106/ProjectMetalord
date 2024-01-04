@@ -62,7 +62,7 @@ public class Controller_Physics : MonoBehaviour
     Vector3 contactNormal;
     Vector3 steepNormal;
     Vector3 climbNormal;
-    Vector3 lastClimbNormal;
+    Vector3 lastClimbNormal = Vector3.up;
 
     Vector3 beforePosition;
 
@@ -362,7 +362,7 @@ public class Controller_Physics : MonoBehaviour
         //Debug.Log("1 "+velocity);
 
         //점프 상태일 경우 2배의 그래비티 적용
-        if (!isJump && !OnGround && !desireClimb)
+        if (!isJump && !OnGround && !OnClimb)
         {
            // Debug.Log("점프상태");
             velocity += gravity * gravityMultiple * Time.deltaTime;
@@ -375,7 +375,7 @@ public class Controller_Physics : MonoBehaviour
             velocity += gravity * Time.deltaTime;
         }
         
-        else if (!multipleState && OnClimb)
+        else if (!multipleState && OnClimb && desireClimb)
         {
             //Debug.Log("등산만");
             //등산중에 접촉면으로 끌어당김
@@ -385,18 +385,18 @@ public class Controller_Physics : MonoBehaviour
         {
             //Debug.Log("등산+지상");
             //등산중에 접촉면으로 끌어당김
-            velocity -= contactNormal.normalized * maxClimbAcceleration* 0.95f * Time.deltaTime;
+            velocity -= contactNormal.normalized * maxClimbAcceleration* 0.5f * Time.deltaTime;
 
         }
         else if (desireClimb && OnGround )
         {
-           // Debug.Log("지상, 끈끈이");
+            //Debug.Log("지상, 끈끈이");
             //땅에 있을 경우 + 이동 상태 일 경우 중력+접촉면으로 끌어당김 동시에 적용
             velocity += (gravity - contactNormal.normalized * maxClimbAcceleration * 0.9f) * Time.deltaTime;
             //velocity += gravity * Time.deltaTime;
         }
         //위에서 ONCLIMB와 ONGROUND를 모두 검사(MULTIPLESTATE)했기 때문에 1프레임후 적용된 상태라 가정한다.
-        else if (desireClimb)
+        else if (OnClimb && !desireClimb)
         {
             //Debug.Log("등산+보정");
             velocity *= 0.3f;
@@ -410,7 +410,7 @@ public class Controller_Physics : MonoBehaviour
         }
         else
         {
-            //Debug.Log("그외");
+           // Debug.Log("그외");
             //일반 중력 적용
             velocity += gravity * Time.deltaTime;
         }
@@ -461,8 +461,8 @@ public class Controller_Physics : MonoBehaviour
         }
 
 
-        aimRig.weight = stepsSinceLastClimb< climbHelpTime ? 0 : 1;
-        rotateRig.weight = stepsSinceLastClimb < climbHelpTime ? 1 : 0;
+        aimRig.weight = stepsSinceLastClimb< climbHelpTime && !isJump ? 0 : 1;
+        rotateRig.weight = stepsSinceLastClimb < climbHelpTime && !isJump ? 1 : 0;
 
 
         if (!OnGround && OnClimb)
@@ -473,7 +473,7 @@ public class Controller_Physics : MonoBehaviour
         {
             rotateTarget.rotation = Quaternion.LookRotation(playerInputSpace.forward);
         }
-        else if (stepsSinceLastClimb<climbHelpTime)
+        else if (stepsSinceLastClimb<climbHelpTime && !isJump)
         {
             rotateTarget.rotation = Quaternion.LookRotation(-lastClimbNormal);
         }
@@ -506,6 +506,7 @@ public class Controller_Physics : MonoBehaviour
     {
         //Debug.Log("스테이" + transform.position);
         EvaluateCollision(collision);
+        
     }
 
     void AdjustVelocity()
@@ -549,7 +550,7 @@ public class Controller_Physics : MonoBehaviour
 
         }
         //상태에 따라 가속도, 최고속도, 좌우/앞뒤 축을 재 조정한다.
-        else if (OnClimb)
+        else if (!multipleState && OnClimb && desireClimb)
         {
            // Debug.Log("좌표-등산");
             acceleration = maxClimbAcceleration;
@@ -560,13 +561,13 @@ public class Controller_Physics : MonoBehaviour
             zAxis = upAxis;
         }
         //상태에 따라 가속도, 최고속도, 좌우/앞뒤 축을 재 조정한다.
-        else if (desireClimb)
+        else if (!multipleState && OnClimb && !desireClimb)
         {
             //Debug.Log("좌표-등산보정");
             acceleration = maxClimbAcceleration;
             speed = maxClimbSpeed;
             //등산 상태일 경우 접촉표면과 upaxis의 법선 벡터가 좌/우 축이 된다.
-            xAxis = Vector3.zero;
+            xAxis = Vector3.Cross(lastClimbNormal, upAxis);
             //등산 상태일 경우 앞/뒤 -> 위/아래로 구현한다.
             zAxis = upAxis;
         }
@@ -721,6 +722,9 @@ public class Controller_Physics : MonoBehaviour
 
         if (jumpPhase == 0)
         {
+            int id = (int)PlayerSoundList.Jump;
+            SoundManager.instance.PlaySound(GroupList.Player, id);
+
             //점프 상태
             isJump = true;
             //등산 딜레이
@@ -729,8 +733,6 @@ public class Controller_Physics : MonoBehaviour
             animator.SetTrigger(JumpTriggerHash);
             animator.SetBool(ClimbWaitHash, true);
 
-            int id = (int)PlayerSoundList.Jump;
-            SoundManager.instance.PlaySound(GroupList.Player, id);
 
         }
        
@@ -805,7 +807,7 @@ public class Controller_Physics : MonoBehaviour
               Debug.Log(stepsSinceLastClimb);*/
 
             //색칠 리스트에 추가 되어있을 경우만 검사
-            if ((angle <= viewAngle * 0.5f) || stepsSinceLastClimb <= climbHelpTime && ToolFunc<PaintTarget>.ConatainsCollision(GunStateController.paintList, collision))
+            if (((angle <= viewAngle * 0.5f) || (stepsSinceLastClimb <= climbHelpTime)) && ToolFunc<PaintTarget>.ConatainsCollision(GunStateController.paintList, collision))
             {
                 isColoredWall = CheckPaintedWall(collision.contacts[i], normal);
             }
@@ -963,16 +965,14 @@ public class Controller_Physics : MonoBehaviour
             }
         }
 
-        if(stepsSinceLastClimb <= climbHelpTime)
+        if(stepsSinceLastClimb <= climbHelpTime && !isJump)
         {
-            //마지막 그라운드 프레임 초기화
-            stepsSinceLastGrounded = 0;
-            //등산 가능 상태를 유지한다.
-            desireClimb = true;
+            climbContactCount += 1;
+            contactNormal = lastClimbNormal;
         }
 
         //마지막 climb에서 2프레임 지나기전일 경우
-        if (stepsSinceLastClimb == climbHelpTime)
+        if (stepsSinceLastClimb == 1)
         {
             if (fireDelay != null) StopCoroutine(fireDelay);
             canFire = false;
@@ -1004,13 +1004,13 @@ public class Controller_Physics : MonoBehaviour
 
         // frame = condition ? frame+1 : 0;
 
-        if(!(!multipleState && (OnClimb || desireClimb)))
-        {
+        /*Debug.Log(stepsSinceLastClimb);
+        Debug.Log(multipleState);
+        Debug.Log(OnClimb);
+        Debug.Log(desireClimb);*/
 
-            Debug.Log(stepsSinceLastClimb);
-        }
-        animator.SetBool(ClimbHash,  !multipleState && (OnClimb || desireClimb));
-        animator.SetBool(GroundHash, stepsSinceLastGrounded==0);
+        animator.SetBool(ClimbHash, OnClimb);
+        animator.SetBool(GroundHash, !OnClimb && stepsSinceLastGrounded == 0);
     }
 
     /*//연결된 플랫폼이 있을 경우

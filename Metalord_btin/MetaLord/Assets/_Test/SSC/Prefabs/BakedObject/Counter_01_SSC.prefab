@@ -15,7 +15,6 @@ GameObject:
   - component: {fileID: 8859361648204380480}
   - component: {fileID: 4929732458987243004}
   - component: {fileID: 1983866855803899052}
-  - component: {fileID: 9102428090629485068}
   m_Layer: 10
   m_Name: Counter_01_SSC
   m_TagString: Untagged
@@ -55913,6 +55912,7 @@ MonoBehaviour:
   PaintAllSplats: 0
   debugTexture: 0
   splatTexPick: {fileID: 0}
+  ReadPixel: {fileID: 0}
   originTex: {fileID: 0}
 --- !u!114 &1983866855803899052
 MonoBehaviour:
@@ -55926,19 +55926,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cba9ab1348e9bd43bef077c2c0dc7d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &9102428090629485068
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3045882168086857843}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8398ff50ee11f0f49a59823c5d0488a7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 0
-  myRigid: {fileID: 0}
