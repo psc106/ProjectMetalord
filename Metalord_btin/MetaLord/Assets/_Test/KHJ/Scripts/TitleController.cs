@@ -23,6 +23,7 @@ public class TitleController : MonoBehaviour
 
     public void ContinueGame()
     {
-        StartCoroutine(LoadSceneAsync(currentScene, continueScene));
+        //StartCoroutine(LoadSceneAsync(currentScene, continueScene));
+        LoadingController.LoadScene("MainScene");
     }
 }
