@@ -68,12 +68,12 @@ public class StoreObject : MonoBehaviour
     {
         if (IsCanBuy())
         {
-            Debug.Log("구매 가능");
+           // Debug.Log("구매 가능");
             button.GetComponent<Image>().color = new Color(251/255f, 229/255f, 214/255f, 1); //cantBuyImage.SetActive(false);
         }
         else
         {
-            Debug.Log("구매 불가");
+           // Debug.Log("구매 불가");
             button.GetComponent<Image>().color = new Color(231/255f, 230/255f, 230/255f, 1); //cantBuyImage.SetActive(true);
         }
     }
