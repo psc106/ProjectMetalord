@@ -9,18 +9,11 @@ using UnityEngine.UI;
 /// </summary>
 public class DisplaySetting : MonoBehaviour
 {
-    private Image[] images;
-
     private int _isFullScreen;
     public int isFullScreen
     {
         get { return _isFullScreen; }
-    }
-
-    private void Get2DImage()
-    {
-        images = Resources.FindObjectsOfTypeAll<Image>();
-    }
+    }    
 
     private void Awake()
     {
@@ -79,7 +72,7 @@ public class DisplaySetting : MonoBehaviour
 
     // 초기화
     public void Init()
-    {
+    {        
         _isFullScreen = 1;
         ChangeScreenMode();        
     }
