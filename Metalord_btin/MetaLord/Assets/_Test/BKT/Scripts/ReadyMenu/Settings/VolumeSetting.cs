@@ -53,6 +53,8 @@ public class VolumeSetting : MonoBehaviour
         toggle_Master.onValueChanged.AddListener(SetControlMaster);
         toggle_BGM.onValueChanged.AddListener(SetControlBGM);
         toggle_SFX.onValueChanged.AddListener(SetControlSFX);
+
+        Init();
     }
 
     // 마스터 볼륨 설정
@@ -194,5 +196,16 @@ public class VolumeSetting : MonoBehaviour
     private void LoadData()
     {
 
+    }
+
+    public void Init()
+    {
+        slider_Master.onValueChanged.Invoke(1f);
+        slider_BGM.onValueChanged.Invoke(1f);
+        slider_SFX.onValueChanged.Invoke(1f);
+
+        toggle_Master.onValueChanged.Invoke(true);
+        toggle_BGM.onValueChanged.Invoke(true);
+        toggle_SFX.onValueChanged.Invoke(true);
     }
 }

@@ -23,15 +23,9 @@ public class TextSizeSetting : MonoBehaviour
         // 각각 크기가 다른 텍스트의 원래 크기값을 리스트에 저장해줌
         for (int i = 0; i < originTexts.Length; i++)
         {            
-            fontSizes.Add(originTexts[i].fontSize);
-            //Debug.Log(originTexts[i].name);
+            fontSizes.Add(originTexts[i].fontSize);            
         }
-
-        //Debug.Log(originTexts.Length);
-    }
-
-    private void Start()
-    {
+        
         //TODO 타이틀씬 로드시 재작성
         //if (PlayerPrefs.HasKey("TextSizeSetting"))
         //{
@@ -39,8 +33,7 @@ public class TextSizeSetting : MonoBehaviour
         //}
         //else
         {
-            selectedButton = ButtonSize.Middle;
-
+            Init(); //초기화
         }
     }
 
@@ -105,5 +98,10 @@ public class TextSizeSetting : MonoBehaviour
     {
         selectedButton = (ButtonSize)PlayerPrefs.GetInt("TextSizeSetting");
         ChangeTextSize(selectedButton);
+    }
+
+    public void Init()
+    {
+        PushMiddle();
     }
 }

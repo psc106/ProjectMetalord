@@ -20,10 +20,9 @@ public class DisplaySetting : MonoBehaviour
         if (PlayerPrefs.HasKey("DisplaySetting"))
         {
             LoadData(); // 저장되어있는 데이터가 있다면
-            //Debug.Log(PlayerPrefs.GetInt("DisplaySetting"));
+            ChangeScreenMode();            
         }
-        else _isFullScreen = 1; // 없다면
-        ChangeScreenMode();
+        else Init(); // 없다면
     }
 
     private void OnDisable()
@@ -67,5 +66,12 @@ public class DisplaySetting : MonoBehaviour
     private void LoadData()
     {
        _isFullScreen = PlayerPrefs.GetInt("DisplaySetting");
+    }
+
+    // 초기화
+    public void Init()
+    {
+        _isFullScreen = 1;
+        Screen.fullScreen = true;
     }
 }
