@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// 디스플레이 셋팅(전체화면, 창화면)
@@ -8,10 +9,17 @@ using UnityEngine;
 /// </summary>
 public class DisplaySetting : MonoBehaviour
 {
+    private Image[] images;
+
     private int _isFullScreen;
     public int isFullScreen
     {
         get { return _isFullScreen; }
+    }
+
+    private void Get2DImage()
+    {
+        images = Resources.FindObjectsOfTypeAll<Image>();
     }
 
     private void Awake()
