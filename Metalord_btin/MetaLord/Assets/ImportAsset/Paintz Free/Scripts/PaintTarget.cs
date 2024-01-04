@@ -181,10 +181,12 @@ public class PaintTarget : MonoBehaviour
             Color pc = tc.GetPixel(x, y);            
 
             int l = -1;
-            if (pc.r > .4) l = 0;
+            if (pc.r > .3) l = 0;
             if (pc.g > .5) l = 1;
             if (pc.b > .5) l = 2;
-            if (pc.a > .5) l = 3;            
+            if (pc.a > .5) l = 3;
+
+           // Debug.Log(pc.r);
 
             return l;
         }
