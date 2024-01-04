@@ -23,6 +23,8 @@ public class Controller_UI : MonoBehaviour
     private GameObject firstKeyExplainUI; // 첫 코인 도움말 UI 오브젝트
     private GameObject recordPopUpItemUI; // 아이템 팝업
     private GameObject settingsUI; // 설정창 UI 오브젝트
+    private GameObject keyRebindUI; // 키 리바인딩 UI 오브젝트
+
     private bool canInput = true; // 입력 가능여부
     private const float INPUT_DELAYTIME = 0.3f; // 입력 후 대기 시간
 
@@ -38,6 +40,7 @@ public class Controller_UI : MonoBehaviour
         savingUI = Utility.FindChildObj(canvases, "SavingCanvas");
         recordPopUpItemUI = Utility.FindChildObj(canvases, "RecordPopUpCanvas");
         settingsUI = Utility.FindChildObj(canvases, "SettingCanvas");
+        keyRebindUI = Utility.FindChildObj(canvases, "KeyRebindCanvas");
     }
 
     private void Update()
@@ -109,34 +112,46 @@ public class Controller_UI : MonoBehaviour
                     storeUI.SetActive(false);
                 }
 
-                if (recordUI.activeSelf == true)
+                else if (recordUI.activeSelf == true)
                 {
                     Controller_Physics.SwitchCameraLock(false);
                     recordUI.SetActive(false);
                 }
 
-                if (explainUI.activeSelf == true)
+                else if (explainUI.activeSelf == true)
                 {
                     Controller_Physics.SwitchCameraLock(false);
                     explainUI.SetActive(false);
                 }
 
-                if (firstCoinExPlainUI.activeSelf == true)
+                else if (firstCoinExPlainUI.activeSelf == true)
                 {
                     Controller_Physics.SwitchCameraLock(false);
                     firstCoinExPlainUI.SetActive(false);
                 }
 
-                if (savingUI.activeSelf == true && savingUI.GetComponent<SavingCanvas>().isSaved)
+                else if (savingUI.activeSelf == true && savingUI.GetComponent<SavingCanvas>().isSaved)
                 {
                     savingUI.SetActive(false);
                     readyMenuUI.SetActive(true);
                 }
 
-                if (firstKeyExplainUI.activeSelf == true)
+                else if (firstKeyExplainUI.activeSelf == true)
                 {
                     Controller_Physics.SwitchCameraLock(false);
                     firstKeyExplainUI.SetActive(false);
+                }
+
+                else if(settingsUI.activeSelf == true)
+                {
+                    readyMenuUI.SetActive(true);
+                    settingsUI.SetActive(false);
+                }
+
+                else if(keyRebindUI.activeSelf == true)
+                {
+                    settingsUI.SetActive(true);
+                    keyRebindUI.SetActive(false);
                 }
 
                 StartCoroutine(DelayInput());
