@@ -201,11 +201,18 @@ public class VolumeSetting : MonoBehaviour
     public void Init()
     {
         slider_Master.onValueChanged.Invoke(1f);
+        slider_Master.value = 1f;
         slider_BGM.onValueChanged.Invoke(1f);
+        slider_BGM.value = 1f;
         slider_SFX.onValueChanged.Invoke(1f);
+        slider_SFX.value = 1f;
+
 
         toggle_Master.onValueChanged.Invoke(true);
+        toggle_Master.isOn = true;
         toggle_BGM.onValueChanged.Invoke(true);
+        toggle_BGM.isOn = true;
         toggle_SFX.onValueChanged.Invoke(true);
+        toggle_SFX.isOn = true;
     }
 }
