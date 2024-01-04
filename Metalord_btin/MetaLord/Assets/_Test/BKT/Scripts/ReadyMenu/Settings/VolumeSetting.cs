@@ -24,6 +24,10 @@ public class VolumeSetting : MonoBehaviour
     [SerializeField] private Toggle toggle_BGM;
     [SerializeField] private Toggle toggle_SFX;
 
+    private int isMasterTrue;
+    private int isBGMTrue;
+    private int isSFXTrue;
+
     [Header("오디오 변경 관련 스프라이트")]
     [SerializeField] private Sprite sprite_Toggle_True;
     [SerializeField] private Sprite sprite_Toggle_False;
@@ -190,7 +194,8 @@ public class VolumeSetting : MonoBehaviour
 
     private void SaveData()
     {
-
+        PlayerPrefs.SetFloat("MasterSlider", slider_Master.value);
+        //PlayerPrefs.SetInt("MasterToggle",);
     }
 
     private void LoadData()

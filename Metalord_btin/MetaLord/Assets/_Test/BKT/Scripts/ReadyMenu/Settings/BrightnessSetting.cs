@@ -27,16 +27,15 @@ public class BrightnessSetting : MonoBehaviour
         brightnessSlider = GetComponent<Slider>();
         percentText = transform.GetChild(3).GetComponent<TMP_Text>();                
         brightness.TryGetSettings(out autoExposure);
-    }
 
-    private void Start()
-    {
+        Get2DImages();
+        GetTexts();
         // TODO 타이틀씬 로드시 재작성
-        //if(PlayerPrefs.HasKey("BrightnessSetting"))
-        //{
-        //    LoadData();
-        //}
-        //else
+        if (PlayerPrefs.HasKey("BrightnessSetting"))
+        {
+            LoadData();
+        }
+        else
         {
             Init();
         }        
@@ -45,7 +44,7 @@ public class BrightnessSetting : MonoBehaviour
     private void OnDisable()
     {
         // TODO 타이틀씬 로드시 재작성
-        //SaveData();
+        SaveData();
     }
 
     // 밝기 조절 함수 _ 슬라이더로 조절
@@ -53,7 +52,6 @@ public class BrightnessSetting : MonoBehaviour
     {
         if(_value > 0.05f)
         {
-
             autoExposure.keyValue.value = _value;
             AdjustBrightness(_value);
         }
@@ -83,20 +81,23 @@ public class BrightnessSetting : MonoBehaviour
     // 밝기 조절
     private void AdjustBrightness(float value)
     {
-        float alpha = default;
+        float alpha = value;
+        float imgValue = value;
 
         // UI 이미지의 밝기 조절 위한 RGB값 조절
         foreach (Image image in images)
         {
             if (image.transform.name == "Panel") continue;
-            image.color = new Color(value, value, value, image.color.a);
+            if (imgValue < 0.5f) imgValue = 0.5f; 
+            image.color = new Color(imgValue, imgValue, imgValue, image.color.a);
         }
 
         // 텍스트 밝기 조절을 위한 알파값 조절
         foreach(TMP_Text text in texts)
         {
-            if (text.color.r < 0.5 && value < 0.7) alpha = 0.7f; // 검은색글씨처럼 어두운 글씨는 알파값을 0.7까지 조절
-            else alpha = value; // 흰색과같은 밝은 글씨는 알파값을 0.05까지 조절
+            if (text.color.r < 0.5f && alpha < 0.7f) alpha = 0.7f; // 검은색글씨처럼 어두운 글씨는 알파값을 0.7까지 조절
+            else if(alpha < 0.1f) alpha = 0.1f; // 흰색과같은 밝은 글씨는 알파값을 0.1f까지 조절
+
             text.color = new Color(text.color.r, text.color.g, text.color.b, alpha);
         }
     }
@@ -104,6 +105,7 @@ public class BrightnessSetting : MonoBehaviour
     // 데이터 저장
     private void SaveData()
     {
+        Debug.Log("밝기 저장완료 " + brightnessValue);
         PlayerPrefs.SetFloat("BrightnessSetting", brightnessValue);        
     }
 
@@ -111,7 +113,7 @@ public class BrightnessSetting : MonoBehaviour
     // 데이터 불러오기
     private void LoadData()
     {
-        brightnessValue = PlayerPrefs.GetInt("BrightnessSetting");
+        brightnessValue = PlayerPrefs.GetFloat("BrightnessSetting");
         ControllBrightness(brightnessValue);
         brightnessSlider.value = brightnessValue;
     }
@@ -120,8 +122,6 @@ public class BrightnessSetting : MonoBehaviour
     {
         brightnessValue = 1f;
         brightnessSlider.value = brightnessValue;
-        Get2DImages();
-        GetTexts();
         ControllBrightness(brightnessValue);
     }
 }

@@ -11,11 +11,11 @@ public class CrossLineSetting : MonoBehaviour
     private void Start()
     {
         //TODO 타이틀씬 로드시 재작성
-        //if (PlayerPrefs.HasKey("CrossLineSetting"))
-        //{
-        //    LoadData();
-        //}
-        //else
+        if (PlayerPrefs.HasKey("CrossLineSetting"))
+        {
+            LoadData();
+        }
+        else
         {
             Init();
         }
@@ -24,7 +24,7 @@ public class CrossLineSetting : MonoBehaviour
     private void OnDisable()
     {
         //TODO 타이틀씬 로드시 재작성
-        //SaveData();
+        SaveData();
     }
 
     // 버튼 누를시 호출되는 함수

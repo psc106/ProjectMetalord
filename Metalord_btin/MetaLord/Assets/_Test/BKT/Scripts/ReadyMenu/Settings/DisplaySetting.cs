@@ -18,18 +18,18 @@ public class DisplaySetting : MonoBehaviour
     private void Awake()
     {
         // TODO 타이틀씬 로드시 재작성
-        //if (PlayerPrefs.HasKey("DisplaySetting"))
-        //{
-        //    LoadData(); // 저장되어있는 데이터가 있다면
-        //    ChangeScreenMode();            
-        //}
-        //else
-            Init(); // 없다면
+        if (PlayerPrefs.HasKey("DisplaySetting"))
+        {
+            LoadData(); // 저장되어있는 데이터가 있다면
+            ChangeScreenMode();
+        }
+        else Init(); // 없다면
+
     }
 
     private void OnDisable()
     {
-        //SaveData();
+        SaveData();
     }
 
     // 스크린 int값에 따라 스크린 모드 변경

@@ -25,13 +25,12 @@ public class TextSizeSetting : MonoBehaviour
         {            
             fontSizes.Add(originTexts[i].fontSize);            
         }
-        
         //TODO 타이틀씬 로드시 재작성
-        //if (PlayerPrefs.HasKey("TextSizeSetting"))
-        //{
-        //    LoadData();
-        //}
-        //else
+        if (PlayerPrefs.HasKey("TextSizeSetting"))
+        {
+            LoadData();
+        }
+        else
         {
             Init(); //초기화
         }
@@ -40,7 +39,7 @@ public class TextSizeSetting : MonoBehaviour
     private void OnDisable()
     {
         //TODO 타이틀씬 로드시 재작성
-        //SaveData();
+        SaveData();
     }
 
     // 버튼 누를시 호출되는 함수
