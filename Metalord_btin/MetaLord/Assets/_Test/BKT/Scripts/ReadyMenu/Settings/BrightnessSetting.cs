@@ -36,9 +36,7 @@ public class BrightnessSetting : MonoBehaviour
         //}
         //else
         {
-            brightnessValue = 1f;
-            brightnessSlider.value = brightnessValue;
-            ControllBrightness(brightnessValue);
+            Init();
         }        
     }
 
@@ -82,4 +80,10 @@ public class BrightnessSetting : MonoBehaviour
         brightnessSlider.value = brightnessValue;
     }
 
+    public void Init()
+    {
+        brightnessValue = 1f;
+        brightnessSlider.value = brightnessValue;
+        ControllBrightness(brightnessValue);
+    }
 }

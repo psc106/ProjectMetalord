@@ -18,8 +18,8 @@ public class Coin : MonoBehaviour
     private int isExist = TRUE; // 존재하는가
 
     // 코인 증가량
-    private const int SMALL_COIN_VALUE = 5; // 작은코인 값
-    private const int BIG_COIN_VALUE = 20; // 큰 코인 값
+    private const int SMALL_COIN_VALUE = 1; // 작은코인 값
+    private const int BIG_COIN_VALUE = 10; // 큰 코인 값
 
     private void Start()
     {

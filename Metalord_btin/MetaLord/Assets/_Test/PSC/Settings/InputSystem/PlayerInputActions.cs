@@ -73,15 +73,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""Pull"",
-                    ""type"": ""Button"",
-                    ""id"": ""e83dded0-3e99-4d9e-a5b9-7c2abc852580"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""Fire"",
                     ""type"": ""Value"",
                     ""id"": ""9177be6e-b418-4c24-ab54-4b6c07579937"",
@@ -107,15 +98,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
-                },
-                {
-                    ""name"": ""ModeChange"",
-                    ""type"": ""Button"",
-                    ""id"": ""b233830f-8ccf-43f2-be1f-1d9cca60c230"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
                 },
                 {
                     ""name"": ""Interact"",
@@ -278,34 +260,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""164f258f-89d0-4542-93e9-14141ce1a4ee"",
-                    ""path"": ""<Mouse>/rightButton"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Pull"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""ccf6b9a8-628c-4d15-aeee-ce8f38c7c9da"",
                     ""path"": ""<Keyboard>/r"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Reload"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""9a92f0fe-47d8-415f-ae4c-7ea44165d09f"",
-                    ""path"": ""<Keyboard>/x"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""ModeChange"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -448,11 +408,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player_MouseControlCamera = m_Player.FindAction("MouseControlCamera", throwIfNotFound: true);
         m_Player_Run = m_Player.FindAction("Run", throwIfNotFound: true);
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
-        m_Player_Pull = m_Player.FindAction("Pull", throwIfNotFound: true);
         m_Player_Fire = m_Player.FindAction("Fire", throwIfNotFound: true);
         m_Player_Grab = m_Player.FindAction("Grab", throwIfNotFound: true);
         m_Player_Reload = m_Player.FindAction("Reload", throwIfNotFound: true);
-        m_Player_ModeChange = m_Player.FindAction("ModeChange", throwIfNotFound: true);
         m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
         m_Player_Store = m_Player.FindAction("Store", throwIfNotFound: true);
         m_Player_Record = m_Player.FindAction("Record", throwIfNotFound: true);
@@ -523,11 +481,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_MouseControlCamera;
     private readonly InputAction m_Player_Run;
     private readonly InputAction m_Player_Jump;
-    private readonly InputAction m_Player_Pull;
     private readonly InputAction m_Player_Fire;
     private readonly InputAction m_Player_Grab;
     private readonly InputAction m_Player_Reload;
-    private readonly InputAction m_Player_ModeChange;
     private readonly InputAction m_Player_Interact;
     private readonly InputAction m_Player_Store;
     private readonly InputAction m_Player_Record;
@@ -541,11 +497,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @MouseControlCamera => m_Wrapper.m_Player_MouseControlCamera;
         public InputAction @Run => m_Wrapper.m_Player_Run;
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
-        public InputAction @Pull => m_Wrapper.m_Player_Pull;
         public InputAction @Fire => m_Wrapper.m_Player_Fire;
         public InputAction @Grab => m_Wrapper.m_Player_Grab;
         public InputAction @Reload => m_Wrapper.m_Player_Reload;
-        public InputAction @ModeChange => m_Wrapper.m_Player_ModeChange;
         public InputAction @Interact => m_Wrapper.m_Player_Interact;
         public InputAction @Store => m_Wrapper.m_Player_Store;
         public InputAction @Record => m_Wrapper.m_Player_Record;
@@ -574,9 +528,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Jump.started += instance.OnJump;
             @Jump.performed += instance.OnJump;
             @Jump.canceled += instance.OnJump;
-            @Pull.started += instance.OnPull;
-            @Pull.performed += instance.OnPull;
-            @Pull.canceled += instance.OnPull;
             @Fire.started += instance.OnFire;
             @Fire.performed += instance.OnFire;
             @Fire.canceled += instance.OnFire;
@@ -586,9 +537,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Reload.started += instance.OnReload;
             @Reload.performed += instance.OnReload;
             @Reload.canceled += instance.OnReload;
-            @ModeChange.started += instance.OnModeChange;
-            @ModeChange.performed += instance.OnModeChange;
-            @ModeChange.canceled += instance.OnModeChange;
             @Interact.started += instance.OnInteract;
             @Interact.performed += instance.OnInteract;
             @Interact.canceled += instance.OnInteract;
@@ -620,9 +568,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Jump.started -= instance.OnJump;
             @Jump.performed -= instance.OnJump;
             @Jump.canceled -= instance.OnJump;
-            @Pull.started -= instance.OnPull;
-            @Pull.performed -= instance.OnPull;
-            @Pull.canceled -= instance.OnPull;
             @Fire.started -= instance.OnFire;
             @Fire.performed -= instance.OnFire;
             @Fire.canceled -= instance.OnFire;
@@ -632,9 +577,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Reload.started -= instance.OnReload;
             @Reload.performed -= instance.OnReload;
             @Reload.canceled -= instance.OnReload;
-            @ModeChange.started -= instance.OnModeChange;
-            @ModeChange.performed -= instance.OnModeChange;
-            @ModeChange.canceled -= instance.OnModeChange;
             @Interact.started -= instance.OnInteract;
             @Interact.performed -= instance.OnInteract;
             @Interact.canceled -= instance.OnInteract;
@@ -716,11 +658,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnMouseControlCamera(InputAction.CallbackContext context);
         void OnRun(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
-        void OnPull(InputAction.CallbackContext context);
         void OnFire(InputAction.CallbackContext context);
         void OnGrab(InputAction.CallbackContext context);
         void OnReload(InputAction.CallbackContext context);
-        void OnModeChange(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
         void OnStore(InputAction.CallbackContext context);
         void OnRecord(InputAction.CallbackContext context);
