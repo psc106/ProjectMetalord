@@ -113,7 +113,7 @@ public class Controller_Physics : MonoBehaviour
 
     // 12.21 SSC : NPC 대화중(stopState) 사격, 재장전 방지 위해 CanReload => !stopState 추가
     // 12.21 SSC : 상점창 사격, 재장전 방지 위해 CanReload => !storeUI.activeSelf 추가
-    public bool CanReload => !playingReloadAnimation && !OnClimb && !stopState && controller_UI.IsAnyUISetActiveFalse();
+    public bool CanReload => !playingReloadAnimation && !OnClimb && !stopState && !controller_UI.CheckAllUISetActiveTrue();
     public bool OnMultipleState => multipleState;
     public bool OnGround => groundContactCount > 0;
     public bool OnSteep => steepContactCount > 0;
