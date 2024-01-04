@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Audio;
+using TMPro;
 
 /// <summary>
 /// 볼륨 셋팅하는 클래스
@@ -31,12 +32,24 @@ public class VolumeSetting : MonoBehaviour
     [SerializeField] private Sprite sprite_Pointer_True;
     [SerializeField] private Sprite sprite_Pointer_False;
 
+    [Header("오디오 음량(%) 텍스트")]
+    [SerializeField] private TMP_Text text_Master;
+    [SerializeField] private TMP_Text text_BGM;
+    [SerializeField] private TMP_Text text_SFX;
+
+
+    private float vol_Master;
+    private float vol_BGM;
+    private float vol_SFX;
 
     private void Awake()
     {
+        // 슬라이더 함수 입력
         slider_Master.onValueChanged.AddListener(SetMasterVolume);
         slider_BGM.onValueChanged.AddListener(SetBGMVolume);
         slider_SFX.onValueChanged.AddListener(SetSFXVolume);
+
+        // 토글 함수 입력
         toggle_Master.onValueChanged.AddListener(SetControlMaster);
         toggle_BGM.onValueChanged.AddListener(SetControlBGM);
         toggle_SFX.onValueChanged.AddListener(SetControlSFX);
@@ -44,21 +57,30 @@ public class VolumeSetting : MonoBehaviour
 
     // 마스터 볼륨 설정
     public void SetMasterVolume(float vol)
-    {        
-        audioMixer.SetFloat("Master",Mathf.Log10(vol)*20);
-        Debug.Log(vol);
+    {
+        vol_Master = vol;
+        AudioMixerSet("Master", vol);
+        //audioMixer.SetFloat("Master",Mathf.Log10(vol)*20);
+        text_Master.text = ((int)(vol * 100)).ToString() + "%";
     }
 
     // BGM 볼륨 설정
     public void SetBGMVolume(float vol)
     {
-        audioMixer.SetFloat("BGM", Mathf.Log10(vol)*20);
+        vol_BGM = vol;
+        AudioMixerSet("BGM", vol);
+
+        //audioMixer.SetFloat("BGM", Mathf.Log10(vol)*20);
+        text_BGM.text = ((int)(vol * 100)).ToString() + "%";
     }
 
     // SFX 볼륨 설정
     public void SetSFXVolume(float vol)
     {
-        audioMixer.SetFloat("SFX", Mathf.Log10(vol)*20);
+        vol_SFX = vol;
+        AudioMixerSet("SFX", vol);
+        //audioMixer.SetFloat("SFX", Mathf.Log10(vol)*20);
+        text_SFX.text = ((int)(vol * 100)).ToString() + "%";
     }
 
     // 마스터 조절 여부 설정
@@ -69,7 +91,9 @@ public class VolumeSetting : MonoBehaviour
 
         if (check == false)
         {
+            AudioMixerSet("Master", 0f);
             SetFalse(tempToggle, tempSlider);
+            // BGM,SFX 함께 조절
             toggle_BGM.onValueChanged.Invoke(false);
             toggle_SFX.onValueChanged.Invoke(false);
             toggle_BGM.interactable = false;
@@ -79,6 +103,8 @@ public class VolumeSetting : MonoBehaviour
         else
         {
             SetTrue(tempToggle, tempSlider);
+            AudioMixerSet("Master", vol_Master);
+            // BGM, SFX 함께 조절
             toggle_BGM.onValueChanged.Invoke(true);
             toggle_SFX.onValueChanged.Invoke(true);
             toggle_BGM.interactable = true;
@@ -94,11 +120,15 @@ public class VolumeSetting : MonoBehaviour
 
         if (check == false)
         {
+            AudioMixerSet("BGM", 0f);
             SetFalse(tempToggle, tempSlider);
+
         }
         else
         {
             SetTrue(tempToggle, tempSlider);
+            AudioMixerSet("BGM", vol_BGM);
+
         }
     }
 
@@ -110,11 +140,15 @@ public class VolumeSetting : MonoBehaviour
 
         if (check == false)
         {
+            AudioMixerSet("SFX", 0f);
             SetFalse(tempToggle, tempSlider);
+
         }
         else
         {
             SetTrue(tempToggle, tempSlider);
+            AudioMixerSet("SFX", vol_SFX);
+
         }
     }
 
@@ -144,5 +178,21 @@ public class VolumeSetting : MonoBehaviour
         tempToggle.transform.GetChild(1).gameObject.SetActive(true);
         tempToggle.transform.GetChild(2).gameObject.SetActive(false);
         tempToggle.transform.GetChild(3).gameObject.SetActive(true);
+    }
+
+    private void AudioMixerSet(string id, float vol)
+    {        
+        audioMixer.SetFloat(id, Mathf.Log10(vol) * 20);
+    }
+
+
+    private void SaveData()
+    {
+
+    }
+
+    private void LoadData()
+    {
+
     }
 }

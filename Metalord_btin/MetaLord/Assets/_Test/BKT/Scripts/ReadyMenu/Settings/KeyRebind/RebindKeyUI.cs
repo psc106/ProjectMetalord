@@ -149,11 +149,11 @@ public class RebindKeyUI : MonoBehaviour
 
             if(displayString == "LMB") // 만약 왼쪽마우스라서 LMB가 스트링값으로 들어가 있다면
             {
-                displayString = "Left Mouse Button";
+                displayString = "Left Mouse";
             }
             else if(displayString == "RMB")  // 만약 오른쪽마우스라서 RMB가 스트링값으로 들어가 있다면
             {
-                displayString = "Right Mouse Button";
+                displayString = "Right Mouse";
             }
         }
 
