@@ -11,7 +11,7 @@ public class TitleController : MonoBehaviour
 
     private void Awake()
     {
-        currentScene = SceneList.KHJ_TestTitleScene1;
+        currentScene = SceneList.TitleScene;
         nextScene = SceneList.StoryScene;
         continueScene = SceneList.MainScene;
     }
