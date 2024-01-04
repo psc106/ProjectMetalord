@@ -113,12 +113,12 @@ TextureImporter:
       name: SliderBar_Total_0
       rect:
         serializedVersion: 2
-        x: 43
+        x: 45
         y: 132
-        width: 1217
-        height: 68
+        width: 1215
+        height: 67
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []

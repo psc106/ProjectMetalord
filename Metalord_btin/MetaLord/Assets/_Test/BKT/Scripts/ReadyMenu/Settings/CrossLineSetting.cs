@@ -6,7 +6,6 @@ public class CrossLineSetting : MonoBehaviour
 {
     [SerializeField] GameObject crossLine; //경로 Player >> CameraSystem >> GroundCamera >> Canvas >> adjustedReticle
 
-
     private ButtonSize selectedButton;
 
     private void Start()
@@ -18,8 +17,7 @@ public class CrossLineSetting : MonoBehaviour
         //}
         //else
         {
-            selectedButton = ButtonSize.Middle;
-
+            Init();
         }
     }
 
@@ -78,5 +76,10 @@ public class CrossLineSetting : MonoBehaviour
     {
         selectedButton = (ButtonSize)PlayerPrefs.GetInt("CrossLineSetting");
         ChangeCrossLineSize(selectedButton);
+    }
+
+    public void Init()
+    {
+        PushMiddle();
     }
 }

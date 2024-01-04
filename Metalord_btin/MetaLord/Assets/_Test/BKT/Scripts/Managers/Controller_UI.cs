@@ -23,6 +23,8 @@ public class Controller_UI : MonoBehaviour
     private GameObject firstKeyExplainUI; // 첫 코인 도움말 UI 오브젝트
     private GameObject recordPopUpItemUI; // 아이템 팝업
     private GameObject settingsUI; // 설정창 UI 오브젝트
+    private GameObject keyRebindUI; // 키 리바인딩 UI 오브젝트
+
     private bool canInput = true; // 입력 가능여부
     private const float INPUT_DELAYTIME = 0.3f; // 입력 후 대기 시간
 
@@ -30,7 +32,7 @@ public class Controller_UI : MonoBehaviour
     {
         // 231231 배경택
         storeUI = Utility.FindChildObj(canvases, "StoreCanvas");
-        recordUI = Utility.FindChildObj(canvases, "RecordCanvas");
+        recordUI = Utility.FindChildObj(canvases, "RecordCanvas");        
         readyMenuUI = Utility.FindChildObj(canvases, "ReadyCanvas");
         explainUI = Utility.FindChildObj(canvases, "ExplainCanvas");
         firstCoinExPlainUI = Utility.FindChildObj(canvases, "CoinExplainCanvas");
@@ -38,6 +40,8 @@ public class Controller_UI : MonoBehaviour
         savingUI = Utility.FindChildObj(canvases, "SavingCanvas");
         recordPopUpItemUI = Utility.FindChildObj(canvases, "RecordPopUpCanvas");
         settingsUI = Utility.FindChildObj(canvases, "SettingCanvas");
+        keyRebindUI = Utility.FindChildObj(canvases, "KeyRebindCanvas");
+        recordPopUpItemUI = Utility.FindChildObj(canvases, "RecordPopUpCanvas");
     }
 
     private void Update()
@@ -46,12 +50,16 @@ public class Controller_UI : MonoBehaviour
         {
             if (reader.StoreKey) // 상점 키 누를 경우 _231219 배경택
             {
+                // 설정, 설명 관련 UI 켜져있을 경우 return;
+                if (CheckSetAndExplainUITrue()) return;
+
+                // 상점 UI가 이미 켜져있다면
                 if (storeUI.activeSelf == true)
                 {
                     Controller_Physics.SwitchCameraLock(false);
                     storeUI.SetActive(false); // 중복 버튼을 누를경우 꺼짐    
                 }
-                else
+                else // 상점 UI가 꺼져있다면
                 {
                     Controller_Physics.SwitchCameraLock(true);
                     storeUI.SetActive(true);
@@ -64,13 +72,16 @@ public class Controller_UI : MonoBehaviour
 
             if (reader.RecordKey) // 도감 키 누를 경우 _231219 배경택
             {
+                // 설정, 설명 관련 UI 켜져있을 경우 return;
+                if (CheckSetAndExplainUITrue()) return;
+
+                // 도감 UI가 켜져있다면
                 if (recordUI.activeSelf == true)
                 {
                     Controller_Physics.SwitchCameraLock(false);
                     recordUI.SetActive(false); // 중복 버튼을 누를경우 꺼짐
                 }
-
-                else
+                else // 도감 UI가 꺼져있다면
                 {
                     Controller_Physics.SwitchCameraLock(true);
                     recordUI.SetActive(true);
@@ -82,7 +93,8 @@ public class Controller_UI : MonoBehaviour
 
             }
 
-            if (IsAnyUISetActiveFalse() && reader.ReadyMenuKey) //대기메뉴 키 누를 경우 _231231 배경택
+            //대기메뉴 키 누를 경우 _231231 배경택
+            if (!CheckAnyUITrue() && reader.ReadyMenuKey) 
             {
                 if (readyMenuUI.activeSelf == true)
                 {
@@ -103,40 +115,45 @@ public class Controller_UI : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.Escape)) // 그냥 ESC키 누를경우 꺼짐 (환경설정키가 ESC로 되어있음에 따라 환경설정키는 조건에서 제외)
             {
-                if (storeUI.activeSelf == true)
+                if (storeUI.activeSelf == true) // 상점 UI
                 {
                     Controller_Physics.SwitchCameraLock(false);
                     storeUI.SetActive(false);
                 }
-
-                if (recordUI.activeSelf == true)
+                else if (recordUI.activeSelf == true) // 도감 UI
                 {
                     Controller_Physics.SwitchCameraLock(false);
                     recordUI.SetActive(false);
                 }
-
-                if (explainUI.activeSelf == true)
+                else if (explainUI.activeSelf == true) // 설명 UI
                 {
                     Controller_Physics.SwitchCameraLock(false);
                     explainUI.SetActive(false);
                 }
-
-                if (firstCoinExPlainUI.activeSelf == true)
+                else if (firstCoinExPlainUI.activeSelf == true) // 첫 코인 설명 UI
                 {
                     Controller_Physics.SwitchCameraLock(false);
                     firstCoinExPlainUI.SetActive(false);
                 }
-
-                if (savingUI.activeSelf == true && savingUI.GetComponent<SavingCanvas>().isSaved)
+                else if (savingUI.activeSelf == true && savingUI.GetComponent<SavingCanvas>().isSaved) // 저장 UI
                 {
                     savingUI.SetActive(false);
                     readyMenuUI.SetActive(true);
                 }
-
-                if (firstKeyExplainUI.activeSelf == true)
+                else if (firstKeyExplainUI.activeSelf == true) // 첫 Key 설명 UI
                 {
                     Controller_Physics.SwitchCameraLock(false);
                     firstKeyExplainUI.SetActive(false);
+                }
+                else if(settingsUI.activeSelf == true) // 환경설정 UI
+                {
+                    readyMenuUI.SetActive(true);
+                    settingsUI.SetActive(false);
+                }
+                else if(keyRebindUI.activeSelf == true) // 키 리바인드 UI
+                {
+                    settingsUI.SetActive(true);
+                    keyRebindUI.SetActive(false);
                 }
 
                 StartCoroutine(DelayInput());
@@ -144,17 +161,50 @@ public class Controller_UI : MonoBehaviour
         }        
     }
 
-    public bool IsAnyUISetActiveFalse()
+    // 대기메뉴를 위한 체크
+    public bool CheckAnyUITrue()
     {
         if (storeUI.activeSelf
             || recordUI.activeSelf
             || explainUI.activeSelf
             || firstCoinExPlainUI.activeSelf
-            || savingUI.activeSelf
             || firstKeyExplainUI.activeSelf
-            ) return false;
+            || savingUI.activeSelf
+            || recordPopUpItemUI.activeSelf
+            || settingsUI.activeSelf
+            || keyRebindUI.activeSelf
+            || recordPopUpItemUI.activeSelf
+            ) return true;
 
-        return true;
+        return false;
+    }
+
+    // 설명, 설정 관련 UI 켜져있는지 체크
+    public bool CheckSetAndExplainUITrue()
+    {
+        if (readyMenuUI.activeSelf
+            || explainUI.activeSelf
+            || firstCoinExPlainUI.activeSelf
+            || firstKeyExplainUI.activeSelf
+            || savingUI.activeSelf
+            || recordPopUpItemUI.activeSelf
+            || settingsUI.activeSelf
+            || keyRebindUI.activeSelf
+            || recordPopUpItemUI.activeSelf
+            ) return true;
+
+        return false;
+    }
+
+    // 전체 UI 켜져있는지 체크
+    public bool CheckAllUISetActiveTrue()
+    {
+        if (storeUI.activeSelf
+            || recordUI.activeSelf
+            || CheckSetAndExplainUITrue()
+            ) return true;
+
+        return false;
     }
 
 
