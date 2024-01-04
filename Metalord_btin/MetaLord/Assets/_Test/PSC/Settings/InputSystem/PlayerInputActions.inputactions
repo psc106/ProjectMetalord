@@ -51,15 +51,6 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Pull",
-                    "type": "Button",
-                    "id": "e83dded0-3e99-4d9e-a5b9-7c2abc852580",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Fire",
                     "type": "Value",
                     "id": "9177be6e-b418-4c24-ab54-4b6c07579937",
@@ -85,15 +76,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
-                },
-                {
-                    "name": "ModeChange",
-                    "type": "Button",
-                    "id": "b233830f-8ccf-43f2-be1f-1d9cca60c230",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 },
                 {
                     "name": "Interact",
@@ -256,34 +238,12 @@
                 },
                 {
                     "name": "",
-                    "id": "164f258f-89d0-4542-93e9-14141ce1a4ee",
-                    "path": "<Mouse>/rightButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Pull",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "ccf6b9a8-628c-4d15-aeee-ce8f38c7c9da",
                     "path": "<Keyboard>/r",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Reload",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "9a92f0fe-47d8-415f-ae4c-7ea44165d09f",
-                    "path": "<Keyboard>/x",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "ModeChange",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

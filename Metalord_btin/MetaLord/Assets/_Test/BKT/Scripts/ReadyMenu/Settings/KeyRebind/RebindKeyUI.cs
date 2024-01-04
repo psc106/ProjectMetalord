@@ -7,8 +7,11 @@ enum PlayerActions
     Move,
     Jump,
     Fire,
-    Pull,
+    Grab,
     Run,
+    Interact,
+    Store,
+    Record,
 }
 
 enum BindingKeyword
@@ -17,7 +20,7 @@ enum BindingKeyword
     Back = 2,
     Left = 3,
     Right = 4,
-    RunJumpFirePull = 0,
+    Common = 0,
 }
 
 /// <summary>
@@ -51,12 +54,22 @@ public class RebindKeyUI : MonoBehaviour
             case PlayerActions.Fire:
                 gameInputAction = inputReader.inputActions.Player.Fire;
                 break;
-            case PlayerActions.Pull:
-                gameInputAction = inputReader.inputActions.Player.Pull;
+            case PlayerActions.Grab:
+                gameInputAction = inputReader.inputActions.Player.Grab;
                 break;
             case PlayerActions.Run:
                 gameInputAction = inputReader.inputActions.Player.Run;
                 break;
+            case PlayerActions.Interact:
+                gameInputAction = inputReader.inputActions.Player.Interact;
+                break;
+            case PlayerActions.Store:
+                gameInputAction = inputReader.inputActions.Player.Store;
+                break;
+            case PlayerActions.Record:
+                gameInputAction = inputReader.inputActions.Player.Record;
+                break;
+            
             default:
                 break;
         }
