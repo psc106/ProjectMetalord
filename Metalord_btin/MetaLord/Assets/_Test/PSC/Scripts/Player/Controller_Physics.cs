@@ -214,8 +214,8 @@ public class Controller_Physics : MonoBehaviour
 
     private void Awake()
     {
-        l = gameObject.AddComponent<LineRenderer>();
-        l.positionCount = 2;
+        //l = gameObject.AddComponent<LineRenderer>();
+        //l.positionCount = 2;
         //Application.targetFrameRate = 60;
 
         cameraPoint = Camera.main.transform;
@@ -233,8 +233,8 @@ public class Controller_Physics : MonoBehaviour
 
     void Update()
     {
-        l.SetPosition(0, rb.position);
-        l.SetPosition(1, rb.position - upAxis * probeDistance);
+        //l.SetPosition(0, rb.position);
+        //l.SetPosition(1, rb.position - upAxis * probeDistance);
 
         // Debug.Log("업데이트" + transform.position);
         //대화나 메뉴에서 stop시킴
