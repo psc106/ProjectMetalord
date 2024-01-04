@@ -254,10 +254,10 @@ public class Controller_Physics : MonoBehaviour
             t.material.color = color;
         }
 
+        UpdateAxis();
         UpdateFrameState();
         UpdateInputState();
         UpdateAnimationParameter();
-        UpdateAxis();
 
 
         // 레이지점 컬러 체크 테스트용
@@ -551,7 +551,7 @@ public class Controller_Physics : MonoBehaviour
 
         }
         //상태에 따라 가속도, 최고속도, 좌우/앞뒤 축을 재 조정한다.
-        else if (!multipleState && OnClimb && desireClimb)
+        else if (OnClimb && desireClimb)
         {
            // Debug.Log("좌표-등산");
             acceleration = maxClimbAcceleration;
@@ -562,7 +562,7 @@ public class Controller_Physics : MonoBehaviour
             zAxis = upAxis;
         }
         //상태에 따라 가속도, 최고속도, 좌우/앞뒤 축을 재 조정한다.
-        else if (!multipleState && OnClimb && !desireClimb)
+        else if (OnClimb && !desireClimb)
         {
             //Debug.Log("좌표-등산보정");
             acceleration = maxClimbAcceleration;
@@ -1070,7 +1070,7 @@ public class Controller_Physics : MonoBehaviour
     //애니메이션의 파라미터를 추가한다.
     private void UpdateAnimationParameter()
     {
-        animator.SetBool(EquipStateHash, (!multipleState && OnClimb));
+        animator.SetBool(EquipStateHash, (stepsSinceLastClimb==0 && OnClimb));
         animator.SetFloat(IdleTimeHash, idleTime);
         animator.SetFloat(VelocityXHash, input.x * (desireRun ? 2 : 1));
         animator.SetFloat(VelocityYHash, input.z * (desireRun ? 2 : 1));
