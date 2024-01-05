@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 abstract public class GunBase : MonoBehaviour
@@ -12,7 +13,8 @@ abstract public class GunBase : MonoBehaviour
     public bool fireStart = false;
     public LayerMask myLayer;
     Coroutine shootCoroutine;
-    
+
+
     public GunMode mode { get; protected set; }
 
     protected virtual void Awake()
@@ -37,7 +39,24 @@ abstract public class GunBase : MonoBehaviour
         // 코루틴 돌고있는지 체크
         StopLerpGaguge();
         shootCoroutine = StartCoroutine(LerpGauge(_ammo));        
-        PaintTarget.PaintRay(_ray, brush, myLayer, state.range);        
+        PaintTarget.PaintRay(_ray, brush, myLayer, state.range);
+
+        //RaycastHit hit;
+
+        //if(Physics.Raycast(_ray, out hit, state.Range, myLayer))
+        //{
+
+
+        //    GameObject triggerObj = new GameObject("Trigger");            
+        //    triggerObj.transform.position = hit.point;
+        //    triggerObj.transform.rotation = Quaternion.LookRotation(hit.normal);
+        //    BoxCollider objTrigger  = triggerObj.AddComponent<BoxCollider>();            
+        //    objTrigger.isTrigger = true;            
+        //    Vector3 tempSize = new Vector3(0.5f, 0.5f, 0.5f);
+        //    objTrigger.size = tempSize;
+            
+        //}
+
     }
 
     // 그랩건일때 레이지점 페인팅 없이 소모값만 적용하고 싶을 때
