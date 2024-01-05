@@ -60,7 +60,10 @@ public class DisplaySetting : MonoBehaviour
     // 데이터 저장
     private void SaveData()
     {
-        PlayerPrefs.SetInt("DisplaySetting", _isFullScreen);
+        int temp = default;
+        if (_isFullScreen == 1) temp = 0;
+        else temp = 1;
+        PlayerPrefs.SetInt("DisplaySetting", temp);
     }
 
 
