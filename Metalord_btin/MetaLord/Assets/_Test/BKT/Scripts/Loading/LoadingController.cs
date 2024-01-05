@@ -33,6 +33,7 @@ public class LoadingController : MonoBehaviour
 
 
         float timer = 0f;
+        
         while (!operation.isDone)
         {
             yield return null;
@@ -43,7 +44,7 @@ public class LoadingController : MonoBehaviour
             }
             else
             {
-                timer += Time.deltaTime;
+                timer += Time.unscaledDeltaTime;
                 progressBar.fillAmount = Mathf.Lerp(0.9f, 1f, timer);
                 if(progressBar.fillAmount >= 1f)
                 {
