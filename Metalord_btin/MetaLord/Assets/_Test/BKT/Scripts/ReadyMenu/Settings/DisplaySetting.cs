@@ -9,34 +9,27 @@ using UnityEngine.UI;
 /// </summary>
 public class DisplaySetting : MonoBehaviour
 {
-    private Image[] images;
-
     private int _isFullScreen;
     public int isFullScreen
     {
         get { return _isFullScreen; }
-    }
-
-    private void Get2DImage()
-    {
-        images = Resources.FindObjectsOfTypeAll<Image>();
-    }
+    }    
 
     private void Awake()
     {
         // TODO 타이틀씬 로드시 재작성
-        //if (PlayerPrefs.HasKey("DisplaySetting"))
-        //{
-        //    LoadData(); // 저장되어있는 데이터가 있다면
-        //    ChangeScreenMode();            
-        //}
-        //else
-            Init(); // 없다면
+        if (PlayerPrefs.HasKey("DisplaySetting"))
+        {
+            LoadData(); // 저장되어있는 데이터가 있다면
+            ChangeScreenMode();
+        }
+        else Init(); // 없다면
+
     }
 
     private void OnDisable()
     {
-        //SaveData();
+        SaveData();
     }
 
     // 스크린 int값에 따라 스크린 모드 변경
@@ -67,7 +60,10 @@ public class DisplaySetting : MonoBehaviour
     // 데이터 저장
     private void SaveData()
     {
-        PlayerPrefs.SetInt("DisplaySetting", _isFullScreen);
+        int temp = default;
+        if (_isFullScreen == 1) temp = 0;
+        else temp = 1;
+        PlayerPrefs.SetInt("DisplaySetting", temp);
     }
 
 
@@ -79,7 +75,7 @@ public class DisplaySetting : MonoBehaviour
 
     // 초기화
     public void Init()
-    {
+    {        
         _isFullScreen = 1;
         ChangeScreenMode();        
     }

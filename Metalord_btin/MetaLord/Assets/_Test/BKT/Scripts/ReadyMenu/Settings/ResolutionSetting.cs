@@ -31,7 +31,17 @@ public class ResolutionSetting : MonoBehaviour
             str_resolution.Add(temp);
         }
 
-        Init();
+        if (PlayerPrefs.HasKey("ResolutionSettings"))
+        {
+            LoadData();
+        }
+        else Init();
+
+    }
+
+    private void OnDisable()
+    {
+        SaveData();
     }
 
 
@@ -43,7 +53,7 @@ public class ResolutionSetting : MonoBehaviour
             resIndex--;
 
             InputText(resIndex);
-            Screen.SetResolution(resolutions[resIndex].width, resolutions[resIndex].height, !Convert.ToBoolean(displaySetting.isFullScreen));
+            Screen.SetResolution(resolutions[resIndex].width, resolutions[resIndex].height,Screen.fullScreen);
         } 
     }
 
@@ -55,7 +65,7 @@ public class ResolutionSetting : MonoBehaviour
             resIndex++;
 
             InputText(resIndex);
-            Screen.SetResolution(resolutions[resIndex].width, resolutions[resIndex].height, !Convert.ToBoolean(displaySetting.isFullScreen));
+            Screen.SetResolution(resolutions[resIndex].width, resolutions[resIndex].height,Screen.fullScreen);
         }
 
     }
@@ -71,6 +81,18 @@ public class ResolutionSetting : MonoBehaviour
     {
         resIndex = 0;
         InputText(resIndex);
-        Screen.SetResolution(resolutions[resIndex].width, resolutions[resIndex].height, !Convert.ToBoolean(displaySetting.isFullScreen));
+        Screen.SetResolution(resolutions[resIndex].width, resolutions[resIndex].height, Screen.fullScreen);
+    }
+
+    private void SaveData()
+    {
+        PlayerPrefs.SetInt("ResolutionSettings", resIndex);
+    }
+
+    private void LoadData()
+    {
+        resIndex = PlayerPrefs.GetInt("ResolutionSettings");
+        InputText(resIndex);
+        Screen.SetResolution(resolutions[resIndex].width, resolutions[resIndex].height, Screen.fullScreen);
     }
 }

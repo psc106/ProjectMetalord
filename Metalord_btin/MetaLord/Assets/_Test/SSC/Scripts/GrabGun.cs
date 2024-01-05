@@ -64,21 +64,19 @@ public class GrabGun : GunBase
         {
             return false;
         }
-        // TODO : 임시야매로 그랩건의 오브젝트 남발 방지
+        // TODO : 임시야매로 그랩건의 오브젝트 그랩 남발 방지
         else if (state.hit.transform.gameObject.layer != LayerMask.NameToLayer("MovedObject") &&
-            state.hit.transform.gameObject.layer != LayerMask.NameToLayer("GrabedObject"))
+            state.hit.transform.gameObject.layer != LayerMask.NameToLayer("GrabedObject") ||
+            state.hit.transform.parent?.gameObject.layer == LayerMask.NameToLayer("NPC"))
         {            
             return false;
         }
-
-        //state.pickupPoint.position = state.hit.point;
-        //state.pickupPoint.position = state.hit.transform.position;
 
         FollowingObj();
         return true;
     }
 
-    private void Update()
+    void FixedUpdate()
     {
         GrabObj();
     }
@@ -93,8 +91,7 @@ public class GrabGun : GunBase
                 return;
             }
 
-            Vector3 dir = (state.pickupPoint.position - followPos) - targetRigid.position;
-            //Vector3 dir = state.pickupPoint.position - targetRigid.position;
+            Vector3 dir = (state.pickupPoint.position - followPos) - targetRigid.position;            
             float mag = dir.magnitude;
 
             if (mag >= maxSpeed)
@@ -123,9 +120,19 @@ public class GrabGun : GunBase
 
         if(targetObj?.GetComponent<MeshCollider>() != null)
         {
-            targetObj.GetComponent<MeshCollider>().material.dynamicFriction = 1f;
+            targetObj.GetComponent<MeshCollider>().material.dynamicFriction = 1f;   
+            
+            if(targetObj.GetComponent<MovedObject>() != null)
+            {
+                targetObj.GetComponent<MovedObject>().CancelGrab();
+            }
+
         }
 
+        if (targetObj?.GetComponent<CatchObject>() != null)
+        {
+            targetObj.GetComponent<CatchObject>().CancelGrab();
+        }
 
         targetObj = null;
         state.grabLine.enabled = false;
@@ -159,7 +166,7 @@ public class GrabGun : GunBase
             {                
                 targetObj.GetComponent<MeshCollider>().convex = true;
                 targetObj.AddComponent<Rigidbody>();
-                targetObj.GetComponent<MovedObject>().ChangedState(state);
+                targetObj.GetComponent<MovedObject>().ChangedState();
             }
         }
         // 그랩 대상의 부모가 있다면
@@ -179,7 +186,7 @@ public class GrabGun : GunBase
                 targetObj.transform.parent = null;
                 targetObj.GetComponent<MeshCollider>().convex = true;
                 targetObj.AddComponent<Rigidbody>();
-                targetObj.GetComponent<MovedObject>().ChangedState(state);
+                targetObj.GetComponent<MovedObject>().ChangedState();
 
             }
             // 상위 오브젝트 경우
@@ -190,15 +197,16 @@ public class GrabGun : GunBase
                 CatchObject controll = targetObj.GetComponent<CatchObject>();
                 controll.SetUpMesh();
                 targetObj.AddComponent<Rigidbody>();                
-                controll.ChangedState(state);
+                controll.ChangedState();
             }
+
         }
         
         targetRigid = targetObj.GetComponent<Rigidbody>();        
         state.pickupPoint.position = state.hit.point;
         followPos = state.pickupPoint.position - state.hit.transform.position;
         targetRigid.constraints = RigidbodyConstraints.FreezeRotation;
-        targetRigid.useGravity = false;
+        targetRigid.useGravity = false;      
         state.isShootingState = true;
 
         if (state.Ammo > -ammo)

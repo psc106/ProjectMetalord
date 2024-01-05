@@ -1,19 +1,28 @@
 
+using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 
 public class MovedObject : MonoBehaviour
 {
     public static float gravityMultiple = 2;
-    bool checkContact = false;
+    public LayerMask layerMask;
     Rigidbody myRigid;
     MeshCollider myColid;    
-    public LayerMask layerMask;
     NpcBase targetNpc;
-    GunStateController state;
+
+    float ySpeed = default;    
+    float contactTime = 0f;
+    float decrementGravity = 0.25f;
+    float maxGravity = 30f;
+    int checkCount = 0;
+    bool isSleep = false;
+    bool checkContact = false;
+
+    Coroutine sleepCoroutine;
 
     private void Awake()
-    {
+    {        
         checkContact = false;
         myColid = GetComponent<MeshCollider>();
 
@@ -24,82 +33,129 @@ public class MovedObject : MonoBehaviour
         1 << LayerMask.NameToLayer("GrabedObject");
     }
 
-    private void Update()
+    void Update()
     {
-        if(myRigid)
+        // 내 리지드바디가 존재하고, 그랩한 대상이 아닐 때
+        if(myRigid && !checkContact)
+        {
+            // 일정치 이상의 속력값을 가지면 충돌 체크한 시간을 초기화 해준다.
+            if(myRigid.velocity.magnitude >= 20f)
+            {
+                contactTime = 0;
+            }
+
+            // 충돌시간이 일정값 이하면 (공중에 있는 상태면)
+            if (contactTime < 2f)
+            {               
+                // 임의의 중력가속도 적용
+                Vector3 tempVelocity = myRigid.velocity;
+                ySpeed -= Time.deltaTime * decrementGravity;
+                tempVelocity.y += ySpeed;
+
+                if(tempVelocity.y >= maxGravity)
+                {
+                    tempVelocity.y = maxGravity;
+                }
+
+                myRigid.velocity = tempVelocity;
+            }            
+        }
+
+        // 그랩한 대상의 슬립 기준
+        if (myRigid && checkContact)
         {            
             if (myRigid.IsSleeping())
-            {
-                myRigid.velocity = Vector3.zero;
-                Destroy(myRigid);
-                Destroy(GetComponent<Rigidbody>());
-                myRigid = null;
+            {                
+                Destroy(myRigid);                
                 myColid.convex = false;
-
-                if(GetComponent<OverapObject>() != null)
-                {
-                    Destroy(GetComponent<OverapObject>());
-                }
-
-                if(state)
-                {
-                    state = null;
-                }
+                checkContact = false;
             }
         }
     }
 
-
-
-    //private void OnCollisionExit(Collision collision)
-    //{
-    //    // TODO : 붙인 오브젝트가 벗어날 때 NPC 상태변화 호출?
-    //    if (collision.gameObject.layer == LayerMask.NameToLayer("NPC") && targetNpc)
-    //    {
-    //        Debug.Log("벗어남");
-    //        targetNpc = null;
-    //    }
-    //}
-
     //// 그랩한 물건이 이동형 오브젝트와 부딪힐때마다 물리력 행사 콜백
     private void OnCollisionEnter(Collision collision)
-    {
+    {        
         if (collision.gameObject.layer == LayerMask.NameToLayer("MovedObject"))
         {
+            // PaintTaget에 bool값 체크 존재, 페인팅된 대상에는 물리력을 부여 x
             if (collision.gameObject.GetComponent<PaintTarget>().CheckPainted())
             {
                 return;
             }
 
-            if (collision.gameObject.GetComponent<OverapObject>() == null)
+            // 대상이 조합형 오브젝트라면 And 내가 그랩한 오브젝트만 주변 오브젝트에 물리력을 부여한다.     
+            if (collision.gameObject.transform.parent?.GetComponent<CatchObject>() != null && checkContact)
             {
-                collision.gameObject.AddComponent<OverapObject>().InitOverap(state);
+                // GrabedObejct 레이어인 조합오브젝트에만 영향을 줘야함
+                // 고정형, NPC에 붙은 조합오브젝트가 아니라면 물리력 부여
+                if (collision.transform.parent?.gameObject.layer == LayerMask.NameToLayer("Default") ||
+                    collision.transform.parent?.gameObject.layer == LayerMask.NameToLayer("NPC"))
+                {
+                    return;
+                }
+
+                // 조합된 오브젝트에 물리력 부여
+                collision.gameObject?.transform.parent.GetComponent<CatchObject>().InitOverap();
+            }
+            // 대상이 단일 이동형 오브젝트라면 And 내가 그랩한 오브젝트만 주변 오브젝트에 물리력을 부여한다.            
+            else if (collision.gameObject.layer == LayerMask.NameToLayer("MovedObject") && checkContact)
+            {
+                // 조합 오브젝트가 아닌 이동형 오브젝트에만 물리력 부여
+                if(collision.gameObject.transform.parent?.GetComponent<CatchObject>() == null)
+                {                    
+                    collision.gameObject.GetComponent<MovedObject>().InitOverap();
+                }
             }
         }
 
-        //if(collision.gameObject.layer == LayerMask.NameToLayer("Player"))
-        //{
-        //    state = FindAnyObjectByType<GunStateController>();
-        //}
     }
 
     // 충돌지점 본드 체크
     private void OnCollisionStay(Collision collision)
-    {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
+    {                       
+        // 그랩한 오브젝트가 플레이어 닿을시 임시 캔슬처리
+        if (checkContact && collision.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
-            if (state != null && state.onGrab)
+            GrabGun.instance.CancelObj();
+        }
+
+        // 그랩한 MovedObject가 아니면 충돌 포인트 체크
+        if (!checkContact && myRigid)
+        {
+            // { 이 구간은 1프레임에 벌어진 모든 충돌지점을 검사하는 것
+            // 충돌지점을 모두 검사
+            for (int i = 0; i < collision.contactCount; i++)
             {
-                GrabGun.instance.CancelObj();
-                //Vector3 dir = (state.pickupPoint.position - transform.position).normalized;
-                //Vector3 dir2 = (state.pickupPoint.position - state.checkPos.position).normalized;
+                // 지점중 하단에서 발생한 충돌을 검사한다.
+                if (-(collision.contacts[i].normal.y) <= -0.95f)
+                {
+                    // 유효 충돌체크 이후 반복문 종료
+                    checkCount++;
+                    break;
+                }
 
-                //Debug.Log(dir);
+            }
+            // } 이 구간은 1프레임에 벌어진 모든 충돌지점을 검사하는 것            
 
-                //if (dir.y <= -0.2f)
-                //{
-                //    Debug.Log("캔슬");
-                //}
+            // 일정 충돌 시간을 넘었을시 Or 일정속도 이하가 된다면 Sleep 코루틴 시전
+            if (!checkContact && (contactTime >= 10f && !isSleep) || (!checkContact && myRigid.velocity.magnitude <= 0.1f && !isSleep))            
+            {                
+                isSleep = true;
+                SleepObj();
+
+                // TODO : 일정시간 이후에 슬립하는것이 자연스러워 보이는데 현재 코루틴과 그랩 사이 예외사항 처리가 안되어 주석처리
+                //sleepCoroutine = StartCoroutine(EnforceSleep);
+                return;
+            }
+
+            // 유효충돌이 60프레임 이상 벌어졌다면( 1초? )
+            if (checkCount >= 60)
+            {
+                // 체크 카운트 초기화, 정지값 체크 증가
+                checkCount = 0;                
+                contactTime += 1f;
+                return;
             }
         }
 
@@ -214,7 +270,7 @@ public class MovedObject : MonoBehaviour
                         {
                             parentObj = new GameObject();
                             parentObj.transform.gameObject.layer = LayerMask.NameToLayer("NPC");
-                            transform.gameObject.layer = LayerMask.NameToLayer("NPC");
+                            //transform.gameObject.layer = LayerMask.NameToLayer("NPC");
                             CatchObject controll = parentObj.AddComponent<CatchObject>();
                             GunStateController.AddList(controll);
                             parentObj.transform.position = collision.contacts[i].point;
@@ -253,6 +309,32 @@ public class MovedObject : MonoBehaviour
 
                         }
                     }
+                    // 아기곰의 경우
+                    else if (contactObj.transform.gameObject.layer == LayerMask.NameToLayer("NPC"))
+                    {
+                        parentObj = new GameObject();
+                        parentObj.transform.gameObject.layer = LayerMask.NameToLayer("NPC");
+                        //transform.gameObject.layer = LayerMask.NameToLayer("NPC");
+                        CatchObject controll = parentObj.AddComponent<CatchObject>();
+                        GunStateController.AddList(controll);
+                        parentObj.transform.position = collision.contacts[i].point;
+
+                        // 그랩한 오브젝트 상위 오브젝트 종속, HashSet 갱신    
+                        transform.parent = parentObj.transform;
+                        controll.AddChild(transform.GetComponent<MeshCollider>());
+                        targetNpc = collision.transform.GetComponent<NpcBase>();
+                        targetNpc.ChangedState(npcState.objectAttached);
+                    }
+                    // 엔피씨에 붙은 조합형 일 경우
+                    else if(contactObj.transform.gameObject.layer == LayerMask.NameToLayer("MovedObject") &&
+                        contactObj.transform.parent?.GetComponent<CatchObject>() != null)
+                    {
+                        CatchObject controll = contactObj.transform.parent.GetComponent<CatchObject>();
+
+                        // 그랩한 오브젝트 상위 오브젝트 종속, HashSet 갱신    
+                        transform.parent = contactObj.transform.parent;
+                        controll.AddChild(transform.GetComponent<MeshCollider>());
+                    }
 
                 }
                         
@@ -263,18 +345,17 @@ public class MovedObject : MonoBehaviour
         }
     }
 
-    public void ChangedState(GunStateController _state)
+    public void ChangedState()
     {
-        if(state == null)
-        {
-            state = _state;
-        }
-
         myRigid = GetComponent<Rigidbody>();
         myRigid.mass = 1000f;
         myColid.material.dynamicFriction = 0f;
-        myColid.material.bounciness = 0f;        
-        Invoke("ChangedCheck", 1f);
+        myColid.material.bounciness = 0f;   
+        checkContact = true;     
+        checkCount = 0;
+
+        //StopCoroutine(sleepCoroutine);
+
     }
     
     public void CelarBond()
@@ -283,14 +364,14 @@ public class MovedObject : MonoBehaviour
         {
             myColid.convex = true;                          
             myRigid = transform.AddComponent<Rigidbody>();
-            myRigid.mass = 1000f;
+            myRigid.mass = 10f;
             myRigid.useGravity = true;
-            myColid.material.dynamicFriction = 1f;
+            myColid.material.dynamicFriction = 1f;            
         }
-    }
-    void ChangedCheck()
-    {
-        checkContact = true;
+
+        checkCount = 0;
+        checkContact = false;
+        isSleep = false;
     }
 
     void ClearState()
@@ -304,18 +385,49 @@ public class MovedObject : MonoBehaviour
         myColid.convex = false;
     }
 
-    // 강제 슬립?
-    void SleepObj()
+    IEnumerator EnforceSleep()
     {
-        checkContact = false;
-        Destroy(myRigid);
-        myRigid = null;
-        myColid.convex = false;        
+        float timeCheck = 0f;
+        float limitTime = 5f;
+
+        while(timeCheck < limitTime)
+        {
+            timeCheck += Time.deltaTime;
+            yield return null;
+        }        
+
+        SleepObj();
     }
 
-    public void CareeState(GunStateController _state, Rigidbody _rigid)
-    {
-        state = _state;
-        myRigid = _rigid;
+    // 강제 슬립?
+    void SleepObj()
+    {        
+        checkContact = false;
+        Destroy(myRigid);        
+        myColid.convex = false;
+        isSleep = false;
+        contactTime = 0f;
+        ySpeed = 0f;        
     }
+
+    public void InitOverap()
+    {
+        if(!myRigid)
+        {
+            transform.AddComponent<Rigidbody>();
+            myRigid = GetComponent<Rigidbody>();
+            myRigid.mass = 1000f;
+        }
+        
+        myColid.material.dynamicFriction = 0.6f;
+        myColid.material.bounciness = 0.5f;
+        myColid.convex = true;      
+    }
+
+    public void CancelGrab()
+    {
+        checkContact = false;
+        ySpeed = 0;
+    }
+
 }
