@@ -25,13 +25,7 @@ public class DataManager : MonoBehaviour
         }
 
         savedGamePlayData = new SavedGamePlayData();
-        savedSettingsData = new SavedSettingsData();
-
-        if (GameInfo.instance.isLoaded == true)
-        {
-            LoadGameData();
-            Debug.Log("불러오기 실행");
-        }
+        savedSettingsData = new SavedSettingsData();        
     }
 
     //1.저장 알림 -> 2. json 파일에 데이터 저장

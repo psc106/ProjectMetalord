@@ -14,11 +14,15 @@ public class RecordItem : MonoBehaviour
     const int TRUE = 0;
     private int isExist = TRUE; // 존재하는가
 
-
-    private void Start()
+    private void Awake()
     {
         GameEventsManager.instance.dataEvents.onSaveData += SaveData;
         GameEventsManager.instance.dataEvents.onLoadData += LoadData;
+        
+    }
+
+    private void Start()
+    {
     }
  
     private void OnDestroy()

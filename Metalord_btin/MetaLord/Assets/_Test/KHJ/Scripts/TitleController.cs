@@ -23,7 +23,7 @@ public class TitleController : MonoBehaviour
             SoundManager.instance.gameObject.SetActive(true);            
         }
 
-        GameInfo.instance.isLoaded = false;
+        StartInfo.instance.isLoaded = false;
 
         StartCoroutine(LoadSceneAsync(currentScene, nextScene));
 
@@ -36,7 +36,7 @@ public class TitleController : MonoBehaviour
             SoundManager.instance.gameObject.SetActive(true);
         }
 
-        GameInfo.instance.isLoaded = true;
+        StartInfo.instance.isLoaded = true;
 
         //StartCoroutine(LoadSceneAsync(currentScene, continueScene));
         LoadingController.LoadScene("MainScene");

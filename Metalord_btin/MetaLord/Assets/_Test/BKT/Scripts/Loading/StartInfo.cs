@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameInfo : MonoBehaviour
+public class StartInfo : MonoBehaviour
 {
-    public static GameInfo instance;
+    public static StartInfo instance;
 
     public bool isLoaded = default;
 
