@@ -17,10 +17,15 @@ public class MoveObjectData : MonoBehaviour
     [Header("움직이는 오브젝트 ID")]
     public int id; // 배열의 인덱스에 저장을 하기위한 id
 
-    private void Start()
+    private void Awake()
     {
         GameEventsManager.instance.dataEvents.onSaveData += SaveData;
         GameEventsManager.instance.dataEvents.onLoadData += LoadData;
+        
+    }
+
+    private void Start()
+    {
     }
 
     private void OnDestroy()

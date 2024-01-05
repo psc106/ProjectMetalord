@@ -316,14 +316,14 @@ MonoBehaviour:
   handGunRender: {fileID: 378431335789592413}
   backGunRender: {fileID: 4838373344311464730}
   cameraManager: {fileID: 3171454143736129391}
-  viewAngle: 180
-  climbHelpTime: 3
+  viewAngle: 270
+  climbHelpTime: 5
   jumpHeight: 9.5
   jumpDelayTime: 1
   fireDelayTime: 1
   probeDistance: 1.5
   runMultiple: 1.5
-  walkMultiple: 1
+  walkMultiple: 0.5
   gravityMultiple: 1.3
   maxMoveSpeed: 17.5
   maxAirMoveSpeed: 3
@@ -2394,8 +2394,8 @@ MonoBehaviour:
   CameraDistance: 50
   CameraCollisionFilter:
     serializedVersion: 2
-    m_Bits: 1665
-  IgnoreTag: 
+    m_Bits: 1983
+  IgnoreTag: ClimbObj
   CameraRadius: 0.2
   DampingIntoCollision: 0
   DampingFromCollision: 0
@@ -3551,7 +3551,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   ClimbeSize: 10
   BondSize: 20
-  range: 50
+  range: 60
   cameraMinRange: 2
   playerMinRange: 2
   grabRange: 15
@@ -3860,7 +3860,7 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 0
+    m_Type: 2
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
@@ -3893,7 +3893,7 @@ Light:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingLayerMask: 1
-  m_Lightmapping: 2
+  m_Lightmapping: 4
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1

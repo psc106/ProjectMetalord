@@ -21,10 +21,15 @@ public class Coin : MonoBehaviour
     private const int SMALL_COIN_VALUE = 1; // 작은코인 값
     private const int BIG_COIN_VALUE = 10; // 큰 코인 값
 
-    private void Start()
+    private void Awake()
     {
         GameEventsManager.instance.dataEvents.onSaveData += SaveData;
         GameEventsManager.instance.dataEvents.onLoadData += LoadData;
+        
+    }
+
+    private void Start()
+    {
     }
 
     private void OnDestroy()

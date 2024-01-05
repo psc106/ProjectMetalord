@@ -152,6 +152,48 @@ public class PaintTarget : MonoBehaviour
         return -1;
     }
 
+    public static int RayChannel(Ray ray, Ray subRay, float Length, LayerMask layer)
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, Length, layer) || Physics.Raycast(subRay, out hit, Length, layer))
+        {
+            PaintTarget paintTarget = hit.collider.gameObject.GetComponent<PaintTarget>();
+            if (!paintTarget) return -1;
+            if (!paintTarget.validTarget) return -1;
+            if (!paintTarget.bHasMeshCollider) return -1;
+
+            Renderer r = paintTarget.GetComponent<Renderer>();
+            if (!r) return -1;
+
+            RenderTexture rt = (RenderTexture)r.sharedMaterial.GetTexture("_SplatTex");
+            if (!rt) return -1;
+
+            UpdatePickColors(paintTarget, rt);
+
+            Texture2D tc = paintTarget.splatTexPick;
+            if (!tc) return -1;
+
+            int x = (int)(hit.textureCoord2.x * tc.width);
+            int y = (int)(hit.textureCoord2.y * tc.height);
+
+
+            //Color pc = GetColorByComputeShader(paintTarget, x, y);
+            Color pc = tc.GetPixel(x, y);
+
+            int l = -1;
+            if (pc.r > .3) l = 0;
+            if (pc.g > .5) l = 1;
+            if (pc.b > .5) l = 2;
+            if (pc.a > .5) l = 3;
+
+
+            return l;
+        }
+
+        //Debug.Break();
+        return -1;
+    }
+
     public static int RayChannel(Ray ray, float Length, LayerMask layer)
     {
         RaycastHit hit;
@@ -186,11 +228,11 @@ public class PaintTarget : MonoBehaviour
             if (pc.b > .5) l = 2;
             if (pc.a > .5) l = 3;
 
-           // Debug.Log(pc.r);
 
             return l;
         }
 
+        //Debug.Break();
         return -1;
     }
 
