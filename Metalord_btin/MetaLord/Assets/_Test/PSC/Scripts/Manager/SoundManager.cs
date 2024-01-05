@@ -22,18 +22,20 @@ public class SoundManager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
+            DontDestroyOnLoad(gameObject);
         }
         else if (instance != this)
         {
-            Destroy(instance.gameObject);
+            Destroy(gameObject);
         }
-        DontDestroyOnLoad(this.gameObject);
 
         audioNodes = new Dictionary<int, AudioClip>();
 
     }
+
     private void Start()
     {
+
         for (int i = 0; i < audioGroups.Length; i++)
         {
             var nodes = audioGroups[i].GetNodes();

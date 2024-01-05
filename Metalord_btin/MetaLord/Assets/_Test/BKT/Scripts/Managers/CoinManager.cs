@@ -26,12 +26,13 @@ public class CoinManager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
+            DontDestroyOnLoad(gameObject);
         }
         else if (instance != this)
         {
-            Destroy(instance.gameObject);
+            Destroy(gameObject);
         }
-        DontDestroyOnLoad(this.gameObject);
+
         currentCoin = startCoin; // 시작시 코인 세팅
         isConfirm = true;                                 
     }

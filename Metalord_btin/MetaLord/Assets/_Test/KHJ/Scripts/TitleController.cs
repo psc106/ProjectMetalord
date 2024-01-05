@@ -18,11 +18,22 @@ public class TitleController : MonoBehaviour
 
     public void StartGame()
     {
+        if(SoundManager.instance != null)
+        {
+            SoundManager.instance.gameObject.SetActive(true);
+        }
+
         StartCoroutine(LoadSceneAsync(currentScene, nextScene));
+
     }
 
     public void ContinueGame()
     {
+        if (SoundManager.instance != null)
+        {
+            SoundManager.instance.gameObject.SetActive(true);
+        }
+
         //StartCoroutine(LoadSceneAsync(currentScene, continueScene));
         LoadingController.LoadScene("MainScene");
     }
