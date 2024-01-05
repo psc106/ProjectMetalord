@@ -113,7 +113,7 @@ public class GunStateController : MonoBehaviour
     }
 
     bool usedBondGun = false;
-    int maxUpgrade = 405;
+    int maxUpgrade = 470;
 
     [HideInInspector] public NpcBase targetNpc = null;
     [HideInInspector] public GunState state;
