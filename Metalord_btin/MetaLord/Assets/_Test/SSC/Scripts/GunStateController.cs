@@ -117,10 +117,10 @@ public class GunStateController : MonoBehaviour
 
     [HideInInspector] public NpcBase targetNpc = null;
     [HideInInspector] public GunState state;
-    [HideInInspector] public static HashSet<PaintTarget> paintList = new HashSet<PaintTarget>();
-    [HideInInspector] public static HashSet<MovedObject> bondList = new HashSet<MovedObject>();
-    [HideInInspector] public static HashSet<NpcBase> npcList = new HashSet<NpcBase>();
-    [HideInInspector] public static HashSet<CatchObject> catchList = new HashSet<CatchObject>();
+    [HideInInspector] public static HashSet<PaintTarget> paintList;
+    [HideInInspector] public static HashSet<MovedObject> bondList;
+    [HideInInspector] public static HashSet<NpcBase> npcList;
+    [HideInInspector] public static HashSet<CatchObject> catchList;
 
     Image[] gunImage;
     TextMeshProUGUI gunText;
@@ -192,8 +192,12 @@ public class GunStateController : MonoBehaviour
         }
 
         currentMode = mode[(int)GunMode.Paint];
-        SwapLayer();        
+        SwapLayer();
 
+        paintList = new HashSet<PaintTarget>();
+        bondList = new HashSet<MovedObject>();
+        npcList = new HashSet<NpcBase>();
+        catchList = new HashSet<CatchObject>();
     }
 
     private void OnEnable()
