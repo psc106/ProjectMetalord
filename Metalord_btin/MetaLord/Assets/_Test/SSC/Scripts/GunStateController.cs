@@ -247,16 +247,22 @@ public class GunStateController : MonoBehaviour
             float distancePlayerToHit = Vector3.Distance(startPlayerPos, hit.point);
 
             //카메라->끝점 range 이하 경우
-            /*if (hit.distance <= distance)
-            {
-                // TODO : 목표지점이 너무 가까운 상태일때 UI 변경을 생각해야함
-                checkSuccessRay = false;
-                crossHair.color = Color.red;
-                player.SetAimPosition(player.transform.position+Vector3.up*100);
-                return;
-            }
+            //if (hit.distance <= distance)
+            //{
+            //    // TODO : 목표지점이 너무 가까운 상태일때 UI 변경을 생각해야함
+            //    checkSuccessRay = false;
+            //    crossHair.color = Color.red;
+            //    player.SetAimPosition(player.transform.position+Vector3.up*100);
 
-            else*/
+            //    if (textFadeOut != null)
+            //    {
+            //        StopCoroutine(textFadeOut);
+            //    }
+
+            //    textFadeOut = StartCoroutine(IEFadeOutText("ㅁㅁㅁㅁㅁㅁㅁㅁ"));
+            //    return;
+            //}
+
             if (distanceCameraToHit <= cameraMinRange)
             {
                 if (Physics.Raycast(defaultRay, out hit, distancePlayerToHit, gunLayer))
