@@ -420,12 +420,15 @@ public class GunStateController : MonoBehaviour
         InitColorText();
 
         float currentAmmo = Ammo;
+        Ammo = 0;
 
         float timeCheck = 0f;
         float t = 0f;
 
-        while (timeCheck <= reloadTime)
+        while (timeCheck <= reloadTime )
         {
+
+            yield return null;
             timeCheck += Time.deltaTime;
             t = timeCheck / reloadTime;
 
@@ -433,8 +436,6 @@ public class GunStateController : MonoBehaviour
             UpdateState(ammoValue);
             textRect.position = crossHair.rectTransform.position;
             UpdateText(timeCheck);
-
-            yield return null;
 
         }
 

@@ -3246,8 +3246,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   input: {fileID: 11400000, guid: 75abd6246b51f9e48a0d52dae45fab3f, type: 2}
-  targetY: {fileID: 9046867367910495862}
-  targetX: {fileID: 5467668828909890017}
+  playerRender: {fileID: 9046867367910495862}
+  cameraTarget: {fileID: 5467668828909890017}
   player: {fileID: 3742653360604592892}
   crossHair: {fileID: 8337427875576720167}
   groundCamera: {fileID: 2216440679700773208}
@@ -3555,7 +3555,7 @@ MonoBehaviour:
   cameraMinRange: 2
   playerMinRange: 2
   grabRange: 15
-  reloadTime: 3
+  reloadTime: 3.5
   AutoInitTime: 0.1
   fireRate: 0.1
   maxAmmo: 200
