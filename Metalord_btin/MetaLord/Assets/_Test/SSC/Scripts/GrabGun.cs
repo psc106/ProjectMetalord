@@ -31,6 +31,7 @@ public class GrabGun : GunBase
             if(state.CanFire)
             {
                 state.CheckUnlockUi();       
+                state.FadeOutCrossHair();
             }
 
             return false;

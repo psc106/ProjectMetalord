@@ -293,20 +293,23 @@ public class GunStateController : MonoBehaviour
                         //crossHair.rectTransform.anchoredPosition = localPoint;
                     }
 
-                    //if (crossHair.sprite == crossHairSprite[(int)CrossHair.LOCK])
-                    //{
-                    //    if (crosshairFadeOut != null)
-                    //    {
-                    //        StopCoroutine(crosshairFadeOut);
-                    //    }
+                    if (crossHair.sprite == crossHairSprite[(int)CrossHair.LOCK])
+                    {
+                        if (crosshairFadeOut != null)
+                        {
+                            Debug.Log(1);
+                            //StopCoroutine(crosshairFadeOut);
+                            return;
+                        }
 
-                    //    crosshairFadeOut = StartCoroutine(IEFadeOutCrosshair());
-                    //}
-                    //else
-                    //{
-                    //    ChangedCrossHair();
-                    //}
-                    ChangedCrossHair();
+                        crosshairFadeOut = StartCoroutine(IEFadeOutCrosshair());
+                    }
+                    else
+                    {
+                        ChangedCrossHair();
+                    }
+
+                    //ChangedCrossHair();
                     //Debug.Log(1);
                     return;
                 }
@@ -334,20 +337,23 @@ public class GunStateController : MonoBehaviour
                    // crossHair.rectTransform.anchoredPosition = Vector2.zero;
                 }
 
-                //if (crossHair.sprite == crossHairSprite[(int)CrossHair.LOCK])
-                //{
-                //    if (crosshairFadeOut != null)
-                //    {
-                //        StopCoroutine(crosshairFadeOut);
-                //    }
+                if (crossHair.sprite == crossHairSprite[(int)CrossHair.LOCK])
+                {
+                    //if (crosshairFadeOut != null)
+                    //{
+                    //        Debug.Log(2);
+                    //    //StopCoroutine(crosshairFadeOut);
+                    //    return;
+                    //}
 
-                //    crosshairFadeOut = StartCoroutine(IEFadeOutCrosshair());
-                //}
-                //else
-                //{
-                //    ChangedCrossHair();
-                //}
-                ChangedCrossHair();                              
+                    //crosshairFadeOut = StartCoroutine(IEFadeOutCrosshair());
+                }
+                else
+                {
+                    ChangedCrossHair();
+                }
+
+                //ChangedCrossHair();                              
                 //Debug.Log(2);
                 return;
             }
@@ -362,36 +368,46 @@ public class GunStateController : MonoBehaviour
             //Debug.Log(3);
             // 내가 총알 잔량이 부족하면서, 그랩하고있는 상태가 아닐 때 재장전 필요 효과 발생
 
-            //if (crossHair.sprite == crossHairSprite[(int)CrossHair.LOCK])
-            //{
-            //    if (crosshairFadeOut != null)
-            //    {
-            //        StopCoroutine(crosshairFadeOut);
-            //    }
+            if (crossHair.sprite == crossHairSprite[(int)CrossHair.LOCK])
+            {
+                //if (crosshairFadeOut != null)
+                //{
+                //            Debug.Log(3);
+                //    //StopCoroutine(crosshairFadeOut);
+                //    return;
+                //}
 
-            //    crosshairFadeOut = StartCoroutine(IEFadeOutCrosshair());
-            //}
-            //else
-            //{
-            //    ChangedCrossHair();
-            //}    
-            gunImage[WarningImgIdx].GetComponent<UiFadeOut>().InitFadeOut();
-            ChangedCrossHair();
+                //crosshairFadeOut = StartCoroutine(IEFadeOutCrosshair());
+            }
+            else
+            {
+                ChangedCrossHair();
+            }
+
+            //gunImage[WarningImgIdx].GetComponent<UiFadeOut>().InitFadeOut();
+            //ChangedCrossHair();
         }
         else
         {
             //Debug.Log(3);
-            //if (crossHair.sprite == crossHairSprite[(int)CrossHair.LOCK])
-            //{
-            //    Invoke("ChangedCrossHair", 1f);
-            //}
-            //else
-            //{
-            //    ChangedCrossHair();
-            //}
+            if (crossHair.sprite == crossHairSprite[(int)CrossHair.LOCK])
+            {
+                //if (crosshairFadeOut != null)
+                //{
+                //            Debug.Log(4);
+                //    //StopCoroutine(crosshairFadeOut);
+                //    return;
+                //}
+
+                //crosshairFadeOut = StartCoroutine(IEFadeOutCrosshair());
+            }
+            else
+            {
+                ChangedCrossHair();
+            }
             // 디폴트 이미지
-            crossHair.color = Color.green;
-            crossHair.sprite = crossHairSprite[(int)CrossHair.ABLE];
+            //crossHair.color = Color.green;
+            //crossHair.sprite = crossHairSprite[(int)CrossHair.ABLE];
         }
 
     }
@@ -654,9 +670,14 @@ public class GunStateController : MonoBehaviour
 
     public void ChangedCrossHair()
     {
-        //Color tempColor = crossHair.color;
-        //tempColor.a = 1f;
-        //crossHair.color = tempColor;
+        if(crosshairFadeOut != null)
+        {
+            StopCoroutine(crosshairFadeOut);
+        }
+
+        Color tempColor = crossHair.color;
+        tempColor.a = 1f;
+        crossHair.color = tempColor;
 
         if (currentMode.CanFireAmmoCount())
         {            
@@ -706,7 +727,17 @@ public class GunStateController : MonoBehaviour
             yield return null;
         }
 
-        //ChangedCrossHair();
+    }
+
+    public void FadeOutCrossHair()
+    {
+        if (crosshairFadeOut != null)
+        {
+            StopCoroutine(crosshairFadeOut);
+            //return;
+        }
+
+        crosshairFadeOut = StartCoroutine(IEFadeOutCrosshair());
     }
 
     IEnumerator IEFadeOutCrosshair()
@@ -714,7 +745,6 @@ public class GunStateController : MonoBehaviour
         Color tempColor = crossHair.color;
         tempColor.a = 1f;
         crossHair.color = tempColor;
-
 
         float timeCheck = 0f;
         float fadeOutTime = 1f;
@@ -730,7 +760,8 @@ public class GunStateController : MonoBehaviour
 
             yield return null;
         }
-        
+
+        ChangedCrossHair();
     }
 
     void InitColorText()
