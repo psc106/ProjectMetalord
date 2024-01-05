@@ -95,6 +95,7 @@ public class Controller_Physics : MonoBehaviour
     int stepsSinceLastGrounded = 0;
     int stepsSinceLastJump = 0;
     int stepsSinceLastClimb = 0;
+    int stepsSinceLastMultiple = 0;
 
     int allContactCount = 0;
     int groundContactCount = 0;
@@ -345,15 +346,28 @@ public class Controller_Physics : MonoBehaviour
             }*/
             return;
         }
-        //상태 업데이트
-        //OnGround, desireClimb 결정
-        UpdateState();
 
         /*Debug.Log("FixedUpdate");
         Debug.Log(allContactCount);
         Debug.Log(groundContactCount);
         Debug.Log(climbContactCount);
-        Debug.Log(steepContactCount);*/
+        Debug.Log(steepContactCount);
+        Debug.Log(desireClimb);
+        Debug.Log(multipleState);*/
+
+        //if (climbContactCount > 0) 
+        //Debug.Break();
+        //Debug.Log();
+
+
+        //상태 업데이트
+        //OnGround, OnClimb 결정
+        UpdateState();
+
+        /*Debug.Log("UpdateState");
+        Debug.Log(OnGround);
+        Debug.Log(OnClimb);
+        Debug.Log(OnSteep);*/
 
         //속도 계산
         AdjustVelocity();
@@ -369,39 +383,42 @@ public class Controller_Physics : MonoBehaviour
             velocity += gravity * gravityMultiple * Time.deltaTime;
         }
 
-        if (isJump || OnSteep)
+
+        //중력우선순위
+        //점프 > 빠져나가기 > 등산 보정 > 등산 > 지상 끈끈이 > 지상 정지  > 기타(경사)
+
+        if (isJump)
         {
-            //Debug.Log("점프, 경사");
+            //Debug.Log("점프");
             //일반 중력만 적용
             velocity += gravity * Time.deltaTime;
         }
-        
-        else if (!multipleState && OnClimb && desireClimb)
+        else if ((stepsSinceLastMultiple <= 2) && input.z < 0)
+        {
+            //Debug.Log("빠져나가려는 상태일 경우");
+            //등산중에 접촉면으로 끌어당김
+            velocity.y = 0;
+        }
+
+        else if (OnClimb && !desireClimb)
+        {
+            //Debug.Log("등산 벗어나기 직전");
+            velocity *= 0.3f;
+            velocity -= lastClimbNormal.normalized * maxClimbAcceleration * Time.deltaTime;
+        }
+
+        else if (OnClimb)
         {
             //Debug.Log("등산만");
             //등산중에 접촉면으로 끌어당김
-            velocity -= contactNormal.normalized * maxClimbAcceleration * .9f * Time.deltaTime;
+            velocity -= contactNormal.normalized * maxClimbAcceleration * 0.9f * Time.deltaTime;
         }
-        else if (multipleState)
-        {
-            //Debug.Log("등산+지상");
-            //등산중에 접촉면으로 끌어당김
-            velocity -= contactNormal.normalized * maxClimbAcceleration* 0.5f * Time.deltaTime;
 
-        }
-        else if (desireClimb && OnGround )
+        else if (OnGround && desireClimb)
         {
             //Debug.Log("지상, 끈끈이");
             //땅에 있을 경우 + 이동 상태 일 경우 중력+접촉면으로 끌어당김 동시에 적용
             velocity += (gravity - contactNormal.normalized * maxClimbAcceleration * 0.9f) * Time.deltaTime;
-            //velocity += gravity * Time.deltaTime;
-        }
-        //위에서 ONCLIMB와 ONGROUND를 모두 검사(MULTIPLESTATE)했기 때문에 1프레임후 적용된 상태라 가정한다.
-        else if (OnClimb && !desireClimb)
-        {
-            //Debug.Log("등산+보정");
-            velocity *= 0.3f;
-            velocity -= lastClimbNormal.normalized * maxClimbAcceleration * Time.deltaTime;
         }
         else if (OnGround && velocity.sqrMagnitude < 0.01f)
         {
@@ -507,7 +524,11 @@ public class Controller_Physics : MonoBehaviour
     {
         //Debug.Log("스테이" + transform.position);
         EvaluateCollision(collision);
-        
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        collision.gameObject.tag = "Untagged";
     }
 
     void AdjustVelocity()
@@ -538,6 +559,7 @@ public class Controller_Physics : MonoBehaviour
         Vector3 zAxis;
 
 
+        //상태에 따라 가속도, 최고속도, 좌우/앞뒤 축을 재 조정한다.
         if (jumpState)
         {
            // Debug.Log("좌표-점프");
@@ -548,9 +570,17 @@ public class Controller_Physics : MonoBehaviour
             //점프 상태일 경우 플레이어의 앞/뒤 축을 따른다.
             zAxis = forwardAxis;
             moveMultiple = 1;
-
         }
-        //상태에 따라 가속도, 최고속도, 좌우/앞뒤 축을 재 조정한다.
+        /*else if (multipleState)
+        {
+            // Debug.Log("좌표-멀티");
+            acceleration = maxAcceleration;
+            speed = maxMoveSpeed;
+            //등산 상태일 경우 접촉표면과 upaxis의 법선 벡터가 좌/우 축이 된다.
+            xAxis = Vector3.Cross(contactNormal, upAxis);
+            //등산 상태일 경우 앞/뒤 -> 위/아래로 구현한다.
+            zAxis = upAxis;
+        }*/
         else if (OnClimb && desireClimb)
         {
            // Debug.Log("좌표-등산");
@@ -560,8 +590,8 @@ public class Controller_Physics : MonoBehaviour
             xAxis = Vector3.Cross(contactNormal, upAxis);
             //등산 상태일 경우 앞/뒤 -> 위/아래로 구현한다.
             zAxis = upAxis;
+            moveMultiple = 1;
         }
-        //상태에 따라 가속도, 최고속도, 좌우/앞뒤 축을 재 조정한다.
         else if (OnClimb && !desireClimb)
         {
             //Debug.Log("좌표-등산보정");
@@ -571,6 +601,7 @@ public class Controller_Physics : MonoBehaviour
             xAxis = Vector3.Cross(lastClimbNormal, upAxis);
             //등산 상태일 경우 앞/뒤 -> 위/아래로 구현한다.
             zAxis = upAxis;
+            moveMultiple = walkMultiple;
         }
         else
         {
@@ -590,8 +621,11 @@ public class Controller_Physics : MonoBehaviour
         //멀티상태(땅 상태+등산 상태)일 경우 + 뒤로 갈 경우 
         if (multipleState && input.z < 0)
         {
+            Debug.Log("백");
             //z축을 앞/뒤로 변경하여 벗어나기 쉬운 상태로 만들어준다.
             //desireOutClimb = true;
+            acceleration = maxAcceleration;
+            speed = maxMoveSpeed;
             zAxis = forwardAxis;
         }
 
@@ -831,6 +865,7 @@ public class Controller_Physics : MonoBehaviour
                 //색칠된 곳이고 등산 가능한 각도+등산 가능한 레이어 일 경우
                 if (isColoredWall && upDot >= minClimbDotProduct && (climbMask & (1 << layer)) != 0 && !isJump)
                 {
+                    collision.gameObject.tag = "GrabbedObj";
                     climbContactCount += 1;
                     allContactCount += 1;
                     climbNormal += normal;
@@ -921,6 +956,7 @@ public class Controller_Physics : MonoBehaviour
         stepsSinceLastGrounded += 1;
         stepsSinceLastJump += 1;
         stepsSinceLastClimb += 1;
+        stepsSinceLastMultiple += 1;
 
         //플레이어 속도 초기화
         velocity = rb.velocity;
@@ -997,6 +1033,11 @@ public class Controller_Physics : MonoBehaviour
         else
         {
             moveMultiple = walkMultiple;
+        }
+
+        if (multipleState)
+        {
+            stepsSinceLastMultiple = 0;
         }
 
         // 지상<->등산 애니메이션 결정
