@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481676, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -164,7 +164,7 @@ AudioSource:
   m_GameObject: {fileID: 20340125}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 4615726746959437568, guid: 6000f0d3a71c74cee8d5edf41c64a950, type: 2}
   m_audioClip: {fileID: 8300000, guid: 49c1c1057a071be4186d585645ca1c89, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.1
@@ -420,8 +420,8 @@ MonoBehaviour:
   - 2
   - 2
   footIndex: 16
-  nextScene: 2
   currentScene: 1
+  nextScene: 2
 --- !u!1 &489305752
 GameObject:
   m_ObjectHideFlags: 0
@@ -463,7 +463,7 @@ AudioSource:
   m_GameObject: {fileID: 489305752}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 7990627635374745975, guid: 6000f0d3a71c74cee8d5edf41c64a950, type: 2}
   m_audioClip: {fileID: 8300000, guid: f4eef999ac7e83848bcc7e5c6597ed47, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.5
@@ -731,6 +731,7 @@ GameObject:
   - component: {fileID: 1635752042}
   - component: {fileID: 1635752041}
   - component: {fileID: 1635752040}
+  - component: {fileID: 1635752044}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -821,6 +822,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1635752044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1635752039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f6b1040c38904e6880ba682aaba8105, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1692271408
 GameObject:
   m_ObjectHideFlags: 0

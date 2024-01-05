@@ -11,6 +11,8 @@ public class AudioManager : MonoBehaviour
 {
     public static AudioManager instance;
 
+    [SerializeField] AudioMixer audioMixer;
+
     [Header("오디오 소스")]
     [SerializeField] AudioSource musicSource;
     [SerializeField] AudioSource SFXSource;
@@ -29,6 +31,24 @@ public class AudioManager : MonoBehaviour
     private void Start()
     {
         PlayBackGroundMusic(); // 최초 음악시작 -> 음악시작위치 조정 필요시 위치 변경
+
+        // 음악 소스 뮤트
+        if (StartInfo.instance.info_MasterToggle == 1)
+        {
+            if (StartInfo.instance.info_BGMToggle == 0) musicSource.mute = true;
+            else musicSource.mute = false;
+
+            if (StartInfo.instance.info_SFXToggle == 0) SFXSource.mute = true;
+            else SFXSource.mute = false;
+        }
+        else
+        {
+            musicSource.mute = true;
+            SFXSource.mute = true;
+        }
+        
+        musicSource.volume = StartInfo.instance.info_MasterSlider;
+        SFXSource.volume = StartInfo.instance.info_MasterSlider;
     }
 
     // 최초 음악 시작 시점
