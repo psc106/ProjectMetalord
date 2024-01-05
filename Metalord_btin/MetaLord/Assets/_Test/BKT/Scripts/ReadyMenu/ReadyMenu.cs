@@ -53,7 +53,8 @@ public class ReadyMenu : MonoBehaviour
     // 로비로 이동
     public void GoLobby()
     {
-        FindObjectOfType<SoundManager>().gameObject.SetActive(false);
+        SoundManager.instance.gameObject.SetActive(false);
+
         LoadingController.LoadScene("TitleScene");
         //SceneManager.LoadScene("TitleScene");
     }

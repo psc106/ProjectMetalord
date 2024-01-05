@@ -77,12 +77,12 @@ public class RecordManager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
+            DontDestroyOnLoad(gameObject);
         }
-        else if(instance != null)
+        else if (instance != this)
         {
-            Destroy(instance.gameObject);
+            Destroy(gameObject);
         }
-        DontDestroyOnLoad(this.gameObject);
 
         // 도감 우측 정보창 게임오브젝트 가져오기
         itemName = Utility.FindChildObj(recordCanvas,"Text(Info_Name)");
