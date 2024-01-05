@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 
@@ -67,6 +68,8 @@ public class Controller_Physics : MonoBehaviour
     Vector3 beforePosition;
 
     Coroutine fireDelay = null;
+
+    Queue<GameObject> climbObject;
     #endregion
 
     #region Private Value
@@ -217,7 +220,8 @@ public class Controller_Physics : MonoBehaviour
     {
         //l = gameObject.AddComponent<LineRenderer>();
         //l.positionCount = 2;
-        //Application.targetFrameRate = 60;
+        Application.targetFrameRate = 60;
+        climbObject = new Queue<GameObject>();
 
         cameraPoint = Camera.main.transform;
         gravity = CustomGravity.GetGravity(rb.position, out upAxis);
@@ -230,6 +234,9 @@ public class Controller_Physics : MonoBehaviour
         canFire = false;
         fireDelay = StartCoroutine(fireDelayRoutine(fireDelayTime));
         controller_UI = GetComponent<Controller_UI>();
+
+        groundContactCount = 1;
+        contactNormal = Vector3.up;
     }
 
     void Update()
@@ -472,6 +479,18 @@ public class Controller_Physics : MonoBehaviour
     Quaternion curr;
     void LateUpdate()
     {
+        //대화나 메뉴에서 stop시킴
+        if (stopState)
+        {
+            /*rb.velocity += new Vector3(0, gravity.y*Time.deltaTime, 0);
+            if (rb.velocity.y > 10)
+            {
+                velocity = Vector3.zero;
+            }*/
+            return;
+        }
+
+
         if (playingReloadAnimation)
         {
             frontGunRender.enabled = true;
@@ -525,11 +544,11 @@ public class Controller_Physics : MonoBehaviour
         //Debug.Log("스테이" + transform.position);
         EvaluateCollision(collision);
     }
-
+/*
     private void OnCollisionExit(Collision collision)
     {
         collision.gameObject.tag = "Untagged";
-    }
+    }*/
 
     void AdjustVelocity()
     {
@@ -621,7 +640,6 @@ public class Controller_Physics : MonoBehaviour
         //멀티상태(땅 상태+등산 상태)일 경우 + 뒤로 갈 경우 
         if (multipleState && input.z < 0)
         {
-            Debug.Log("백");
             //z축을 앞/뒤로 변경하여 벗어나기 쉬운 상태로 만들어준다.
             //desireOutClimb = true;
             acceleration = maxAcceleration;
@@ -865,7 +883,6 @@ public class Controller_Physics : MonoBehaviour
                 //색칠된 곳이고 등산 가능한 각도+등산 가능한 레이어 일 경우
                 if (isColoredWall && upDot >= minClimbDotProduct && (climbMask & (1 << layer)) != 0 && !isJump)
                 {
-                    collision.gameObject.tag = "GrabbedObj";
                     climbContactCount += 1;
                     allContactCount += 1;
                     climbNormal += normal;
@@ -887,6 +904,16 @@ public class Controller_Physics : MonoBehaviour
                 }
             }
 
+        }
+
+        if (OnClimb)
+        {
+            climbObject.Enqueue(collision.gameObject);
+            if (climbObject.Count > 7)
+            {
+                climbObject.Dequeue().tag = "Untagged";
+            }
+            collision.gameObject.tag = "ClimbObj";
         }
 
         /*Debug.Log(collision.gameObject.name);
@@ -1111,7 +1138,6 @@ public class Controller_Physics : MonoBehaviour
     //애니메이션의 파라미터를 추가한다.
     private void UpdateAnimationParameter()
     {
-        animator.SetBool(EquipStateHash, (stepsSinceLastClimb==0 && OnClimb));
         animator.SetFloat(IdleTimeHash, idleTime);
         animator.SetFloat(VelocityXHash, input.x * (desireRun ? 2 : 1));
         animator.SetFloat(VelocityYHash, input.z * (desireRun ? 2 : 1));
@@ -1399,13 +1425,14 @@ public class Controller_Physics : MonoBehaviour
     }
     public void StartClimbAnimation()
     {
-       /* Debug.LogAssertion(stepsSinceLastGrounded + " " + stepsSinceLastClimb);
+        /* Debug.LogAssertion(stepsSinceLastGrounded + " " + stepsSinceLastClimb);
 
-        Debug.LogAssertion(multipleState + " " + allContactCount);
-        Debug.LogAssertion(OnGround + " " + groundContactCount);
-        Debug.LogAssertion(OnClimb + " " + climbContactCount);
-        Debug.LogAssertion(OnSteep + " " + steepContactCount);*/
+         Debug.LogAssertion(multipleState + " " + allContactCount);
+         Debug.LogAssertion(OnGround + " " + groundContactCount);
+         Debug.LogAssertion(OnClimb + " " + climbContactCount);
+         Debug.LogAssertion(OnSteep + " " + steepContactCount);*/
 
+        animator.SetBool(EquipStateHash, true);
         canJump = false;
     }
     public void EndClimbAnimation()

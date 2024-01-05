@@ -2394,8 +2394,8 @@ MonoBehaviour:
   CameraDistance: 50
   CameraCollisionFilter:
     serializedVersion: 2
-    m_Bits: 1665
-  IgnoreTag: GrabbedObj
+    m_Bits: 1983
+  IgnoreTag: ClimbObj
   CameraRadius: 0.2
   DampingIntoCollision: 0
   DampingFromCollision: 0
