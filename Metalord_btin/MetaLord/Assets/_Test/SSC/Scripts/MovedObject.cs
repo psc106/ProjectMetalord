@@ -33,6 +33,33 @@ public class MovedObject : MonoBehaviour
         1 << LayerMask.NameToLayer("GrabedObject");
     }
 
+    private void Start()
+    {
+        //Vector3 down = Vector3.down;
+        Ray ray = new Ray(transform.position, Vector3.down);
+        RaycastHit hit;
+
+        // 내 아랫 방향으로 레이를 쏘고
+        if(Physics.Raycast(ray, out hit, 0.5f))
+        {
+            if(hit.transform?.gameObject.name == transform.gameObject.name)
+            {
+                /* PASS */
+            }
+        }
+        // 닿은게 없다면
+        else
+        {
+            if (hit.transform?.gameObject.name == transform.gameObject.name)
+            {
+                /* PASS */
+            }
+            
+            InitOverap();
+        }
+
+    }
+
     void Update()
     {
         // 내 리지드바디가 존재하고, 그랩한 대상이 아닐 때
@@ -401,7 +428,7 @@ public class MovedObject : MonoBehaviour
 
     // 강제 슬립?
     void SleepObj()
-    {        
+    {                
         checkContact = false;
         Destroy(myRigid);        
         myColid.convex = false;

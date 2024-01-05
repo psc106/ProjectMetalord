@@ -35,12 +35,13 @@ abstract public class GunBase : MonoBehaviour
     {
         int id = (int)GunSoundList.FireSound;
         SoundManager.instance.PlaySound(GroupList.Gun, id);
-
+        
         // 코루틴 돌고있는지 체크
         StopLerpGaguge();
         shootCoroutine = StartCoroutine(LerpGauge(_ammo));        
         PaintTarget.PaintRay(_ray, brush, myLayer, state.range);
 
+        // TODO : RaycastHit 지점에 페인트 체크용 트리거 오브젝트 생성?
         //RaycastHit hit;
 
         //if(Physics.Raycast(_ray, out hit, state.Range, myLayer))
@@ -95,20 +96,36 @@ abstract public class GunBase : MonoBehaviour
     {
         int currentAmmo = state.Ammo;
         state.checkAmmo += usingAmmo;
-        float timeCheck = 0;
+        float timeCheck = 0;        
 
-        if(state.checkAmmo <= 0)
+        //if (state.checkAmmo <= 0)
+        //{            
+        //    state.checkAmmo = 0;
+        //    state.UpdateState(state.checkAmmo, GunState.EMPTY);
+        //}
+
+        //while (timeCheck < state.lerpTime)
+        //{            
+        //    timeCheck += Time.deltaTime;
+        //    float t = timeCheck / state.lerpTime;
+
+        //    int value = (int)Mathf.Lerp(currentAmmo, state.checkAmmo, t);
+        //    state.UpdateState(value);
+        //    yield return Time.deltaTime;
+        //}
+
+        if (state.checkAmmo <= 0)
         {
             state.checkAmmo = 0;
             state.UpdateState(state.checkAmmo, GunState.EMPTY);
-
+            
             while (timeCheck < state.lerpTime)
             {
                 timeCheck += Time.deltaTime;
                 float t = timeCheck / state.lerpTime;
 
                 int value = (int)Mathf.Lerp(currentAmmo, state.checkAmmo, t);
-                state.UpdateState(value);        
+                state.UpdateState(value);
                 yield return Time.deltaTime;
             }
 
@@ -122,7 +139,7 @@ abstract public class GunBase : MonoBehaviour
                 float t = timeCheck / state.lerpTime;
 
                 int value = (int)Mathf.Lerp(currentAmmo, state.checkAmmo, t);
-                state.UpdateState(value);     
+                state.UpdateState(value);
                 yield return Time.deltaTime;
             }
         }

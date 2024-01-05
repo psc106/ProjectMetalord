@@ -112,8 +112,8 @@ public class GrabGun : GunBase
         if(targetRigid != null)
         {            
             targetRigid.constraints = RigidbodyConstraints.None;
-            targetRigid.useGravity = true;
-            targetRigid.velocity = Vector3.zero;
+            targetRigid.useGravity = true;            
+            targetRigid.velocity = Vector3.down * 2f;
             targetRigid = null;            
 
         }
