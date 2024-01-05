@@ -141,7 +141,7 @@ public class PaintTarget : MonoBehaviour
             Color pc = tc.GetPixel(x, y);
 
             int l = -1;
-            if (pc.r > .4) l = 0;
+            if (pc.r > .3) l = 0;
             if (pc.g > .5) l = 1;
             if (pc.b > .5) l = 2;
             if (pc.a > .5) l = 3;
@@ -155,7 +155,7 @@ public class PaintTarget : MonoBehaviour
     public static int RayChannel(Ray ray, Ray subRay, float Length, LayerMask layer)
     {
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, Length, layer) || Physics.Raycast(subRay, out hit, Length, layer))
+        if (Physics.Raycast(ray, out hit, Length, layer) || Physics.Raycast(subRay, out hit, Length*2, layer))
         {
             PaintTarget paintTarget = hit.collider.gameObject.GetComponent<PaintTarget>();
             if (!paintTarget) return -1;

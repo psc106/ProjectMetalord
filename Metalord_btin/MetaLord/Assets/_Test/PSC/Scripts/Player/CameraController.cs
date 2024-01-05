@@ -94,14 +94,17 @@ public class CameraController : MonoBehaviour
             time += Time.deltaTime;
             float currAngle = Mathf.Lerp(playerRender.eulerAngles.y, fixedAngle, time / blendCameraDuration);
 
-            playerRender.transform.eulerAngles = new Vector3(0, currAngle, 0);
-            cameraTarget.rotation = Quaternion.Euler(cameraTarget.eulerAngles.x, currAngle, cameraTarget.eulerAngles.z);
+            newRotationY = currAngle;
+            newRotationX = cameraTarget.eulerAngles.x;
+            //cameraTarget.rotation = Quaternion.Euler(newRotationX, newRotationY, cameraTarget.eulerAngles.z);
+            return;
         }
 
         if (input.mouseMovement.magnitude == 0 && input.Direction.magnitude == 0) 
         {
             newRotationY = cameraTarget.eulerAngles.y;
             newRotationX = cameraTarget.eulerAngles.x;
+            //cameraTarget.rotation = Quaternion.Euler(newRotationX, newRotationY, cameraTarget.eulerAngles.z);
             return;
         }
         
@@ -148,8 +151,6 @@ public class CameraController : MonoBehaviour
                 newRotationY = Mathf.Clamp(newRotationY, (anchor - 89), (anchor + 89));
             }
         }
-
-        playerRender.rotation = Quaternion.Euler(0, newRotationY, 0);
         /* if (player.IsMove)
          {
              if (rotateCoroutine != null) 
@@ -187,9 +188,33 @@ public class CameraController : MonoBehaviour
         //y축 변경
         //x축 변경
         //targetX.rotation = Quaternion.Euler(newRotationX, Mathf.Lerp(targetX.eulerAngles.y, newRotationY, 15 * Time.deltaTime), targetX.eulerAngles.z);
-        cameraTarget.rotation = Quaternion.Euler(newRotationX, newRotationY, cameraTarget.eulerAngles.z);
+        //
+       // cameraTarget.rotation = Quaternion.Euler(newRotationX, newRotationY, cameraTarget.eulerAngles.z);
+
     }
 
+    private void FixedUpdate()
+    {
+        float beforeX = cameraTarget.rotation.eulerAngles.x;
+        float beforeY = playerRender.rotation.eulerAngles.y;
+        playerRender.rotation = Quaternion.Euler(0, newRotationY, 0);
+        cameraTarget.rotation = Quaternion.Euler(newRotationX, newRotationY, cameraTarget.eulerAngles.z);
+
+        if (grabObject)
+        {
+            grabObject.rotation = Quaternion.Euler(originEuler.x - newRotationX, -newRotationY+originEuler.y , cameraTarget.eulerAngles.z);
+        }
+
+    }
+
+    [SerializeField]
+    Transform grabObject;
+    Vector3 originEuler;
+    public void SetGrabObject(Transform obj)
+    {
+        grabObject = obj;
+        originEuler = grabObject.eulerAngles;
+    }
 
 
     void OnLook(Vector2 cameraMovement, bool isDeviceMouse)

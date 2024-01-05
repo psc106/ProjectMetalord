@@ -294,19 +294,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   groundMask:
     serializedVersion: 2
-    m_Bits: 1975
+    m_Bits: 18359
   objectMask:
     serializedVersion: 2
-    m_Bits: 1975
+    m_Bits: 18359
   climbMask:
     serializedVersion: 2
-    m_Bits: 1921
+    m_Bits: 18305
   colorCheckLayer:
     serializedVersion: 2
-    m_Bits: 1975
+    m_Bits: 18359
   aimLayer:
     serializedVersion: 2
-    m_Bits: 1975
+    m_Bits: 18359
   rb: {fileID: 3785254182038594230}
   playerInputSpace: {fileID: 5467668828909890017}
   playerCenter: {fileID: 6677764962144662948}
@@ -320,16 +320,16 @@ MonoBehaviour:
   climbHelpTime: 5
   jumpHeight: 9.5
   jumpDelayTime: 1
-  fireDelayTime: 1
-  probeDistance: 1.5
+  fireDelayTime: 1.5
+  probeDistance: 1.3
   runMultiple: 1.5
   walkMultiple: 0.5
   gravityMultiple: 1.3
   maxMoveSpeed: 17.5
-  maxAirMoveSpeed: 3
+  maxAirMoveSpeed: 10
   maxClimbSpeed: 8
   maxAcceleration: 100
-  maxAirAcceleration: 15
+  maxAirAcceleration: 20
   maxClimbAcceleration: 100
   maxSnapSpeed: 100
   maxAirJumps: 0
@@ -1464,6 +1464,7 @@ GameObject:
   m_Component:
   - component: {fileID: 456569761734704785}
   - component: {fileID: 1522432719348868188}
+  - component: {fileID: 8569331750282204368}
   m_Layer: 0
   m_Name: ClimbCamera
   m_TagString: Untagged
@@ -1526,6 +1527,36 @@ MonoBehaviour:
         m_Calls: []
   m_LegacyBlendHint: 0
   m_ComponentOwner: {fileID: 2328686329958333939}
+--- !u!114 &8569331750282204368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2835489159986704413}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e501d18bb52cf8c40b1853ca4904654f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_CollideAgainst:
+    serializedVersion: 2
+    m_Bits: 18367
+  m_IgnoreTag: 
+  m_TransparentLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_MinimumDistanceFromTarget: 0.5
+  m_AvoidObstacles: 1
+  m_DistanceLimit: 1
+  m_MinimumOcclusionTime: 0
+  m_CameraRadius: 0.1
+  m_Strategy: 1
+  m_MaximumEffort: 4
+  m_SmoothingTime: 0
+  m_Damping: 0
+  m_DampingWhenOccluded: 0
+  m_OptimalTargetDistance: 0
 --- !u!1 &2842657616495834872
 GameObject:
   m_ObjectHideFlags: 0
@@ -2395,7 +2426,7 @@ MonoBehaviour:
   CameraCollisionFilter:
     serializedVersion: 2
     m_Bits: 1983
-  IgnoreTag: ClimbObj
+  IgnoreTag: 
   CameraRadius: 0.2
   DampingIntoCollision: 0
   DampingFromCollision: 0
