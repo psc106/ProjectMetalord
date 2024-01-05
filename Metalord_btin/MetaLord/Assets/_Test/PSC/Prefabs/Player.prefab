@@ -3551,7 +3551,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   ClimbeSize: 10
   BondSize: 20
-  range: 50
+  range: 60
   cameraMinRange: 2
   playerMinRange: 2
   grabRange: 15

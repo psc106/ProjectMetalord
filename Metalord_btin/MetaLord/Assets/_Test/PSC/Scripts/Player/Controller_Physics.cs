@@ -402,7 +402,7 @@ public class Controller_Physics : MonoBehaviour
         }
         else if ((stepsSinceLastMultiple <= 2) && input.z < 0)
         {
-            //Debug.Log("빠져나가려는 상태일 경우");
+           // Debug.Log("빠져나가려는 상태일 경우");
             //등산중에 접촉면으로 끌어당김
             velocity.y = 0;
         }
@@ -414,9 +414,9 @@ public class Controller_Physics : MonoBehaviour
             velocity -= lastClimbNormal.normalized * maxClimbAcceleration * Time.deltaTime;
         }
 
-        else if (OnClimb)
+        else if (OnClimb )
         {
-            //Debug.Log("등산만");
+           // Debug.Log("등산만");
             //등산중에 접촉면으로 끌어당김
             velocity -= contactNormal.normalized * maxClimbAcceleration * 0.9f * Time.deltaTime;
         }
@@ -435,7 +435,7 @@ public class Controller_Physics : MonoBehaviour
         }
         else
         {
-           // Debug.Log("그외");
+            //Debug.Log("그외");
             //일반 중력 적용
             velocity += gravity * Time.deltaTime;
         }
@@ -581,7 +581,7 @@ public class Controller_Physics : MonoBehaviour
         //상태에 따라 가속도, 최고속도, 좌우/앞뒤 축을 재 조정한다.
         if (jumpState)
         {
-           // Debug.Log("좌표-점프");
+            //Debug.Log("좌표-점프");
             acceleration = maxAirAcceleration;
             speed = maxAirMoveSpeed;
             //점프 상태일 경우 플레이어의 좌/우 측을 따른다.
@@ -602,7 +602,7 @@ public class Controller_Physics : MonoBehaviour
         }*/
         else if (OnClimb && desireClimb)
         {
-           // Debug.Log("좌표-등산");
+            //Debug.Log("좌표-등산");
             acceleration = maxClimbAcceleration;
             speed = maxClimbSpeed;
             //등산 상태일 경우 접촉표면과 upaxis의 법선 벡터가 좌/우 축이 된다.
@@ -859,10 +859,17 @@ public class Controller_Physics : MonoBehaviour
               Debug.Log(stepsSinceLastGrounded + "/" + angle);
               Debug.Log(stepsSinceLastClimb);*/
 
+            /*Debug.Log(angle <= viewAngle * 0.5f);
+            Debug.Log(angle);
+            Debug.Log(viewAngle * 0.5f);
+            Debug.Log((stepsSinceLastClimb <= climbHelpTime));
+            Debug.Log(stepsSinceLastClimb);
+            Debug.Log(climbHelpTime);*/
             //색칠 리스트에 추가 되어있을 경우만 검사
             if (((angle <= viewAngle * 0.5f) || (stepsSinceLastClimb <= climbHelpTime)) && ToolFunc<PaintTarget>.ConatainsCollision(GunStateController.paintList, collision))
             {
                 isColoredWall = CheckPaintedWall(collision.contacts[i], normal);
+                //Debug.Log(isColoredWall);
             }
             
             //cos에서 y값은 1->-1로 가므로 높을수록 각도는 낮은 각도
@@ -879,6 +886,11 @@ public class Controller_Physics : MonoBehaviour
             }
             else
             {
+                /*Debug.Log(isColoredWall);
+                Debug.Log(upDot);
+                Debug.Log((climbMask & (1 << layer)) != 0);
+                Debug.Log(upDot >= minClimbDotProduct);
+                Debug.Log(!isJump);*/
 
                 //색칠된 곳이고 등산 가능한 각도+등산 가능한 레이어 일 경우
                 if (isColoredWall && upDot >= minClimbDotProduct && (climbMask & (1 << layer)) != 0 && !isJump)
@@ -909,7 +921,7 @@ public class Controller_Physics : MonoBehaviour
         if (OnClimb)
         {
             climbObject.Enqueue(collision.gameObject);
-            if (climbObject.Count > 7)
+            if (climbObject.Count > 4)
             {
                 climbObject.Dequeue().tag = "Untagged";
             }
@@ -930,7 +942,8 @@ public class Controller_Physics : MonoBehaviour
         //접촉 표면의 색을 가져와서 판단한다.
         //하나라도 색이 다를 경우 접착제 붙인 상태
         Ray ray = new Ray(point.point + normal, -normal);
-        int channel = PaintTarget.RayChannel(ray, 1.5f, colorCheckLayer);
+        Ray centerRay = new Ray(transform.position, -normal);
+        int channel = PaintTarget.RayChannel(ray, centerRay, 1.5f, colorCheckLayer);
 
         bool isColoredWall = channel == 0;
         desireClimb |= isColoredWall;
