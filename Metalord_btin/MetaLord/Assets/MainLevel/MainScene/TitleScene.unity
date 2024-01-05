@@ -1346,6 +1346,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93bb8820d347240ce97cd2d87231058e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  audioMixer: {fileID: 24100000, guid: 6000f0d3a71c74cee8d5edf41c64a950, type: 2}
   musicSource: {fileID: 1353871881}
   SFXSource: {fileID: 1723812882}
   clip_Background: {fileID: 8300000, guid: 49c1c1057a071be4186d585645ca1c89, type: 3}
@@ -2234,6 +2235,7 @@ GameObject:
   - component: {fileID: 1589571888}
   - component: {fileID: 1589571887}
   - component: {fileID: 1589571890}
+  - component: {fileID: 1589571891}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -2325,6 +2327,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ffbbd848b58bd5a44a808f5182aff3b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1589571891
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1589571886}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f6b1040c38904e6880ba682aaba8105, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1659322276
@@ -2895,7 +2909,7 @@ GameObject:
   - component: {fileID: 1792196295}
   - component: {fileID: 1792196296}
   m_Layer: 0
-  m_Name: GameInfo
+  m_Name: StartInfo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2929,6 +2943,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isLoaded: 0
+  info_ScreenMode: 0
+  info_ResolutionIndex: 0
+  info_Brightness: 0
+  info_TextSize: 0
+  info_CrossLine: 0
+  info_MasterSlider: 0
+  info_BGMSlider: 0
+  info_SFXSlider: 0
+  info_MasterToggle: 0
+  info_BGMToggle: 0
+  info_SFXToggle: 0
 --- !u!1 &1904634201
 GameObject:
   m_ObjectHideFlags: 0
