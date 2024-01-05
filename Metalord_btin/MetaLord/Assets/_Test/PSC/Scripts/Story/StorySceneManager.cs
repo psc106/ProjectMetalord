@@ -29,6 +29,24 @@ public class StorySceneManager : MonoBehaviour
     private void Start()
     {
         StartCoroutine(PlayStoryRoutine());
+
+        // 음악 소스 뮤트
+        if (StartInfo.instance.info_MasterToggle == 1)
+        {
+            if (StartInfo.instance.info_BGMToggle == 0) bgmAudio.mute = true;
+            else bgmAudio.mute = false;
+
+            if (StartInfo.instance.info_SFXToggle == 0) sfxAudio.mute = true;
+            else sfxAudio.mute = false;
+        }
+        else
+        {
+            bgmAudio.mute = true;
+            sfxAudio.mute = true;
+        }
+
+        bgmAudio.volume = StartInfo.instance.info_MasterSlider;
+        sfxAudio.volume = StartInfo.instance.info_MasterSlider;
     }
 
     private void Update()

@@ -56,6 +56,7 @@ public class ReadyMenu : MonoBehaviour
         SoundManager.instance.gameObject.SetActive(false);
 
         LoadingController.LoadScene("TitleScene");
+        StartInfo.instance.SetPersonalSetting();
         //SceneManager.LoadScene("TitleScene");
     }
 
@@ -67,15 +68,15 @@ public class ReadyMenu : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    /// <summary>
-    /// 게임 불러오기
-    /// TODO Title쪽으로 옮겨야함
-    /// </summary>
-    public void LoadGame()
-    {
-        //GameEventsManager.instance.dataEvents.LoadData(); // 불러오기 이벤트 발생
-        DataManager.instance.LoadGameData();
-    }
+    ///// <summary>
+    ///// 게임 불러오기
+    ///// TODO Title쪽으로 옮겨야함
+    ///// </summary>
+    //public void LoadGame()
+    //{
+    //    //GameEventsManager.instance.dataEvents.LoadData(); // 불러오기 이벤트 발생
+    //    DataManager.instance.LoadGameData();
+    //}
 
     // 임시 버튼 사용 불가 소리
     public void CantUseSound()
