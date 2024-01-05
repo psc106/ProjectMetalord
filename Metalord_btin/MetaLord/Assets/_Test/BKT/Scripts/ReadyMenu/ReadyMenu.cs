@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-
+using UnityEngine.SceneManagement;
 /// <summary>
 /// 대기화면 메뉴
 /// 231226 배경택
@@ -48,6 +48,14 @@ public class ReadyMenu : MonoBehaviour
         settingsCanvas.SetActive(true);
         gameObject.SetActive(false);
         CanUseSound();
+    }
+
+    // 로비로 이동
+    public void GoLobby()
+    {
+        FindObjectOfType<SoundManager>().gameObject.SetActive(false);
+        LoadingController.LoadScene("TitleScene");
+        //SceneManager.LoadScene("TitleScene");
     }
 
     // 게임 저장
