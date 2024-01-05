@@ -20,12 +20,12 @@ public class StoreObject : MonoBehaviour
         //cantBuyImage = Utility.FindChildObj(this.gameObject, "Image(CantBuy)");
         button = Utility.FindChildObj(this.gameObject, "Button");
         GameEventsManager.instance.coinEvents.onChangeCoin += ChangeButtonUI;       
+        GameEventsManager.instance.dataEvents.onSaveData += SaveData;
+        GameEventsManager.instance.dataEvents.onLoadData += LoadData;
     }
 
     private void Start()
     {
-        GameEventsManager.instance.dataEvents.onSaveData += SaveData;
-        GameEventsManager.instance.dataEvents.onLoadData += LoadData;
         
     }
 

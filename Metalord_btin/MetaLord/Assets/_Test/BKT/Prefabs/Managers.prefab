@@ -350,6 +350,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   storeUI: {fileID: 0}
-  startCoin: 0
+  startCoin: 1000
   coinExplain: {fileID: 0}
   currentCoin: 0

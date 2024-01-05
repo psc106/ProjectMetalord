@@ -33,7 +33,10 @@ public class LoadingController : MonoBehaviour
 
 
         float timer = 0f;
-        
+
+        // 비동기 씬이 로딩되었을때 실행되는 이벤트
+        operation.completed += OnLoadComplete;
+
         while (!operation.isDone)
         {
             yield return null;
@@ -48,10 +51,21 @@ public class LoadingController : MonoBehaviour
                 progressBar.fillAmount = Mathf.Lerp(0.9f, 1f, timer);
                 if(progressBar.fillAmount >= 1f)
                 {
+                    
                     operation.allowSceneActivation = true;
                     yield break;
                 }
             }
+        }
+    }
+
+    // 씬 로딩이 완료될 경우 실행되는 함수
+    private void OnLoadComplete(AsyncOperation _operation)
+    {
+        if (StartInfo.instance.isLoaded == true)
+        {
+            DataManager.instance.LoadGameData();        
+            Debug.Log("불러오기 실행");
         }
     }
 }

@@ -29,7 +29,7 @@ public class SavingCanvas : MonoBehaviour
         {
             dot += ".";
             Debug.Log(dot);
-            transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>().text = dot;
+            transform.GetChild(1).GetChild(0).GetComponent<TMP_Text>().text = dot;
             yield return new WaitForSecondsRealtime(0.8f);
             Debug.Log("코루틴");
         }
