@@ -10,8 +10,8 @@ public class CameraController : MonoBehaviour
 {
     [Header("Refrences")]
     [SerializeField] InputReader input;
-    [SerializeField] Transform targetY;
-    [SerializeField] Transform targetX;
+    [SerializeField] Transform playerRender;
+    [SerializeField] Transform cameraTarget;
 
     [SerializeField]
     Controller_Physics player;
@@ -92,16 +92,16 @@ public class CameraController : MonoBehaviour
         if (fixedAngle != -1 && blendCameraDuration >= time)
         {
             time += Time.deltaTime;
-            float currAngle = Mathf.Lerp(targetY.eulerAngles.y, fixedAngle, time / blendCameraDuration);
+            float currAngle = Mathf.Lerp(playerRender.eulerAngles.y, fixedAngle, time / blendCameraDuration);
 
-            targetY.transform.eulerAngles = new Vector3(0, currAngle, 0);
-            targetX.rotation = Quaternion.Euler(targetX.eulerAngles.x, currAngle, targetX.eulerAngles.z);
+            playerRender.transform.eulerAngles = new Vector3(0, currAngle, 0);
+            cameraTarget.rotation = Quaternion.Euler(cameraTarget.eulerAngles.x, currAngle, cameraTarget.eulerAngles.z);
         }
 
         if (input.mouseMovement.magnitude == 0 && input.Direction.magnitude == 0) 
         {
-            newRotationY = targetX.eulerAngles.y;
-            newRotationX = targetX.eulerAngles.x;
+            newRotationY = cameraTarget.eulerAngles.y;
+            newRotationX = cameraTarget.eulerAngles.x;
             return;
         }
         
@@ -149,7 +149,7 @@ public class CameraController : MonoBehaviour
             }
         }
 
-        targetY.rotation = Quaternion.Euler(0, newRotationY, 0);
+        playerRender.rotation = Quaternion.Euler(0, newRotationY, 0);
         /* if (player.IsMove)
          {
              if (rotateCoroutine != null) 
@@ -187,7 +187,7 @@ public class CameraController : MonoBehaviour
         //y축 변경
         //x축 변경
         //targetX.rotation = Quaternion.Euler(newRotationX, Mathf.Lerp(targetX.eulerAngles.y, newRotationY, 15 * Time.deltaTime), targetX.eulerAngles.z);
-        targetX.rotation = Quaternion.Euler(newRotationX, newRotationY, targetX.eulerAngles.z);
+        cameraTarget.rotation = Quaternion.Euler(newRotationX, newRotationY, cameraTarget.eulerAngles.z);
     }
 
 
@@ -196,8 +196,8 @@ public class CameraController : MonoBehaviour
     {
         if (Controller_Physics.stopState) return;
         if (isUnLockPressed) return;
-        newRotationY = targetX.eulerAngles.y + cameraMovement.x * SpeedMulitiplier * Time.deltaTime;
-        newRotationX = targetX.eulerAngles.x - cameraMovement.y * SpeedMulitiplier * Time.deltaTime;
+        newRotationY = cameraTarget.eulerAngles.y + cameraMovement.x * SpeedMulitiplier * Time.deltaTime;
+        newRotationX = cameraTarget.eulerAngles.x - cameraMovement.y * SpeedMulitiplier * Time.deltaTime;
         newRotationX = Mathf.Clamp(newRotationX > 180 ? newRotationX - 360 : newRotationX, -89, 89);
     }
 
@@ -251,7 +251,7 @@ public class CameraController : MonoBehaviour
         while(currRotateTime <= time)
         {
 
-            targetY.transform.rotation = Quaternion.Lerp(targetY.transform.rotation, targetRotation, Time.deltaTime * smoothRotationSpeed);
+            playerRender.transform.rotation = Quaternion.Lerp(playerRender.transform.rotation, targetRotation, Time.deltaTime * smoothRotationSpeed);
             yield return new WaitForSeconds(Time.deltaTime);
             currRotateTime += Time.deltaTime;
         }

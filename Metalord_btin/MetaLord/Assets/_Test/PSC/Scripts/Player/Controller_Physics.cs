@@ -235,6 +235,7 @@ public class Controller_Physics : MonoBehaviour
         fireDelay = StartCoroutine(fireDelayRoutine(fireDelayTime));
         controller_UI = GetComponent<Controller_UI>();
 
+        stepsSinceLastClimb = climbHelpTime + 1;
         groundContactCount = 1;
         contactNormal = Vector3.up;
     }
@@ -374,7 +375,8 @@ public class Controller_Physics : MonoBehaviour
         /*Debug.Log("UpdateState");
         Debug.Log(OnGround);
         Debug.Log(OnClimb);
-        Debug.Log(OnSteep);*/
+        Debug.Log(OnSteep);
+        Debug.Break();*/
 
         //속도 계산
         AdjustVelocity();
