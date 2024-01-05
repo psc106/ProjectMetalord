@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Audio;
 using TMPro;
+using System;
 
 /// <summary>
 /// 볼륨 셋팅하는 클래스
@@ -13,6 +14,7 @@ public class VolumeSetting : MonoBehaviour
 {
     [Header("오디오 믹서")]
     [SerializeField] private AudioMixer audioMixer;
+    private AudioMixerGroup masterAudio;
 
     [Header("오디오 슬라이더")]
     [SerializeField] private Slider slider_Master;
@@ -37,6 +39,9 @@ public class VolumeSetting : MonoBehaviour
     [SerializeField] private TMP_Text text_BGM;
     [SerializeField] private TMP_Text text_SFX;
 
+    [Header("오디오 소스")]
+    [SerializeField] private AudioSource bgm_Audio;
+    [SerializeField] private AudioSource sfx_Audio;
 
     private float vol_Master;
     private float vol_BGM;
@@ -54,14 +59,32 @@ public class VolumeSetting : MonoBehaviour
         toggle_BGM.onValueChanged.AddListener(SetControlBGM);
         toggle_SFX.onValueChanged.AddListener(SetControlSFX);
 
-        Init();
+
+    }
+
+    private void Start()
+    {
+        if (PlayerPrefs.HasKey("MasterSlider"))
+        {
+            LoadData();
+        }
+        else
+        {
+            Init();
+        }
+        
+    }
+
+    private void OnDisable()
+    {
+        SaveData();
     }
 
     // 마스터 볼륨 설정
     public void SetMasterVolume(float vol)
     {
         vol_Master = vol;
-        AudioMixerSet("Master", vol);
+        AudioMixerSet("Master", vol);        
         //audioMixer.SetFloat("Master",Mathf.Log10(vol)*20);
         text_Master.text = ((int)(vol * 100)).ToString() + "%";
     }
@@ -122,12 +145,17 @@ public class VolumeSetting : MonoBehaviour
 
         if (check == false)
         {
+            bgm_Audio.mute = true;
+
+
             AudioMixerSet("BGM", 0f);
             SetFalse(tempToggle, tempSlider);
 
         }
         else
         {
+            bgm_Audio.mute = false;
+
             SetTrue(tempToggle, tempSlider);
             AudioMixerSet("BGM", vol_BGM);
 
@@ -142,12 +170,16 @@ public class VolumeSetting : MonoBehaviour
 
         if (check == false)
         {
+            sfx_Audio.mute = true;
+
             AudioMixerSet("SFX", 0f);
             SetFalse(tempToggle, tempSlider);
 
         }
         else
         {
+            sfx_Audio.mute = false;
+
             SetTrue(tempToggle, tempSlider);
             AudioMixerSet("SFX", vol_SFX);
 
@@ -182,20 +214,71 @@ public class VolumeSetting : MonoBehaviour
         tempToggle.transform.GetChild(3).gameObject.SetActive(true);
     }
 
+
+    // 오디오 믹서 소리 입력
     private void AudioMixerSet(string id, float vol)
-    {        
+    {
         audioMixer.SetFloat(id, Mathf.Log10(vol) * 20);
+
+        Debug.Log("오디오 믹서세트로 들어옴");
     }
 
 
     private void SaveData()
     {
+        PlayerPrefs.SetFloat("MasterSlider", slider_Master.value);
+        PlayerPrefs.SetFloat("BGMSlider", slider_BGM.value);
+        PlayerPrefs.SetFloat("SFXSlider", slider_SFX.value);
 
+        if (toggle_Master.isOn)
+        {
+            PlayerPrefs.SetInt("MasterToggle", 1);
+            if (toggle_BGM.isOn) PlayerPrefs.SetInt("BGMToggle", 1);
+            else PlayerPrefs.SetInt("BGMToggle", 0);
+
+            if (toggle_SFX.isOn) PlayerPrefs.SetInt("SFXToggle", 1);
+            else PlayerPrefs.SetInt("SFXToggle", 1);
+        }
+        else
+        {
+            PlayerPrefs.SetInt("MasterToggle", 0);
+            PlayerPrefs.SetInt("BGMToggle", 0);
+            PlayerPrefs.SetInt("SFXToggle", 0);
+        }
     }
 
     private void LoadData()
     {
+        slider_Master.value = PlayerPrefs.GetFloat("MasterSlider");
+        slider_Master.onValueChanged.Invoke(slider_Master.value);
+        slider_BGM.value = PlayerPrefs.GetFloat("BGMSlider");
+        slider_BGM.onValueChanged.Invoke(slider_BGM.value);
+        slider_SFX.value = PlayerPrefs.GetFloat("SFXSlider");
+        slider_SFX.onValueChanged.Invoke(slider_SFX.value);
 
+        // 마스터가 1일 경우에만 BGM과 SFX 값 조절이 가능함
+        if (PlayerPrefs.GetInt("MasterToggle") == 1)
+        {
+            toggle_Master.isOn = true;
+
+            if (PlayerPrefs.GetInt("BGMToggle") == 1) toggle_BGM.isOn = true;
+            else toggle_BGM.isOn = false;
+
+            if (PlayerPrefs.GetInt("SFXToggle") == 1) toggle_SFX.isOn = true;
+            else toggle_SFX.isOn = false;
+
+        }
+        else // 마스터가 0일 경우에는 BGM SFX 전부 0;
+        {
+            toggle_Master.isOn = false;
+            toggle_BGM.isOn = false;
+            toggle_SFX.isOn = false;
+        }
+
+        // 토글스위치에 적용
+        toggle_Master.onValueChanged.Invoke(toggle_Master.isOn);
+        toggle_BGM.onValueChanged.Invoke(toggle_BGM.isOn);
+        toggle_SFX.onValueChanged.Invoke(toggle_SFX.isOn);
     }
 
     public void Init()

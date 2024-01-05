@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class SettingsCanvas : MonoBehaviour
 {
-    // 설정 초기화
-    public void ResetSettings()
+    private void Start()
     {
-           
+        gameObject.SetActive(false);
     }
 }

@@ -15,9 +15,10 @@ public class GameSceneController
     {
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(nextScene.ToString());
 
+
         while (!asyncLoad.isDone)
         {
-            yield return null;
+            yield return new WaitForSeconds(10f);
         }
 
         // 현재 씬을 비활성화 또는 종료

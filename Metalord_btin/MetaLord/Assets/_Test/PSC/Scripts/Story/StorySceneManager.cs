@@ -72,7 +72,8 @@ public class StorySceneManager : MonoBehaviour
 
     public void LoadNextScene()
     {
-        StartCoroutine(GameSceneController.LoadSceneAsync(currentScene, nextScene));
+        LoadingController.LoadScene("MainScene");
+        //StartCoroutine(GameSceneController.LoadSceneAsync(currentScene, nextScene));
     }
 
 }

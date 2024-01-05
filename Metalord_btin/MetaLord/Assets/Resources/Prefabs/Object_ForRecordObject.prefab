@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2226143923320221684}
   - component: {fileID: 239314970647183905}
   m_Layer: 5
-  m_Name: IsGot
+  m_Name: Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -166,6 +166,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fb189dd20a604b1eb1acc3f8cc89ced, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  recordInfo:
+    id: 0
+    id_Description: 
+    item_Name: 
+    zone: 0
+    obtained: 0
+    description: 
 --- !u!1 &6335923893339682652
 GameObject:
   m_ObjectHideFlags: 0
