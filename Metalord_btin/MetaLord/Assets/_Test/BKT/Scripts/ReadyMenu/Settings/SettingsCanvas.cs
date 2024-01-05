@@ -6,6 +6,6 @@ public class SettingsCanvas : MonoBehaviour
 {
     private void Start()
     {
-        //gameObject.SetActive(false);
+        gameObject.SetActive(false);
     }
 }
