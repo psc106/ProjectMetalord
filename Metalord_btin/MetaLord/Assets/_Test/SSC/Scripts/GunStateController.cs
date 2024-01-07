@@ -474,7 +474,7 @@ public class GunStateController : MonoBehaviour
         state = GunState.RELOADING;        
         ClearNpcList();
         ClearAllPaint();
-        //ClearBondList();
+        ClearBondList();
         ClearCatchList();
         currentMode.StopLerpGaguge();
         StopAllCoroutines();
@@ -518,7 +518,7 @@ public class GunStateController : MonoBehaviour
     #region 오버로딩 메소드 모음
     public static void AddList(MovedObject obj)
     {
-        bondList.Add(obj);
+        bondList.Add(obj);        
     }
 
     public static void AddList(PaintTarget obj)
@@ -536,15 +536,22 @@ public class GunStateController : MonoBehaviour
         catchList.Add(obj);        
     }
 
-    //void ClearBondList()
-    //{        
-    //    foreach(var paint in bondList)
-    //    {
-    //        paint.CelarBond();
-    //    }
+    void ClearBondList()
+    {
+        Debug.Log(bondList.Count);
 
-    //    bondList.Clear();
-    //}
+        foreach (var paint in bondList)
+        {        
+            Debug.Log(paint.gameObject.name);
+        }
+
+        foreach (var paint in bondList)
+        {            
+            paint.ClearTrigger();
+        }
+
+        bondList.Clear();
+    }
 
     void ClearNpcList()
     {
@@ -553,7 +560,7 @@ public class GunStateController : MonoBehaviour
             paint.ChangedState(npcState.normal);
         }
 
-        bondList.Clear();
+        npcList.Clear();
     }
 
     void ClearCatchList()
@@ -564,15 +571,24 @@ public class GunStateController : MonoBehaviour
             // 탐색한 상위 오브젝트마다 가지고 있는 자식오브젝트 체크
             GameObject[] nullObj = new GameObject[obj.transform.childCount];            
 
+
             // 자식 오브젝트들 parent 해제
             for(int i = 0; i < nullObj.Length; i++)
             {
                 nullObj[i] = obj.gameObject.transform.GetChild(i).gameObject;
+
+                if (nullObj[i].GetComponent<MovedObject>() == null)
+                {
+                    Destroy(nullObj[i]);
+                    continue;
+                }
+
                 nullObj[i].GetComponent<MovedObject>().CelarBond();
                 nullObj[i].gameObject.layer = LayerMask.NameToLayer("MovedObject");
 
 
             }
+
             for (int i = 0; i < nullObj.Length; i++)
             {                
                 nullObj[i].transform.parent = null;

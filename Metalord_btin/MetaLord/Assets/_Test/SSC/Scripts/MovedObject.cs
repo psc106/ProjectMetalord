@@ -3,6 +3,7 @@ using System.Collections;
 using System.Security.Cryptography.X509Certificates;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Analytics;
 
 public class MovedObject : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class MovedObject : MonoBehaviour
     Rigidbody myRigid;
     MeshCollider myColid;    
     NpcBase targetNpc;
+    SphereCollider[] triigerCollider;
 
     Vector3 originPos;
     Quaternion originRot;
@@ -160,13 +162,190 @@ public class MovedObject : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter(Collider collision)
+    {
+        if (/*checkContact == false || */transform.parent != null || collision.gameObject.layer == LayerMask.NameToLayer("CatchObject"))
+        {            
+            return;
+        }        
+
+        GameObject parentObj = null;
+
+        // 충돌한 오브젝트의 부모가 없을경우
+        if (collision.transform.parent == null)
+        {
+            // 상위 오브젝트 생성
+            parentObj = new GameObject();
+            parentObj.transform.gameObject.layer = LayerMask.NameToLayer("GrabedObject");
+            CatchObject controll = parentObj.AddComponent<CatchObject>();
+            GunStateController.AddList(controll);
+            parentObj.transform.position = collision.ClosestPoint(transform.position);
+
+            // 그랩한 오브젝트와 충돌한 오브젝트 모두 상위 오브젝트 종속, HashSet 갱신                    
+            transform.parent = parentObj.transform;
+            collision.transform.parent = parentObj.transform;
+            //GunStateController.AddList(collision.gameObject.GetComponent<MovedObject>());
+            controll.AddChild(transform.GetComponent<MeshCollider>());
+            controll.AddChild(collision.transform.GetComponent<MeshCollider>());
+
+            ClearState();
+            GrabGun.instance.CancelObj();
+        }
+        // 부모가 존재할 경우
+        else
+        {
+            GameObject contactObj = collision.gameObject;
+
+            // TODO : 레이어 체크가 아닌 CatchObject 스크립트로 여부 확인
+            // 부모가 상위 오브젝트 경우
+            if (contactObj.transform.parent.gameObject.layer == LayerMask.NameToLayer("GrabedObject"))
+            {
+                // HashSet 갱신    
+                transform.parent = contactObj.transform.parent;
+                contactObj.transform.parent.GetComponent<CatchObject>().AddChild(transform.GetComponent<MeshCollider>());
+
+                ClearState();
+                GrabGun.instance.CancelObj();
+
+            }
+            // 부모가 고정형 오브젝트 경우
+            else if (contactObj.transform.parent.gameObject.layer == LayerMask.NameToLayer("Default"))
+            {
+                // 부딪힌 오브젝트도 고정형이면
+                if (contactObj.transform.gameObject.layer == LayerMask.NameToLayer("Default"))
+                {
+                    // 클래스 여부로 기존 고정형 오브젝트인지 합쳐진 오브젝트인지
+                    if (contactObj.transform.parent.GetComponent<CatchObject>())
+                    {
+                        transform.SetParent(contactObj.transform.parent);
+
+                        ClearState();
+                        GrabGun.instance.CancelObj();
+                    }
+                    else
+                    {
+                        // 상위 오브젝트 생성
+                        parentObj = new GameObject();
+                        parentObj.transform.gameObject.layer = LayerMask.NameToLayer("Default");
+                        CatchObject controll = parentObj.AddComponent<CatchObject>();
+                        GunStateController.AddList(controll);
+                        parentObj.transform.position = collision.ClosestPoint(transform.position);
+
+                        // 그랩한 오브젝트 상위 고정형 오브젝트 종속, HashSet 갱신    
+                        transform.parent = parentObj.transform;
+                        controll.AddChild(transform.GetComponent<MeshCollider>());
+
+                        ClearState();
+                        GrabGun.instance.CancelObj();
+
+                    }
+                }
+                else if (contactObj.transform.gameObject.layer == LayerMask.NameToLayer("NPC"))
+                {                    
+                    parentObj = new GameObject();
+                    parentObj.transform.gameObject.layer = LayerMask.NameToLayer("NPC");
+                    //transform.gameObject.layer = LayerMask.NameToLayer("NPC");
+                    CatchObject controll = parentObj.AddComponent<CatchObject>();
+                    GunStateController.AddList(controll);
+                    parentObj.transform.position = collision.ClosestPoint(transform.position);
+
+                    // 그랩한 오브젝트 상위 오브젝트 종속, HashSet 갱신    
+                    transform.parent = parentObj.transform;
+                    controll.AddChild(transform.GetComponent<MeshCollider>());
+                    targetNpc = collision.transform.GetComponent<NpcBase>();
+                    Debug.Log(targetNpc.gameObject.name);
+                    targetNpc.ChangedState(npcState.objectAttached);
+
+                    ClearState();
+                    GrabGun.instance.CancelObj();
+                }
+                else
+                {
+                    // 충돌한 이동형 오브젝트가 고정형에 집합된 형태라면 
+                    if (contactObj.transform.parent.GetComponent<CatchObject>() != null &&
+                        contactObj.transform.parent.gameObject.layer == LayerMask.NameToLayer("Default"))
+                    {
+                        //Debug.Log("===");
+                        transform.parent = contactObj.transform.parent;
+                        checkContact = false;
+                        ClearState();
+                        GrabGun.instance.CancelObj();
+
+                        ClearState();
+                        GrabGun.instance.CancelObj();
+                        return;
+                    }
+                    // 상위 오브젝트 생성
+                    parentObj = new GameObject();
+                    parentObj.transform.gameObject.layer = LayerMask.NameToLayer("GrabedObject");
+                    CatchObject controll = parentObj.AddComponent<CatchObject>();
+                    GunStateController.AddList(controll);
+                    parentObj.transform.position = collision.ClosestPoint(transform.position);
+
+                    // 그랩한 오브젝트와 충돌한 오브젝트 모두 상위 오브젝트 종속, HashSet 갱신    
+                    transform.parent = parentObj.transform;
+                    collision.transform.parent = parentObj.transform;
+                    controll.AddChild(transform.GetComponent<MeshCollider>());
+                    controll.AddChild(collision.transform.GetComponent<MeshCollider>());
+
+                    ClearState();
+                    GrabGun.instance.CancelObj();
+
+                }
+            }
+            // 아기곰의 경우
+            else if (contactObj.transform.gameObject.layer == LayerMask.NameToLayer("NPC"))
+            {
+                parentObj = new GameObject();
+                parentObj.transform.gameObject.layer = LayerMask.NameToLayer("NPC");
+                //transform.gameObject.layer = LayerMask.NameToLayer("NPC");
+                CatchObject controll = parentObj.AddComponent<CatchObject>();
+                GunStateController.AddList(controll);
+                parentObj.transform.position = collision.ClosestPoint(transform.position);
+
+                // 그랩한 오브젝트 상위 오브젝트 종속, HashSet 갱신    
+                transform.parent = parentObj.transform;
+                controll.AddChild(transform.GetComponent<MeshCollider>());
+                targetNpc = collision.transform.GetComponent<NpcBase>();
+                targetNpc.ChangedState(npcState.objectAttached);
+
+                ClearState();
+                GrabGun.instance.CancelObj();
+            }
+            // 엔피씨에 붙은 조합형 일 경우
+            else if (contactObj.transform.gameObject.layer == LayerMask.NameToLayer("MovedObject") &&
+                contactObj.transform.parent?.GetComponent<CatchObject>() != null)
+            {
+                CatchObject controll = contactObj.transform.parent.GetComponent<CatchObject>();
+
+                // 그랩한 오브젝트 상위 오브젝트 종속, HashSet 갱신    
+                transform.parent = contactObj.transform.parent;
+                controll.AddChild(transform.GetComponent<MeshCollider>());
+
+                ClearState();
+                GrabGun.instance.CancelObj();
+            }
+
+        }
+
+        //ClearState();
+        //GrabGun.instance.CancelObj();
+
+    }
+
     //// 그랩한 물건이 이동형 오브젝트와 부딪힐때마다 물리력 행사 콜백
     private void OnCollisionEnter(Collision collision)
-    {        
+    {
+        if (collision.transform.parent == transform.parent)
+        {            
+            return;
+        }
+
         if (collision.gameObject.layer == LayerMask.NameToLayer("MovedObject"))
         {
             // PaintTaget에 bool값 체크 존재, 페인팅된 대상에는 물리력을 부여 x
-            if (collision.gameObject.GetComponent<PaintTarget>().CheckPainted())
+            if (collision.gameObject.GetComponent<PaintTarget>().CheckPainted() ||
+                transform.childCount != 0)
             {
                 return;
             }
@@ -276,7 +455,7 @@ public class MovedObject : MonoBehaviour
         // } TODO : 개인 리팩토링
 
         // 이미 본드 동작을 하는 오브젝트를 다시 그랩하면 그랩하는순간 충돌면을 체크하여 그랩 해제됨에 따라 상태를 제어할 bool값 추가
-        if (checkContact == false)
+        if (checkContact == false || collision.gameObject.layer == LayerMask.NameToLayer("CatchObject"))
         {            
             return;
         }
@@ -470,6 +649,10 @@ public class MovedObject : MonoBehaviour
         checkContact = true;     
         checkCount = 0;
 
+        if(transform.childCount != 0)
+        {
+            triigerCollider = GetComponentsInChildren<SphereCollider>();            
+        }
         //StopCoroutine(sleepCoroutine);
 
     }
@@ -550,6 +733,31 @@ public class MovedObject : MonoBehaviour
     {
         checkContact = false;
         ySpeed = 0;
+    }
+    
+
+    // TODO : 오브젝트 풀링으로 오버헤드 없애야 함
+    public void ClearTrigger()
+    {        
+        GameObject[] myChild = new GameObject[transform.childCount];
+
+        // 내 자식만큼 오브젝트 캐싱
+        for (int i = 0; i < myChild.Length; i++)
+        {
+            myChild[i] = transform.GetChild(i).gameObject;
+        }
+
+        // 오브젝트 부모 변경 및 해쉬 갱신
+        for (int i = 0; i < myChild.Length; i++)
+        {
+            Destroy(myChild[i].gameObject);
+        }
+
+        //if(myRigid)
+        //{
+        //    myRigid.velocity = Vector3.down * 2f;
+        //}
+
     }
 
 }
