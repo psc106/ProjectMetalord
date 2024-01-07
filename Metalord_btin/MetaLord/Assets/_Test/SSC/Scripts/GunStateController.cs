@@ -40,6 +40,7 @@ public class GunStateController : MonoBehaviour
         return mode[index];
     }
     
+    public CameraController cameraController;
     [SerializeField] private Controller_Physics player;
     [SerializeField] private Image crossHair;
     [SerializeField] private Transform startPos;
@@ -199,6 +200,9 @@ public class GunStateController : MonoBehaviour
         bondList = new HashSet<MovedObject>();
         npcList = new HashSet<NpcBase>();
         catchList = new HashSet<CatchObject>();
+
+        if (!cameraController)
+            cameraController = Camera.main.GetComponentInParent<CameraController>();
     }
 
     private void OnEnable()

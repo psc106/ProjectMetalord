@@ -207,6 +207,10 @@ public class Controller_Physics : MonoBehaviour
     private readonly int ClimbWaitHash = Animator.StringToHash("ClimbWait");
     #endregion
 
+    private void OnDisable()
+    {
+        stopState = false;
+    }
 
     //에디터에서 처리
     private void OnValidate()
@@ -340,7 +344,6 @@ public class Controller_Physics : MonoBehaviour
 
     private void FixedUpdate()
     {
-        beforePosition = transform.position;
         //Debug.Log("픽스드" + transform.position);
         //Debug.Log(connectedBody?.name);
 
@@ -354,6 +357,7 @@ public class Controller_Physics : MonoBehaviour
             }*/
             return;
         }
+        beforePosition = transform.position;
 
         /*Debug.Log("FixedUpdate");
         Debug.Log(allContactCount);
@@ -536,6 +540,7 @@ public class Controller_Physics : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        if (stopState) return;
         //Debug.Log("엔터" + transform.position);
         EvaluateCollision(collision);
     }
@@ -543,6 +548,7 @@ public class Controller_Physics : MonoBehaviour
 
     private void OnCollisionStay(Collision collision)
     {
+        if (stopState) return;
         //Debug.Log("스테이" + transform.position);
         EvaluateCollision(collision);
     }
@@ -1251,6 +1257,15 @@ public class Controller_Physics : MonoBehaviour
 
         return false;
     }
+
+    /*public void ConnectCameraAndGrabObj(Transform grabObj)
+    {
+        cameraManager.SetGrabObject(grabObj);
+    }
+    public void DisconnectCameraAndGrabObj()
+    {
+        cameraManager.ClearGrabObject();
+    }*/
 
     public Rigidbody GetConnectRigidBody()
     {

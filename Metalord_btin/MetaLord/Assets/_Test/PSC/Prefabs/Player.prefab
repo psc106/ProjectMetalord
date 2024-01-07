@@ -316,7 +316,7 @@ MonoBehaviour:
   handGunRender: {fileID: 378431335789592413}
   backGunRender: {fileID: 4838373344311464730}
   cameraManager: {fileID: 3171454143736129391}
-  viewAngle: 270
+  viewAngle: 180
   climbHelpTime: 5
   jumpHeight: 9.5
   jumpDelayTime: 1
@@ -335,7 +335,7 @@ MonoBehaviour:
   maxAirJumps: 0
   maxGroundAngle: 45
   maxObjectAngle: 45
-  maxClimbAngle: 135
+  maxClimbAngle: 160
   checkFrameRate: 2
   startPoint: {fileID: 8282372781614362592}
   cameraPoint: {fileID: 0}
@@ -3284,6 +3284,7 @@ MonoBehaviour:
   groundCamera: {fileID: 2216440679700773208}
   climbCamera: {fileID: 1522432719348868188}
   blendCamera: {fileID: 2221912265340375186}
+  mainCameraTransform: {fileID: 0}
   SpeedMulitiplier: 5
   blendCameraDuration: 0.5
   smoothRotationSpeed: 10
@@ -3539,6 +3540,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 474c911dbaf414b44922371fcf24c6df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cameraController: {fileID: 0}
   player: {fileID: 3742653360604592892}
   crossHair: {fileID: 8823238110768659009}
   startPos: {fileID: 6677764962144662948}

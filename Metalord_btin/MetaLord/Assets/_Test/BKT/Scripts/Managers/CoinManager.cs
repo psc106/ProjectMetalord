@@ -28,7 +28,7 @@ public class CoinManager : MonoBehaviour
             instance = this;
             DontDestroyOnLoad(gameObject);
         }
-        else if (instance != this)
+        else if (instance != null)
         {
             Destroy(gameObject);
         }

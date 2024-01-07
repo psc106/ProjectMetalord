@@ -23,6 +23,8 @@ public class CameraController : MonoBehaviour
     CinemachineVirtualCamera climbCamera;
     [SerializeField]
     CinemachineVirtualCamera blendCamera;
+    [SerializeField]
+    Transform mainCameraTransform;
 
     [Header("Settings")]
     [SerializeField, Range(0.5f, 20f)] float SpeedMulitiplier = 1f;
@@ -39,12 +41,21 @@ public class CameraController : MonoBehaviour
     float fixedAngle = -1;
     float time;
     float currRotateTime = 0;
-    Quaternion targetRotation;
 
     float newRotationY;
     float newRotationX;
 
+    Transform grabObject;
+    Vector3 grabDiffEuler;
+    Vector3 grabForward;
+    Vector3 grabUp;
+    Vector3 grabRight;
+
+
+
+
     Coroutine rotateCoroutine;
+    Quaternion targetRotation;
 
 
     private void OnEnable()
@@ -59,6 +70,9 @@ public class CameraController : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        if(!mainCameraTransform)
+            mainCameraTransform = Camera.main.transform;
     }
     private void OnDisable()
     {
@@ -189,31 +203,49 @@ public class CameraController : MonoBehaviour
         //x축 변경
         //targetX.rotation = Quaternion.Euler(newRotationX, Mathf.Lerp(targetX.eulerAngles.y, newRotationY, 15 * Time.deltaTime), targetX.eulerAngles.z);
         //
-       // cameraTarget.rotation = Quaternion.Euler(newRotationX, newRotationY, cameraTarget.eulerAngles.z);
+        // cameraTarget.rotation = Quaternion.Euler(newRotationX, newRotationY, cameraTarget.eulerAngles.z);
 
+
+        up = Vector3.Cross(mainCameraTransform.forward, mainCameraTransform.right);
     }
-
+    Vector3 up;
     private void FixedUpdate()
     {
-        float beforeX = cameraTarget.rotation.eulerAngles.x;
-        float beforeY = playerRender.rotation.eulerAngles.y;
         playerRender.rotation = Quaternion.Euler(0, newRotationY, 0);
         cameraTarget.rotation = Quaternion.Euler(newRotationX, newRotationY, cameraTarget.eulerAngles.z);
 
         if (grabObject)
         {
-            grabObject.rotation = Quaternion.Euler(originEuler.x - newRotationX, -newRotationY+originEuler.y , cameraTarget.eulerAngles.z);
-        }
+            // grabObject에 회전을 적용합니다.
+            Quaternion grabRotation = Quaternion.Euler(0, grabDiffEuler.y + newRotationY, 0);
+            grabObject.rotation = grabRotation;
 
+            // grabObject의 "위" 방향을 cameraTarget의 "위" 방향과 일치시킵니다.
+            Vector3 cameraUp = cameraTarget.rotation * Vector3.up;
+
+            // 현재 grabObject의 forward 방향을 유지한 채, up 방향만 변경합니다.
+            grabObject.rotation = Quaternion.LookRotation(grabObject.forward, cameraUp);
+        }
     }
 
-    [SerializeField]
-    Transform grabObject;
-    Vector3 originEuler;
     public void SetGrabObject(Transform obj)
     {
         grabObject = obj;
-        originEuler = grabObject.eulerAngles;
+        grabDiffEuler = grabObject.eulerAngles - cameraTarget.eulerAngles;
+        grabForward = grabObject.forward - cameraTarget.forward;
+        grabUp = grabObject.up - cameraTarget.up;
+        grabRight = grabObject.right - cameraTarget.right;
+
+        //diff = beforeA-beforeB
+        //diff = newA-newB
+        //diff+beforeB = beforeA
+        //diff+newB = newA
+
+    }
+    public void ClearGrabObject()
+    {
+        grabObject = null;
+        grabDiffEuler = Vector3.zero;
     }
 
 

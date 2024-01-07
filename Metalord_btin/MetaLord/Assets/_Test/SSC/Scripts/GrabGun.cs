@@ -16,6 +16,11 @@ public class GrabGun : GunBase
         mode = GunMode.Grab;
     }
 
+    private void OnDisable()
+    {
+        instance = null;
+    }
+
     public int GrabShot { get { return -ammo; } set { ammo = -value; } }
 
     GameObject targetObj = null;
@@ -91,7 +96,7 @@ public class GrabGun : GunBase
                 return;
             }
 
-            Vector3 dir = (state.pickupPoint.position - followPos) - targetRigid.position;            
+            Vector3 dir = (state.pickupPoint.position) - targetRigid.position;            
             float mag = dir.magnitude;
 
             if (mag >= maxSpeed)
@@ -134,6 +139,8 @@ public class GrabGun : GunBase
             targetObj.GetComponent<CatchObject>().CancelGrab();
         }
 
+
+        state.cameraController.ClearGrabObject();
         targetObj = null;
         state.grabLine.enabled = false;
         state.onGrab = false;        
@@ -141,6 +148,7 @@ public class GrabGun : GunBase
 
     public void CancleGrab()
     {
+        state.cameraController.ClearGrabObject();
         targetObj.GetComponent<Collider>().material.dynamicFriction = 1f;
         targetObj = null;
         state.grabLine.enabled = false;
@@ -201,7 +209,9 @@ public class GrabGun : GunBase
             }
 
         }
-        
+
+
+        state.cameraController.SetGrabObject(targetObj.transform);
         targetRigid = targetObj.GetComponent<Rigidbody>();        
         state.pickupPoint.position = state.hit.point;
         followPos = state.pickupPoint.position - state.hit.transform.position;

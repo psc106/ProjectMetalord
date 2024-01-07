@@ -76,16 +76,12 @@ public class PaintTarget : MonoBehaviour
     private static GameObject splatObject;
     private bool isPainted = false;
 
-    static public Color climbColor;
-    static public Color bondColor;
-
     // 12.13 SSC
     // 페인트 초기화시 컬러값 초기화로 돌릴 origin값 저장 필드 추가
     private void Awake()
     {
         ReadPixel = null;
         originTex = splatTexPick;
-        bondColor = new Color(1, 0, 0, 1);
     }
 
 
@@ -151,6 +147,8 @@ public class PaintTarget : MonoBehaviour
 
         return -1;
     }
+
+
 
     public static int RayChannel(Ray ray, Ray subRay, float Length, LayerMask layer)
     {
