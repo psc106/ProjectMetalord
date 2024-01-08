@@ -31,7 +31,6 @@ public class LoadingController : MonoBehaviour
         AsyncOperation operation = SceneManager.LoadSceneAsync(nextScene);
         operation.allowSceneActivation = false;
 
-
         float timer = 0f;
 
         // 비동기 씬이 로딩되었을때 실행되는 이벤트
@@ -62,10 +61,16 @@ public class LoadingController : MonoBehaviour
     // 씬 로딩이 완료될 경우 실행되는 함수
     private void OnLoadComplete(AsyncOperation _operation)
     {
-        if (StartInfo.instance.isLoaded == true)
+        // 사운드 매니저가 만들어진적이 있다면 재생
+        if (SoundManager.instance != null)
         {
-            DataManager.instance.LoadGameData();        
-            Debug.Log("불러오기 실행");
+            SoundManager.instance.gameObject.SetActive(true);
+        }
+
+        // 불러오기라면 불러오기 실행
+        if (StartInfo.instance.isLoaded == true)
+        { 
+            DataManager.instance.LoadGameData();                    
         }
     }
 }

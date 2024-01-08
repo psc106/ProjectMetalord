@@ -20,7 +20,7 @@ public class TitleController : MonoBehaviour
     {
         if(SoundManager.instance != null)
         {
-            SoundManager.instance.gameObject.SetActive(true);            
+            SoundManager.instance.gameObject.SetActive(false);            
         }
 
         StartInfo.instance.isLoaded = false;
@@ -33,7 +33,7 @@ public class TitleController : MonoBehaviour
     {
         if (SoundManager.instance != null)
         {
-            SoundManager.instance.gameObject.SetActive(true);
+            SoundManager.instance.gameObject.SetActive(false);
         }
 
         StartInfo.instance.isLoaded = true;
