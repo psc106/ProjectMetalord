@@ -17,6 +17,9 @@ public class RecordManager : MonoBehaviour
     [Header("도감 캔버스")]
     [SerializeField] private GameObject recordCanvas;
 
+    // 도감 UI를 저장해놓을 Pool
+    private GameObject saveRemainRecord;
+
     private GameObject pagePanel; //페이지 좌측 페이지가 생성될 기준 패널
     private GameObject itemName; //페이지 우측 이름 text
     private GameObject zone; //페이지 우측 지역 text
@@ -91,6 +94,9 @@ public class RecordManager : MonoBehaviour
         pagePanel = Utility.FindChildObj(recordCanvas, "RecordPagePanel");
         labelSortGot = Utility.FindChildObj(recordCanvas, "Sort(Got)");
         pageDisPlayText = Utility.FindChildObj(recordCanvas, "Text(Page)").GetComponent<TMP_Text>();
+
+        // test
+        saveRemainRecord = Utility.FindChildObj(recordCanvas, "SavePage");
 
         itemUIObjectPrefab = Resources.Load<GameObject>("Prefabs/Object_ForRecordObject");
         pagePrefab = Resources.Load<GameObject>("Prefabs/Object_ForPage");
@@ -368,7 +374,8 @@ public class RecordManager : MonoBehaviour
         foreach(var recordObject in recordObjectList)
         {
             recordObject.SetActive(false);
-            recordObject.transform.SetParent(transform);
+            //recordObject.transform.SetParent(transform);
+            recordObject.transform.SetParent(saveRemainRecord.transform);
 
             RecordObjectInfo tempInfo = recordObject.GetComponent<RecordObject>().recordInfo; // 임시 정보에 저장
 
