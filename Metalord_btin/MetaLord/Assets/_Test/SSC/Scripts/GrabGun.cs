@@ -18,7 +18,7 @@ public class GrabGun : GunBase
 
     private void OnDisable()
     {
-        instance = null;
+        //instance = null;
     }
 
     public int GrabShot { get { return -ammo; } set { ammo = -value; } }
