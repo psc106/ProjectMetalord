@@ -446,26 +446,33 @@ public class GunStateController : MonoBehaviour
 
     public void UpdateState(int ammoValue, GunState updatedState)
     {
-        Ammo = ammoValue;
-        checkAmmo = Ammo;
+        if (state != GunState.RELOADING)
+        {
+            Ammo = ammoValue;
+        }
+        checkAmmo = ammoValue;
         state = updatedState;
-        gunImage[AmmoGaugeIdx].fillAmount = (float)Ammo / (float)maxUpgrade;
+        gunImage[AmmoGaugeIdx].fillAmount = (float)ammoValue / (float)maxUpgrade;
     }
 
     public void UpdateState(int ammoValue)
-    {                
-        Ammo = ammoValue;        
-        gunImage[AmmoGaugeIdx].fillAmount = (float)Ammo / (float)maxUpgrade;    
+    {
+        if (state != GunState.RELOADING)
+        {
+            Ammo = ammoValue;        
+        }
+        gunImage[AmmoGaugeIdx].fillAmount = (float)ammoValue / (float)maxUpgrade;    
         
-        if (currentMode.CanFireAmmoCount())
+       /* if (currentMode.CanFireAmmoCount())
         {
             state = GunState.READY;
             ChangedCrossHair();
-        }
+        }*/
     }
 
     public void Reloading()
     {
+        Debug.Log(state.ToString());
         if (!CanReload || state == GunState.RELOADING || Ammo == MaxAmmo)
         {
             return;
@@ -493,6 +500,7 @@ public class GunStateController : MonoBehaviour
         InitColorText();
 
         float currentAmmo = Ammo;
+        Ammo = MaxAmmo;
 
         float timeCheck = 0f;
         float t = 0f;
@@ -542,7 +550,6 @@ public class GunStateController : MonoBehaviour
 
     void ClearBondList()
     {
-        Debug.Log(bondList.Count);
 
         foreach (var paint in bondList)
         {        
