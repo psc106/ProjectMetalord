@@ -48,18 +48,6 @@ public class ResolutionSetting : MonoBehaviour
     // 좌측버튼 누를경우
     public void PushLeft()
     {
-        if (resIndex > 0)
-        {
-            resIndex--;
-
-            InputText(resIndex);
-            Screen.SetResolution(resolutions[resIndex].width, resolutions[resIndex].height,Screen.fullScreen);
-        } 
-    }
-
-    // 우측버튼 누를경우
-    public void PushRight()
-    {
         if (resIndex < resolutions.Length-1)
         {
             resIndex++;
@@ -67,6 +55,18 @@ public class ResolutionSetting : MonoBehaviour
             InputText(resIndex);
             Screen.SetResolution(resolutions[resIndex].width, resolutions[resIndex].height,Screen.fullScreen);
         }
+    }
+
+    // 우측버튼 누를경우
+    public void PushRight()
+    {
+        if (resIndex > 0)
+        {
+            resIndex--;
+
+            InputText(resIndex);
+            Screen.SetResolution(resolutions[resIndex].width, resolutions[resIndex].height,Screen.fullScreen);
+        } 
 
     }
 

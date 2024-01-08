@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 enum ExplainPage
 {
@@ -37,9 +38,13 @@ public class ExplainCanvas : MonoBehaviour
         }
     }
 
+    [SerializeField] private Button firstButton;
+
     private void OnEnable()
     {
-        pageIndex = (int)ExplainPage.PC;        
+        // 도움말 오픈시, 페이지는 첫페이지가 표시됨
+        pageIndex = (int)ExplainPage.PC;
+        firstButton.Select();
     }
 
     public void Click_PC()
