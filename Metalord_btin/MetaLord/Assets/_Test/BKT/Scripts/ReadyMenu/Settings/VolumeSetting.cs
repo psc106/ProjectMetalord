@@ -59,6 +59,9 @@ public class VolumeSetting : MonoBehaviour
         toggle_BGM.onValueChanged.AddListener(SetControlBGM);
         toggle_SFX.onValueChanged.AddListener(SetControlSFX);
 
+        bgm_Audio = SoundManager.instance.transform.GetChild(0).GetComponent<AudioSource>();
+        sfx_Audio = SoundManager.instance.transform.GetChild(1).GetComponent<AudioSource>();
+
 
     }
 
