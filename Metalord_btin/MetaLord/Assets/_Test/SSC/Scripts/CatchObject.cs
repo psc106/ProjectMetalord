@@ -74,12 +74,13 @@ public class CatchObject : MonoBehaviour
         // } TODO : 개인 리팩토링
 
         // 그랩한 대상의 슬립 기준
-        if (myRigid)
+        if (myRigid && !checkContact)
         {
-            if (myRigid.IsSleeping())
+            if (myRigid.IsSleeping()) //|| myRigid.velocity.magnitude <= 0.1f)
             {
-                Destroy(myRigid);                
+                Debug.Log("슬립");
 
+                Destroy(myRigid);                
                 foreach (MeshCollider col in childColid)
                 {
                     col.convex = false;
@@ -232,10 +233,10 @@ public class CatchObject : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.transform.parent == transform)
-        {            
-            return;
-        }
+        //if(collision.transform.parent == transform)
+        //{            
+        //    return;
+        //}
 
         if (collision.gameObject.layer == LayerMask.NameToLayer("MovedObject"))
         {

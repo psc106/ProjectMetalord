@@ -13,6 +13,7 @@ public class MoveObjectData : MonoBehaviour
 {
     public Vector3 pos;
     public Vector3 rotation;
+    public bool isMoved;
 
     [Header("움직이는 오브젝트 ID")]
     public int id; // 배열의 인덱스에 저장을 하기위한 id
@@ -26,6 +27,9 @@ public class MoveObjectData : MonoBehaviour
 
     private void Start()
     {
+        // 게임시작하며 현재 position 저장
+        pos = transform.position;
+        rotation = transform.eulerAngles;
     }
 
     private void OnDestroy()
@@ -38,8 +42,12 @@ public class MoveObjectData : MonoBehaviour
     // 오브젝트 저장
     public void SaveData()
     {
-        pos = transform.position;
-        rotation = transform.eulerAngles;
+        if (pos != transform.position) 
+        {
+            isMoved = true;
+            pos = transform.position;
+            rotation = transform.eulerAngles;
+        }
 
         string jsonData = JsonUtility.ToJson(GetComponent<MoveObjectData>());   // 저장할 Json Data        
 
@@ -55,6 +63,15 @@ public class MoveObjectData : MonoBehaviour
 
         transform.position = pos;
         transform.eulerAngles = rotation;
+        
+        // 움직였던 오브젝트라면 물리력 주입
+        if (isMoved) 
+        {
+            GetComponent<MovedObject>().InitOverap();
+        }
+
+        // 불러온 오브젝트들은 전부 움직이지 않았던 오브젝트로 설정
+        isMoved = false;
 
         //Debug.Log($"{pos.x} + {pos.y} + {pos.z}");
         //Debug.Log($"{rotation.x} + {rotation.y} + {rotation.z}");
