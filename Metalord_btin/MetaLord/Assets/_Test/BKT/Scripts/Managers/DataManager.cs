@@ -10,7 +10,7 @@ public class DataManager : MonoBehaviour
     public static DataManager instance;
 
     public SavedGamePlayData savedGamePlayData; // 게임 플레이에 관한 데이터
-    public SavedSettingsData savedSettingsData; // 게임 환경설정에 관한 데이터
+    //public SavedSettingsData savedSettingsData; // 게임 환경설정에 관한 데이터
 
     private void Awake()
     {
@@ -25,7 +25,7 @@ public class DataManager : MonoBehaviour
         }
 
         savedGamePlayData = new SavedGamePlayData();
-        savedSettingsData = new SavedSettingsData();        
+        //savedSettingsData = new SavedSettingsData();        
     }
 
     //1.저장 알림 -> 2. json 파일에 데이터 저장
