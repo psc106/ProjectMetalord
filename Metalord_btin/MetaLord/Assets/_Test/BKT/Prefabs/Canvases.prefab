@@ -4378,6 +4378,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08222b3c01671419a8d50eb8df6416f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canBuyImage: {fileID: -832146395, guid: b6694ae237e9a4872a51fac6580913df, type: 3}
+  canNotBuyImage: {fileID: 239093720, guid: 32a39c5f0f61a42909fdf4cb970bdf59, type: 3}
   skillName: "\uCD1D\uB7C9"
   upgradeCategory: 1
   stackOn: {fileID: 21300000, guid: b77d27f91fb714f969bce7e4b232b9d8, type: 3}
@@ -10145,6 +10147,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08222b3c01671419a8d50eb8df6416f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canBuyImage: {fileID: -832146395, guid: b6694ae237e9a4872a51fac6580913df, type: 3}
+  canNotBuyImage: {fileID: 239093720, guid: 32a39c5f0f61a42909fdf4cb970bdf59, type: 3}
   skillName: "\uC0AC\uAC70\uB9AC"
   upgradeCategory: 0
   stackOn: {fileID: 21300000, guid: b77d27f91fb714f969bce7e4b232b9d8, type: 3}
@@ -24454,6 +24458,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 199acfbe779a04ed69dc8129a66d1652, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canBuyImage: {fileID: 175616852, guid: 1497ac4c44c1342e198645ec2e05e0ef, type: 3}
+  canNotBuyImage: {fileID: 1200759280, guid: 4a262e66303644f2b8b971da53641396, type: 3}
   skillName: "\uB2F9\uAE30\uAE30"
   cost: 45
   skillExplain: "\uBCF8\uB4DC\uB97C \uBC1C\uC0AC\uD558\uC5EC \uC5F0\uACB0\uB41C \uC0C1\uD0DC\uB85C
