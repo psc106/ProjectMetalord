@@ -13,10 +13,15 @@ public class LoadingController : MonoBehaviour
 {
     static string nextScene;
 
+    static private bool backToTitle;
+
     [SerializeField] Image progressBar;
 
     public static void LoadScene(string sceneName)
     {
+        if (sceneName == "TitleScene") backToTitle = true;
+        else backToTitle = false;
+
         nextScene = sceneName;
         SceneManager.LoadScene("LoadingScene");
     }
@@ -62,7 +67,7 @@ public class LoadingController : MonoBehaviour
     private void OnLoadComplete(AsyncOperation _operation)
     {
         // 사운드 매니저가 만들어진적이 있다면 재생
-        if (SoundManager.instance != null)
+        if (SoundManager.instance != null && backToTitle == false)
         {
             SoundManager.instance.gameObject.SetActive(true);
         }
