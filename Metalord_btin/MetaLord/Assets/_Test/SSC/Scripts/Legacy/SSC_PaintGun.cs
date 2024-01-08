@@ -168,6 +168,9 @@ public class SSC_PaintGun : MonoBehaviour
     /// <param name="_ammo"></param>
     void UsedAmmo(Ray _ray, int _ammo)
     {
+        GameObject effect = EffectManager.instance.GetEffect(EffectList.GunMuzzle);
+        effect.transform.position = startPoint.position;
+        effect.GetComponent<ParticleSystem>().Play();
         PaintTarget.PaintRay(_ray, brush, range);
 
         gun.UpdateState(_ammo);
