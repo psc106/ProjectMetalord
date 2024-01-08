@@ -106,9 +106,9 @@ public class SSC_GunState : MonoBehaviour
         }
 
         // 장전        
-        if (Input.GetKeyDown(KeyCode.R))
+        //if (Input.GetKeyDown(KeyCode.R))
         {
-            Reloading();
+            //Reloading();
         }
 
         // 1번키 누르면 페인트건
