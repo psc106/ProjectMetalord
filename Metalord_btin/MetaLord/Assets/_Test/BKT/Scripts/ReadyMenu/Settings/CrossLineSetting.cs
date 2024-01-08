@@ -61,15 +61,12 @@ public class CrossLineSetting : MonoBehaviour
                 crossLine.transform.localScale = new Vector3(1f, 1f, 1f);
                 middleImage.sprite = selected;
                 middleText.color = new(1f, 1f, 1f);
-
                 break;
 
             case ButtonSize.Large:
                 crossLine.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
                 largeImage.sprite = selected;
                 largeText.color = new(1f, 1f, 1f);
-
-
                 break;
         }
     }

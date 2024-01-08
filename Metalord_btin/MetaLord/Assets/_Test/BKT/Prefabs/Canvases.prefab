@@ -25170,6 +25170,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ffbade7c1ead14f81ae1d14f193edc64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  selected: {fileID: 21300000, guid: 7ac2164b1d73b4d91b85a45b1d0600fc, type: 3}
+  unSelected: {fileID: 21300000, guid: 92fbc16b0df174d06be4beac0ca5c808, type: 3}
+  smallImage: {fileID: 4748329827222653783}
+  middleImage: {fileID: 6189692614773313788}
+  largeImage: {fileID: 311431439009089438}
+  smallText: {fileID: 8635694393112625269}
+  middleText: {fileID: 6716480519895635408}
+  largeText: {fileID: 3419273840188764932}
 --- !u!1 &5985399219172175222
 GameObject:
   m_ObjectHideFlags: 0
