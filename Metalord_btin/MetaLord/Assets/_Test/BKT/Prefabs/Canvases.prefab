@@ -28203,6 +28203,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   crossLine: {fileID: 0}
+  selected: {fileID: 21300000, guid: 7ac2164b1d73b4d91b85a45b1d0600fc, type: 3}
+  unSelected: {fileID: 21300000, guid: 92fbc16b0df174d06be4beac0ca5c808, type: 3}
+  smallImage: {fileID: 691669304567557740}
+  middleImage: {fileID: 4659206412094957975}
+  largeImage: {fileID: 6664268007369714897}
+  smallText: {fileID: 8152418814620384710}
+  middleText: {fileID: 296028320233063884}
+  largeText: {fileID: 8609122294830216692}
 --- !u!1 &6808230062481837417
 GameObject:
   m_ObjectHideFlags: 0
@@ -29503,6 +29511,8 @@ MonoBehaviour:
   text_Master: {fileID: 166287888746557120}
   text_BGM: {fileID: 7915843881539692119}
   text_SFX: {fileID: 5804657474974851294}
+  bgm_Audio: {fileID: 0}
+  sfx_Audio: {fileID: 0}
 --- !u!1 &7102582718974486147
 GameObject:
   m_ObjectHideFlags: 0
