@@ -73,8 +73,8 @@ public class Store_WeaponStatus : StoreObject
             ReflectStepImage(i);
             GameEventsManager.instance.coinEvents.UpgradeGun(upgradeCategory, stepIncreaseAmount[i]); // 건 업그레이드에 전달
         }
-        ReflectCostText(stepIndex); // 금액 적용
-        ReflectCost(stepIndex); // 금액 적용
+        ReflectCostText(stepIndex-1); // 금액 적용
+        ReflectCost(stepIndex-1); // 금액 적용
         if (stepIndex == MAX_STEP) isCanBuy = false; // 만약 최고 스텝이라면 구매 불가
         ChangeButtonUI(0); // UI 적용
     }
@@ -120,7 +120,7 @@ public class Store_WeaponStatus : StoreObject
     // 업그레이드 텍스트 반영
     private void ReflectCostText(int _index)
     {
-        if (stepIndex < MAX_STEP - 1) costObject.text = stepCost[stepIndex + 1].ToString() + "개"; // 다음 스텝의 금액을 반영
+        if (_index < MAX_STEP - 1) costObject.text = stepCost[_index + 1].ToString() + "개"; // 다음 스텝의 금액을 반영
         else
         {
             //coinImage.SetActive(false);
@@ -132,7 +132,7 @@ public class Store_WeaponStatus : StoreObject
     // 업그레이드 텍스트 반영
     private void ReflectCost(int _index)
     {
-        if (stepIndex < MAX_STEP - 1) price = stepCost[stepIndex + 1]; // 다음 스텝의 금액을 반영
+        if (_index < MAX_STEP - 1) price = stepCost[_index + 1]; // 다음 스텝의 금액을 반영
         else price = 9999999; // 구매 불가
     }
 }
