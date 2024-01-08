@@ -1,12 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 using System;
 
 public class TextSizeSetting : MonoBehaviour
 {
     private ButtonSize selectedButton;
+
+    // 선택된 이미지 적용을 위한 변수
+    [SerializeField] private Sprite selected;
+    [SerializeField] private Sprite unSelected;
+    [SerializeField] private Image smallImage;
+    [SerializeField] private Image middleImage;
+    [SerializeField] private Image largeImage;
+    [SerializeField] private TMP_Text smallText;
+    [SerializeField] private TMP_Text middleText;
+    [SerializeField] private TMP_Text largeText;
 
     TMP_Text[] originTexts; // 크기를 기억할 원본
     List<float> fontSizes;    
@@ -47,7 +58,32 @@ public class TextSizeSetting : MonoBehaviour
     {
         float tempSize = default;
 
-        for(int i = 0; i < originTexts.Length; i++)
+        smallImage.sprite = unSelected;
+        middleImage.sprite = unSelected;
+        largeImage.sprite = unSelected;
+        smallText.color = new(0f, 0f, 0f);
+        middleText.color = new(0f, 0f, 0f);
+        largeText.color = new(0f, 0f, 0f);
+
+        switch (inputButton)
+        {
+            case ButtonSize.Small:
+                smallImage.sprite = selected;
+                smallText.color = new(1f, 1f, 1f);
+                break;
+
+            case ButtonSize.Middle:
+                middleImage.sprite = selected;
+                middleText.color = new(1f, 1f, 1f);
+                break;
+
+            case ButtonSize.Large:
+                largeImage.sprite = selected;
+                largeText.color = new(1f, 1f, 1f);
+                break;
+        }
+
+        for (int i = 0; i < originTexts.Length; i++)
         {
             switch (inputButton)
             {

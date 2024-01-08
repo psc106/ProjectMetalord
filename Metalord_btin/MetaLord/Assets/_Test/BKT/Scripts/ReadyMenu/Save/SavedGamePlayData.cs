@@ -10,7 +10,7 @@ public class SavedGamePlayData
 
     // 맵에 배치된 오브젝트(소품) 위치값 저장을 위한 변수
     // 배열 Index번호에 맞춰서 ID값과 X,Y,Z값을 불러옴 OK
-    public string[] recordItemTransform = new string[510];
+    public string[] recordItemTransform = new string[570];
 
     // 1~99 코인, 100~ 주방,200~ 거실, 300~ 아기방 OK
     public int[] coinAndRecordItem = new int[400];
