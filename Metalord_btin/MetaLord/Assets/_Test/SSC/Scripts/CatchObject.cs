@@ -94,10 +94,13 @@ public class CatchObject : MonoBehaviour
     private void OnTriggerEnter(Collider collision)
     {
         // 이미 본드 동작을 하는 오브젝트를 다시 그랩하면 그랩하는순간 충돌면을 체크하여 그랩 해제됨에 따라 상태를 제어할 bool값 추가
-        if (checkContact == false || collision.transform.parent == transform || collision.gameObject.layer == LayerMask.NameToLayer("CatchObject"))
+        if (checkContact == false || collision.gameObject.layer == LayerMask.NameToLayer("CatchObject"))
         {
+            Debug.Log("막히고 있는지");
             return;
         }
+
+        Debug.Log("통과");
 
         // 충돌한 오브젝트의 부모가 없을경우
         if (collision.transform.parent == null)
@@ -238,6 +241,11 @@ public class CatchObject : MonoBehaviour
         //    return;
         //}
 
+        if (collision.transform.parent?.GetComponent<CatchObject>() != null)
+        {
+            return;
+        }
+
         if (collision.gameObject.layer == LayerMask.NameToLayer("MovedObject"))
         {
             if (collision.gameObject.GetComponent<PaintTarget>().CheckPainted())
@@ -246,18 +254,18 @@ public class CatchObject : MonoBehaviour
             }
            
 
-            if (collision.gameObject.transform.parent?.GetComponent<CatchObject>() != null && checkContact)
-            {
-                // 고정형, NPC에 붙은 조합오브젝트가 아니라면 물리력 부여
-                if (collision.transform.parent?.gameObject.layer == LayerMask.NameToLayer("Default") ||
-                    collision.transform.parent?.gameObject.layer == LayerMask.NameToLayer("NPC"))
-                {
-                    return;
-                }
+            //if (collision.gameObject.transform.parent?.GetComponent<CatchObject>() != null && checkContact)
+            //{
+            //    // 고정형, NPC에 붙은 조합오브젝트가 아니라면 물리력 부여
+            //    if (collision.transform.parent?.gameObject.layer == LayerMask.NameToLayer("Default") ||
+            //        collision.transform.parent?.gameObject.layer == LayerMask.NameToLayer("NPC"))
+            //    {
+            //        return;
+            //    }
 
-                collision.gameObject?.transform.parent.GetComponent<CatchObject>().InitOverap();
-            }
-            else if (collision.gameObject.layer == LayerMask.NameToLayer("MovedObject") && checkContact)
+            //    collision.gameObject?.transform.parent.GetComponent<CatchObject>().InitOverap();
+            //}
+            if (collision.gameObject.layer == LayerMask.NameToLayer("MovedObject") && checkContact)
             {
                 // 조합 오브젝트일시에는 안막아두면 조합된 오브젝트에서 해당 오브젝트만 물리영향을 받는 버그 발생
                 if (collision.transform.parent?.gameObject.layer == LayerMask.NameToLayer("GrabedObject"))
@@ -327,6 +335,7 @@ public class CatchObject : MonoBehaviour
         // 이미 본드 동작을 하는 오브젝트를 다시 그랩하면 그랩하는순간 충돌면을 체크하여 그랩 해제됨에 따라 상태를 제어할 bool값 추가
         if (checkContact == false || collision.gameObject.layer == LayerMask.NameToLayer("CatchObject"))
         {
+            Debug.Log("CatchObject 막히는 중");
             return;
         }
         
@@ -455,21 +464,26 @@ public class CatchObject : MonoBehaviour
             myChild[i] = transform.GetChild(i).gameObject;
         }
 
-        // 오브젝트 부모 변경 및 해쉬 갱신
-        for (int i = 0; i < myChild.Length; i++)
+        if(myChild.Length > 0)
         {
-            myChild[i].transform.parent = contactObj.transform;
-
-            if (transform.GetChild(i).GetComponent<MovedObject>() == null)
+            // 오브젝트 부모 변경 및 해쉬 갱신
+            for (int i = 0; i < myChild.Length; i++)
             {
-                continue;
+                myChild[i].transform.parent = contactObj.transform;
+
+                if (transform.GetChild(i).GetComponent<MovedObject>() == null)
+                {
+                    continue;
+                }
+
+                myChild[i].GetComponent<MeshCollider>().convex = false;
+
+                // 충돌한 오브젝트의 상위 오브젝트 해쉬 갱신
+                contactObj.transform.GetComponent<CatchObject>().AddChild(myChild[i].transform.GetComponent<MeshCollider>());            
             }
 
-            myChild[i].GetComponent<MeshCollider>().convex = false;
-
-            // 충돌한 오브젝트의 상위 오브젝트 해쉬 갱신
-            contactObj.transform.GetComponent<CatchObject>().AddChild(myChild[i].transform.GetComponent<MeshCollider>());            
         }
+
 
         // 컨트롤러에 담겨있는 Hash중 나 자신을 제거 후 오브젝트채로 파괴
         GunStateController.catchList.Remove(this);

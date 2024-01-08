@@ -300,8 +300,7 @@ public class GunStateController : MonoBehaviour
                     if (crossHair.sprite == crossHairSprite[(int)CrossHair.LOCK])
                     {
                         if (crosshairFadeOut != null)
-                        {
-                            Debug.Log(1);
+                        {                            
                             //StopCoroutine(crosshairFadeOut);
                             return;
                         }
@@ -549,12 +548,7 @@ public class GunStateController : MonoBehaviour
     }
 
     void ClearBondList()
-    {
-
-        foreach (var paint in bondList)
-        {        
-            Debug.Log(paint.gameObject.name);
-        }
+    {        
 
         foreach (var paint in bondList)
         {            
