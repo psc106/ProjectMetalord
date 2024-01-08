@@ -79,7 +79,7 @@ public class RecordManager : MonoBehaviour
             instance = this;
             DontDestroyOnLoad(gameObject);
         }
-        else if (instance != this)
+        else if (instance != null)
         {
             Destroy(gameObject);
         }

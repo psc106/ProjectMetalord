@@ -28,6 +28,11 @@ public class AudioManager : MonoBehaviour
         instance = this;
     }
 
+    private void OnDisable()
+    {
+        instance = null;
+    }
+
     private void Start()
     {
         PlayBackGroundMusic(); // 최초 음악시작 -> 음악시작위치 조정 필요시 위치 변경

@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class MovedObject : MonoBehaviour
 {
-    public static float gravityMultiple = 2;
     public LayerMask layerMask;
     Rigidbody myRigid;
     MeshCollider myColid;    

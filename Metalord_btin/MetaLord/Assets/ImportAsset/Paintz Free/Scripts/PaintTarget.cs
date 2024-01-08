@@ -76,16 +76,12 @@ public class PaintTarget : MonoBehaviour
     private static GameObject splatObject;
     private bool isPainted = false;
 
-    static public Color climbColor;
-    static public Color bondColor;
-
     // 12.13 SSC
     // 페인트 초기화시 컬러값 초기화로 돌릴 origin값 저장 필드 추가
     private void Awake()
     {
         ReadPixel = null;
         originTex = splatTexPick;
-        bondColor = new Color(1, 0, 0, 1);
     }
 
 
@@ -141,7 +137,7 @@ public class PaintTarget : MonoBehaviour
             Color pc = tc.GetPixel(x, y);
 
             int l = -1;
-            if (pc.r > .4) l = 0;
+            if (pc.r > .3) l = 0;
             if (pc.g > .5) l = 1;
             if (pc.b > .5) l = 2;
             if (pc.a > .5) l = 3;
@@ -152,10 +148,12 @@ public class PaintTarget : MonoBehaviour
         return -1;
     }
 
+
+
     public static int RayChannel(Ray ray, Ray subRay, float Length, LayerMask layer)
     {
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, Length, layer) || Physics.Raycast(subRay, out hit, Length, layer))
+        if (Physics.Raycast(ray, out hit, Length, layer) || Physics.Raycast(subRay, out hit, Length*2, layer))
         {
             PaintTarget paintTarget = hit.collider.gameObject.GetComponent<PaintTarget>();
             if (!paintTarget) return -1;

@@ -16,7 +16,7 @@ public class MainSceneManager : MonoBehaviour
         {
             instance = this;            
         }
-        else if (instance != this)
+        else if (instance != null)
         {
             Destroy(gameObject);
         }

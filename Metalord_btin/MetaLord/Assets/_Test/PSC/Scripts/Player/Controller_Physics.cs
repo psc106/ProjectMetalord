@@ -207,6 +207,10 @@ public class Controller_Physics : MonoBehaviour
     private readonly int ClimbWaitHash = Animator.StringToHash("ClimbWait");
     #endregion
 
+    private void OnDisable()
+    {
+        stopState = false;
+    }
 
     //에디터에서 처리
     private void OnValidate()
@@ -340,7 +344,6 @@ public class Controller_Physics : MonoBehaviour
 
     private void FixedUpdate()
     {
-        beforePosition = transform.position;
         //Debug.Log("픽스드" + transform.position);
         //Debug.Log(connectedBody?.name);
 
@@ -354,6 +357,7 @@ public class Controller_Physics : MonoBehaviour
             }*/
             return;
         }
+        beforePosition = transform.position;
 
         /*Debug.Log("FixedUpdate");
         Debug.Log(allContactCount);
@@ -398,34 +402,34 @@ public class Controller_Physics : MonoBehaviour
 
         if (isJump)
         {
-            //Debug.Log("점프");
+          //  Debug.Log("점프");
             //일반 중력만 적용
             velocity += gravity * Time.deltaTime;
         }
         else if ((stepsSinceLastMultiple <= 2) && input.z < 0)
         {
-           // Debug.Log("빠져나가려는 상태일 경우");
+          // Debug.Log("빠져나가려는 상태일 경우");
             //등산중에 접촉면으로 끌어당김
             velocity.y = 0;
         }
 
         else if (OnClimb && !desireClimb)
         {
-            //Debug.Log("등산 벗어나기 직전");
+         //   Debug.Log("등산 벗어나기 직전");
             velocity *= 0.3f;
             velocity -= lastClimbNormal.normalized * maxClimbAcceleration * Time.deltaTime;
         }
 
         else if (OnClimb )
         {
-           // Debug.Log("등산만");
+          //  Debug.Log("등산만");
             //등산중에 접촉면으로 끌어당김
             velocity -= contactNormal.normalized * maxClimbAcceleration * 0.9f * Time.deltaTime;
         }
 
         else if (OnGround && desireClimb)
         {
-            //Debug.Log("지상, 끈끈이");
+           // Debug.Log("지상, 끈끈이");
             //땅에 있을 경우 + 이동 상태 일 경우 중력+접촉면으로 끌어당김 동시에 적용
             velocity += (gravity - contactNormal.normalized * maxClimbAcceleration * 0.9f) * Time.deltaTime;
         }
@@ -437,9 +441,9 @@ public class Controller_Physics : MonoBehaviour
         }
         else
         {
-            //Debug.Log("그외");
+           /// Debug.Log("그외");
             //일반 중력 적용
-            velocity += gravity * Time.deltaTime;
+            velocity += gravity * gravityMultiple * Time.deltaTime;
         }
         Vector3 limit = velocity;
 
@@ -536,6 +540,7 @@ public class Controller_Physics : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        if (stopState) return;
         //Debug.Log("엔터" + transform.position);
         EvaluateCollision(collision);
     }
@@ -543,6 +548,7 @@ public class Controller_Physics : MonoBehaviour
 
     private void OnCollisionStay(Collision collision)
     {
+        if (stopState) return;
         //Debug.Log("스테이" + transform.position);
         EvaluateCollision(collision);
     }
@@ -554,11 +560,6 @@ public class Controller_Physics : MonoBehaviour
 
     void AdjustVelocity()
     {
-        bool jumpState = false;
-        if(!OnGround && isJump)
-        {
-            jumpState = true;
-        }
         //땅이 아닐 경우 + 인풋이 없을 경우
         if (!OnGround && input.magnitude == 0)
         {
@@ -581,11 +582,11 @@ public class Controller_Physics : MonoBehaviour
 
 
         //상태에 따라 가속도, 최고속도, 좌우/앞뒤 축을 재 조정한다.
-        if (jumpState)
+        if (allContactCount == 0)
         {
-            //Debug.Log("좌표-점프");
+          //  Debug.Log("좌표-점프");
             acceleration = maxAirAcceleration;
-            speed = maxAirMoveSpeed;
+            speed = maxMoveSpeed;
             //점프 상태일 경우 플레이어의 좌/우 측을 따른다.
             xAxis = rightAxis;
             //점프 상태일 경우 플레이어의 앞/뒤 축을 따른다.
@@ -604,7 +605,7 @@ public class Controller_Physics : MonoBehaviour
         }*/
         else if (OnClimb && desireClimb)
         {
-            //Debug.Log("좌표-등산");
+           // Debug.Log("좌표-등산");
             acceleration = maxClimbAcceleration;
             speed = maxClimbSpeed;
             //등산 상태일 경우 접촉표면과 upaxis의 법선 벡터가 좌/우 축이 된다.
@@ -615,7 +616,7 @@ public class Controller_Physics : MonoBehaviour
         }
         else if (OnClimb && !desireClimb)
         {
-            //Debug.Log("좌표-등산보정");
+          //  Debug.Log("좌표-등산보정");
             acceleration = maxClimbAcceleration;
             speed = maxClimbSpeed;
             //등산 상태일 경우 접촉표면과 upaxis의 법선 벡터가 좌/우 축이 된다.
@@ -626,7 +627,8 @@ public class Controller_Physics : MonoBehaviour
         }
         else
         {
-            //Debug.Log("좌표-땅/공중");
+           // Debug.Log(OnGround);
+           // Debug.Log("좌표-땅/공중");
             acceleration = OnGround ? maxAcceleration : maxAirAcceleration;
             speed = OnGround && desireClimb? maxClimbSpeed: maxMoveSpeed;
             //speed = maxMoveSpeed;
@@ -751,12 +753,11 @@ public class Controller_Physics : MonoBehaviour
         }
 
         //등산상태x 경사상태o
-        else if (OnSteep)
+        else if (OnSteep && steepContactCount == allContactCount)
         {
-            //점프 불가
-            jumpDirection = Vector3.zero;
+            jumpDirection = steepNormal;
             //jumpPhase = 0;
-            return;
+            //return;
         }
 
         //연속 점프 가능할경우(현재 사용 안함)
@@ -1043,13 +1044,7 @@ public class Controller_Physics : MonoBehaviour
                 //UpdateConnectionState();
             }
         }
-
-        if(stepsSinceLastClimb <= climbHelpTime && !isJump)
-        {
-            climbContactCount += 1;
-            contactNormal = lastClimbNormal;
-        }
-
+        
         //마지막 climb에서 2프레임 지나기전일 경우
         if (stepsSinceLastClimb == 1)
         {
@@ -1065,6 +1060,12 @@ public class Controller_Physics : MonoBehaviour
             canJump = true;
             canFire = true;
             isJump = false;
+        }
+
+        if (stepsSinceLastClimb <= climbHelpTime && !canJump)
+        {
+            climbContactCount += 1;
+            contactNormal = lastClimbNormal;
         }
 
         //등산 상태, 점프 상태, 뒤로 이동을 제외한 경우 달리기 가능
@@ -1256,6 +1257,15 @@ public class Controller_Physics : MonoBehaviour
 
         return false;
     }
+
+    /*public void ConnectCameraAndGrabObj(Transform grabObj)
+    {
+        cameraManager.SetGrabObject(grabObj);
+    }
+    public void DisconnectCameraAndGrabObj()
+    {
+        cameraManager.ClearGrabObject();
+    }*/
 
     public Rigidbody GetConnectRigidBody()
     {

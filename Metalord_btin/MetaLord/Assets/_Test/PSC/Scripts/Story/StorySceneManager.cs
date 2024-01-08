@@ -65,17 +65,17 @@ public class StorySceneManager : MonoBehaviour
         while (currIndex < images.Length)
         {
             image.sprite = images[currIndex];
-            yield return new WaitForSeconds(imageTimes[currIndex] * 0.5f);
+            yield return new WaitForSecondsRealtime(imageTimes[currIndex] * 0.5f);
             if (footIndex == currIndex)
             {
                 sfxAudio.Play();
                 StartCoroutine(VolumeUpRoutine(Time.deltaTime * 2, 20));
             }
-            yield return new WaitForSeconds(imageTimes[currIndex] * 0.5f);
+            yield return new WaitForSecondsRealtime(imageTimes[currIndex] * 0.5f);
             currIndex += 1;
         }
         bgmAudio.Stop();
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSecondsRealtime(1f);
         if (canSkip) LoadNextScene();
     }
 
@@ -83,8 +83,8 @@ public class StorySceneManager : MonoBehaviour
     {
         while (count>0)
         {
-            bgmAudio.volume += Time.deltaTime;
-            yield return new WaitForSeconds(time);
+            bgmAudio.volume += Time.unscaledDeltaTime;
+            yield return new WaitForSecondsRealtime(time);
         }
     }
 
