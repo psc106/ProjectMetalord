@@ -47,10 +47,7 @@ public class CameraController : MonoBehaviour
 
     Transform grabObject;
     Vector3 grabDiffEuler;
-    Vector3 grabForward;
-    Vector3 grabUp;
-    Vector3 grabRight;
-
+    Vector3 grabOrigin;
 
 
 
@@ -165,45 +162,6 @@ public class CameraController : MonoBehaviour
                 newRotationY = Mathf.Clamp(newRotationY, (anchor - 89), (anchor + 89));
             }
         }
-        /* if (player.IsMove)
-         {
-             if (rotateCoroutine != null) 
-             {
-                 StopCoroutine(rotateCoroutine);
-                 rotateCoroutine = null;
-             }
-             targetY.transform.rotation = Quaternion.Euler(0, newRotationY, 0);
-         }
-         else if (Quaternion.Angle(targetY.transform.rotation, Quaternion.Euler(0, newRotationY, 0)) >= rotateAngle)
-         {
-             *//* // 이전 회전 각도
-              Quaternion currentRotation = targetY.transform.rotation;
-
-              // 목표 회전 각도
-              Quaternion targetRotation = Quaternion.Euler(0, newRotationY, 0);
-
-              // 부드러운 회전 보간
-              targetY.transform.rotation = Quaternion.Lerp(currentRotation, targetRotation, Time.deltaTime * smoothRotationSpeed);*//*
-
-             if (rotateCoroutine == null)
-             {
-                 rotateCoroutine = StartCoroutine(RotateBodyRoutine(newRotationY, rotateTime));
-             }
-             else
-             {
-                 targetRotation = Quaternion.Euler(0, newRotationY, 0);
-             }
-
-         }*/
-
-        //targetY.transform.eulerAngles = new Vector3(0, newRotationY, 0);
-        //targetY.transform.eulerAngles = new Vector3(0, Mathf.Lerp(targetY.transform.eulerAngles.y, newRotationY, 15 * Time.deltaTime), 0);
-
-        //y축 변경
-        //x축 변경
-        //targetX.rotation = Quaternion.Euler(newRotationX, Mathf.Lerp(targetX.eulerAngles.y, newRotationY, 15 * Time.deltaTime), targetX.eulerAngles.z);
-        //
-        // cameraTarget.rotation = Quaternion.Euler(newRotationX, newRotationY, cameraTarget.eulerAngles.z);
 
     }
     private void FixedUpdate()
@@ -213,18 +171,15 @@ public class CameraController : MonoBehaviour
 
         if (grabObject)
         {
-            Quaternion grabRotation = Quaternion.Euler(0, grabDiffEuler.y + newRotationY, 0);
+            Quaternion grabRotation = Quaternion.Euler(grabOrigin.x, grabDiffEuler.y + newRotationY, grabOrigin.z);
             grabObject.rotation = grabRotation;
-
-            Vector3 cameraUp = cameraTarget.rotation * Vector3.up;
-
-            grabObject.rotation = Quaternion.LookRotation(grabObject.forward, cameraUp);
         }
     }
 
     public void SetGrabObject(Transform obj)
     {
         grabObject = obj;
+        grabOrigin = grabObject.eulerAngles;
         grabDiffEuler = grabObject.eulerAngles - cameraTarget.eulerAngles;
 
         //diff = beforeA-beforeB

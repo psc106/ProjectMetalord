@@ -335,7 +335,7 @@ MonoBehaviour:
   maxAirJumps: 0
   maxGroundAngle: 45
   maxObjectAngle: 45
-  maxClimbAngle: 160
+  maxClimbAngle: 135
   checkFrameRate: 2
   startPoint: {fileID: 8282372781614362592}
   cameraPoint: {fileID: 0}
@@ -3579,12 +3579,12 @@ MonoBehaviour:
   cameraController: {fileID: 0}
   player: {fileID: 3742653360604592892}
   crossHair: {fileID: 8823238110768659009}
-  startPos: {fileID: 6677764962144662948}
   GunUi: {fileID: 3179005177545296207}
   crossHairSprite:
   - {fileID: 21300000, guid: 198f95985e362c14298976314dc9608e, type: 3}
   - {fileID: 21300000, guid: c590f353fe3afc146b4b3096952ef47b, type: 3}
   - {fileID: 21300000, guid: a24c6600aef84514ba5e1da2dba6d05e, type: 3}
+  startPos: {fileID: 6677764962144662948}
   reader: {fileID: 11400000, guid: 75abd6246b51f9e48a0d52dae45fab3f, type: 2}
   checkPos: {fileID: 7900184379219393653}
   pickupPoint: {fileID: 364788840478490789}
