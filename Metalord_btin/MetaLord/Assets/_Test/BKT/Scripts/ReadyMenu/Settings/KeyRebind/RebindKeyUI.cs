@@ -171,6 +171,10 @@ public class RebindKeyUI : MonoBehaviour
             {
                 displayString = "Right Mouse";
             }
+            else if(displayString == "Left Shift")
+            {
+                displayString = "Shift";
+            }
         }
 
         if (input_Text != null) // 텍스트 오브젝트가 있는경우
