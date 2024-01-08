@@ -30,7 +30,7 @@ public class BrightnessSetting : MonoBehaviour
 
         Get2DImages();
         GetTexts();
-        // TODO 타이틀씬 로드시 재작성
+        
         if (PlayerPrefs.HasKey("BrightnessSetting"))
         {
             LoadData();
@@ -42,8 +42,7 @@ public class BrightnessSetting : MonoBehaviour
     }
 
     private void OnDisable()
-    {
-        // TODO 타이틀씬 로드시 재작성
+    {     
         SaveData();
     }
 
@@ -104,7 +103,7 @@ public class BrightnessSetting : MonoBehaviour
     // 데이터 저장
     private void SaveData()
     {
-        Debug.Log("밝기 저장완료 " + brightnessValue);
+        //Debug.Log("밝기 저장완료 " + brightnessValue);
         PlayerPrefs.SetFloat("BrightnessSetting", brightnessValue);        
     }
 
