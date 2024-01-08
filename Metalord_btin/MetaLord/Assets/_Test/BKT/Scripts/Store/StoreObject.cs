@@ -69,18 +69,13 @@ public class StoreObject : MonoBehaviour
     /// </summary>
     protected void ChangeButtonUI(int temp)
     {
-        if (IsCanBuy())
-        {
-            // Debug.Log("구매 가능");
-            button.GetComponent<Image>().sprite = canBuyImage;
-            //button.GetComponent<Image>().color = new Color(251/255f, 229/255f, 214/255f); //cantBuyImage.SetActive(false);
+        if (IsCanBuy()) // 구매 가능
+        {            
+            button.GetComponent<Image>().sprite = canBuyImage;            
         }
-        else
-        {
-            // Debug.Log("구매 불가");
-            button.GetComponent<Image>().sprite = canNotBuyImage;
-
-            //button.GetComponent<Image>().color = new Color(231/255f, 230/255f, 230/255f); //cantBuyImage.SetActive(true);
+        else // 구매 불가
+        {            
+            button.GetComponent<Image>().sprite = canNotBuyImage;            
         }
     }
 
