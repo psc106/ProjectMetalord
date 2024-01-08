@@ -1,7 +1,9 @@
 
 using System.Collections;
+using System.Security.Cryptography.X509Certificates;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Analytics;
 
 public class MovedObject : MonoBehaviour
 {
@@ -9,6 +11,17 @@ public class MovedObject : MonoBehaviour
     Rigidbody myRigid;
     MeshCollider myColid;    
     NpcBase targetNpc;
+    SphereCollider[] triigerCollider;
+
+    Vector3 originPos;
+    Quaternion originRot;
+    
+    // Json에 저장해야할 목록 3가지
+    Vector3 savePos;
+    Quaternion saveRot;   
+    bool isMoved;
+    Vector3 saveVelocity;
+
 
     float ySpeed = default;    
     float contactTime = 0f;
@@ -33,65 +46,51 @@ public class MovedObject : MonoBehaviour
     }
 
     private void Start()
-    {
-        //Vector3 down = Vector3.down;
-        Ray ray = new Ray(transform.position, Vector3.down);
-        RaycastHit hit;
-
-        // 내 아랫 방향으로 레이를 쏘고
-        if(Physics.Raycast(ray, out hit, 0.5f))
-        {
-            if(hit.transform?.gameObject.name == transform.gameObject.name)
-            {
-                /* PASS */
-            }
-        }
-        // 닿은게 없다면
-        else
-        {
-            if (hit.transform?.gameObject.name == transform.gameObject.name)
-            {
-                /* PASS */
-            }
-            
-            InitOverap();
-        }
-
+    {        
+        // 게임시작하며 현재 position 저장
+        originPos = transform.position;
+        originRot = transform.rotation;
     }
 
     void Update()
     {
-        // 내 리지드바디가 존재하고, 그랩한 대상이 아닐 때
-        if(myRigid && !checkContact)
-        {
-            // 일정치 이상의 속력값을 가지면 충돌 체크한 시간을 초기화 해준다.
-            if(myRigid.velocity.magnitude >= 20f)
-            {
-                contactTime = 0;
-            }
+        // { TODO : 개인 리팩토링
+        #region CustomFallingObject
+        //// 내 리지드바디가 존재하고, 그랩한 대상이 아닐 때
+        //if (myRigid && !checkContact)
+        //{
+        //    // 일정치 이상의 속력값을 가지면 충돌 체크한 시간을 초기화 해준다.
+        //    if (myRigid.velocity.magnitude >= 20f)
+        //    {
+        //        contactTime = 0;
+        //    }
 
-            // 충돌시간이 일정값 이하면 (공중에 있는 상태면)
-            if (contactTime < 2f)
-            {               
-                // 임의의 중력가속도 적용
-                Vector3 tempVelocity = myRigid.velocity;
-                ySpeed -= Time.deltaTime * decrementGravity;
-                tempVelocity.y += ySpeed;
+        //    // 충돌시간이 일정값 이하면 (공중에 있는 상태면)
+        //    if (contactTime < 2f)
+        //    {
+        //        // 임의의 중력가속도 적용
+        //        Vector3 tempVelocity = myRigid.velocity;
+        //        ySpeed -= Time.deltaTime * decrementGravity;
+        //        tempVelocity.y += ySpeed;
 
-                if(tempVelocity.y >= maxGravity)
-                {
-                    tempVelocity.y = maxGravity;
-                }
+        //        if (tempVelocity.y >= maxGravity)
+        //        {
+        //            tempVelocity.y = maxGravity;
+        //        }
 
-                myRigid.velocity = tempVelocity;
-            }            
-        }
+        //        myRigid.velocity = tempVelocity;
+        //    }
+        //}
+        #endregion
 
-        // 그랩한 대상의 슬립 기준
-        if (myRigid && checkContact)
+        // } TODO : 개인 리팩토링
+
+        // 슬립
+        if (myRigid && !checkContact)
         {            
-            if (myRigid.IsSleeping())
-            {                
+            if (myRigid.IsSleeping())// || myRigid.velocity.magnitude <= 0.1f)
+            {
+                Debug.Log("슬립");
                 Destroy(myRigid);                
                 myColid.convex = false;
                 checkContact = false;
@@ -99,13 +98,244 @@ public class MovedObject : MonoBehaviour
         }
     }
 
+    private void LoadObject()
+    {
+        // { 로드단계에서 이동형 오브젝트 목록을 순회하며 현재 isMoved를 체크
+        // 이동했었다면
+        if (isMoved)
+        {
+            // 저장되었던 위치로 이동
+            transform.position = savePos;
+            transform.rotation = saveRot;
+
+            InitOverap();
+            Debug.Log("이동한 게임오브젝트 : " + transform.gameObject.name);
+
+            // bool값 초기화
+            isMoved = false;
+        }
+        // 아니라면 패스
+        else
+        {
+            /* PASS */
+        }
+    }
+
+    private void SavedObject()
+    {
+        // 저장구간에서의 포지션
+        Vector3 currentPos = transform.position;
+        Quaternion currentRot = transform.rotation;
+
+        // { 저장단계에서 이동형 오브젝트 목록을 순회하며 현재 pos와 originPos 비교            
+        // originPos와 currentPos가 다르다면 이동한 것
+        if (originPos != currentPos)
+        {
+            Debug.Log("저장된 게임 오브젝트 : " + transform.gameObject.name);
+            isMoved = true;
+
+            // 현재 위치 저장
+            savePos = currentPos;
+            saveRot = currentRot;
+
+            //// Save & Load에서 속력까지 저장한다?
+            //if (myRigid)
+            //{
+            //    saveVelocity = myRigid.velocity;
+            //}
+        }
+        // 그 외라면 (originPos와 currentPos가 같다면)
+        else
+        {
+            isMoved = false;
+        }
+    }
+
+    private void OnTriggerEnter(Collider collision)
+    {
+        if (/*checkContact == false || */transform.parent != null || collision.gameObject.layer == LayerMask.NameToLayer("CatchObject"))
+        {            
+            return;
+        }        
+
+        GameObject parentObj = null;
+
+        // 충돌한 오브젝트의 부모가 없을경우
+        if (collision.transform.parent == null)
+        {
+            // 상위 오브젝트 생성
+            parentObj = new GameObject();
+            parentObj.transform.gameObject.layer = LayerMask.NameToLayer("GrabedObject");
+            CatchObject controll = parentObj.AddComponent<CatchObject>();
+            GunStateController.AddList(controll);
+            parentObj.transform.position = collision.ClosestPoint(transform.position);
+
+            // 그랩한 오브젝트와 충돌한 오브젝트 모두 상위 오브젝트 종속, HashSet 갱신                    
+            transform.parent = parentObj.transform;
+            collision.transform.parent = parentObj.transform;
+            //GunStateController.AddList(collision.gameObject.GetComponent<MovedObject>());
+            controll.AddChild(transform.GetComponent<MeshCollider>());
+            controll.AddChild(collision.transform.GetComponent<MeshCollider>());
+
+            ClearState();
+            GrabGun.instance.CancelObj();
+        }
+        // 부모가 존재할 경우
+        else
+        {
+            GameObject contactObj = collision.gameObject;
+
+            // TODO : 레이어 체크가 아닌 CatchObject 스크립트로 여부 확인
+            // 부모가 상위 오브젝트 경우
+            if (contactObj.transform.parent.gameObject.layer == LayerMask.NameToLayer("GrabedObject"))
+            {
+                // HashSet 갱신    
+                transform.parent = contactObj.transform.parent;
+                contactObj.transform.parent.GetComponent<CatchObject>().AddChild(transform.GetComponent<MeshCollider>());
+
+                ClearState();
+                GrabGun.instance.CancelObj();
+
+            }
+            // 부모가 고정형 오브젝트 경우
+            else if (contactObj.transform.parent.gameObject.layer == LayerMask.NameToLayer("Default"))
+            {
+                // 부딪힌 오브젝트도 고정형이면
+                if (contactObj.transform.gameObject.layer == LayerMask.NameToLayer("Default"))
+                {
+                    // 클래스 여부로 기존 고정형 오브젝트인지 합쳐진 오브젝트인지
+                    if (contactObj.transform.parent.GetComponent<CatchObject>())
+                    {
+                        transform.SetParent(contactObj.transform.parent);
+
+                        ClearState();
+                        GrabGun.instance.CancelObj();
+                    }
+                    else
+                    {
+                        // 상위 오브젝트 생성
+                        parentObj = new GameObject();
+                        parentObj.transform.gameObject.layer = LayerMask.NameToLayer("Default");
+                        CatchObject controll = parentObj.AddComponent<CatchObject>();
+                        GunStateController.AddList(controll);
+                        parentObj.transform.position = collision.ClosestPoint(transform.position);
+
+                        // 그랩한 오브젝트 상위 고정형 오브젝트 종속, HashSet 갱신    
+                        transform.parent = parentObj.transform;
+                        controll.AddChild(transform.GetComponent<MeshCollider>());
+
+                        ClearState();
+                        GrabGun.instance.CancelObj();
+
+                    }
+                }
+                else if (contactObj.transform.gameObject.layer == LayerMask.NameToLayer("NPC"))
+                {                    
+                    parentObj = new GameObject();
+                    parentObj.transform.gameObject.layer = LayerMask.NameToLayer("NPC");
+                    //transform.gameObject.layer = LayerMask.NameToLayer("NPC");
+                    CatchObject controll = parentObj.AddComponent<CatchObject>();
+                    GunStateController.AddList(controll);
+                    parentObj.transform.position = collision.ClosestPoint(transform.position);
+
+                    // 그랩한 오브젝트 상위 오브젝트 종속, HashSet 갱신    
+                    transform.parent = parentObj.transform;
+                    controll.AddChild(transform.GetComponent<MeshCollider>());
+                    targetNpc = collision.transform.GetComponent<NpcBase>();
+                    Debug.Log(targetNpc.gameObject.name);
+                    targetNpc.ChangedState(npcState.objectAttached);
+
+                    ClearState();
+                    GrabGun.instance.CancelObj();
+                }
+                else
+                {
+                    // 충돌한 이동형 오브젝트가 고정형에 집합된 형태라면 
+                    if (contactObj.transform.parent.GetComponent<CatchObject>() != null &&
+                        contactObj.transform.parent.gameObject.layer == LayerMask.NameToLayer("Default"))
+                    {
+                        //Debug.Log("===");
+                        transform.parent = contactObj.transform.parent;
+                        checkContact = false;
+                        ClearState();
+                        GrabGun.instance.CancelObj();
+
+                        ClearState();
+                        GrabGun.instance.CancelObj();
+                        return;
+                    }
+                    // 상위 오브젝트 생성
+                    parentObj = new GameObject();
+                    parentObj.transform.gameObject.layer = LayerMask.NameToLayer("GrabedObject");
+                    CatchObject controll = parentObj.AddComponent<CatchObject>();
+                    GunStateController.AddList(controll);
+                    parentObj.transform.position = collision.ClosestPoint(transform.position);
+
+                    // 그랩한 오브젝트와 충돌한 오브젝트 모두 상위 오브젝트 종속, HashSet 갱신    
+                    transform.parent = parentObj.transform;
+                    collision.transform.parent = parentObj.transform;
+                    controll.AddChild(transform.GetComponent<MeshCollider>());
+                    controll.AddChild(collision.transform.GetComponent<MeshCollider>());
+
+                    ClearState();
+                    GrabGun.instance.CancelObj();
+
+                }
+            }
+            // 아기곰의 경우
+            else if (contactObj.transform.gameObject.layer == LayerMask.NameToLayer("NPC"))
+            {
+                parentObj = new GameObject();
+                parentObj.transform.gameObject.layer = LayerMask.NameToLayer("NPC");
+                //transform.gameObject.layer = LayerMask.NameToLayer("NPC");
+                CatchObject controll = parentObj.AddComponent<CatchObject>();
+                GunStateController.AddList(controll);
+                parentObj.transform.position = collision.ClosestPoint(transform.position);
+
+                // 그랩한 오브젝트 상위 오브젝트 종속, HashSet 갱신    
+                transform.parent = parentObj.transform;
+                controll.AddChild(transform.GetComponent<MeshCollider>());
+                targetNpc = collision.transform.GetComponent<NpcBase>();
+                targetNpc.ChangedState(npcState.objectAttached);
+
+                ClearState();
+                GrabGun.instance.CancelObj();
+            }
+            // 엔피씨에 붙은 조합형 일 경우
+            else if (contactObj.transform.gameObject.layer == LayerMask.NameToLayer("MovedObject") &&
+                contactObj.transform.parent?.GetComponent<CatchObject>() != null)
+            {
+                CatchObject controll = contactObj.transform.parent.GetComponent<CatchObject>();
+
+                // 그랩한 오브젝트 상위 오브젝트 종속, HashSet 갱신    
+                transform.parent = contactObj.transform.parent;
+                controll.AddChild(transform.GetComponent<MeshCollider>());
+
+                ClearState();
+                GrabGun.instance.CancelObj();
+            }
+
+        }
+
+        //ClearState();
+        //GrabGun.instance.CancelObj();
+
+    }
+
     //// 그랩한 물건이 이동형 오브젝트와 부딪힐때마다 물리력 행사 콜백
     private void OnCollisionEnter(Collision collision)
-    {        
+    {
+        //if (collision.transform.parent == transform.parent)
+        //{            
+        //    return;
+        //}
+
+        // 충돌한 오브젝트가 이동형 오브젝트라면
         if (collision.gameObject.layer == LayerMask.NameToLayer("MovedObject"))
         {
             // PaintTaget에 bool값 체크 존재, 페인팅된 대상에는 물리력을 부여 x
-            if (collision.gameObject.GetComponent<PaintTarget>().CheckPainted())
+            if (collision.gameObject.GetComponent<PaintTarget>().CheckPainted() ||
+                transform.childCount != 0)
             {
                 return;
             }
@@ -125,12 +355,19 @@ public class MovedObject : MonoBehaviour
                 collision.gameObject?.transform.parent.GetComponent<CatchObject>().InitOverap();
             }
             // 대상이 단일 이동형 오브젝트라면 And 내가 그랩한 오브젝트만 주변 오브젝트에 물리력을 부여한다.            
-            else if (collision.gameObject.layer == LayerMask.NameToLayer("MovedObject") && checkContact)
+            else if (collision.gameObject.layer == LayerMask.NameToLayer("MovedObject") && myRigid)
             {
                 // 조합 오브젝트가 아닌 이동형 오브젝트에만 물리력 부여
                 if(collision.gameObject.transform.parent?.GetComponent<CatchObject>() == null)
-                {                    
+                {
+                    //Collider[] overap = Physics.OverlapSphere(collision.contacts[0].point, 20f);//, LayerMask.NameToLayer("MovedObject"));                                        
+                    //foreach(var obj in overap)
+                    //{
+                    //    obj.GetComponent<MovedObject>().InitOverap();
+                    //}
+
                     collision.gameObject.GetComponent<MovedObject>().InitOverap();
+                    //collision.gameObject.GetComponent<Rigidbody>().AddForce(-collision.contacts[0].normal * 2f);
                 }
             }
         }
@@ -146,48 +383,80 @@ public class MovedObject : MonoBehaviour
             GrabGun.instance.CancelObj();
         }
 
-        // 그랩한 MovedObject가 아니면 충돌 포인트 체크
-        if (!checkContact && myRigid)
-        {
-            // { 이 구간은 1프레임에 벌어진 모든 충돌지점을 검사하는 것
-            // 충돌지점을 모두 검사
-            for (int i = 0; i < collision.contactCount; i++)
-            {
-                // 지점중 하단에서 발생한 충돌을 검사한다.
-                if (-(collision.contacts[i].normal.y) <= -0.95f)
-                {
-                    // 유효 충돌체크 이후 반복문 종료
-                    checkCount++;
-                    break;
-                }
+        // { TODO : 개인 리팩토링
+        #region CustomFallingObject
+        //// 내 리지드바디가 존재하고, 그랩한 대상이 아닐 때
+        //if (myRigid && !checkContact)
+        //{
+        //    일정치 이상의 속력값을 가지면 충돌 체크한 시간을 초기화 해준다.
+        //    if (myRigid.velocity.magnitude >= 20f)
+        //    {
+        //        contactTime = 0;
+        //    }
 
-            }
-            // } 이 구간은 1프레임에 벌어진 모든 충돌지점을 검사하는 것            
+        //    충돌시간이 일정값 이하면(공중에 있는 상태면)
+        //    if (contactTime < 2f)
+        //    {
+        //        임의의 중력가속도 적용
+        //       Vector3 tempVelocity = myRigid.velocity;
+        //        ySpeed -= Time.deltaTime * decrementGravity;
+        //        tempVelocity.y += ySpeed;
 
-            // 일정 충돌 시간을 넘었을시 Or 일정속도 이하가 된다면 Sleep 코루틴 시전
-            if (!checkContact && (contactTime >= 10f && !isSleep) || (!checkContact && myRigid.velocity.magnitude <= 0.1f && !isSleep))            
-            {                
-                isSleep = true;
-                SleepObj();
+        //        if (tempVelocity.y >= maxGravity)
+        //        {
+        //            tempVelocity.y = maxGravity;
+        //        }
 
-                // TODO : 일정시간 이후에 슬립하는것이 자연스러워 보이는데 현재 코루틴과 그랩 사이 예외사항 처리가 안되어 주석처리
-                //sleepCoroutine = StartCoroutine(EnforceSleep);
-                return;
-            }
+        //        myRigid.velocity = tempVelocity;
+        //    }
+        //}
+        //그랩한 MovedObject가 아니면 충돌 포인트 체크
+        //if (!checkContact && myRigid)
+        //{
+        //    {
+        //        이 구간은 1프레임에 벌어진 모든 충돌지점을 검사하는 것
+        //     충돌지점을 모두 검사
+        //    for (int i = 0; i < collision.contactCount; i++)
+        //        {
+        //            지점중 하단에서 발생한 충돌을 검사한다.
+        //        if (-(collision.contacts[i].normal.y) <= -0.95f)
+        //            {
+        //                유효 충돌체크 이후 반복문 종료
+        //               checkCount++;
+        //                break;
+        //            }
 
-            // 유효충돌이 60프레임 이상 벌어졌다면( 1초? )
-            if (checkCount >= 60)
-            {
-                // 체크 카운트 초기화, 정지값 체크 증가
-                checkCount = 0;                
-                contactTime += 1f;
-                return;
-            }
-        }
+        //        }
+        //    }
+        //    이 구간은 1프레임에 벌어진 모든 충돌지점을 검사하는 것
+
+        //     일정 충돌 시간을 넘었을시 Or 일정속도 이하가 된다면 Sleep 코루틴 시전
+        //    if (!checkContact && (contactTime >= 10f && !isSleep) || (!checkContact && myRigid.velocity.magnitude <= 0.1f && !isSleep))
+        //    {
+        //        isSleep = true;
+        //        SleepObj();
+
+        //    TODO: 일정시간 이후에 슬립하는것이 자연스러워 보이는데 현재 코루틴과 그랩 사이 예외사항 처리가 안되어 주석처리
+        //   sleepCoroutine = StartCoroutine(EnforceSleep);
+        //        return;
+        //    }
+
+        //    유효충돌이 60프레임 이상 벌어졌다면(1초 ? )
+        //    if (checkCount >= 60)
+        //    {
+        //        체크 카운트 초기화, 정지값 체크 증가
+        //       checkCount = 0;
+        //        contactTime += 1f;
+        //        return;
+        //    }
+        //}
+        #endregion
+        // } TODO : 개인 리팩토링
 
         // 이미 본드 동작을 하는 오브젝트를 다시 그랩하면 그랩하는순간 충돌면을 체크하여 그랩 해제됨에 따라 상태를 제어할 bool값 추가
-        if (checkContact == false)
-        {            
+        if (checkContact == false || collision.gameObject.layer == LayerMask.NameToLayer("CatchObject"))
+        {
+            
             return;
         }
 
@@ -380,6 +649,10 @@ public class MovedObject : MonoBehaviour
         checkContact = true;     
         checkCount = 0;
 
+        if(transform.childCount != 0)
+        {
+            triigerCollider = GetComponentsInChildren<SphereCollider>();            
+        }
         //StopCoroutine(sleepCoroutine);
 
     }
@@ -441,19 +714,72 @@ public class MovedObject : MonoBehaviour
         if(!myRigid)
         {
             transform.AddComponent<Rigidbody>();
-            myRigid = GetComponent<Rigidbody>();
+            myRigid = GetComponent<Rigidbody>();            
             myRigid.mass = 1000f;
+
+            // Save & Load에서 속력까지 저장한다?
+            //if(saveVelocity != default)
+            //{
+            //    myRigid.velocity = saveVelocity;
+            //}
         }
         
-        myColid.material.dynamicFriction = 0.6f;
+        myColid.material.dynamicFriction = 0.8f;
         myColid.material.bounciness = 0.5f;
         myColid.convex = true;      
+    }
+
+    public void InitOverap(Vector3 _velocity)
+    {
+        if (!myRigid)
+        {
+            transform.AddComponent<Rigidbody>();
+            myRigid = GetComponent<Rigidbody>();
+            myRigid.velocity = _velocity;
+            //myRigid.AddForce(_velocity, ForceMode.Impulse);
+            myRigid.mass = 1000f;
+
+            // Save & Load에서 속력까지 저장한다?
+            //if(saveVelocity != default)
+            //{
+            //    myRigid.velocity = saveVelocity;
+            //}
+        }
+
+        myColid.material.dynamicFriction = 0.8f;
+        myColid.material.bounciness = 0.5f;
+        myColid.convex = true;
     }
 
     public void CancelGrab()
     {
         checkContact = false;
         ySpeed = 0;
+    }
+    
+
+    // TODO : 오브젝트 풀링으로 오버헤드 없애야 함
+    public void ClearTrigger()
+    {        
+        GameObject[] myChild = new GameObject[transform.childCount];
+
+        // 내 자식만큼 오브젝트 캐싱
+        for (int i = 0; i < myChild.Length; i++)
+        {
+            myChild[i] = transform.GetChild(i).gameObject;
+        }
+
+        // 오브젝트 부모 변경 및 해쉬 갱신
+        for (int i = 0; i < myChild.Length; i++)
+        {
+            Destroy(myChild[i].gameObject);
+        }
+
+        //if(myRigid)
+        //{
+        //    myRigid.velocity = Vector3.down * 2f;
+        //}
+
     }
 
 }

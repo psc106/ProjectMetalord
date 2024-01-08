@@ -26,7 +26,8 @@ public class NpcBase : MonoBehaviour
     
     public virtual void ChangedState(npcState _change)
     {
-           // Debug.LogFormat("{0} <==현재 변경될 상태, {1}<====현재 상태", _change, state);
+        Debug.Log("전달 받았는데 : " + _change);
+        // Debug.LogFormat("{0} <==현재 변경될 상태, {1}<====현재 상태", _change, state);
         if(_change == npcState.objectAttached)
         {
             //Debug.LogFormat("변경될 상태가 오브젝트 붙은 상태일떄 실행되는 메서드 {0} <==현재 변경될 상태, {1}<====현재 상태", _change, state);
