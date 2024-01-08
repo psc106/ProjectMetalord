@@ -3,14 +3,18 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+/// <summary>
+/// 저장 캔버스 UI
+/// 배경택
+/// </summary>
 public class SavingCanvas : MonoBehaviour
 {
-    public bool isSaved = false;
+    public bool isSaved = false; // 저장이 완료 된 이후 키 조작이 가능하도록 하기 위한 변수
 
     private void OnDisable()
     {
-        transform.GetChild(0).gameObject.SetActive(true);
-        transform.GetChild(1).gameObject.SetActive(false);
+        transform.GetChild(1).gameObject.SetActive(true); // 저장 중 오브젝트 ON
+        transform.GetChild(2).gameObject.SetActive(false); // 저장 완료 오브젝트 OFF
         isSaved = false;
     }
 
@@ -25,7 +29,8 @@ public class SavingCanvas : MonoBehaviour
     IEnumerator PopSavingUI()
     {
         string dot = default;
-        for (int i = 0; i < 3; i++)
+        
+        for (int i = 0; i < 3; i++) // . .. ... 점 세개 생성
         {
             dot += ".";
             Debug.Log(dot);
@@ -33,9 +38,12 @@ public class SavingCanvas : MonoBehaviour
             yield return new WaitForSecondsRealtime(0.8f);
             Debug.Log("코루틴");
         }
-        transform.GetChild(0).gameObject.SetActive(false);
-        transform.GetChild(1).gameObject.SetActive(true);
-        Controller_Physics.SwitchCameraLock(false);
-        isSaved = true;
+        transform.GetChild(1).gameObject.SetActive(false); // 저장중 오브젝트 OFF
+        transform.GetChild(2).gameObject.SetActive(true); // 저장 완료 오브젝트 ON
+
+        yield return new WaitForSecondsRealtime(1f);
+        Controller_Physics.SwitchCameraLock(false); // 카메라 락 해제
+        isSaved = true; 
+        gameObject.SetActive(false); // UI창 OFF
     }
 }

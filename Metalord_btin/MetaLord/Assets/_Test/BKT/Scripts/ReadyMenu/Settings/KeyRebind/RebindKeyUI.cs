@@ -193,9 +193,6 @@ public class RebindKeyUI : MonoBehaviour
                 }
             }
         }
-
         return false; // 중복된 키가 없을 경우 false를 반환합니다.
     }
-
-    
 }

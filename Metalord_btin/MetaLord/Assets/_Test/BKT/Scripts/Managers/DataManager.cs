@@ -40,8 +40,8 @@ public class DataManager : MonoBehaviour
     public void LoadGameData()
     {
         //MainSceneManager.instance.InputIdToObject(); // 맵 오브젝트에 id값 부여
-        LoadDataFromFile();
-        GameEventsManager.instance.dataEvents.LoadData(); //전체에 저장 이벤트 발생
+        if (LoadDataFromFile()) GameEventsManager.instance.dataEvents.LoadData(); //전체에 저장 이벤트 발생
+        else /* pass */ return;
     }
 
     // 파일에 데이터 저장
@@ -59,7 +59,7 @@ public class DataManager : MonoBehaviour
     }
 
     // 파일에서 데이터 불러오기
-    private void LoadDataFromFile()
+    private bool LoadDataFromFile()
     {
         // 240102 빌드테스트 전 저장경로
         //string saveFolderPath = Path.Combine(Application.dataPath, "JsonData"); // json 폴더까지 경로
@@ -67,10 +67,16 @@ public class DataManager : MonoBehaviour
 
         // 240102 빌드시 이용이 가능한 저장경로
         string jsonFilePath = Path.Combine(Application.persistentDataPath, "JsonData");
-        string jsonData = File.ReadAllText(jsonFilePath);
+        string jsonData = default;
 
-        Debug.Log("데이터 불러오기");        
-        JsonUtility.FromJsonOverwrite(jsonData,savedGamePlayData); // json 파일 덮어쓰기
+        if (File.Exists(jsonFilePath)) // 저장경로에 파일이 있다면
+        {
+            jsonData = File.ReadAllText(jsonFilePath);            
+            JsonUtility.FromJsonOverwrite(jsonData,savedGamePlayData); // json 파일 덮어쓰기
+            return true;
+        }
+        else return false;
+
     }
 
 }

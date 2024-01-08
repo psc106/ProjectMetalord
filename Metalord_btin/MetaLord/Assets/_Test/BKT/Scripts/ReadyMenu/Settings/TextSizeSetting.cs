@@ -96,7 +96,7 @@ public class TextSizeSetting : MonoBehaviour
                     break;
 
                 case ButtonSize.Large:
-                    tempSize = fontSizes[i]* 1.2f;
+                    tempSize = fontSizes[i]* 1.15f;
                     break;
             }
             originTexts[i].fontSize = tempSize;
