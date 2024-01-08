@@ -30,7 +30,7 @@ public class AudioManager : MonoBehaviour
 
     private void OnDisable()
     {
-        instance = null;
+        //instance = null;
     }
 
     private void Start()

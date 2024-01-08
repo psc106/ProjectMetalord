@@ -420,6 +420,8 @@ MonoBehaviour:
   - 2
   - 2
   footIndex: 16
+  bgmVolume: 0.1
+  sfxVolume: 0.5
   currentScene: 1
   nextScene: 2
 --- !u!1 &489305752

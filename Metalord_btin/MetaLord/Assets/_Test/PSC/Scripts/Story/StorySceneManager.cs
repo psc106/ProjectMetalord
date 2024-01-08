@@ -21,6 +21,12 @@ public class StorySceneManager : MonoBehaviour
     int footIndex = 17;
     bool canSkip = true;
 
+    [SerializeField, Range(0, 1)]
+    float bgmVolume;
+
+    [SerializeField, Range(0, 1)]
+    float sfxVolume;
+
     [SerializeField]
     GameSceneController.SceneList currentScene;
     [SerializeField]
@@ -45,8 +51,8 @@ public class StorySceneManager : MonoBehaviour
             sfxAudio.mute = true;
         }
 
-        bgmAudio.volume = StartInfo.instance.info_MasterSlider;
-        sfxAudio.volume = StartInfo.instance.info_MasterSlider;
+        bgmAudio.volume = StartInfo.instance.info_MasterSlider * bgmVolume;
+        sfxAudio.volume = StartInfo.instance.info_MasterSlider * sfxVolume;
     }
 
     private void Update()

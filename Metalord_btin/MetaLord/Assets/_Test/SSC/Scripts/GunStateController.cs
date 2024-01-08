@@ -43,7 +43,6 @@ public class GunStateController : MonoBehaviour
     public CameraController cameraController;
     [SerializeField] private Controller_Physics player;
     [SerializeField] private Image crossHair;
-    [SerializeField] private Transform startPos;
     [SerializeField] private GameObject GunUi;
     [SerializeField] private Sprite[] crossHairSprite = new Sprite[3];
 
@@ -52,6 +51,7 @@ public class GunStateController : MonoBehaviour
         return player.GetConnectRigidBody();
     }
 
+    public Transform startPos;
     public InputReader reader;    
     public Transform checkPos;
     public Transform pickupPoint;
@@ -471,7 +471,6 @@ public class GunStateController : MonoBehaviour
 
     public void Reloading()
     {
-        Debug.Log(state.ToString());
         if (!CanReload || state == GunState.RELOADING || Ammo == MaxAmmo)
         {
             return;
