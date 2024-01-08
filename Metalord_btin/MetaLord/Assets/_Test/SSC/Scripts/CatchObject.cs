@@ -144,6 +144,7 @@ public class CatchObject : MonoBehaviour
                 else if (collision.transform.gameObject.layer == LayerMask.NameToLayer("NPC"))
                 {
                     collision.transform.GetComponent<NpcBase>().ChangedState(npcState.objectAttached);
+                    GunStateController.AddList(collision.transform.GetComponent<NpcBase>());
 
                     for (int j = 0; j < transform.childCount; j++)
                     {
@@ -381,7 +382,9 @@ public class CatchObject : MonoBehaviour
                         else if (collision.transform.gameObject.layer == LayerMask.NameToLayer("NPC"))
                         {                            
                             collision.transform.GetComponent<NpcBase>().ChangedState(npcState.objectAttached);
-                            
+                            collision.transform.GetComponent<NpcBase>();
+
+
                             for (int j = 0; j < transform.childCount; j++)
                             {
                                 if (transform.GetChild(j).GetComponent<MovedObject>() == null)

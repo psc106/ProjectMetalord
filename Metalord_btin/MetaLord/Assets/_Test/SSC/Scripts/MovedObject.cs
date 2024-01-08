@@ -235,13 +235,14 @@ public class MovedObject : MonoBehaviour
                     parentObj.transform.gameObject.layer = LayerMask.NameToLayer("NPC");
                     //transform.gameObject.layer = LayerMask.NameToLayer("NPC");
                     CatchObject controll = parentObj.AddComponent<CatchObject>();
-                    GunStateController.AddList(controll);
+                    GunStateController.AddList(controll);                    
                     parentObj.transform.position = collision.ClosestPoint(transform.position);
 
                     // 그랩한 오브젝트 상위 오브젝트 종속, HashSet 갱신    
                     transform.parent = parentObj.transform;
-                    controll.AddChild(transform.GetComponent<MeshCollider>());
+                    controll.AddChild(transform.GetComponent<MeshCollider>());                    
                     targetNpc = collision.transform.GetComponent<NpcBase>();
+                    GunStateController.AddList(targetNpc);
                     Debug.Log(targetNpc.gameObject.name);
                     targetNpc.ChangedState(npcState.objectAttached);
 
@@ -456,7 +457,7 @@ public class MovedObject : MonoBehaviour
         // 이미 본드 동작을 하는 오브젝트를 다시 그랩하면 그랩하는순간 충돌면을 체크하여 그랩 해제됨에 따라 상태를 제어할 bool값 추가
         if (checkContact == false || collision.gameObject.layer == LayerMask.NameToLayer("CatchObject"))
         {
-            //Debug.Log("막히는 중");
+            Debug.Log("막히는 중");
             return;
         }
 
@@ -575,6 +576,7 @@ public class MovedObject : MonoBehaviour
                             controll.AddChild(transform.GetComponent<MeshCollider>());
                             targetNpc = collision.transform.GetComponent<NpcBase>();
                             targetNpc.ChangedState(npcState.objectAttached);
+                            GunStateController.AddList(targetNpc);
                         }
                         else
                         {                            
@@ -619,6 +621,7 @@ public class MovedObject : MonoBehaviour
                         controll.AddChild(transform.GetComponent<MeshCollider>());
                         targetNpc = collision.transform.GetComponent<NpcBase>();
                         targetNpc.ChangedState(npcState.objectAttached);
+                        GunStateController.AddList(targetNpc);
                     }
                     // 엔피씨에 붙은 조합형 일 경우
                     else if(contactObj.transform.gameObject.layer == LayerMask.NameToLayer("MovedObject") &&
@@ -663,7 +666,7 @@ public class MovedObject : MonoBehaviour
         {
             myColid.convex = true;                          
             myRigid = transform.AddComponent<Rigidbody>();
-            myRigid.mass = 10f;
+            myRigid.mass = 1000f;
             myRigid.useGravity = true;
             myColid.material.dynamicFriction = 1f;            
         }
