@@ -136,7 +136,7 @@ public class Controller_UI : MonoBehaviour
                     firstCoinExPlainUI.SetActive(false);
                 }
                 else if (savingUI.activeSelf == true && savingUI.GetComponent<SavingCanvas>().isSaved) // 저장 UI
-                {
+                {                    
                     savingUI.SetActive(false);
                     readyMenuUI.SetActive(true);
                 }

@@ -218,11 +218,26 @@ public class GrabGun : GunBase
 
 
         state.cameraController.SetGrabObject(targetObj.transform);
+        
         targetRigid = targetObj.GetComponent<Rigidbody>();        
         state.pickupPoint.position = state.hit.point;
         offset = state.pickupPoint.position - targetRigid.position;
         distance = state.hit.distance;
         state.pickupPoint.forward = state.startPos.position - state.pickupPoint.position;
+        
+        //targetRigid = targetObj.GetComponent<Rigidbody>();
+
+        // 픽업 포인트는 해당 오브젝트의 중심부
+        //state.pickupPoint.position = targetRigid.position;
+
+        // 조합된 오브젝트일경우 픽업포인트 맞추기
+        //if (targetObj.GetComponent<CatchObject>() != null)
+        {            
+        //    state.pickupPoint.position = state.hit.point;
+        }
+
+        //followPos = state.pickupPoint.position - state.hit.transform.position;
+        
         targetRigid.constraints = RigidbodyConstraints.FreezeRotation;
         targetRigid.useGravity = false;      
         state.isShootingState = true;
