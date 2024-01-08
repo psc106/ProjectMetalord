@@ -407,6 +407,9 @@ public class PaintTarget : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, range))
         {
+            GameObject effect = EffectManager.instance.GetEffect(EffectList.GunExplosion);
+            effect.transform.position = hit.point;
+            effect.GetComponent<ParticleSystem>().Play();
             if (multi)
             {
                 // 12.27 PSC : 최적화 위해 SphereCastAll 범위 줄였음
