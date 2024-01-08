@@ -205,10 +205,7 @@ public class CameraController : MonoBehaviour
         //
         // cameraTarget.rotation = Quaternion.Euler(newRotationX, newRotationY, cameraTarget.eulerAngles.z);
 
-
-        up = Vector3.Cross(mainCameraTransform.forward, mainCameraTransform.right);
     }
-    Vector3 up;
     private void FixedUpdate()
     {
         playerRender.rotation = Quaternion.Euler(0, newRotationY, 0);
@@ -216,14 +213,11 @@ public class CameraController : MonoBehaviour
 
         if (grabObject)
         {
-            // grabObject에 회전을 적용합니다.
             Quaternion grabRotation = Quaternion.Euler(0, grabDiffEuler.y + newRotationY, 0);
             grabObject.rotation = grabRotation;
 
-            // grabObject의 "위" 방향을 cameraTarget의 "위" 방향과 일치시킵니다.
             Vector3 cameraUp = cameraTarget.rotation * Vector3.up;
 
-            // 현재 grabObject의 forward 방향을 유지한 채, up 방향만 변경합니다.
             grabObject.rotation = Quaternion.LookRotation(grabObject.forward, cameraUp);
         }
     }
@@ -232,9 +226,6 @@ public class CameraController : MonoBehaviour
     {
         grabObject = obj;
         grabDiffEuler = grabObject.eulerAngles - cameraTarget.eulerAngles;
-        grabForward = grabObject.forward - cameraTarget.forward;
-        grabUp = grabObject.up - cameraTarget.up;
-        grabRight = grabObject.right - cameraTarget.right;
 
         //diff = beforeA-beforeB
         //diff = newA-newB
