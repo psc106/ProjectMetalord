@@ -12,15 +12,16 @@ enum PlayerActions
     Interact,
     Store,
     Record,
+    Jump1,
 }
 
 enum BindingKeyword
 {
+    Common = 0,
     Forward = 1,
     Back = 2,
     Left = 3,
     Right = 4,
-    Common = 0,
 }
 
 /// <summary>
@@ -68,6 +69,10 @@ public class RebindKeyUI : MonoBehaviour
                 break;
             case PlayerActions.Record:
                 gameInputAction = inputReader.inputActions.Player.Record;
+                break;
+            case PlayerActions.Jump1:
+                gameInputAction = inputReader.inputActions.Player.Jump1;
+
                 break;
             
             default:

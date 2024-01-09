@@ -112,6 +112,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Jump1",
+                    "type": "Value",
+                    "id": "a16d870e-e7f8-4369-87e6-1b86bc106ac9",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -228,7 +237,7 @@
                 {
                     "name": "",
                     "id": "0871796d-8c45-4834-b5d4-6ee0ffc2445a",
-                    "path": "<Keyboard>/space",
+                    "path": "<Keyboard>/f8",
                     "interactions": "",
                     "processors": "",
                     "groups": "KeyboardOrGamepad;Keyboard&Mouse",
@@ -310,6 +319,17 @@
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "Grab",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "48e79b21-4eec-4335-8ba1-29965e9471a8",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Jump1",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

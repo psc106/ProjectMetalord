@@ -134,6 +134,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Jump1"",
+                    ""type"": ""Value"",
+                    ""id"": ""a16d870e-e7f8-4369-87e6-1b86bc106ac9"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -250,7 +259,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""0871796d-8c45-4834-b5d4-6ee0ffc2445a"",
-                    ""path"": ""<Keyboard>/space"",
+                    ""path"": ""<Keyboard>/f8"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""KeyboardOrGamepad;Keyboard&Mouse"",
@@ -334,6 +343,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""Grab"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""48e79b21-4eec-4335-8ba1-29965e9471a8"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Jump1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -415,6 +435,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player_Store = m_Player.FindAction("Store", throwIfNotFound: true);
         m_Player_Record = m_Player.FindAction("Record", throwIfNotFound: true);
         m_Player_ReadyMenu = m_Player.FindAction("ReadyMenu", throwIfNotFound: true);
+        m_Player_Jump1 = m_Player.FindAction("Jump1", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -488,6 +509,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Store;
     private readonly InputAction m_Player_Record;
     private readonly InputAction m_Player_ReadyMenu;
+    private readonly InputAction m_Player_Jump1;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -504,6 +526,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @Store => m_Wrapper.m_Player_Store;
         public InputAction @Record => m_Wrapper.m_Player_Record;
         public InputAction @ReadyMenu => m_Wrapper.m_Player_ReadyMenu;
+        public InputAction @Jump1 => m_Wrapper.m_Player_Jump1;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -549,6 +572,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @ReadyMenu.started += instance.OnReadyMenu;
             @ReadyMenu.performed += instance.OnReadyMenu;
             @ReadyMenu.canceled += instance.OnReadyMenu;
+            @Jump1.started += instance.OnJump1;
+            @Jump1.performed += instance.OnJump1;
+            @Jump1.canceled += instance.OnJump1;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -589,6 +615,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @ReadyMenu.started -= instance.OnReadyMenu;
             @ReadyMenu.performed -= instance.OnReadyMenu;
             @ReadyMenu.canceled -= instance.OnReadyMenu;
+            @Jump1.started -= instance.OnJump1;
+            @Jump1.performed -= instance.OnJump1;
+            @Jump1.canceled -= instance.OnJump1;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -665,5 +694,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnStore(InputAction.CallbackContext context);
         void OnRecord(InputAction.CallbackContext context);
         void OnReadyMenu(InputAction.CallbackContext context);
+        void OnJump1(InputAction.CallbackContext context);
     }
 }
