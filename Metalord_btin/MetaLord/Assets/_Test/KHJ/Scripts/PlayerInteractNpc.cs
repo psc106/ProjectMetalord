@@ -8,6 +8,8 @@ public class PlayerInteractNpc : MonoBehaviour
     //npc 상호작용관련
     public bool isInteract = false;
     IInteractNpc playerInteract = null;
+    [SerializeField]
+    InputReader reader;
 
     //대화중인지 판별하기 위한 bool값
     public static bool isTalking = false; //TODO static 인거 참조로 변경예정 아마?
@@ -43,8 +45,9 @@ public class PlayerInteractNpc : MonoBehaviour
     }
     public void PushE()
     {
-        if (playerInteract != null && Input.GetKeyDown(KeyCode.E))
+        if (playerInteract != null && reader.InteractKey)
         {
+            reader.CancelInteract();
             isTalking = true;
             isInteract = false;
             Debug.Log("플레이어 E 키누르기 ");

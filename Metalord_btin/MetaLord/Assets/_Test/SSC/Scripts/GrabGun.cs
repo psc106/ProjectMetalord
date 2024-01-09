@@ -13,18 +13,12 @@ public class GrabGun : GunBase
         mode = GunMode.Grab;
     }
 
-    private void OnDisable()
-    {
-        //instance = null;
-    }
-
     public int GrabShot { get { return -ammo; } set { ammo = -value; } }
 
     GameObject targetObj = null;
-    Rigidbody targetRigid = null;           
-    Vector3 offset;
-    
-    float maxSpeed = 3f;
+    Rigidbody targetRigid = null;      
+    Collider[] colliders;
+
     public override bool ShootGun()
     {
         // 언락전 우클릭 입력시 UI 텍스트 출력
@@ -103,18 +97,31 @@ public class GrabGun : GunBase
             //Vector3 pickup = state.pickupPoint.position - state.pickupPoint.position.y * Vector3.up;
 
             state.cameraController.RotateSomethingAtCameraCenter(state.grabCorrectPoint);
-            Vector3 dir = state.grabCorrectPoint .position -  targetRigid.position;
+            Debug.Log(state.grabCorrectPoint.position);
+            Debug.Log(targetRigid.position);
 
+            Vector3 dir = state.grabCorrectPoint .position -  targetRigid.position;
+            float scala = dir.magnitude;
+            scala = Mathf.Max(scala, state.speed);
             state.grabLine.enabled = true;
             state.grabLine.SetPosition(0, state.GunHolderHand.position);
             state.grabLine.SetPosition(1, state.pickupPoint.position);
 
-            targetRigid.velocity = dir * 10;
-            //targetRigid.rotation = state.grabCorrectPoint.rotation;
-            //targetRigid.velocity += state.pickupPoint.forward * distance;
-            //targetRigid.velocity =  up* -dir.y * 3 + right* dir.x * 3 + state.pickupPoint.forward * dir.z * 3;
+
+            if (dir.magnitude > .5f)
+            {
+                targetRigid.velocity = dir.normalized * scala;
+                //targetRigid.rotation = state.grabCorrectPoint.rotation;
+                //targetRigid.velocity += state.pickupPoint.forward * distance;
+                //targetRigid.velocity =  up* -dir.y * 3 + right* dir.x * 3 + state.pickupPoint.forward * dir.z * 3;
+            }
+            else
+            {
+                targetRigid.position = state.grabCorrectPoint.position;
+            }
         }
     }
+
 
     public void CancelObj()
     {        
@@ -153,6 +160,12 @@ public class GrabGun : GunBase
     public void CancleGrab()
     {
         state.cameraController.ClearGrabObject();
+        foreach (var collider in colliders)
+        {
+            collider.material.bounceCombine = PhysicMaterialCombine.Average;
+            collider.material.bounciness = 0.5f;
+        }
+        colliders = null;
         targetObj.GetComponent<Collider>().material.dynamicFriction = 1f;
         targetObj = null;
         state.grabLine.enabled = false;
@@ -218,21 +231,16 @@ public class GrabGun : GunBase
        // state.cameraController.SetGrabObject(targetObj.transform);
         
         targetRigid = targetObj.GetComponent<Rigidbody>();
+        colliders = targetRigid.GetComponentsInChildren<Collider>();
+        foreach(var collider in colliders)
+        {
+            collider.material.bounceCombine = PhysicMaterialCombine.Minimum;
+            collider.material.bounciness = 0;
+        }
+
         state.pickupPoint.position = state.hit.point;
         state.cameraController.SetGrabObject(targetObj.transform);
         state.grabCorrectPoint.position = targetRigid.position;
-        //targetRigid = targetObj.GetComponent<Rigidbody>();
-
-        // 픽업 포인트는 해당 오브젝트의 중심부
-        //state.pickupPoint.position = targetRigid.position;
-
-        // 조합된 오브젝트일경우 픽업포인트 맞추기
-        //if (targetObj.GetComponent<CatchObject>() != null)
-        {            
-        //    state.pickupPoint.position = state.hit.point;
-        }
-
-        //followPos = state.pickupPoint.position - state.hit.transform.position;
         
         targetRigid.constraints = RigidbodyConstraints.FreezeRotation;
         targetRigid.useGravity = false;      
@@ -245,7 +253,6 @@ public class GrabGun : GunBase
 
     }
 
-    float distance;
 
     protected override bool CheckCanFire()
     {
