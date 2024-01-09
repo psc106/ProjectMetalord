@@ -130,6 +130,9 @@ public class GunStateController : MonoBehaviour
     Coroutine crosshairFadeOut;
     Color originColor;
 
+    public bool usedGravity = false;
+    public float gravityDecrement = 0.5f;
+
     // 프로퍼티 모음
     #region Property
     public bool CanFire
@@ -825,5 +828,19 @@ public class GunStateController : MonoBehaviour
         crossHair.sprite = crossHairSprite[(int)CrossHair.LOCK];
         crossHair.color = Color.white;
         textFadeOut = StartCoroutine(IEFadeOutText("구매 필요!"));
+    }
+
+    public void ChangedGravity()
+    {
+        if(usedGravity)
+        {
+            usedGravity = false;
+        }
+        else if(!usedGravity)
+        {
+            usedGravity = true;
+        }
+
+        //Debug.Log("중력 사용 : " + usedGravity);
     }
 }

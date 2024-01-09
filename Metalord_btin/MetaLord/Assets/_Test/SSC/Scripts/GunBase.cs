@@ -149,7 +149,6 @@ abstract public class GunBase : MonoBehaviour
                 GunStateController.AddList(hit.transform.GetComponent<MovedObject>());
             }
 
-
             // TODO : 오브젝트 풀링으로 오버헤드 줄여야 함
             // Trigger 체크할 게임오브젝트 생성
             GameObject triggerObj = new GameObject("Trigger");
@@ -162,8 +161,6 @@ abstract public class GunBase : MonoBehaviour
             SphereCollider objTrigger = triggerObj.AddComponent<SphereCollider>();
             objTrigger.isTrigger = true;
             objTrigger.radius = 0.5f;
-
-            //triggerObj.AddComponent<BondTrigger>();
 
         }
 
