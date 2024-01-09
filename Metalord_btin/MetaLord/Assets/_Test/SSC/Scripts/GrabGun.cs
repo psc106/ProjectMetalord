@@ -1,4 +1,6 @@
 
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class GrabGun : GunBase
@@ -17,7 +19,7 @@ public class GrabGun : GunBase
 
     GameObject targetObj = null;
     Rigidbody targetRigid = null;      
-    Collider[] colliders;
+    List<Collider> colliders;
 
     public override bool ShootGun()
     {
@@ -100,14 +102,14 @@ public class GrabGun : GunBase
             Debug.Log(state.grabCorrectPoint.position);
             Debug.Log(targetRigid.position);
 
-            Vector3 dir = state.grabCorrectPoint .position -  targetRigid.position;
+            Vector3 dir = state.grabCorrectPoint.position -  targetRigid.position;
             float scala = dir.magnitude;
             scala = Mathf.Max(scala, state.speed);
             state.grabLine.enabled = true;
             state.grabLine.SetPosition(0, state.GunHolderHand.position);
             state.grabLine.SetPosition(1, state.pickupPoint.position);
 
-
+            
             if (dir.magnitude > .5f)
             {
                 targetRigid.velocity = dir.normalized * scala;
@@ -117,6 +119,7 @@ public class GrabGun : GunBase
             }
             else
             {
+                targetRigid.velocity = Vector3.zero;
                 targetRigid.position = state.grabCorrectPoint.position;
             }
         }
@@ -231,7 +234,9 @@ public class GrabGun : GunBase
        // state.cameraController.SetGrabObject(targetObj.transform);
         
         targetRigid = targetObj.GetComponent<Rigidbody>();
-        colliders = targetRigid.GetComponentsInChildren<Collider>();
+        colliders = targetRigid.GetComponentsInChildren<Collider>().ToList();
+        colliders.Add(targetRigid.GetComponent<Collider>());
+
         foreach(var collider in colliders)
         {
             collider.material.bounceCombine = PhysicMaterialCombine.Minimum;

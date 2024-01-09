@@ -78,7 +78,7 @@ public class GunStateController : MonoBehaviour
     float playerMinRange;
     [SerializeField, Range(0,500)]
     float grabRange = 20f;
-    [Range(10, 100)]
+    [Range(10, 1000)]
     public float speed;
     public float GrabRange { get { return grabRange; } private set { grabRange = GrabRange; } }
     [SerializeField, Range(0, 10)]
@@ -469,11 +469,6 @@ public class GunStateController : MonoBehaviour
         }
         gunImage[AmmoGaugeIdx].fillAmount = (float)ammoValue / (float)maxUpgrade;    
         
-       /* if (currentMode.CanFireAmmoCount())
-        {
-            state = GunState.READY;
-            ChangedCrossHair();
-        }*/
     }
 
     public void Reloading()
