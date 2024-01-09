@@ -14,6 +14,8 @@ public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions
     public event UnityAction<float> Interact = delegate { };
     public event UnityAction<float> ModeChange = delegate { };
 
+    public event UnityAction<float> Jump1 = delegate { };
+
     public event UnityAction<float> Jump = delegate { };
     public event UnityAction Run = delegate { };
     public event UnityAction<float> Fire = delegate { };
@@ -27,7 +29,7 @@ public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions
 
     public Vector3 mouseMovement => inputActions.Player.Look.ReadValue<Vector2>();
     public Vector3 Direction => inputActions.Player.Move.ReadValue<Vector2>();
-    public bool JumpKey => inputActions.Player.Jump.ReadValue<float>()==1f;
+    public bool JumpKey => inputActions.Player.Jump1.ReadValue<float>()==1f;
     public bool ShootKey => inputActions.Player.Fire.ReadValue<float>() == 1f 
         && inputActions.Player.MouseControlCamera.phase==InputActionPhase.Waiting;
     public bool GrabKey => inputActions.Player.Grab.ReadValue<float>() == 1f
@@ -155,5 +157,11 @@ public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions
                 Grab.Invoke(0);
                 break;
         }
+    }
+
+    public void OnJump1(InputAction.CallbackContext context)
+    {
+        Jump1.Invoke(context.ReadValue<float>());
+
     }
 }

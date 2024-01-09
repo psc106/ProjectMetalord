@@ -17,8 +17,7 @@ public class UI_Store : MonoBehaviour
     }
 
     private void OnEnable()
-    {
-        Debug.Log("UI 상점 켜졌다.;");
+    {        
         currentCoinUI.transform.GetChild(0).GetChild(1).GetComponent<UI_CurrentCoin>().StopFadeOut();
         currentCoinUI.GetComponent<CanvasGroup>().alpha = 1f;
     }

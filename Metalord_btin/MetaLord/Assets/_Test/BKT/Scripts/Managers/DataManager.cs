@@ -25,7 +25,7 @@ public class DataManager : MonoBehaviour
         }
 
         savedGamePlayData = new SavedGamePlayData();
-        //savedSettingsData = new SavedSettingsData();        
+        //savedSettingsData = new SavedSettingsData();
     }
 
     //1.저장 알림 -> 2. json 파일에 데이터 저장

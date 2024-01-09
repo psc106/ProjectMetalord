@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using static GameSceneController;
 
@@ -38,7 +39,16 @@ public class TitleController : MonoBehaviour
 
         StartInfo.instance.isLoaded = true;
 
-        //StartCoroutine(LoadSceneAsync(currentScene, continueScene));
-        LoadingController.LoadScene("MainScene");
+        string jsonFilePath = Path.Combine(Application.persistentDataPath, "JsonData");        
+
+        if (File.Exists(jsonFilePath))
+        {
+            LoadingController.LoadScene("MainScene");
+        }
+        else
+        {
+            StartGame();
+        }
+            //StartCoroutine(LoadSceneAsync(currentScene, continueScene));
     }
 }
