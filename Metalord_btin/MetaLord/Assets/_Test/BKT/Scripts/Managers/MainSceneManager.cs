@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -27,20 +28,22 @@ public class MainSceneManager : MonoBehaviour
         InputIdToObject();
     }
 
+    // 오브젝트 ID값 이름 순서로 정렬하여 입력
     public void InputIdToObject()
     {
-        MoveObjectData[] moveObjects = FindObjectsByType<MoveObjectData>(FindObjectsSortMode.InstanceID);
-        Coin[] coinObjects = FindObjectsByType<Coin>(FindObjectsSortMode.InstanceID);
+        MoveObjectData[] moveObjects = FindObjectsByType<MoveObjectData>(FindObjectsSortMode.None);
+        Coin[] coinObjects = FindObjectsByType<Coin>(FindObjectsSortMode.None);
+        
+        Array.Sort(moveObjects, (first,second) => string.Compare(first.name, second.name));
+        Array.Sort(coinObjects, (first,second) => string.Compare(first.name, second.name));
 
-        for(int i = 0; i < moveObjects.Length; i++)
+        for (int i = 0; i < moveObjects.Length; i++)
         {
-            moveObjects[i].id = i;
-            //Debug.Log(i);
+            moveObjects[i].id = i;            
         }
 
         for(int i = 0; i < coinObjects.Length; i++)
-        {
-            //Debug.Log(coinObjects[i].name);
+        {            
             coinObjects[i].id = i;
         }
     }
