@@ -63,13 +63,15 @@ public class Coin : MonoBehaviour
             {
                 CoinManager.instance.GetCoin(SMALL_COIN_VALUE);
                 if (EffectManager.instance)
-                    Instantiate(EffectManager.instance.effects[(int)EffectList.SmallStarGet], transform.position, Quaternion.identity);
+                    EffectManager.instance.PlayEffect(EffectList.SmallStarGet, transform.position, Quaternion.identity);
+                    //Instantiate(EffectManager.instance.effects[(int)EffectList.SmallStarGet], transform.position, Quaternion.identity);
             }
             else if (mytype == CoinType.BIG_COIN) // 큰 코인일 경우
             {
                 CoinManager.instance.GetCoin(BIG_COIN_VALUE);
-                if(EffectManager.instance)
-                    Instantiate(EffectManager.instance.effects[(int)EffectList.BigStarGet], transform.position, Quaternion.identity);
+                if (EffectManager.instance)
+                    EffectManager.instance.PlayEffect(EffectList.BigStarGet, transform.position, Quaternion.identity);
+                //Instantiate(EffectManager.instance.effects[(int)EffectList.BigStarGet], transform.position, Quaternion.identity);
             }
 
           //  Debug.Log($"{gameObject.name} : {id}");

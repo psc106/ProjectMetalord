@@ -4,58 +4,109 @@ using UnityEngine;
 
 public class EffectManager : MonoBehaviour
 {
-    [SerializeField, Range(20, 100)]
-    int poolSize;
+    [SerializeField, Range(5, 100)]
+    int poolSize=5;
 
     public static EffectManager instance;
-    public GameObject[] effects;
+    public EffectObject[] effects;
 
-    private Dictionary<EffectList, Stack<GameObject>> effectPool;
-    private Stack<GameObject> muzzleEffectPool;
-    private Stack<GameObject> explosionEffectPool;
+    private Dictionary<EffectList, Stack<EffectObject>> effectPool;
+    private Stack<EffectObject> muzzleEffectPool;
+    private Stack<EffectObject> explosionEffectPool;
+    private Stack<EffectObject> smallCoinEffectPool;
+    private Stack<EffectObject> bigCoinEffectPool;
+    private Stack<EffectObject> recordEffectPool;
+
+    private GameObject usedObjects;
+    private GameObject unusedObjects;
 
     private void Awake()
     {
         instance = this;
 
-        muzzleEffectPool = new Stack<GameObject>();
-        explosionEffectPool = new Stack<GameObject>();
-        effectPool = new Dictionary<EffectList, Stack<GameObject>>
+        muzzleEffectPool = new Stack<EffectObject>();
+        explosionEffectPool = new Stack<EffectObject>();
+        smallCoinEffectPool = new Stack<EffectObject>();
+        bigCoinEffectPool = new Stack<EffectObject>();
+        recordEffectPool = new Stack<EffectObject>();
+        effectPool = new Dictionary<EffectList, Stack<EffectObject>>
         {
             { EffectList.GunMuzzle, muzzleEffectPool },
-            { EffectList.GunExplosion, explosionEffectPool }
+            { EffectList.GunExplosion, explosionEffectPool },
+            { EffectList.SmallStarGet, smallCoinEffectPool },
+            { EffectList.BigStarGet, bigCoinEffectPool },
+            { EffectList.ItemGet, recordEffectPool }
         };
+
+        usedObjects = new GameObject("used");
+        unusedObjects = new GameObject("unused");
 
         InitEffectPool(EffectList.GunMuzzle);
         InitEffectPool(EffectList.GunExplosion);
+        InitEffectPool(EffectList.SmallStarGet);
+        InitEffectPool(EffectList.BigStarGet);
+        InitEffectPool(EffectList.ItemGet);
     }
 
     private void InitEffectPool(EffectList effect)
     {
-        for(int i = 0; i < poolSize; i++)
+        for (int i = 0; i < poolSize; i++)
         {
-            GameObject effectObj = Instantiate(effects[(int)effect]);
-            effectObj.SetActive(false);
+            EffectObject effectObj = Instantiate(effects[(int)effect]);
+            effectObj.gameObject.SetActive(false);
+            effectObj.transform.SetParent(usedObjects.transform);
             effectPool[effect].Push(effectObj);
         }
     }
 
 
-    public GameObject GetEffect(EffectList effect)
+    public EffectObject GetEffect(EffectList effect)
     {
         if (effectPool[effect].Count == 0) 
         { 
             InitEffectPool(effect);
         }
-        GameObject effectObj = effectPool[effect].Pop();
-        effectObj.SetActive(true);
-        effectObj.GetComponent<ParticleSystem>().Play();
+        EffectObject effectObj = effectPool[effect].Pop();
+        effectObj.transform.SetParent(null);
+        effectObj.gameObject.SetActive(true);
         return effectObj;
+
+    }
+    public void PlayEffect(EffectList effect, Vector3 position , Quaternion rotate , Transform parent = null)
+    {
+        if (effectPool[effect].Count == 0)
+        {
+            InitEffectPool(effect);
+        }
+        EffectObject effectObj = effectPool[effect].Pop();
+        effectObj.transform.SetParent(null);
+        effectObj.gameObject.SetActive(true);
+        effectObj.transform.position = position;
+        effectObj.transform.rotation = rotate;
+        effectObj.transform.parent = parent;
+        effectObj.Play();
+
+    }
+    public void PlayEffect(EffectList effect, Vector3 position, Vector3 forward, Transform parent = null)
+    {
+        if (effectPool[effect].Count == 0)
+        {
+            InitEffectPool(effect);
+        }
+        EffectObject effectObj = effectPool[effect].Pop();
+        effectObj.transform.SetParent(null);
+        effectObj.gameObject.SetActive(true);
+        effectObj.transform.position = position;
+        effectObj.transform.forward = forward;
+        effectObj.transform.parent = parent;
+        effectObj.Play();
+
     }
 
-    public void ReturnEffectPool(EffectList effect, GameObject effectObj)
+    public void ReturnEffectPool(EffectList effect, EffectObject effectObj)
     {
-        effectObj.SetActive(false);
+        effectObj.gameObject.SetActive(false);
+        effectObj.transform.SetParent(usedObjects.transform);
         effectPool[effect].Push(effectObj);
     }
 }

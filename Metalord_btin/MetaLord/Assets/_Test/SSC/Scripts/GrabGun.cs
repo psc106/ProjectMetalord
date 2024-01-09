@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor;
+using UnityEditor.Animations.Rigging;
 using UnityEngine;
 
 public class GrabGun : GunBase
@@ -60,7 +61,6 @@ public class GrabGun : GunBase
 
     bool OneShotGrab()
     {
-        Debug.Log(state.Ammo);
         if (targetRigid || state.Ammo < - ammo)
         {            
             CancelObj();
@@ -98,21 +98,23 @@ public class GrabGun : GunBase
                 return;
             }
 
-            Vector3 wantValue = state.pickupPoint.position - offset;
-            Vector3 dir = wantValue-targetRigid.position;
+            //Vector3 wantValue = state.pickupPoint.position + (state.cameraController.GetGrabOffset(offset));
+            //Vector3 up = Vector3.Cross(state.pickupPoint.right, state.pickupPoint.forward);
+            //Vector3 right = Vector3.Cross(state.pickupPoint.up, state.pickupPoint.forward);
+            //float distance = Vector3.Distance(target, pickup);
 
-            Vector3 up = Vector3.Cross(state.pickupPoint.right, state.pickupPoint.forward);
-            Vector3 right = Vector3.Cross(state.pickupPoint.up, state.pickupPoint.forward);
+            //Vector3 target = targetRigid.position - targetRigid.position.y * Vector3.up;
+            //Vector3 pickup = state.pickupPoint.position - state.pickupPoint.position.y * Vector3.up;
 
-            Vector3 target = targetRigid.position - targetRigid.position.y * Vector3.up;
-            Vector3 pickup = state.pickupPoint.position - state.pickupPoint.position.y * Vector3.up;
-            float distance = Vector3.Distance(target, pickup);
+            state.cameraController.RotateSomethingAtCameraCenter(state.grabCorrectPoint);
+            Vector3 dir = state.grabCorrectPoint .position -  targetRigid.position;
 
             state.grabLine.enabled = true;
             state.grabLine.SetPosition(0, state.GunHolderHand.position);
             state.grabLine.SetPosition(1, state.pickupPoint.position);
 
             targetRigid.velocity = dir * 10;
+            //targetRigid.rotation = state.grabCorrectPoint.rotation;
             //targetRigid.velocity += state.pickupPoint.forward * distance;
             //targetRigid.velocity =  up* -dir.y * 3 + right* dir.x * 3 + state.pickupPoint.forward * dir.z * 3;
         }
@@ -129,11 +131,11 @@ public class GrabGun : GunBase
 
         }
 
-        if(targetObj?.GetComponent<MeshCollider>() != null)
+        if (targetObj?.GetComponent<MeshCollider>() != null)
         {
-            targetObj.GetComponent<MeshCollider>().material.dynamicFriction = 1f;   
-            
-            if(targetObj.GetComponent<MovedObject>() != null)
+            targetObj.GetComponent<MeshCollider>().material.dynamicFriction = 1f;
+
+            if (targetObj.GetComponent<MovedObject>() != null)
             {
                 targetObj.GetComponent<MovedObject>().CancelGrab();
             }
@@ -215,16 +217,14 @@ public class GrabGun : GunBase
             }
 
         }
-
-
-        state.cameraController.SetGrabObject(targetObj.transform);
         
-        targetRigid = targetObj.GetComponent<Rigidbody>();        
+
+       // state.cameraController.SetGrabObject(targetObj.transform);
+        
+        targetRigid = targetObj.GetComponent<Rigidbody>();
         state.pickupPoint.position = state.hit.point;
-        offset = state.pickupPoint.position - targetRigid.position;
-        distance = state.hit.distance;
-        state.pickupPoint.forward = state.startPos.position - state.pickupPoint.position;
-        
+        state.cameraController.SetGrabObject(targetObj.transform);
+
         //targetRigid = targetObj.GetComponent<Rigidbody>();
 
         // 픽업 포인트는 해당 오브젝트의 중심부

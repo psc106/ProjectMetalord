@@ -335,7 +335,7 @@ MonoBehaviour:
   maxAirJumps: 0
   maxGroundAngle: 45
   maxObjectAngle: 45
-  maxClimbAngle: 135
+  maxClimbAngle: 145
   checkFrameRate: 2
   startPoint: {fileID: 8282372781614362592}
   cameraPoint: {fileID: 0}
@@ -2002,6 +2002,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2884438737645874427}
   m_LocalEulerAnglesHint: {x: -15.045, y: -117.663, z: -85.735}
+--- !u!1 &3729337338677193082
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7378363421272657805}
+  m_Layer: 12
+  m_Name: GrabCorrectPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7378363421272657805
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3729337338677193082}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5544221135650746926}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3764355888841882123
 GameObject:
   m_ObjectHideFlags: 0
@@ -3408,6 +3439,7 @@ Transform:
   - {fileID: 4739398431066812062}
   - {fileID: 364788840478490789}
   - {fileID: 439279876887703734}
+  - {fileID: 7378363421272657805}
   m_Father: {fileID: 8282372781614362592}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &7123065273601845396
@@ -3589,11 +3621,13 @@ MonoBehaviour:
   checkPos: {fileID: 7900184379219393653}
   pickupPoint: {fileID: 364788840478490789}
   GunHolderHand: {fileID: 8282372781614362592}
+  grabCorrectPoint: {fileID: 7378363421272657805}
   grabLine: {fileID: 1637722241099862447}
   AimTarget: {fileID: 8203518221037570998}
   gunLayer:
     serializedVersion: 2
     m_Bits: 1975
+  muzzleStart: {fileID: 4739398431066812062}
   reloadCurve:
     serializedVersion: 2
     m_Curve:
@@ -4212,7 +4246,7 @@ Transform:
   m_GameObject: {fileID: 8602141970604661278}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.0000022053707, z: 0.00000011920923, w: 1}
-  m_LocalPosition: {x: -0.095, y: 0.196, z: 0.544}
+  m_LocalPosition: {x: -0.009, y: 0.196, z: 0.544}
   m_LocalScale: {x: 0.099999994, y: 0.100000024, z: 0.099999994}
   m_ConstrainProportionsScale: 0
   m_Children: []

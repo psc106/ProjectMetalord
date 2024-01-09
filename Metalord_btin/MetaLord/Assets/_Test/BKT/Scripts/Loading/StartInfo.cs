@@ -9,9 +9,7 @@ public class StartInfo : MonoBehaviour
 {
     public static StartInfo instance;
 
-    public bool isLoaded = default;
-
-    //[SerializeField] private AudioMixer audioMixer;
+    public bool isLoaded;
 
     public int info_ScreenMode;
     public int info_ResolutionIndex;
@@ -54,32 +52,19 @@ public class StartInfo : MonoBehaviour
     // 개인 환경설정 불러오기
     private void LoadPersonalSetting()
     {
-        //if (PlayerPrefs.HasKey("DisplaySetting"))
         info_ScreenMode = PlayerPrefs.GetInt("DisplaySetting");
-
-        //if (PlayerPrefs.HasKey("ResolutionSettings"))
         info_ResolutionIndex = PlayerPrefs.GetInt("ResolutionSettings");
-
-        //if (PlayerPrefs.HasKey("BrightnessSetting"))
         info_Brightness = PlayerPrefs.GetFloat("BrightnessSetting");
-
-        //if(PlayerPrefs.HasKey("CrossLineSetting"))
         info_CrossLine = (ButtonSize)PlayerPrefs.GetInt("CrossLineSetting");
-
-        //if (PlayerPrefs.HasKey("TextSizeSetting"))
         info_TextSize = (ButtonSize)PlayerPrefs.GetInt("TextSizeSetting");
 
-        //if (PlayerPrefs.HasKey("MasterSlider"))
-        {
-            info_MasterSlider = PlayerPrefs.GetFloat("MasterSlider");
-            info_BGMSlider = PlayerPrefs.GetFloat("BGMSlider");
-            info_SFXSlider = PlayerPrefs.GetFloat("SFXSlider");
+        info_MasterSlider = PlayerPrefs.GetFloat("MasterSlider");
+        info_BGMSlider = PlayerPrefs.GetFloat("BGMSlider");
+        info_SFXSlider = PlayerPrefs.GetFloat("SFXSlider");
 
-            info_MasterToggle = PlayerPrefs.GetInt("MasterToggle");
-            info_BGMToggle = PlayerPrefs.GetInt("BGMToggle");
-            info_SFXToggle = PlayerPrefs.GetInt("SFXToggle");
-        }
-
+        info_MasterToggle = PlayerPrefs.GetInt("MasterToggle");
+        info_BGMToggle = PlayerPrefs.GetInt("BGMToggle");
+        info_SFXToggle = PlayerPrefs.GetInt("SFXToggle");
     }
 
     private void InitPersonalSetting()
@@ -93,13 +78,4 @@ public class StartInfo : MonoBehaviour
         info_BGMSlider = 1f;
         info_SFXSlider = 1f;
     }
-
-    //private void SetAudio()
-    //{
-    //    audioMixer.SetFloat("Master", info_MasterSlider);
-    //    audioMixer.SetFloat("BGM", info_BGMSlider);
-    //    audioMixer.SetFloat("SFX", info_SFXSlider);
-    //}
-
-
 }

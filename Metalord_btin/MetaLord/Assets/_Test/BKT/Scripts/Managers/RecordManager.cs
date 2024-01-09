@@ -144,16 +144,15 @@ public class RecordManager : MonoBehaviour
         {
             _recordObjectInfos[_id].obtained = true;
             GameEventsManager.instance.recordEvents.ReflectRecord(); // 정보 반영 이벤트 발생
-        }
-        
+        }   
     }
 
     private void Start()
     {
         GameEventsManager.instance.recordEvents.ReflectRecord();
         recordCanvas.SetActive(false);
-    }
 
+    }
 
     /// <summary>
     /// CSVFile을 읽은 뒤 레코드 오브젝트 정보에 반영

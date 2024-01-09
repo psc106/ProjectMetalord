@@ -56,9 +56,11 @@ public class GunStateController : MonoBehaviour
     public Transform checkPos;
     public Transform pickupPoint;
     public Transform GunHolderHand;
+    public Transform grabCorrectPoint;
     public LineRenderer grabLine;
     public Transform AimTarget;
     public LayerMask gunLayer;
+    public Transform muzzleStart;
 
     [Header("도구 UI")]        
     [SerializeField] private AnimationCurve reloadCurve;
@@ -129,6 +131,9 @@ public class GunStateController : MonoBehaviour
     Coroutine textFadeOut;
     Coroutine crosshairFadeOut;
     Color originColor;
+
+    public bool usedGravity = false;
+    public float gravityDecrement = 0.5f;
 
     // 프로퍼티 모음
     #region Property
@@ -706,6 +711,8 @@ public class GunStateController : MonoBehaviour
         }
         else
         {
+            if (onGrab) return;
+
             if(textFadeOut != null)
             {
                 StopCoroutine(textFadeOut);
@@ -825,5 +832,19 @@ public class GunStateController : MonoBehaviour
         crossHair.sprite = crossHairSprite[(int)CrossHair.LOCK];
         crossHair.color = Color.white;
         textFadeOut = StartCoroutine(IEFadeOutText("구매 필요!"));
+    }
+
+    public void ChangedGravity()
+    {
+        if(usedGravity)
+        {
+            usedGravity = false;
+        }
+        else if(!usedGravity)
+        {
+            usedGravity = true;
+        }
+
+        //Debug.Log("중력 사용 : " + usedGravity);
     }
 }

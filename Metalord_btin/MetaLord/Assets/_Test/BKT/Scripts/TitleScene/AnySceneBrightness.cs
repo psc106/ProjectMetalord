@@ -61,8 +61,7 @@ public class AnySceneBrightness : MonoBehaviour
         // 텍스트 밝기 조절을 위한 알파값 조절
         foreach (TMP_Text text in texts)
         {
-            if (text.color.r < 0.5f && alpha < 0.7f) alpha = 0.7f; // 검은색글씨처럼 어두운 글씨는 알파값을 0.7까지 조절
-            else if (alpha < 0.1f) alpha = 0.1f; // 흰색과같은 밝은 글씨는 알파값을 0.1f까지 조절
+            if (alpha < 0.7f) alpha = 0.7f;
 
             text.color = new Color(text.color.r, text.color.g, text.color.b, alpha);
         }
