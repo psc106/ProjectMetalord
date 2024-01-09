@@ -49,6 +49,10 @@ public class RecordItem : MonoBehaviour
     {
         if(other.tag == "Player")
         {
+            if (EffectManager.instance)
+                EffectManager.instance.PlayEffect(EffectList.ItemGet, transform.position, Quaternion.identity);
+
+
             GameEventsManager.instance.recordEvents.GetRecordItem((int)recordItem);
 
             // 사운드 추가

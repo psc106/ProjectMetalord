@@ -44,9 +44,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 953ccd9fa30d23d43b362590f9a97884, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  poolSize: 20
   effects:
-  - {fileID: 188560, guid: 9c3b7f4ace8832b40abe6afe89fbcd91, type: 3}
-  - {fileID: 188560, guid: 94525c50b79ffeb49b3ff8e4e9c396c9, type: 3}
-  - {fileID: 188560, guid: 9c3b7f4ace8832b40abe6afe89fbcd91, type: 3}
-  - {fileID: 176998, guid: 724522c9faa6f4b4e984d92b2d188e50, type: 3}
-  - {fileID: 1112118466390014, guid: 5a50299415e426543bd096edabf3eec7, type: 3}
+  - {fileID: 687754839817453593, guid: 686961eae0ba6004381f0b18f8f56847, type: 3}
+  - {fileID: 6006502138953673037, guid: 538abc02850f69049b4776cc28237eef, type: 3}
+  - {fileID: 2967536224005241172, guid: 4037ae226784faa49b28839888c149d8, type: 3}
+  - {fileID: 4786648041786095419, guid: 48efe92f53beeb54ea98a511ee186ba6, type: 3}
+  - {fileID: 156660330868405937, guid: e1224e90dd6421544aaeb9d8d0360138, type: 3}

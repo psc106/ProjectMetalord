@@ -164,6 +164,8 @@ public class CameraController : MonoBehaviour
         }
 
     }
+
+
     private void FixedUpdate()
     {
         playerRender.rotation = Quaternion.Euler(0, newRotationY, 0);
@@ -173,9 +175,22 @@ public class CameraController : MonoBehaviour
         {
             Quaternion grabRotation = Quaternion.Euler(grabOrigin.x, grabDiffEuler.y + newRotationY, grabOrigin.z);
             grabObject.rotation = grabRotation;
+
         }
+
+        beforeY = newRotationY;
+        beforeX = newRotationX;
     }
 
+    float beforeX;
+    float beforeY;
+    public void RotateSomethingAtCameraCenter(Transform obj)
+    {
+        obj.RotateAround(cameraTarget.position, Vector3.right, newRotationX - beforeX);
+        obj.RotateAround(cameraTarget.position, Vector3.up, newRotationY - beforeY);
+        //obj.rotation = Quaternion.Euler(newRotationX, obj.eulerAngles.y, obj.eulerAngles.z);
+
+    }
     public void SetGrabObject(Transform obj)
     {
         grabObject = obj;
@@ -188,9 +203,11 @@ public class CameraController : MonoBehaviour
         //diff+newB = newA
 
     }
+
     public void ClearGrabObject()
     {
         grabObject = null;
+        grabOrigin = Vector3.zero;
         grabDiffEuler = Vector3.zero;
     }
 

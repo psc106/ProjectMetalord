@@ -37,6 +37,10 @@ abstract public class GunBase : MonoBehaviour
     
     protected void UsedAmmo(Ray _ray, int _ammo)
     {
+
+        if (EffectManager.instance)
+            EffectManager.instance.PlayEffect(EffectList.GunMuzzle, state.muzzleStart.position, state.muzzleStart.forward);
+
         int id = (int)GunSoundList.FireSound;
         SoundManager.instance.PlaySound(GroupList.Gun, id);
         
@@ -172,6 +176,9 @@ abstract public class GunBase : MonoBehaviour
     // 그랩건일때 레이지점 페인팅 없이 소모값만 적용하고 싶을 때
     protected void UsedAmmo(int _ammo)
     {
+        if (EffectManager.instance)
+            EffectManager.instance.PlayEffect(EffectList.GunExplosion, state.muzzleStart.position, Quaternion.identity);
+
         int id = (int)GunSoundList.FireSound;
         SoundManager.instance.PlaySound(GroupList.Gun, id);
 

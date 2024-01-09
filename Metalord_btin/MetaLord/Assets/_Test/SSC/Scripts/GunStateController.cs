@@ -56,9 +56,11 @@ public class GunStateController : MonoBehaviour
     public Transform checkPos;
     public Transform pickupPoint;
     public Transform GunHolderHand;
+    public Transform grabCorrectPoint;
     public LineRenderer grabLine;
     public Transform AimTarget;
     public LayerMask gunLayer;
+    public Transform muzzleStart;
 
     [Header("도구 UI")]        
     [SerializeField] private AnimationCurve reloadCurve;
@@ -706,6 +708,8 @@ public class GunStateController : MonoBehaviour
         }
         else
         {
+            if (onGrab) return;
+
             if(textFadeOut != null)
             {
                 StopCoroutine(textFadeOut);
