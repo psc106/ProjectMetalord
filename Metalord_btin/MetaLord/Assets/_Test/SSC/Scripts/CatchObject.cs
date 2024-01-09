@@ -293,12 +293,12 @@ public class CatchObject : MonoBehaviour
                     if (collision.gameObject.transform.parent?.GetComponent<CatchObject>() == null)
                     {
                         if (checkContact)
-                        {
-                            Vector3 force = collision.contacts[0].normal * 2f;
+                        {                            
+                            Vector3 force = -(collision.contacts[0].normal * 2f);
                             collision.gameObject.GetComponent<MovedObject>().InitOverap(force);
                         }
                         else
-                        {
+                        {                            
                             collision.gameObject.GetComponent<MovedObject>().InitOverap();
                         }
 

@@ -65,7 +65,7 @@ public class MovedObject : MonoBehaviour
             // 내 리지드바디가 존재하고, 그랩한 대상이 아닐 때 (그랩한 대상은 낙하속도 X)
             if (myRigid && !checkContact)
             {                
-                if (myRigid.velocity.magnitude <= 0.35f && !isSleep)
+                if (myRigid.velocity.magnitude <= 0.6f && !isSleep)
                 {
                     SleepObj();
                     return;
@@ -373,7 +373,19 @@ public class MovedObject : MonoBehaviour
                 {
                     if(checkContact)
                     {
-                        Vector3 force = collision.contacts[0].normal * 2f;                    
+                        Debug.Log(collision.contacts[0].normal.y);
+                        Vector3 force;
+
+                        if (collision.contacts[0].normal.y >= 0.5f)
+                        {
+                            myRigid.velocity = Vector3.zero;
+                            force = Vector3.zero;
+                        }
+                        else
+                        {
+                            force = -(collision.contacts[0].normal) * 2f;
+                        }
+           
                         collision.gameObject.GetComponent<MovedObject>().InitOverap(force);
                     }
                     else
@@ -658,7 +670,7 @@ public class MovedObject : MonoBehaviour
     public void ChangedState()
     {
         myRigid = GetComponent<Rigidbody>();
-        myRigid.mass = 1000f;
+        myRigid.mass = 1f;
         myColid.material.dynamicFriction = 0f;
         myColid.material.bounciness = 0f;   
         checkCount = 0;
@@ -685,7 +697,7 @@ public class MovedObject : MonoBehaviour
             myColid.convex = true;                          
             myRigid = transform.AddComponent<Rigidbody>();
             myRigid.velocity = Vector3.down * 3f;
-            myRigid.mass = 1000f;
+            myRigid.mass = 10f;
             myRigid.useGravity = true;
             myColid.material.dynamicFriction = 1f;            
         }
@@ -704,20 +716,6 @@ public class MovedObject : MonoBehaviour
 
         checkContact = false;
         myColid.convex = false;
-    }
-
-    IEnumerator EnforceSleep()
-    {
-        float timeCheck = 0f;
-        float limitTime = 5f;
-
-        while(timeCheck < limitTime)
-        {
-            timeCheck += Time.deltaTime;
-            yield return null;
-        }        
-
-        SleepObj();
     }
 
     // 강제 슬립?
@@ -741,7 +739,7 @@ public class MovedObject : MonoBehaviour
             transform.AddComponent<Rigidbody>();
             myRigid = GetComponent<Rigidbody>();
             myRigid.velocity = Vector3.down * 3f;
-            myRigid.mass = 1000f;
+            myRigid.mass = 10f;
 
             // Save & Load에서 속력까지 저장한다?
             //if(saveVelocity != default)
@@ -762,7 +760,7 @@ public class MovedObject : MonoBehaviour
             transform.AddComponent<Rigidbody>();
             myRigid = GetComponent<Rigidbody>();
             myRigid.velocity = _velocity;            
-            myRigid.mass = 1000f;
+            myRigid.mass = 10f;
 
             // Save & Load에서 속력까지 저장한다?
             //if(saveVelocity != default)
