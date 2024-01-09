@@ -99,8 +99,6 @@ public class GrabGun : GunBase
             //Vector3 pickup = state.pickupPoint.position - state.pickupPoint.position.y * Vector3.up;
 
             state.cameraController.RotateSomethingAtCameraCenter(state.grabCorrectPoint);
-            Debug.Log(state.grabCorrectPoint.position);
-            Debug.Log(targetRigid.position);
 
             Vector3 dir = state.grabCorrectPoint.position -  targetRigid.position;
             float scala = dir.magnitude;
@@ -112,7 +110,9 @@ public class GrabGun : GunBase
             
             if (dir.magnitude > .5f)
             {
-                targetRigid.velocity = dir.normalized * scala;
+                targetRigid.velocity = Vector3.zero;
+                targetRigid.AddForce(dir * state.speed, ForceMode.VelocityChange);
+                //targetRigid.velocity = dir.normalized * scala;
                 //targetRigid.rotation = state.grabCorrectPoint.rotation;
                 //targetRigid.velocity += state.pickupPoint.forward * distance;
                 //targetRigid.velocity =  up* -dir.y * 3 + right* dir.x * 3 + state.pickupPoint.forward * dir.z * 3;
@@ -168,7 +168,7 @@ public class GrabGun : GunBase
             collider.material.bounceCombine = PhysicMaterialCombine.Average;
             collider.material.bounciness = 0.5f;
         }
-        colliders = null;
+        colliders = null;   
         targetObj.GetComponent<Collider>().material.dynamicFriction = 1f;
         targetObj = null;
         state.grabLine.enabled = false;
@@ -235,7 +235,6 @@ public class GrabGun : GunBase
         
         targetRigid = targetObj.GetComponent<Rigidbody>();
         colliders = targetRigid.GetComponentsInChildren<Collider>().ToList();
-        colliders.Add(targetRigid.GetComponent<Collider>());
 
         foreach(var collider in colliders)
         {

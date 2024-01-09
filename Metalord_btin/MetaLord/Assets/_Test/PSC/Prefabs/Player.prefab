@@ -3659,7 +3659,7 @@ MonoBehaviour:
   cameraMinRange: 2
   playerMinRange: 2
   grabRange: 15
-  speed: 150
+  speed: 10
   reloadTime: 3.5
   AutoInitTime: 0.1
   fireRate: 0.1

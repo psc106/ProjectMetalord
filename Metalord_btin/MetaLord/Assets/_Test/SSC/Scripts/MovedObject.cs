@@ -373,7 +373,6 @@ public class MovedObject : MonoBehaviour
                 {
                     if(checkContact)
                     {
-                        Debug.Log(collision.contacts[0].normal.y);
                         Vector3 force;
 
                         if (collision.contacts[0].normal.y >= 0.5f)
