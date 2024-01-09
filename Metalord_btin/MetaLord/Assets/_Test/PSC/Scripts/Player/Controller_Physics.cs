@@ -1340,6 +1340,7 @@ public class Controller_Physics : MonoBehaviour
             case SliderType.Grab: (gunController.GetGunMode((int)GunMode.Grab) as GrabGun).GrabShot = (int)value; break;
             case SliderType.Range: gunController.Range = value; break;
             case SliderType.Capacity: gunController.MaxAmmo = (int)value; break;
+            case SliderType.ObjGravity: gunController.gravityDecrement = value; break;
         }
     }
     public float GetValue(SliderType type)
@@ -1354,6 +1355,8 @@ public class Controller_Physics : MonoBehaviour
             case SliderType.Grab: return (float)(gunController.GetGunMode((int)GunMode.Grab) as GrabGun).GrabShot;
             case SliderType.Range: return gunController.Range;
             case SliderType.Capacity: return gunController.MaxAmmo;
+            case SliderType.ObjGravity: return (float)gunController.gravityDecrement;
+
         }
         return -1;
     }
