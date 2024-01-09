@@ -516,6 +516,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isInteract: 0
+  reader: {fileID: 11400000, guid: 75abd6246b51f9e48a0d52dae45fab3f, type: 2}
 --- !u!114 &8412500572314512594
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3658,6 +3659,7 @@ MonoBehaviour:
   cameraMinRange: 2
   playerMinRange: 2
   grabRange: 15
+  speed: 150
   reloadTime: 3.5
   AutoInitTime: 0.1
   fireRate: 0.1
@@ -3671,6 +3673,8 @@ MonoBehaviour:
   minDistance: 0
   targetNpc: {fileID: 0}
   state: 0
+  usedGravity: 0
+  gravityDecrement: 0.5
 --- !u!114 &2813025332178416258
 MonoBehaviour:
   m_ObjectHideFlags: 0

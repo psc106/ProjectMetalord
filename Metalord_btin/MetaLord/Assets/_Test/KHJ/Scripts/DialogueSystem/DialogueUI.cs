@@ -198,6 +198,7 @@ public class DialogueUI : MonoBehaviour
             //이 반복문에서는 contexArray 에 들어있는 string[] 값들을 분류해서 출력합니다.
             for (int i = 0; i < contexteArray.Length; i++)
             {
+                reader.CancelInteract();
                 //dialogue 에는 출력할 하나의 문장이 들어갑니다.
                 string dialogue = DialogueDBManager.instance.statusDialogueDic[keyNum].contextes[i];
                 
@@ -222,7 +223,6 @@ public class DialogueUI : MonoBehaviour
                 //Debug.Log("E키 누르기 전인데 실행될려나?");
 
                 yield return new WaitUntil(() => reader.InteractKey);
-                reader.CancelInteract();
                 //Debug.Log("E키 누른뒤인데 작동 안하나?");
                 myTextEffect.fadeImgae.SetActive(false);
             }
