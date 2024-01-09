@@ -82,5 +82,6 @@ public enum SliderType
     Grab,
     Range,
     Capacity,
-    ObjGravity
+    ObjGravity,
+    Speed
 }

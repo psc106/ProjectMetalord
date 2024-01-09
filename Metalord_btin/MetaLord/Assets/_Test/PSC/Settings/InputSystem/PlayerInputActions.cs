@@ -101,9 +101,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""Interact"",
-                    ""type"": ""Value"",
+                    ""type"": ""Button"",
                     ""id"": ""42a751c2-38df-4b5f-985c-57e12b42b3af"",
-                    ""expectedControlType"": """",
+                    ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true

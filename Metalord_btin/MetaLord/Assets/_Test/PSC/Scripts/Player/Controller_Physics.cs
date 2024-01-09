@@ -292,8 +292,9 @@ public class Controller_Physics : MonoBehaviour
             }
         }
 
-        if (Input.GetMouseButtonDown(1))
+        if (desireGrab)
         {
+            desireGrab = false;
             gunController.Shoot(GunMode.Grab);
         }
 
@@ -303,29 +304,7 @@ public class Controller_Physics : MonoBehaviour
             gunController.Reloading();
         }
 
-        /* // 1번키 누르면 페인트건
-         if (Input.GetKeyDown(KeyCode.Alpha1))
-         {
-             //SwapTest(GunMode.Paint);
-             gunController.SwapGunMode(GunMode.Paint);
-             //SwapPaintGun();
-         }
-
-         // 2번키 누르면 그랩건
-         if (Input.GetKeyDown(KeyCode.Alpha2))
-         {
-             //SwapTest(GunMode.Grab);
-             gunController.SwapGunMode(GunMode.Grab);
-             //SwapGrabGun();
-         }
-
-         // 3번키 누르면 본드건
-         if (Input.GetKeyDown(KeyCode.Alpha3))
-         {
-             //SwapTest(GunMode.Bond);
-             gunController.SwapGunMode(GunMode.Bond);
-             //SwapBondGun();
-         }*/
+        
 
     }
 
@@ -1335,6 +1314,7 @@ public class Controller_Physics : MonoBehaviour
             case SliderType.Range: gunController.Range = value; break;
             case SliderType.Capacity: gunController.MaxAmmo = (int)value; break;
             case SliderType.ObjGravity: gunController.gravityDecrement = value; break;
+            case SliderType.Speed: gunController.speed = value; break;
         }
     }
     public float GetValue(SliderType type)
@@ -1350,6 +1330,7 @@ public class Controller_Physics : MonoBehaviour
             case SliderType.Range: return gunController.Range;
             case SliderType.Capacity: return gunController.MaxAmmo;
             case SliderType.ObjGravity: return (float)gunController.gravityDecrement;
+            case SliderType.Speed: return (float)gunController.speed;
 
         }
         return -1;

@@ -31,6 +31,8 @@ public class DialogueUI : MonoBehaviour
     [SerializeField] private GameObject dialogueBox;  //대화창 ui 가지고 있는 부모 오브젝트
     [SerializeField] private TMP_Text dialogueText;   //하위 tmp 오브젝트
 
+    [SerializeField] InputReader reader;
+
     [Header("TextFontSize")] //텍스트 설정 관련 
     public float minFontSize = 10f;   
     public float maxFontSize = 50f;   
@@ -136,8 +138,9 @@ public class DialogueUI : MonoBehaviour
         while (myTextEffect.isTypingRunning)
         {
             yield return null;
-            if(Input.GetKeyDown(KeyCode.E))
+            if(reader.InteractKey)
             {
+                reader.CancelInteract();
                 myTextEffect.Stop();
                 myTextEffect.fadeImgae.SetActive(true);
             }
@@ -218,7 +221,8 @@ public class DialogueUI : MonoBehaviour
                 yield return null;
                 //Debug.Log("E키 누르기 전인데 실행될려나?");
 
-                yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.E));
+                yield return new WaitUntil(() => reader.InteractKey);
+                reader.CancelInteract();
                 //Debug.Log("E키 누른뒤인데 작동 안하나?");
                 myTextEffect.fadeImgae.SetActive(false);
             }
@@ -238,7 +242,8 @@ public class DialogueUI : MonoBehaviour
             {
                 // TODO 대화창 닫고 플레이어 이동제한 해제
                 Debug.Log("여기온거면 끝난거임");
-                yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.E));
+                yield return new WaitUntil(() => reader.InteractKey);
+                reader.CancelInteract();
                 myTextEffect.fadeImgae.SetActive(false);
                 if (isResponse == false)
                 {

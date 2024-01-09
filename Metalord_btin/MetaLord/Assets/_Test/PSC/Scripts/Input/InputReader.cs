@@ -11,7 +11,7 @@ public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions
     public event UnityAction EnableMouseControlCamera = delegate { };
     public event UnityAction DisableMouseControlCamera = delegate { };
     public event UnityAction<float> Reload = delegate { };
-    public event UnityAction<float> Interact = delegate { };
+    public event UnityAction<bool> Interact = delegate { };
     public event UnityAction<float> ModeChange = delegate { };
 
     public event UnityAction<float> Jump1 = delegate { };
@@ -35,11 +35,14 @@ public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions
     public bool GrabKey => inputActions.Player.Grab.ReadValue<float>() == 1f
         && inputActions.Player.MouseControlCamera.phase == InputActionPhase.Waiting;
     public bool ReloadKey => inputActions.Player.Reload.ReadValue<float>() == 1f;
-    public bool InteractKey => inputActions.Player.Interact.ReadValue<float>() == 1f;
+
     public bool StoreKey => inputActions.Player.Store.ReadValue<float>() == 1f; // 231219 배경택
     public bool RecordKey => inputActions.Player.Record.ReadValue<float>() == 1f; //231219 배경택
     public bool ReadyMenuKey => inputActions.Player.ReadyMenu.ReadValue<float>() == 1f; //231219 배경택
 
+
+    private bool interactKey = false;
+    public bool InteractKey => interactKey;
 
     private void OnEnable()
     {
@@ -49,14 +52,23 @@ public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions
             inputActions.Player.SetCallbacks(this);
         }
         EnablePlayerActions();
+        Interact += CheckInteract;
+        interactKey = false;
+    }
+
+    public void CheckInteract(bool check)
+    {
+        interactKey = check;
+    }
+    public void CancelInteract()
+    {
+        interactKey = false;
     }
 
     public void EnablePlayerActions()
     {
         inputActions.Enable();
     }
-
-
 
     public void OnMove(InputAction.CallbackContext context)
     {
@@ -128,7 +140,15 @@ public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions
 
     public void OnInteract(InputAction.CallbackContext context)
     {
-        Interact.Invoke(context.ReadValue<float>());
+        switch (context.phase)
+        {
+            case InputActionPhase.Started:
+                Interact.Invoke(true);
+                break;
+            case InputActionPhase.Canceled:
+                Interact.Invoke(false);
+                break;
+        }
     }
 
     public void OnStore(InputAction.CallbackContext context) // 231219 배경택

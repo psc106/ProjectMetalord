@@ -45,14 +45,12 @@ public class CameraController : MonoBehaviour
     float newRotationY;
     float newRotationX;
 
+    float beforeX;
+    float beforeY;
+
     Transform grabObject;
     Vector3 grabDiffEuler;
     Vector3 grabOrigin;
-
-
-
-    Coroutine rotateCoroutine;
-    Quaternion targetRotation;
 
 
     private void OnEnable()
@@ -107,7 +105,6 @@ public class CameraController : MonoBehaviour
 
             newRotationY = currAngle;
             newRotationX = cameraTarget.eulerAngles.x;
-            //cameraTarget.rotation = Quaternion.Euler(newRotationX, newRotationY, cameraTarget.eulerAngles.z);
             return;
         }
 
@@ -115,7 +112,6 @@ public class CameraController : MonoBehaviour
         {
             newRotationY = cameraTarget.eulerAngles.y;
             newRotationX = cameraTarget.eulerAngles.x;
-            //cameraTarget.rotation = Quaternion.Euler(newRotationX, newRotationY, cameraTarget.eulerAngles.z);
             return;
         }
         
@@ -125,7 +121,6 @@ public class CameraController : MonoBehaviour
             time = 0;
         }
         
-        //Vector2 cameraMovement = input.mouseMovement;
 
         if (player.OnClimb)
         {
@@ -182,8 +177,6 @@ public class CameraController : MonoBehaviour
         beforeX = newRotationX;
     }
 
-    float beforeX;
-    float beforeY;
     public void RotateSomethingAtCameraCenter(Transform obj)
     {
         obj.RotateAround(cameraTarget.position, Vector3.right, newRotationX - beforeX);
@@ -263,21 +256,6 @@ public class CameraController : MonoBehaviour
     }
 
 
-    IEnumerator RotateBodyRoutine(float newY, float time)
-    {
-        targetRotation = Quaternion.Euler(0, newY, 0);
-
-        currRotateTime = 0;
-        while(currRotateTime <= time)
-        {
-
-            playerRender.transform.rotation = Quaternion.Lerp(playerRender.transform.rotation, targetRotation, Time.deltaTime * smoothRotationSpeed);
-            yield return new WaitForSeconds(Time.deltaTime);
-            currRotateTime += Time.deltaTime;
-        }
-        rotateCoroutine = null;
-        currRotateTime = 0;
-    }
 
     IEnumerator BlendCameraRoutine(float time)
     {
