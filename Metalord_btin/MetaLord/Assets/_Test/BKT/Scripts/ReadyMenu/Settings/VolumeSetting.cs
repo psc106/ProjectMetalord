@@ -224,9 +224,7 @@ public class VolumeSetting : MonoBehaviour
     // 오디오 믹서 소리 입력
     private void AudioMixerSet(string id, float vol)
     {
-        audioMixer.SetFloat(id, Mathf.Log10(vol) * 20);
-
-        Debug.Log("오디오 믹서세트로 들어옴");
+        audioMixer.SetFloat(id, Mathf.Log10(vol) * 20);        
     }
 
 

@@ -12,15 +12,16 @@ enum PlayerActions
     Interact,
     Store,
     Record,
+    Jump1,
 }
 
 enum BindingKeyword
 {
+    Common = 0,
     Forward = 1,
     Back = 2,
     Left = 3,
     Right = 4,
-    Common = 0,
 }
 
 /// <summary>
@@ -68,6 +69,10 @@ public class RebindKeyUI : MonoBehaviour
                 break;
             case PlayerActions.Record:
                 gameInputAction = inputReader.inputActions.Player.Record;
+                break;
+            case PlayerActions.Jump1:
+                gameInputAction = inputReader.inputActions.Player.Jump1;
+
                 break;
             
             default:
@@ -135,12 +140,15 @@ public class RebindKeyUI : MonoBehaviour
                             gameInputAction.RemoveBindingOverride(bindingIndex); // 바인딩을 제거
                             CleanUp(); // 메모리 낭비를 방지
                             OnClickBindingButton(); // 제대로된 값이 입력될때까지 재입력
+                            operation.Dispose();
                             return;
                         }
 
                         ChangeDisplayText();
                         input_Text.SetActive(true);
-                        wait_Text.SetActive(false);                        
+                        wait_Text.SetActive(false);
+
+                        operation.Dispose();
                     }); // 완료시 Action Enable
 
         RebindOperation.Start();
@@ -168,6 +176,10 @@ public class RebindKeyUI : MonoBehaviour
             {
                 displayString = "Right Mouse";
             }
+            else if(displayString == "Left Shift")
+            {
+                displayString = "Shift";
+            }
         }
 
         if (input_Text != null) // 텍스트 오브젝트가 있는경우
@@ -180,14 +192,15 @@ public class RebindKeyUI : MonoBehaviour
     {
         int bindingIndex = (int)bindingKeyword;
 
-        foreach(var inputAction in inputReader.inputActions) // 인풋 리더의 InputAction 여러개가 있다면 전부 체크
+        foreach (var inputAction in inputReader.inputActions) // 인풋 리더의 InputAction 여러개가 있다면 전부 체크
         {
-            for(int i = 0; i < inputAction.bindings.Count; i++) // 액션 하위에 바인드된 키값이 여러개라면 전부 체크
+            for (int i = 0; i < inputAction.bindings.Count; i++) // 액션 하위에 바인드된 키값이 여러개라면 전부 체크
             {
-                if (i ==bindingIndex) continue; // 현재 내 bindingIndex와 같으면 Continue, 내 값을 바로 체크하게되면 중복으로 체크되기 때문
+                if (i == bindingIndex && inputAction == gameInputAction) continue; // 현재 내 bindingIndex와 같으면 Continue, 내 값을 바로 체크하게되면 중복으로 체크되기 때문
 
                 Debug.Log(inputAction.GetBindingDisplayString(i).ToString());
-                if(keyToBind == inputAction.GetBindingDisplayString(i))
+
+                if (keyToBind == inputAction.GetBindingDisplayString(i))
                 {
                     return true; // 중복된 키가 있을 경우 True 반환
                 }
