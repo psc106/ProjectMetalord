@@ -745,7 +745,7 @@ public class GunStateController : MonoBehaviour
         
         while(timeCheck < fadeOutTime)
         {
-            timeCheck += Time.deltaTime;
+            timeCheck += Time.unscaledDeltaTime;
             t = timeCheck / fadeOutTime;
 
             tempColor.a = Mathf.Lerp(1, 0, t);
@@ -779,7 +779,7 @@ public class GunStateController : MonoBehaviour
 
         while (timeCheck < fadeOutTime)
         {
-            timeCheck += Time.deltaTime;
+            timeCheck += Time.unscaledDeltaTime;
             t = timeCheck / fadeOutTime;
 
             tempColor.a = Mathf.Lerp(1, 0, t);
@@ -843,8 +843,6 @@ public class GunStateController : MonoBehaviour
         else if(!usedGravity)
         {
             usedGravity = true;
-        }
-
-        //Debug.Log("중력 사용 : " + usedGravity);
+        }        
     }
 }
