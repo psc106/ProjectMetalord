@@ -99,8 +99,8 @@ public class GrabGun : GunBase
             //Vector3 pickup = state.pickupPoint.position - state.pickupPoint.position.y * Vector3.up;
 
             state.cameraController.RotateSomethingAtCameraCenter(state.grabCorrectPoint);
-            Debug.Log(state.grabCorrectPoint.position);
-            Debug.Log(targetRigid.position);
+            //Debug.Log(state.grabCorrectPoint.position);
+            //Debug.Log(targetRigid.position);
 
             Vector3 dir = state.grabCorrectPoint.position -  targetRigid.position;
             float scala = dir.magnitude;
@@ -180,21 +180,33 @@ public class GrabGun : GunBase
     void FollowingObj( )
     {
         state.onGrab = true;
-        targetObj = state.hit.transform.gameObject;        
+        targetObj = state.hit.transform.gameObject;
+        Debug.Log(targetObj.gameObject.name);
 
         // 그랩 대상의 부모가 없다면
         if (targetObj.transform.parent == null)
-        {
-            // 공중에서 떨어지는 대상일 때 
-            if(targetObj.transform.GetComponent<Rigidbody>() != null)
-            {
-                /* PASS */
-            }
-            else
+        {            
+            if(targetObj.GetComponent<Rigidbody>() == null)
             {                
                 targetObj.GetComponent<MeshCollider>().convex = true;
                 targetObj.AddComponent<Rigidbody>();
                 targetObj.GetComponent<MovedObject>().ChangedState();
+            }
+            else
+            {
+
+                if(targetObj.GetComponent<CatchObject>() != null)
+                {
+                    targetObj.GetComponent<CatchObject>().SetUpMesh();
+                    targetObj.GetComponent<CatchObject>().ChangedState();
+                }
+                else
+                {
+                    targetObj.GetComponent<MeshCollider>().convex = true;
+                    targetObj.GetComponent<MovedObject>().ChangedState();
+
+                }
+
             }
         }
         // 그랩 대상의 부모가 있다면
@@ -224,7 +236,8 @@ public class GrabGun : GunBase
                 targetObj = targetObj.transform.parent.gameObject;
                 CatchObject controll = targetObj.GetComponent<CatchObject>();
                 controll.SetUpMesh();
-                targetObj.AddComponent<Rigidbody>();                
+                targetObj.AddComponent<Rigidbody>();
+                targetRigid = targetObj.GetComponent<Rigidbody>();
                 controll.ChangedState();
             }
 
@@ -235,7 +248,12 @@ public class GrabGun : GunBase
         
         targetRigid = targetObj.GetComponent<Rigidbody>();
         colliders = targetRigid.GetComponentsInChildren<Collider>().ToList();
-        colliders.Add(targetRigid.GetComponent<Collider>());
+
+        // 상위 오브젝트에는 Collider가 없어서 임시 조건방지
+        if(targetRigid.GetComponent<CatchObject>() == null)
+        {
+            colliders.Add(targetRigid.GetComponent<Collider>());
+        }
 
         foreach(var collider in colliders)
         {

@@ -35,6 +35,8 @@ public class CatchObject : MonoBehaviour
         state = FindAnyObjectByType<GunStateController>();
     }
 
+
+    // 충돌이 일어난 이동형 오브젝트 MeshCollider 갱신
     public void AddChild(MeshCollider _child)
     {
         childColid.Add(_child);        
@@ -90,6 +92,7 @@ public class CatchObject : MonoBehaviour
                 if (myRigid.IsSleeping())
                 {
                     Destroy(myRigid);
+
                     foreach (MeshCollider col in childColid)
                     {
                         col.convex = false;
@@ -363,7 +366,7 @@ public class CatchObject : MonoBehaviour
         // 이미 본드 동작을 하는 오브젝트를 다시 그랩하면 그랩하는순간 충돌면을 체크하여 그랩 해제됨에 따라 상태를 제어할 bool값 추가
         if (checkContact == false || collision.gameObject.layer == LayerMask.NameToLayer("CatchObject"))
         {
-            Debug.Log("CatchObject 막히는 중");
+            //Debug.Log("CatchObject 막히는 중");
             return;
         }
         
@@ -480,17 +483,19 @@ public class CatchObject : MonoBehaviour
     public void ChangedState()
     {
         myRigid = GetComponent<Rigidbody>();
-        myRigid.mass = 1000f;
+        myRigid.mass = 10f;
         checkContact = true;
     }
-
     void CareeToContact(GameObject contactObj)
     {
         GameObject[] myChild = new GameObject[transform.childCount];
 
+        Debug.Log(contactObj.name);
+        Debug.Log(gameObject.name);
         // 내 자식만큼 오브젝트 캐싱
         for (int i = 0; i < myChild.Length; i++)
         {
+            Debug.Log(myChild.Length);
             myChild[i] = transform.GetChild(i).gameObject;
         }
 
@@ -501,6 +506,7 @@ public class CatchObject : MonoBehaviour
             {
                 myChild[i].transform.parent = contactObj.transform;
 
+                // Trigger Object Pass
                 if (myChild[i].GetComponent<MovedObject>() == null)
                 {
                     continue;
@@ -514,10 +520,14 @@ public class CatchObject : MonoBehaviour
 
         }
 
+        Debug.Log("아픔");
+        Debug.Break();
 
         // 컨트롤러에 담겨있는 Hash중 나 자신을 제거 후 오브젝트채로 파괴
         GunStateController.catchList.Remove(this);
-        Destroy(this.gameObject);
+        if (!gameObject.GetComponent<PaintTarget>())
+            Destroy(gameObject);
+            
     }
 
     public void CancelGrab()
