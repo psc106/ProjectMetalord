@@ -164,7 +164,7 @@ abstract public class GunBase : MonoBehaviour
             // Trigger 오브젝트 Collider 세팅
             SphereCollider objTrigger = triggerObj.AddComponent<SphereCollider>();
             objTrigger.isTrigger = true;
-            objTrigger.radius = 5f;
+            objTrigger.radius = 0.5f;
 
         }
 

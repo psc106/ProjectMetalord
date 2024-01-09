@@ -186,6 +186,7 @@ public class GrabGun : GunBase
         // 그랩 대상의 부모가 없다면
         if (targetObj.transform.parent == null)
         {            
+            // 떨어지고 있는 오브젝트라면
             if(targetObj.GetComponent<Rigidbody>() == null)
             {                
                 targetObj.GetComponent<MeshCollider>().convex = true;
@@ -194,7 +195,7 @@ public class GrabGun : GunBase
             }
             else
             {
-
+                // 조합된 오브젝트라면
                 if(targetObj.GetComponent<CatchObject>() != null)
                 {
                     targetObj.GetComponent<CatchObject>().SetUpMesh();

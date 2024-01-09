@@ -73,7 +73,7 @@ public class MovedObject : MonoBehaviour
                 }
 
                 // 충돌시간이 일정값 이하면 (공중에 있는 상태면)
-                if (contactTime <= 5f && !isSleep)
+                if (contactTime <= 3f && !isSleep)
                 {
                     // 임의의 중력가속도 적용
                     Vector3 tempVelocity = myRigid.velocity;
@@ -168,7 +168,7 @@ public class MovedObject : MonoBehaviour
 
     private void OnTriggerEnter(Collider collision)
     {
-        if (/*checkContact == false || */transform.parent != null || collision.gameObject.layer == LayerMask.NameToLayer("CatchObject"))
+        if (checkContact == false || transform.parent != null || collision.gameObject.layer == LayerMask.NameToLayer("CatchObject"))
         {            
             return;
         }        
@@ -723,7 +723,7 @@ public class MovedObject : MonoBehaviour
 
     // 강제 슬립?
     void SleepObj()
-    {                
+    {        
         checkContact = false;
         myRigid.velocity = Vector3.zero;
         Destroy(myRigid);        
@@ -804,7 +804,7 @@ public class MovedObject : MonoBehaviour
 
     void ClearTime()
     {        
-        isSleep = false;
+        isSleep = false;        
     }
 
 }

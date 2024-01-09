@@ -112,7 +112,7 @@ public class CatchObject : MonoBehaviour
     private void OnTriggerEnter(Collider collision)
     {
         // 이미 본드 동작을 하는 오브젝트를 다시 그랩하면 그랩하는순간 충돌면을 체크하여 그랩 해제됨에 따라 상태를 제어할 bool값 추가
-        if (checkContact == false || collision.gameObject.layer == LayerMask.NameToLayer("CatchObject"))
+        if(checkContact == false || collision.gameObject.layer == LayerMask.NameToLayer("CatchObject"))
         {            
             return;
         }        
