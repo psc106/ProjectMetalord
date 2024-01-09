@@ -1,8 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor;
-using UnityEditor.Animations.Rigging;
+
 using UnityEngine;
 
 public class GrabGun : GunBase
@@ -224,7 +220,7 @@ public class GrabGun : GunBase
         targetRigid = targetObj.GetComponent<Rigidbody>();
         state.pickupPoint.position = state.hit.point;
         state.cameraController.SetGrabObject(targetObj.transform);
-
+        state.grabCorrectPoint.position = targetRigid.position;
         //targetRigid = targetObj.GetComponent<Rigidbody>();
 
         // 픽업 포인트는 해당 오브젝트의 중심부
