@@ -133,9 +133,9 @@ public class GrabGun : GunBase
     {        
         if(targetRigid != null)
         {
-            //targetRigid.excludeLayers |= (1 << excludedLayer);
+            targetRigid.excludeLayers = 0;
             targetRigid.constraints = RigidbodyConstraints.None;
-            targetRigid.useGravity = true;            
+            targetRigid.useGravity = true;
             targetRigid.velocity = Vector3.down * 2f;
             targetRigid = null;            
 
@@ -166,6 +166,7 @@ public class GrabGun : GunBase
             {
                 collider.material.bounceCombine = PhysicMaterialCombine.Average;
                 collider.material.bounciness = 0.5f;
+                collider.layerOverridePriority = 0;
             }
         }
         colliders = null;
@@ -265,6 +266,7 @@ public class GrabGun : GunBase
             {
                 collider.material.bounceCombine = PhysicMaterialCombine.Minimum;
                 collider.material.bounciness = 0;
+                collider.layerOverridePriority = -1;
             }
 
         }
@@ -273,7 +275,7 @@ public class GrabGun : GunBase
         state.cameraController.SetGrabObject(targetObj.transform);
         state.grabCorrectPoint.position = targetRigid.position;
         
-        //targetRigid.excludeLayers &= ~(1 << excludedLayer);
+        targetRigid.excludeLayers &= ~(1 << excludedLayer);
         targetRigid.constraints = RigidbodyConstraints.FreezeRotation;
         targetRigid.useGravity = false;      
         //state.isShootingState = true;
