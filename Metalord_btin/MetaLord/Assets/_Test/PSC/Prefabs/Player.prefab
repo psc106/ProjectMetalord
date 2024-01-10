@@ -335,7 +335,7 @@ MonoBehaviour:
   maxAirJumps: 0
   maxGroundAngle: 45
   maxObjectAngle: 45
-  maxClimbAngle: 145
+  maxClimbAngle: 155
   checkFrameRate: 2
   startPoint: {fileID: 8282372781614362592}
   cameraPoint: {fileID: 0}
@@ -3659,7 +3659,7 @@ MonoBehaviour:
   cameraMinRange: 2
   playerMinRange: 2
   grabRange: 15
-  speed: 10
+  speed: 20
   reloadTime: 3.5
   AutoInitTime: 0.1
   fireRate: 0.1

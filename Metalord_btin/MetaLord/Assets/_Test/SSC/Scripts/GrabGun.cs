@@ -13,10 +13,12 @@ public class GrabGun : GunBase
         brush.splatChannel = 2;
         //ammo = -55;
         mode = GunMode.Grab;
+        excludedLayer = LayerMask.NameToLayer("Player");
     }
 
     public int GrabShot { get { return -ammo; } set { ammo = -value; } }
 
+    int excludedLayer;
     GameObject targetObj = null;
     Rigidbody targetRigid = null;      
     List<Collider> colliders;
@@ -129,7 +131,8 @@ public class GrabGun : GunBase
     public void CancelObj()
     {        
         if(targetRigid != null)
-        {            
+        {
+            //targetRigid.excludeLayers |= (1 << excludedLayer);
             targetRigid.constraints = RigidbodyConstraints.None;
             targetRigid.useGravity = true;            
             targetRigid.velocity = Vector3.down * 2f;
@@ -153,29 +156,29 @@ public class GrabGun : GunBase
             targetObj.GetComponent<CatchObject>().CancelGrab();
         }
 
+        //Debug.LogWarning(Physics.reuseCollisionCallbacks);
 
-        state.cameraController.ClearGrabObject();
-        targetObj = null;
-        state.grabLine.enabled = false;
-        state.onGrab = false;        
-    }
-
-    public void CancleGrab()
-    {
         state.cameraController.ClearGrabObject();
         foreach (var collider in colliders)
         {
             collider.material.bounceCombine = PhysicMaterialCombine.Average;
             collider.material.bounciness = 0.5f;
         }
-        colliders = null;   
+        colliders = null;
+        targetObj = null;
+        state.grabLine.enabled = false;
+        state.onGrab = false;        
+    }
+
+    /*public void CancleGrab()
+    {
         targetObj.GetComponent<Collider>().material.dynamicFriction = 1f;
         targetObj = null;
         state.grabLine.enabled = false;
         targetRigid = null;
         state.onGrab = false;
-        state.isShootingState = false;
-    }
+       // state.isShootingState = false;
+    }*/
 
     void FollowingObj( )
     {
@@ -229,10 +232,11 @@ public class GrabGun : GunBase
             }
 
         }
-        
 
-       // state.cameraController.SetGrabObject(targetObj.transform);
-        
+
+
+        // state.cameraController.SetGrabObject(targetObj.transform);
+
         targetRigid = targetObj.GetComponent<Rigidbody>();
         colliders = targetRigid.GetComponentsInChildren<Collider>().ToList();
 
@@ -246,9 +250,10 @@ public class GrabGun : GunBase
         state.cameraController.SetGrabObject(targetObj.transform);
         state.grabCorrectPoint.position = targetRigid.position;
         
+        //targetRigid.excludeLayers &= ~(1 << excludedLayer);
         targetRigid.constraints = RigidbodyConstraints.FreezeRotation;
         targetRigid.useGravity = false;      
-        state.isShootingState = true;
+        //state.isShootingState = true;
 
         if (state.Ammo >= -ammo)
         {
