@@ -5,14 +5,20 @@ using UnityEngine;
 public class VideoPlayTest : MonoBehaviour
 {
     [SerializeField] private GameObject videoPlayer;
-    [SerializeField] private AudioSource BGMSource;
-    [SerializeField] private AudioSource SFXSource;
+    private AudioSource BGMSource;
+    private AudioSource SFXSource;
 
     float save_BGMVolume;
     float save_SFXVolume;
 
     public void Start()
     {
+        if (SoundManager.instance != null)
+        {
+            BGMSource = SoundManager.instance.transform.GetChild(0).GetComponent<AudioSource>();
+            SFXSource = SoundManager.instance.transform.GetChild(1).GetComponent<AudioSource>();
+        }
+
         save_BGMVolume = BGMSource.volume;
         save_SFXVolume = SFXSource.volume;
         BGMSource.volume = 0.3f;
