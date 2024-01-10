@@ -27,10 +27,6 @@ public class StorySceneManager : MonoBehaviour
     [SerializeField, Range(0, 1)]
     float sfxVolume;
 
-    [SerializeField]
-    GameSceneController.SceneList currentScene;
-    [SerializeField]
-    GameSceneController.SceneList nextScene;
 
     private void Start()
     {
@@ -55,7 +51,7 @@ public class StorySceneManager : MonoBehaviour
         sfxAudio.volume = StartInfo.instance.info_MasterSlider * sfxVolume;
     }
 
-    private void Update()
+    /*private void Update()
     {
         if (Input.anyKey && canSkip)
         {
@@ -63,7 +59,7 @@ public class StorySceneManager : MonoBehaviour
             StopAllCoroutines();
             LoadNextScene();
         }
-    }
+    }*/
 
     IEnumerator PlayStoryRoutine()
     {
