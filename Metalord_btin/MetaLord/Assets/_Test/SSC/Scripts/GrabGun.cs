@@ -122,7 +122,8 @@ public class GrabGun : GunBase
             else
             {
                 targetRigid.velocity = Vector3.zero;
-                targetRigid.position = state.grabCorrectPoint.position;
+                targetRigid.AddForce(dir.normalized);
+                //targetRigid.position = state.grabCorrectPoint.position;
             }
         }
     }
@@ -159,10 +160,13 @@ public class GrabGun : GunBase
         //Debug.LogWarning(Physics.reuseCollisionCallbacks);
 
         state.cameraController.ClearGrabObject();
-        foreach (var collider in colliders)
+        if(colliders !=null && colliders.Count > 0)
         {
-            collider.material.bounceCombine = PhysicMaterialCombine.Average;
-            collider.material.bounciness = 0.5f;
+            foreach (var collider in colliders)
+            {
+                collider.material.bounceCombine = PhysicMaterialCombine.Average;
+                collider.material.bounciness = 0.5f;
+            }
         }
         colliders = null;
         targetObj = null;
@@ -254,11 +258,15 @@ public class GrabGun : GunBase
         targetRigid = targetObj.GetComponent<Rigidbody>();
         colliders = targetRigid.GetComponentsInChildren<Collider>().ToList();
 
-    
-        foreach(var collider in colliders)
+
+        if (colliders != null && colliders.Count > 0)
         {
-            collider.material.bounceCombine = PhysicMaterialCombine.Minimum;
-            collider.material.bounciness = 0;
+            foreach (var collider in colliders)
+            {
+                collider.material.bounceCombine = PhysicMaterialCombine.Minimum;
+                collider.material.bounciness = 0;
+            }
+
         }
 
         state.pickupPoint.position = state.hit.point;
