@@ -110,8 +110,7 @@ public class RebindKeyUI : MonoBehaviour
         wait_Text.SetActive(true);
 
         int bindingIndex = (int)bindingKeyword;
-        
-        Debug.Log("입력 들어옴");
+               
         RebindOperation = gameInputAction.PerformInteractiveRebinding() // 제어할 액션을 유저 상호작용형으로 리바인딩
                     .WithTargetBinding(bindingIndex) // 바인딩 인덱스 적용
                     .WithCancelingThrough("<Keyboard>/escape") // esc 누르면 취소
@@ -128,12 +127,9 @@ public class RebindKeyUI : MonoBehaviour
 
                         string keyToBind = gameInputAction.GetBindingDisplayString((int)bindingKeyword);
                         
-                        // 키 중복 체크
+                        // 중복 키 바인딩 체크
                         if (IsKeyAlreadyBound(keyToBind))
-                        {
-                            // 중복된 키가 있을 경우 처리
-                            Debug.Log("중복된 키입니다. 다른 키를 선택해주세요.");
-
+                        {                            
                             input_Text.SetActive(false);
                             wait_Text.SetActive(false);                   
 
@@ -196,9 +192,7 @@ public class RebindKeyUI : MonoBehaviour
         {
             for (int i = 0; i < inputAction.bindings.Count; i++) // 액션 하위에 바인드된 키값이 여러개라면 전부 체크
             {
-                if (i == bindingIndex && inputAction == gameInputAction) continue; // 현재 내 bindingIndex와 같으면 Continue, 내 값을 바로 체크하게되면 중복으로 체크되기 때문
-
-                Debug.Log(inputAction.GetBindingDisplayString(i).ToString());
+                if (i == bindingIndex && inputAction == gameInputAction) continue; // 현재 내 bindingIndex와 같으면 Continue, 내 값을 바로 체크하게되면 중복으로 체크되기 때문                
 
                 if (keyToBind == inputAction.GetBindingDisplayString(i))
                 {

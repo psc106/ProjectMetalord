@@ -24,8 +24,7 @@ public class RecordObject : MonoBehaviour,IPointerDownHandler
 
 
     private void Start()
-    {
-        //ReflectInfo(); // 초기화
+    {        
         transform.GetChild(0).GetComponent<Image>().sprite = Resources.Load<Sprite>("Object/" + recordInfo.id_Description);
         transform.GetChild(2).gameObject.SetActive(false);
 

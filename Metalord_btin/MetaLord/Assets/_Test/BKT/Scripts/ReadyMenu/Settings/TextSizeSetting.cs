@@ -20,9 +20,7 @@ public class TextSizeSetting : MonoBehaviour
     [SerializeField] private TMP_Text largeText;
 
     TMP_Text[] originTexts; // 크기를 기억할 원본
-    List<float> fontSizes;    
-    //TMP_Text[] copyTexts; // 크기를 기억할 원본
-
+    List<float> fontSizes;        
 
     private void Awake()
     {
@@ -36,7 +34,7 @@ public class TextSizeSetting : MonoBehaviour
         {            
             fontSizes.Add(originTexts[i].fontSize);            
         }
-        //TODO 타이틀씬 로드시 재작성
+        
         if (PlayerPrefs.HasKey("TextSizeSetting"))
         {
             LoadData();
@@ -48,8 +46,7 @@ public class TextSizeSetting : MonoBehaviour
     }
 
     private void OnDisable()
-    {
-        //TODO 타이틀씬 로드시 재작성
+    {        
         SaveData();
     }
 

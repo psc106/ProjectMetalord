@@ -13,8 +13,6 @@ public class ResetKeyBindings : MonoBehaviour
     {
         foreach (InputActionMap map in inputReader.inputActions.asset.actionMaps)
         {
-            Debug.Log(map);
-            Debug.Log("입력들어옴");
             map.RemoveAllBindingOverrides();
         }
         GameEventsManager.instance.resetEvents.ResetAllBindings();
