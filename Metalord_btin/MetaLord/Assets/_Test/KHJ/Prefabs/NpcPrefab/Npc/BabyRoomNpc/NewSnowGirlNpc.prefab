@@ -244,8 +244,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb5c3a6d9dca6f34e87c96a478dcd13c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fadeImage: {fileID: 4439055800715924834}
-  idleImage: {fileID: 4442738410848631480}
+  player: {fileID: 0}
   isShowInteractUI: 0
 --- !u!1 &6650416376381216897
 GameObject:
@@ -262,7 +261,7 @@ GameObject:
   - component: {fileID: 1384264001788597019}
   - component: {fileID: 3391986114836087039}
   - component: {fileID: 6733738884189191144}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: NewSnowGirlNpc
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -97272,6 +97271,7 @@ MonoBehaviour:
   PaintAllSplats: 0
   debugTexture: 0
   splatTexPick: {fileID: 0}
+  ReadPixel: {fileID: 0}
   originTex: {fileID: 0}
 --- !u!114 &6733738884189191144
 MonoBehaviour:

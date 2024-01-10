@@ -11,6 +11,8 @@ public class MainSceneManager : MonoBehaviour
 {
     static public MainSceneManager instance;
 
+    [SerializeField] private GameObject endingCanvas;
+
     private void Awake()
     {
         if (instance == null)
@@ -58,6 +60,8 @@ public class MainSceneManager : MonoBehaviour
     {
         yield return new WaitForSeconds(2f);
         //TODO 게임 엔딩크래딧 실행하는 함수
+        endingCanvas.SetActive(true);
+
     }
 
     
