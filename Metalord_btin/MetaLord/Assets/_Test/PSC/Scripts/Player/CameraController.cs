@@ -76,6 +76,12 @@ public class CameraController : MonoBehaviour
         input.DisableMouseControlCamera -= OnDisableMouseControlCamera;
 
     }
+    private void Start()
+    {
+
+        newRotationY = cameraTarget.eulerAngles.y;
+        newRotationX = cameraTarget.eulerAngles.x;
+    }
 
     private void Update()
     {
