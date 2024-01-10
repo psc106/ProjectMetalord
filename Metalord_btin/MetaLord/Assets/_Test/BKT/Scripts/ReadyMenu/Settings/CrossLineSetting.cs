@@ -21,8 +21,7 @@ public class CrossLineSetting : MonoBehaviour
     private ButtonSize selectedButton;
 
     private void Start()
-    {
-        //TODO 타이틀씬 로드시 재작성
+    {        
         if (PlayerPrefs.HasKey("CrossLineSetting"))
         {
             LoadData();
@@ -34,8 +33,7 @@ public class CrossLineSetting : MonoBehaviour
     }
 
     private void OnDisable()
-    {
-        //TODO 타이틀씬 로드시 재작성
+    {        
         SaveData();
     }
 

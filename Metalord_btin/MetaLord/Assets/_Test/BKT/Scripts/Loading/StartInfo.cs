@@ -11,6 +11,7 @@ public class StartInfo : MonoBehaviour
 
     public bool isLoaded;
 
+    // PlayerPref 정보를 가져올 변수
     public int info_ScreenMode;
     public int info_ResolutionIndex;
     public float info_Brightness;
@@ -39,6 +40,7 @@ public class StartInfo : MonoBehaviour
         SetPersonalSetting();
     }
 
+    // 개인 설정 셋팅
     public void SetPersonalSetting()
     {
         if (PlayerPrefs.HasKey("DisplaySetting"))
@@ -67,6 +69,7 @@ public class StartInfo : MonoBehaviour
         info_SFXToggle = PlayerPrefs.GetInt("SFXToggle");
     }
 
+    // 개인 설정 초기화
     private void InitPersonalSetting()
     {
         Screen.fullScreen = true;

@@ -62,16 +62,16 @@ public class BrightnessSetting : MonoBehaviour
         
         percentText.text = ((int)(_value * 100)).ToString() + "%";
 
-        brightnessValue = _value;
-        //Debug.Log(_value);
+        brightnessValue = _value;        
     }
 
-
+    // Image 갖고있는 모든 오브젝트 탐색
     private void Get2DImages()
     {
         images = Resources.FindObjectsOfTypeAll<Image>();
     }
 
+    // Text 전체 탐색
     private void GetTexts()
     {
         texts = Resources.FindObjectsOfTypeAll<TMP_Text>();
@@ -102,8 +102,7 @@ public class BrightnessSetting : MonoBehaviour
 
     // 데이터 저장
     private void SaveData()
-    {
-        //Debug.Log("밝기 저장완료 " + brightnessValue);
+    {        
         PlayerPrefs.SetFloat("BrightnessSetting", brightnessValue);        
     }
 
@@ -116,6 +115,7 @@ public class BrightnessSetting : MonoBehaviour
         brightnessSlider.value = brightnessValue;
     }
 
+    // 초기화
     public void Init()
     {
         brightnessValue = 1f;
