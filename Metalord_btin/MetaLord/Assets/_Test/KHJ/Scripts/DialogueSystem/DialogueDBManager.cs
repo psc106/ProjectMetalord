@@ -12,7 +12,7 @@ public class DialogueDBManager : MonoBehaviour
     //12.12 HJ 추가
     [SerializeField] private TextAsset dialogueStatusCsv;
 
-    public Dictionary<int, Dialogue> dialogueDic = new Dictionary<int, Dialogue>();
+    //public Dictionary<int, Dialogue> dialogueDic = new Dictionary<int, Dialogue>();
     public Dictionary<int, DialogueQuestion> questionDic = new Dictionary<int, DialogueQuestion>();
     public List<string> dialogueQuestions = new List<string>();
 

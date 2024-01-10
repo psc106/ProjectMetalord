@@ -25,11 +25,9 @@ public class PlayerInteractNpc : MonoBehaviour
     {
         if(other.gameObject.layer == LayerMask.NameToLayer("InteractZone"))
         {
-           // Debug.Log("찍히나?");
             playerInteract = other.transform.parent.GetComponent<IInteractNpc>();
                 //other.GetComponent<IInteractNpc>();
             isInteract = true;
-           // Debug.Log(playerInteract);
         }
     }
 
@@ -38,7 +36,6 @@ public class PlayerInteractNpc : MonoBehaviour
        
         if (other.gameObject.layer == LayerMask.NameToLayer("InteractZone"))
         {
-           // Debug.Log("나오나?");
             playerInteract = null;
             isInteract = false;
         }
@@ -50,11 +47,8 @@ public class PlayerInteractNpc : MonoBehaviour
             reader.CancelInteract();
             isTalking = true;
             isInteract = false;
-            Debug.Log("플레이어 E 키누르기 ");
-
             playerInteract.InteractNpc();
             Controller_Physics.SwitchCameraLock(true); //플레이어 움직임 및 카메라 정지
-            //test.SetActive(false);
         }
     }
 }

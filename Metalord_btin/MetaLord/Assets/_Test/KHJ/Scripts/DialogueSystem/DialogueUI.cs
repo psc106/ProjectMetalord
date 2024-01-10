@@ -52,83 +52,10 @@ public class DialogueUI : MonoBehaviour
         myAduio.clip = textSound;
         myTextEffect = GetComponent<DialogueTypingEffect>();
 
-        //string text = "안녕하세요(1) 테스트를(2) 위해서(3) 합니다.(4)";
-        //StartCoroutine(myTextEffect.WriteTest(text ,dialogueText));
         //대화 관련 ui 다 비활성화 시켜줍니다.
         CloseDialogueUI(); 
         CloseTutoQuestion();
-        //ChangeFontSize(6); //테스트 위한 사이즈 변경 메서드 삭제 예정
     }
-
-    #region TODO 삭제예정
-    //public void ShowTutoDialogue(int keyNum)
-    //{
-    //    OpenDialogueUI();
-    //    isResponse = true;
-    //    StartCoroutine(StepThroughDialogue(keyNum));
-    //}
-
-    //public void ShowDialogue(int keyNum)
-    //{
-    //    OpenDialogueUI();
-    //    StartCoroutine(StepThroughDialogue(keyNum));
-    //}
-
-    //private IEnumerator StepThroughDialogue(int keyNum)
-    //{
-    //    if (keyNum == 0)
-    //    {
-    //        yield break;
-    //    }
-    //    while (true)
-    //    {
-    //        string id = DialogueDBManager.instance.dialogueDic[keyNum].dialogueID;
-    //        string nextId = DialogueDBManager.instance.dialogueDic[keyNum].nextTextNum;
-    //        string[] contexteArray = DialogueDBManager.instance.dialogueDic[keyNum].contextes;
-
-    //        for (int i = 0; i < contexteArray.Length; i++)
-    //        {
-    //            string dialogue = DialogueDBManager.instance.dialogueDic[keyNum].contextes[i];
-    //            dialogueBox.transform.GetChild(1).gameObject.transform.GetChild(0).gameObject.GetComponent<TMP_Text>().text =
-    //                DialogueDBManager.instance.dialogueDic[keyNum].speakerName.Trim();
-    //            //yield return myTextEffect.Run(dialogue, dialogueText);
-    //            yield return RunTypingEffect(dialogue);
-
-    //            dialogueText.text = dialogue;
-
-    //            yield return null;
-    //            yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.E));
-    //        }
-
-    //        if(isResponse)
-    //        {
-    //            //TODO 추가적인 넣고싶은 기능 넣으면 될 듯
-    //            OpenTutoQuestion();
-    //        }
-
-    //        if (nextId != "")
-    //        {
-    //            keyNum = int.Parse(nextId);
-    //        }
-    //        else if (nextId == "")
-    //        {
-    //            // TODO 대화창 닫고 플레이어 이동제한 해제
-    //            Debug.Log("여기온거면 끝난거임");
-    //            yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.E));
-    //            if (isResponse == false)
-    //            {
-    //                CloseDialogueUI();
-    //                //플레이어 움직임 다시 제어 // TODO 캐릭터 움직임 제어
-    //                //testPlayer.isMove = true;
-    //            }
-    //            break;
-    //        }
-
-    //        Debug.Log("이건 마지막 eKey 위에 디버그");
-    //    }
-    //    yield break;
-    //}
-    #endregion
 
     //대화 출력중 플레이어가 키를 한 번 더 누르면 완전한 문장이 나오게끔 제어 하는 메서드
     private IEnumerator RunTypingEffect(string dialouge, int voice) 
@@ -317,39 +244,4 @@ public class DialogueUI : MonoBehaviour
             ShowStateTutorialDialogue(1); // 토끼 첫번째 대사 
         }
     }
-
-    //폰트 사이즈 변경
-    public void ChangeFontSize(float fontSize)
-    {
-        float changeSize = fontSize;
-        if(fontSize <= minFontSize)
-        {
-            Debug.Log("만약 폰트 사이즈가 최소 사이즈 보다 작다면");
-            changeSize = minFontSize;
-            Debug.LogFormat("{0}<< 변경 전 폰트 사이즈", dialogueText.fontSize);
-            dialogueText.fontSize = changeSize;
-            Debug.LogFormat("{0}<< 변경 후 폰트 사이즈", dialogueText.fontSize);
-        }
-        else if( fontSize >= maxFontSize)
-        {
-            Debug.Log("만약 폰트 사이즈가 max 사이즈 보다 크다면");
-            changeSize = maxFontSize;
-            Debug.LogFormat("{0}<< 변경 전 폰트 사이즈", dialogueText.fontSize);
-            dialogueText.fontSize = changeSize;
-            Debug.LogFormat("{0}<< 변경 후 폰트 사이즈", dialogueText.fontSize);
-        }
-        else
-        {
-            Debug.Log("그 외 사이즈");
-            changeSize = fontSize;
-            Debug.LogFormat("{0}<< 변경 전 폰트 사이즈", dialogueText.fontSize);
-            dialogueText.fontSize = changeSize;
-            Debug.LogFormat("{0}<< 변경 후 폰트 사이즈", dialogueText.fontSize);
-        }
-    }
-
-    //public void ChangeMinOrMaxSize()
-    //{
-
-    //}
 }
