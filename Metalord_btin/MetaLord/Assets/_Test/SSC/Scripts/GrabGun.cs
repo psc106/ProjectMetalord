@@ -109,8 +109,15 @@ public class GrabGun : GunBase
             state.grabLine.SetPosition(0, state.GunHolderHand.position);
             state.grabLine.SetPosition(1, state.pickupPoint.position);
 
-            
-            if (dir.magnitude > .5f)
+           /* Debug.Log(dir.magnitude);
+            if(targetRigid.CompareTag("ContactObject") )
+            {
+                RaycastHit hit;
+                Physics.Raycast(targetRigid.position, dir, out hit, 100, myLayer);
+                targetRigid.AddForce(dir + hit.normal *.5f);
+            }          
+            else*/ 
+            if (dir.magnitude > .5f && dir.magnitude <50)
             {
                 targetRigid.velocity = Vector3.zero;
                 targetRigid.AddForce(dir * state.speed, ForceMode.VelocityChange);
@@ -119,11 +126,15 @@ public class GrabGun : GunBase
                 //targetRigid.velocity += state.pickupPoint.forward * distance;
                 //targetRigid.velocity =  up* -dir.y * 3 + right* dir.x * 3 + state.pickupPoint.forward * dir.z * 3;
             }
-            else
+            else if(dir.magnitude <= .5f)
             {
                 targetRigid.velocity = Vector3.zero;
                 targetRigid.AddForce(dir.normalized);
                 //targetRigid.position = state.grabCorrectPoint.position;
+            }
+            else 
+            {
+                CancelObj();
             }
         }
     }

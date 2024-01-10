@@ -31,15 +31,17 @@ public class MovedObject : MonoBehaviour
     float maxGravity = 30f;
     int checkCount = 0;
     bool isSleep = false;
-    bool checkContact = false;    
+    bool checkContact = false;
+    bool isConstact = false;
+
+    string contactTag = "ContactObject";
+    string unContactTag = "Untagged";
 
     Coroutine sleepCoroutine;
 
     static int test = 0;
     private void Awake()
     {        
-        state = FindAnyObjectByType<GunStateController>();
-
         checkContact = false;
         myColid = GetComponent<MeshCollider>();
 
@@ -57,12 +59,17 @@ public class MovedObject : MonoBehaviour
         originRot = transform.rotation;
     }
 
+    //private void FixedUpdate()
+    //{        
+    //    if (checkContact)
+    //    {            
+    //        gameObject.tag = unContactTag;            
+    //    }
+    //}
+
     void Update()
     {
-        // { TODO : 개인 리팩토링
-        #region CustomFallingObject
-        if (state.usedGravity)
-        {
+
             // 내 리지드바디가 존재하고, 그랩한 대상이 아닐 때 (그랩한 대상은 낙하속도 X)
             if (myRigid && !checkContact)
             {                
@@ -88,23 +95,27 @@ public class MovedObject : MonoBehaviour
                     myRigid.velocity = tempVelocity;
                 }
             }
+        // { TODO : 개인 리팩토링
+        #region CustomFallingObject
+        //if (state.usedGravity)
+        //{
 
-        }
-        // } TODO : 개인 리팩토링
-        else
-        {
-            // 슬립
-            if (myRigid)
-            {
-                if (myRigid.IsSleeping())
-                {
-                    Destroy(myRigid);
-                    myColid.convex = false;
-                    checkContact = false;
-                }
-            }
+        //}
+        //// } TODO : 개인 리팩토링
+        //else
+        //{
+        //    // 슬립
+        //    if (myRigid)
+        //    {
+        //        if (myRigid.IsSleeping())
+        //        {
+        //            Destroy(myRigid);
+        //            myColid.convex = false;
+        //            checkContact = false;
+        //        }
+        //    }
 
-        }
+        //}
 
         #endregion
 
@@ -341,6 +352,11 @@ public class MovedObject : MonoBehaviour
     //// 그랩한 물건이 이동형 오브젝트와 부딪힐때마다 물리력 행사 콜백
     private void OnCollisionEnter(Collision collision)
     {
+        if(checkContact)
+        {
+            gameObject.tag = contactTag;            
+        }
+
         // 충돌한 오브젝트가 이동형 오브젝트라면
         if (collision.gameObject.layer == LayerMask.NameToLayer("MovedObject"))
         {
@@ -483,6 +499,11 @@ public class MovedObject : MonoBehaviour
         if (checkContact == false || collision.gameObject.layer == LayerMask.NameToLayer("CatchObject"))
         {
             return;
+        }
+
+        if (checkContact)
+        {
+            gameObject.tag = contactTag;            
         }
 
         // 충돌이 일어나는 지점을 모두 체크
