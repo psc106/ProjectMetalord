@@ -55,6 +55,8 @@ public class RecordItem : MonoBehaviour
 
             GameEventsManager.instance.recordEvents.GetRecordItem((int)recordItem);
 
+            RecordManager.endGameCount++; // 게임 엔딩을 위해 게임종료 카운트 ++
+
             // 사운드 추가
             int id = (int)ItemSoundList.GetRecordItemSound;
             SoundManager.instance.PlaySound(GroupList.Item, id);

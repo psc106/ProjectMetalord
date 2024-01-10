@@ -47,4 +47,18 @@ public class MainSceneManager : MonoBehaviour
             coinObjects[i].id = i;
         }
     }
+
+    // 게임 끝나는 시점에 호출하는 함수
+    public void EndGame()
+    {
+        StartCoroutine(EndingCredit());
+    }
+
+    IEnumerator EndingCredit()
+    {
+        yield return new WaitForSeconds(2f);
+        //TODO 게임 엔딩크래딧 실행하는 함수
+    }
+
+    
 }
