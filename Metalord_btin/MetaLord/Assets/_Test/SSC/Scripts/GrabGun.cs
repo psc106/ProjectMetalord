@@ -22,6 +22,7 @@ public class GrabGun : GunBase
     GameObject targetObj = null;
     Rigidbody targetRigid = null;      
     List<Collider> colliders;
+    string grabCancelText = "그랩취소";
 
     public override bool ShootGun()
     {
@@ -137,6 +138,7 @@ public class GrabGun : GunBase
             }
             else 
             {
+                state.CancelGrabText(grabCancelText);
                 CancelObj();
             }
         }

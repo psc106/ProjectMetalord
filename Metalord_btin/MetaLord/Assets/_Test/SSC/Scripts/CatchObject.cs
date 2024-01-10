@@ -505,8 +505,6 @@ public class CatchObject : MonoBehaviour
     {
         GameObject[] myChild = new GameObject[transform.childCount];
 
-        Debug.Log(contactObj.name);
-        Debug.Log(gameObject.name);
         // 내 자식만큼 오브젝트 캐싱
         for (int i = 0; i < myChild.Length; i++)
         {
@@ -535,9 +533,6 @@ public class CatchObject : MonoBehaviour
 
         }
 
-        Debug.Log("아픔");
-        Debug.Break();
-
         // 컨트롤러에 담겨있는 Hash중 나 자신을 제거 후 오브젝트채로 파괴
         GunStateController.catchList.Remove(this);
         if (!gameObject.GetComponent<PaintTarget>())
@@ -565,6 +560,7 @@ public class CatchObject : MonoBehaviour
         isSleep = false;
         contactTime = 0f;
         ySpeed = 0f;
+        gameObject.tag = unContactTag;
 
         Invoke("ClearTime", 1.5f);
     }
