@@ -68,15 +68,17 @@ public class MovedObject : MonoBehaviour
     {
             // 내 리지드바디가 존재하고, 그랩한 대상이 아닐 때 (그랩한 대상은 낙하속도 X)
             if (myRigid && !checkContact)
-            {                
-                if (myRigid.velocity.magnitude <= 0.6f && !isSleep)
-                {
+            {
+                
+
+                if( myRigid.velocity.magnitude <= 0.5f && !isSleep)//(contactTime >= 3)
+            {
                     SleepObj();
                     return;
                 }
 
                 // 충돌시간이 일정값 이하면 (공중에 있는 상태면)
-                if (contactTime <= 3f && !isSleep)
+                if (contactTime < 3f && !isSleep)
                 {
                     // 임의의 중력가속도 적용
                     Vector3 tempVelocity = myRigid.velocity;
@@ -174,16 +176,17 @@ public class MovedObject : MonoBehaviour
 
     private void OnTriggerEnter(Collider collision)
     {
-        if (checkContact == false || transform.parent != null || collision.gameObject.layer == LayerMask.NameToLayer("CatchObject"))
+        if (checkContact == false || transform.parent != null || collision.gameObject.layer == LayerMask.NameToLayer("CatchObject") || collision.gameObject.layer == LayerMask.NameToLayer("Wall"))
         {            
             return;
         }        
 
-        GameObject parentObj = null;
+        GameObject parentObj = null;            
 
         // 충돌한 오브젝트의 부모가 없을경우
         if (collision.transform.parent == null)
         {
+
             // 상위 오브젝트 생성
             parentObj = new GameObject("test"+test);
             parentObj.transform.gameObject.layer = LayerMask.NameToLayer("GrabedObject");
@@ -765,13 +768,15 @@ public class MovedObject : MonoBehaviour
 
     // 강제 슬립?
     void SleepObj()
-    {        
+    {
+        if (isSleep) return;
+
         checkContact = false;
         myRigid.velocity = Vector3.zero;
         Destroy(myRigid);        
         myColid.convex = false;
         isSleep = true;
-        contactTime = 0f;
+        //contactTime = 0f;
         ySpeed = 0f;
         gameObject.tag = unContactTag;
 
@@ -847,7 +852,8 @@ public class MovedObject : MonoBehaviour
 
     void ClearTime()
     {        
-        isSleep = false;        
+        isSleep = false;
+        contactTime = 0;
     }
 
 }

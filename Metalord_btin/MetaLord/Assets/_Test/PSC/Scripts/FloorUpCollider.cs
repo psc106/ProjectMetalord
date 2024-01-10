@@ -14,10 +14,26 @@ public class FloorUpCollider : MonoBehaviour
 
         if (rb)
         {
-            other.excludeLayers = layerMask;
+            
+            rb.velocity = Vector3.zero;
+            Vector2 random = Random.insideUnitCircle.normalized;
+            rb.AddForce(Vector3.up* 20, ForceMode.VelocityChange);
+            rb.AddForce(new Vector3(random.x, 0, random.y) , ForceMode.VelocityChange);
+            StartCoroutine(ResetLayerRoutine(other));
+        }
+    }
+    private void OnTriggerStay(Collider other)
+    {
+
+        Rigidbody rb = other.GetComponent<Rigidbody>();
+
+        if (rb)
+        {
 
             rb.velocity = Vector3.zero;
-            rb.AddForce(Vector3.up* 20, ForceMode.VelocityChange);
+            Vector2 random = Random.insideUnitCircle.normalized;
+            rb.AddForce(Vector3.up * 20, ForceMode.VelocityChange);
+            rb.AddForce(new Vector3(random.x, 0, random.y), ForceMode.VelocityChange);
             StartCoroutine(ResetLayerRoutine(other));
         }
     }
