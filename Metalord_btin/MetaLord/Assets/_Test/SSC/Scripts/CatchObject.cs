@@ -20,6 +20,9 @@ public class CatchObject : MonoBehaviour
     bool isSleep = false;    
     bool checkContact;
 
+    string contactTag = "ContactObject";
+    string unContactTag = "Untagged";
+
     private void Awake()
     {
         checkContact = false;        
@@ -29,12 +32,6 @@ public class CatchObject : MonoBehaviour
         1 << LayerMask.NameToLayer("MovedObject") |
         1 << LayerMask.NameToLayer("GrabedObject");
     }
-
-    private void Start()
-    {
-        state = FindAnyObjectByType<GunStateController>();
-    }
-
 
     // 충돌이 일어난 이동형 오브젝트 MeshCollider 갱신
     public void AddChild(MeshCollider _child)
@@ -55,8 +52,6 @@ public class CatchObject : MonoBehaviour
         // { TODO : 개인 리팩토링
         #region CustomFallingObject
 
-        if(state.usedGravity)
-        {
             //// 내 리지드바디가 존재하고, 그랩한 대상이 아닐 때
             if (myRigid && !checkContact)
             {
@@ -82,32 +77,42 @@ public class CatchObject : MonoBehaviour
                     myRigid.velocity = tempVelocity;
                 }
             }
+        //if(state.usedGravity)
+        //{
 
-        }
-        else
-        {
-            // 그랩한 대상의 슬립 기준
-            if (myRigid)
-            {
-                if (myRigid.IsSleeping())
-                {
-                    Destroy(myRigid);
+        //}
+        //else
+        //{
+        //    // 그랩한 대상의 슬립 기준
+        //    if (myRigid)
+        //    {
+        //        if (myRigid.IsSleeping())
+        //        {
+        //            Destroy(myRigid);
 
-                    foreach (MeshCollider col in childColid)
-                    {
-                        col.convex = false;
-                    }
+        //            foreach (MeshCollider col in childColid)
+        //            {
+        //                col.convex = false;
+        //            }
 
-                    checkContact = false;
-                }
-            }
+        //            checkContact = false;
+        //        }
+        //    }
 
-        }
+        //}
 
         #endregion
         // } TODO : 개인 리팩토링
 
     }
+
+    //private void FixedUpdate()
+    //{
+    //    if (checkContact)
+    //    {
+    //        gameObject.tag = unContactTag;
+    //    }
+    //}
 
     private void OnTriggerEnter(Collider collision)
     {
@@ -257,6 +262,11 @@ public class CatchObject : MonoBehaviour
         //    return;
         //}
 
+        if (checkContact)
+        {
+            gameObject.tag = contactTag;
+        }
+
         if (collision.transform.parent?.GetComponent<CatchObject>() != null)
         {
             return;
@@ -369,7 +379,12 @@ public class CatchObject : MonoBehaviour
             //Debug.Log("CatchObject 막히는 중");
             return;
         }
-        
+
+        if (checkContact)
+        {
+            gameObject.tag = contactTag;
+        }
+
         // 충돌이 일어나는 지점을 모두 체크
         for (int i = 0; i < collision.contactCount; i++)
         {
