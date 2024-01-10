@@ -349,8 +349,9 @@ public class MovedObject : MonoBehaviour
     //// 그랩한 물건이 이동형 오브젝트와 부딪힐때마다 물리력 행사 콜백
     private void OnCollisionEnter(Collision collision)
     {
-        if(checkContact)
+        if (checkContact)
         {
+        
             gameObject.tag = contactTag;            
         }
 

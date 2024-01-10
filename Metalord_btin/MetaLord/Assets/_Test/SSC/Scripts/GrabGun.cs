@@ -119,8 +119,11 @@ public class GrabGun : GunBase
             else*/ 
             if (dir.magnitude > .5f && dir.magnitude <50)
             {
+                Vector3 power = dir * state.speed;
+                if (power.magnitude > 100)
+                    power = power.normalized * 100;
                 targetRigid.velocity = Vector3.zero;
-                targetRigid.AddForce(dir * state.speed, ForceMode.VelocityChange);
+                targetRigid.AddForce(power, ForceMode.VelocityChange);
                 //targetRigid.velocity = dir.normalized * scala;
                 //targetRigid.rotation = state.grabCorrectPoint.rotation;
                 //targetRigid.velocity += state.pickupPoint.forward * distance;
