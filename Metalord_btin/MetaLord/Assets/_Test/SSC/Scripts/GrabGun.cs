@@ -13,10 +13,12 @@ public class GrabGun : GunBase
         brush.splatChannel = 2;
         //ammo = -55;
         mode = GunMode.Grab;
+        excludedLayer = LayerMask.NameToLayer("Player");
     }
 
     public int GrabShot { get { return -ammo; } set { ammo = -value; } }
 
+    int excludedLayer;
     GameObject targetObj = null;
     Rigidbody targetRigid = null;      
     List<Collider> colliders;
@@ -99,8 +101,6 @@ public class GrabGun : GunBase
             //Vector3 pickup = state.pickupPoint.position - state.pickupPoint.position.y * Vector3.up;
 
             state.cameraController.RotateSomethingAtCameraCenter(state.grabCorrectPoint);
-            //Debug.Log(state.grabCorrectPoint.position);
-            //Debug.Log(targetRigid.position);
 
             Vector3 dir = state.grabCorrectPoint.position -  targetRigid.position;
             float scala = dir.magnitude;
@@ -112,7 +112,9 @@ public class GrabGun : GunBase
             
             if (dir.magnitude > .5f)
             {
-                targetRigid.velocity = dir.normalized * scala;
+                targetRigid.velocity = Vector3.zero;
+                targetRigid.AddForce(dir * state.speed, ForceMode.VelocityChange);
+                //targetRigid.velocity = dir.normalized * scala;
                 //targetRigid.rotation = state.grabCorrectPoint.rotation;
                 //targetRigid.velocity += state.pickupPoint.forward * distance;
                 //targetRigid.velocity =  up* -dir.y * 3 + right* dir.x * 3 + state.pickupPoint.forward * dir.z * 3;
@@ -120,7 +122,8 @@ public class GrabGun : GunBase
             else
             {
                 targetRigid.velocity = Vector3.zero;
-                targetRigid.position = state.grabCorrectPoint.position;
+                targetRigid.AddForce(dir.normalized);
+                //targetRigid.position = state.grabCorrectPoint.position;
             }
         }
     }
@@ -129,7 +132,8 @@ public class GrabGun : GunBase
     public void CancelObj()
     {        
         if(targetRigid != null)
-        {            
+        {
+            //targetRigid.excludeLayers |= (1 << excludedLayer);
             targetRigid.constraints = RigidbodyConstraints.None;
             targetRigid.useGravity = true;            
             targetRigid.velocity = Vector3.down * 2f;
@@ -153,29 +157,32 @@ public class GrabGun : GunBase
             targetObj.GetComponent<CatchObject>().CancelGrab();
         }
 
+        //Debug.LogWarning(Physics.reuseCollisionCallbacks);
 
         state.cameraController.ClearGrabObject();
+        if(colliders !=null && colliders.Count > 0)
+        {
+            foreach (var collider in colliders)
+            {
+                collider.material.bounceCombine = PhysicMaterialCombine.Average;
+                collider.material.bounciness = 0.5f;
+            }
+        }
+        colliders = null;
         targetObj = null;
         state.grabLine.enabled = false;
         state.onGrab = false;        
     }
 
-    public void CancleGrab()
+    /*public void CancleGrab()
     {
-        state.cameraController.ClearGrabObject();
-        foreach (var collider in colliders)
-        {
-            collider.material.bounceCombine = PhysicMaterialCombine.Average;
-            collider.material.bounciness = 0.5f;
-        }
-        colliders = null;
         targetObj.GetComponent<Collider>().material.dynamicFriction = 1f;
         targetObj = null;
         state.grabLine.enabled = false;
         targetRigid = null;
         state.onGrab = false;
-        state.isShootingState = false;
-    }
+       // state.isShootingState = false;
+    }*/
 
     void FollowingObj( )
     {
@@ -243,32 +250,33 @@ public class GrabGun : GunBase
             }
 
         }
-        
 
-       // state.cameraController.SetGrabObject(targetObj.transform);
-        
+
+
+        // state.cameraController.SetGrabObject(targetObj.transform);
+
         targetRigid = targetObj.GetComponent<Rigidbody>();
         colliders = targetRigid.GetComponentsInChildren<Collider>().ToList();
 
-        // 상위 오브젝트에는 Collider가 없어서 임시 조건방지
-        if(targetRigid.GetComponent<CatchObject>() == null)
-        {
-            colliders.Add(targetRigid.GetComponent<Collider>());
-        }
 
-        foreach(var collider in colliders)
+        if (colliders != null && colliders.Count > 0)
         {
-            collider.material.bounceCombine = PhysicMaterialCombine.Minimum;
-            collider.material.bounciness = 0;
+            foreach (var collider in colliders)
+            {
+                collider.material.bounceCombine = PhysicMaterialCombine.Minimum;
+                collider.material.bounciness = 0;
+            }
+
         }
 
         state.pickupPoint.position = state.hit.point;
         state.cameraController.SetGrabObject(targetObj.transform);
         state.grabCorrectPoint.position = targetRigid.position;
         
+        //targetRigid.excludeLayers &= ~(1 << excludedLayer);
         targetRigid.constraints = RigidbodyConstraints.FreezeRotation;
         targetRigid.useGravity = false;      
-        state.isShootingState = true;
+        //state.isShootingState = true;
 
         if (state.Ammo >= -ammo)
         {

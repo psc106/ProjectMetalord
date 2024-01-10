@@ -373,7 +373,7 @@ public class MovedObject : MonoBehaviour
                 if(collision.gameObject.transform.parent?.GetComponent<CatchObject>() == null)
                 {
                     if(checkContact)
-                    {                        
+                    {
                         Vector3 force;
 
                         if (collision.contacts[0].normal.y >= 0.5f)
