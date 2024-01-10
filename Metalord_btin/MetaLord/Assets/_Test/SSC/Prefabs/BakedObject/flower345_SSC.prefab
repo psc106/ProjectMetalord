@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 7101398013046940895}
   - component: {fileID: 1457799011878886333}
   - component: {fileID: 5416787698704595728}
-  - component: {fileID: 2426272525444236474}
   m_Layer: 10
   m_Name: flower345_SSC
   m_TagString: Untagged
@@ -30649,15 +30648,3 @@ MonoBehaviour:
   splatTexPick: {fileID: 0}
   ReadPixel: {fileID: 0}
   originTex: {fileID: 0}
---- !u!114 &2426272525444236474
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3560624498695192590}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2cba9ab1348e9bd43bef077c2c0dc7d7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
