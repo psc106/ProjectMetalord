@@ -507,8 +507,7 @@ public class CatchObject : MonoBehaviour
 
         // 내 자식만큼 오브젝트 캐싱
         for (int i = 0; i < myChild.Length; i++)
-        {
-            Debug.Log(myChild.Length);
+        {            
             myChild[i] = transform.GetChild(i).gameObject;
         }
 

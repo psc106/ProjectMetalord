@@ -5,12 +5,7 @@ using UnityEngine;
 
 public class DialogueDataParse : MonoBehaviour
 {
-    //public TextAsset testAsset;
-    //private void Start()
-    //{
-    //    ParseStatusDialogue(testAsset);
-    //}
-
+    
     public DialogueQuestion[] ParseQuestionList(TextAsset questionCsvData)
     {
         List<DialogueQuestion> questionList = new List<DialogueQuestion>();
@@ -124,19 +119,6 @@ public class DialogueDataParse : MonoBehaviour
             _statusDialogue.contextes = contextList.ToArray();
             statusDialogueList.Add(_statusDialogue);
         }
-        //Debug.Log(statusDialogueList.Count);
-        //for (int i = 0; i < statusDialogueList.Count; i++)
-        //{
-        //    Debug.LogFormat("{0} <=== 이게 row0 ID", statusDialogueList[i].dialogueID);
-        //    Debug.LogFormat("{0} <=== 이게 row1 speakerName", statusDialogueList[i].speakerName);
-        //    Debug.LogFormat("{0} <=== 이게 row2 contextes 길이?", statusDialogueList[i].contextes.Length);
-        //    Debug.LogFormat("{0} <=== 이게 row3 다음 대사 이동 있는지", statusDialogueList[i].nextTextNum);
-        //    Debug.LogFormat("{0} <=== 이게 row4 상태 표시 값", statusDialogueList[i].currentStatus);
-        //    for (int j = 0; j < statusDialogueList[i].contextes.Length; j++)
-        //    {
-        //        Debug.LogFormat("{0} <=== This is context", statusDialogueList[i].contextes[j]);
-        //    }
-        //}
         return statusDialogueList.ToArray();
     }
 }

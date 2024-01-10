@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class BearInteractUI : MonoBehaviour
 {
-    //private TMP_Text interactText = default;
     private readonly float fadeTime = 1f;
     public Image fadeImage = default;
 

@@ -7,6 +7,5 @@ public class Response
     
     public string ResponseText => responseText;
 
-
 }
 

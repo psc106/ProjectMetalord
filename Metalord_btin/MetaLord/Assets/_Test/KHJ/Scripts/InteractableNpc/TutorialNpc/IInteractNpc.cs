@@ -5,8 +5,4 @@ using UnityEngine;
 public interface IInteractNpc 
 {
     public void InteractNpc();
-    //public void ChangeNpcState(npcState _change)
-    //{
-
-    //}
 }
