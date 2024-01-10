@@ -27,6 +27,7 @@ public class RecordPopUpCanvas : MonoBehaviour
     // 획득시 UI 팝업
     private void PopUI(int _id)
     {
+        // 아이디가 저장되어있다면 UI 팝업되지 않도록 return
         if (DataManager.instance.savedGamePlayData.coinAndRecordItem[_id] == 1) return;
 
         ReflectItemID(_id);
@@ -46,5 +47,11 @@ public class RecordPopUpCanvas : MonoBehaviour
     {
         gameObject.SetActive(false);
         Controller_Physics.SwitchCameraLock(false);
+
+        // 채운 도감개수가 전체 도감 개수 이상이라면 게임 종료
+        if(RecordManager.endGameCount >= RecordManager.instance.recordObjectInfos.Count)
+        {
+            MainSceneManager.instance.EndGame();   
+        }
     }
 }

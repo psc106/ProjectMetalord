@@ -22,6 +22,7 @@ public class GrabGun : GunBase
     GameObject targetObj = null;
     Rigidbody targetRigid = null;      
     List<Collider> colliders;
+    string grabCancelText = "그랩취소";
 
     public override bool ShootGun()
     {
@@ -109,21 +110,36 @@ public class GrabGun : GunBase
             state.grabLine.SetPosition(0, state.GunHolderHand.position);
             state.grabLine.SetPosition(1, state.pickupPoint.position);
 
-            
-            if (dir.magnitude > .5f)
+           /* Debug.Log(dir.magnitude);
+            if(targetRigid.CompareTag("ContactObject") )
             {
+                RaycastHit hit;
+                Physics.Raycast(targetRigid.position, dir, out hit, 100, myLayer);
+                targetRigid.AddForce(dir + hit.normal *.5f);
+            }          
+            else*/ 
+            if (dir.magnitude > .5f && dir.magnitude <50)
+            {
+                Vector3 power = dir * state.speed;
+                if (power.magnitude > 100)
+                    power = power.normalized * 100;
                 targetRigid.velocity = Vector3.zero;
-                targetRigid.AddForce(dir * state.speed, ForceMode.VelocityChange);
+                targetRigid.AddForce(power, ForceMode.VelocityChange);
                 //targetRigid.velocity = dir.normalized * scala;
                 //targetRigid.rotation = state.grabCorrectPoint.rotation;
                 //targetRigid.velocity += state.pickupPoint.forward * distance;
                 //targetRigid.velocity =  up* -dir.y * 3 + right* dir.x * 3 + state.pickupPoint.forward * dir.z * 3;
             }
-            else
+            else if(dir.magnitude <= .5f)
             {
                 targetRigid.velocity = Vector3.zero;
                 targetRigid.AddForce(dir.normalized);
                 //targetRigid.position = state.grabCorrectPoint.position;
+            }
+            else 
+            {
+                state.CancelGrabText(grabCancelText);
+                CancelObj();
             }
         }
     }
@@ -133,9 +149,10 @@ public class GrabGun : GunBase
     {        
         if(targetRigid != null)
         {
-            //targetRigid.excludeLayers |= (1 << excludedLayer);
+            targetRigid.mass = 10;
+            targetRigid.excludeLayers = 0;
             targetRigid.constraints = RigidbodyConstraints.None;
-            targetRigid.useGravity = true;            
+            targetRigid.useGravity = true;
             targetRigid.velocity = Vector3.down * 2f;
             targetRigid = null;            
 
@@ -166,6 +183,7 @@ public class GrabGun : GunBase
             {
                 collider.material.bounceCombine = PhysicMaterialCombine.Average;
                 collider.material.bounciness = 0.5f;
+                collider.layerOverridePriority = 0;
             }
         }
         colliders = null;
@@ -265,6 +283,7 @@ public class GrabGun : GunBase
             {
                 collider.material.bounceCombine = PhysicMaterialCombine.Minimum;
                 collider.material.bounciness = 0;
+                collider.layerOverridePriority = -1;
             }
 
         }
@@ -273,9 +292,10 @@ public class GrabGun : GunBase
         state.cameraController.SetGrabObject(targetObj.transform);
         state.grabCorrectPoint.position = targetRigid.position;
         
-        //targetRigid.excludeLayers &= ~(1 << excludedLayer);
+        targetRigid.excludeLayers &= ~(1 << excludedLayer);
         targetRigid.constraints = RigidbodyConstraints.FreezeRotation;
-        targetRigid.useGravity = false;      
+        targetRigid.useGravity = false;
+        targetRigid.mass *= 2;
         //state.isShootingState = true;
 
         if (state.Ammo >= -ammo)

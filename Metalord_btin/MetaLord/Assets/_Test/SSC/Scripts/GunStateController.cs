@@ -842,4 +842,14 @@ public class GunStateController : MonoBehaviour
             usedGravity = true;
         }        
     }
+
+    public void CancelGrabText(string _text)
+    {
+        if (textFadeOut != null)
+        {
+            StopCoroutine(textFadeOut);
+        }
+
+        textFadeOut = StartCoroutine(IEFadeOutText(_text));
+    }
 }
