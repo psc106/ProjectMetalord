@@ -4,9 +4,11 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SocialPlatforms;
 using UnityEngine.UI;
+public enum GunState { READY, EMPTY, RELOADING }
 
 public class GunStateController : MonoBehaviour
 {
+
     // 심볼릭 상수
     #region Symbol
 

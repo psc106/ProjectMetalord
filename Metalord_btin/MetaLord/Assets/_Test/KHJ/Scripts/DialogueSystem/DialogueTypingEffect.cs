@@ -132,22 +132,19 @@ public class DialogueTypingEffect : MonoBehaviour
 
             //sumText = string.Empty;  //아마 간소화 가능 간소화 한다면 위에 empty는 살려둬야함
             //sumText += textLabel.text + " ";    //공백이 제거된 값 뒤에 스페이스 추가해서 sumText에 저장
-            //Debug.LogFormat("{0} <<< 이게 sumText", sumText);
+            
         }
 
         //StartCoroutine(TextSoundEffect(textToType,myAduio,textSound)); //일단 남겨둠
         isTypingRunning = false;                //타이핑 코루틴 종료
-        //Debug.Log("WriteEffect 끝났습니다?");
         fadeImgae.SetActive(true);              //켜지면 onenable 되서 fadein  fadeout 반복
         textLabel.text = PrintCompleteSentence(textToType); //바로 탈출하게 되면 완전한 문장 출력을 위한 구문
-        //Debug.LogFormat("완전한 문장 : {0} ", completeSentence);
     }
 
     //사운드 출력을 위한 코루틴 
     public IEnumerator TextSoundEffect(string textToType,AudioSource myAudio, int toneNumber)
     {
         string[] temporaryText = textToType.Split(new char[] { ' ' }); //띄어쓰기 기준으로 나눔
-        //Debug.Log(temporaryText.Length);
         for(int i = 0; i < temporaryText.Length; i++)                   //나누어진 수 만큼 반복문 돌아감
         {
             if (temporaryText[i] == "/" || temporaryText[i] == "*")        //특정 문자 만나면 사운드 재생을 안하고 넘김.  마침표 및 특정 문자도 추가할지 고민중
@@ -155,8 +152,6 @@ public class DialogueTypingEffect : MonoBehaviour
                 continue;
             }
             //string[] row = testText[i].Split(new char[] { ' ' });
-            //Debug.Log(temporaryText[i].Length);
-            //Debug.LogFormat("{0} <=== 텍스트", temporaryText[i]);
             for (int j = 0; j < temporaryText[i].Length; j++)           //나누어진 멤버의 글자 길이만큼 반복문 돌림
             {
                 //if (temporaryText[i] == "/")
@@ -176,7 +171,6 @@ public class DialogueTypingEffect : MonoBehaviour
         }
         //for (int i = 0;  i < textToType.Length; i++)
         //{
-        //    Debug.LogFormat("{0} <== 텍스트 길이", textToType.Length);
         //    myAudioClip = ChooseRandomSound(toneNumber);
         //    myAduio.PlayOneShot(myAudioClip);
         //    yield return new WaitForSeconds(0.085f);
@@ -213,10 +207,8 @@ public class DialogueTypingEffect : MonoBehaviour
 
         for (int i = 0; i < nanugi.Length; i++)
         {
-            //Debug.Log(nanugi[i]);
             if (nanugi[i] == chechLineC)
             {
-                //Debug.Log("같으면 들어오는건데");
                 //completeSentence += "\n";
                 textBuilder.Append("\n");
                 //continue;
@@ -234,7 +226,6 @@ public class DialogueTypingEffect : MonoBehaviour
                 textBuilder.Append(" ");
                 textBuilder.Append(nanugi[i]);
             }
-            //Debug.Log(textBuilder.ToString());
             //completeSentence += nanugi[i] + " ";
         }
         completeSentence = textBuilder.ToString(); 

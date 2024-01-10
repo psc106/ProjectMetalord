@@ -16,21 +16,14 @@ public class AudioManager : MonoBehaviour
     [Header("오디오 소스")]
     [SerializeField] AudioSource musicSource;
     [SerializeField] AudioSource SFXSource;
-    // TODO 3D로 소리를 내야 할 경우의 오디오 소스 추가
 
     [Header("오디오 클립"),Tooltip("필요한 오디오 클립을 끌어다 넣어주세요")]
     public AudioClip clip_Background;
-    public AudioClip clip_Click;
-    //TODO 필요한 음악 클립 추가
+    public AudioClip clip_Click;    
 
     private void Awake()
     {
         instance = this;
-    }
-
-    private void OnDisable()
-    {
-        //instance = null;
     }
 
     private void Start()

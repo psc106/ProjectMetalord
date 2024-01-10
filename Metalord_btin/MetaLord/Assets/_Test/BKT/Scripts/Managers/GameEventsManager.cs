@@ -20,8 +20,7 @@ public class GameEventsManager : MonoBehaviour
         // 싱글턴 패턴 인스턴스가 존재할경우 파괴 아닐경우 instance 지정
         if (instance == null)
         {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
+            instance = this;            
         }
         else if (instance != this)
         {

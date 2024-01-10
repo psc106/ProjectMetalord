@@ -13,7 +13,7 @@ using UnityEngine.UI;
 public class RecordManager : MonoBehaviour
 {
     static public RecordManager instance;
-    static public int endGameCount;
+    public int endGameCount;
 
     [Header("도감 캔버스")]
     [SerializeField] private GameObject recordCanvas;
@@ -80,8 +80,7 @@ public class RecordManager : MonoBehaviour
     {
         if (instance == null)
         {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
+            instance = this;                    
         }
         else if (instance != null)
         {
@@ -94,9 +93,7 @@ public class RecordManager : MonoBehaviour
         description = Utility.FindChildObj(recordCanvas, "Text(Info_Description)");
         pagePanel = Utility.FindChildObj(recordCanvas, "RecordPagePanel");
         labelSortGot = Utility.FindChildObj(recordCanvas, "Sort(Got)");
-        pageDisPlayText = Utility.FindChildObj(recordCanvas, "Text(Page)").GetComponent<TMP_Text>();
-
-        // test
+        pageDisPlayText = Utility.FindChildObj(recordCanvas, "Text(Page)").GetComponent<TMP_Text>();        
         saveRemainRecord = Utility.FindChildObj(recordCanvas, "SavePage");
 
         itemUIObjectPrefab = Resources.Load<GameObject>("Prefabs/Object_ForRecordObject");
@@ -152,7 +149,6 @@ public class RecordManager : MonoBehaviour
     {
         GameEventsManager.instance.recordEvents.ReflectRecord();
         recordCanvas.SetActive(false);
-
     }
 
     /// <summary>
@@ -347,9 +343,7 @@ public class RecordManager : MonoBehaviour
     /// 231231 배경택
     /// </summary>
     public void ChangePageDisPlayText()
-    {
-        //Debug.Log(maxPageIndex);
-
+    {        
         if (maxPageIndex < 0) pageDisPlayText.text = "0/0";
         else pageDisPlayText.text = (_pageIndex + 1).ToString() + "/" + (maxPageIndex + 1).ToString();
     }
@@ -406,11 +400,8 @@ public class RecordManager : MonoBehaviour
         gotSortIndex = 0; //정렬 인덱스 초기화
         pageIndex = 0; // 페이지 인덱스 초기화
         MakeRecordObject(SortTotal());
-
-        //labelSortZone.GetComponent<TMP_Dropdown>().value = 0;
-        labelSortGot.GetComponent<TMP_Dropdown>().value = 0;
-
-        //labelSortZone.GetComponent<TMP_Dropdown>().captionText.text = "지역";
+        
+        labelSortGot.GetComponent<TMP_Dropdown>().value = 0;        
         labelSortGot.GetComponent<TMP_Dropdown>().captionText.text = "획득 여부";
 
         if(selectedObject != null) selectedObject.InActiveChecking(); // 선택표시 비활성화

@@ -205,8 +205,7 @@ public class GrabGun : GunBase
     void FollowingObj( )
     {
         state.onGrab = true;
-        targetObj = state.hit.transform.gameObject;
-        Debug.Log(targetObj.gameObject.name);
+        targetObj = state.hit.transform.gameObject;        
 
         // 그랩 대상의 부모가 없다면
         if (targetObj.transform.parent == null)

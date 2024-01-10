@@ -12,14 +12,6 @@ public class UI_Sort : MonoBehaviour
     private void OnEnable()
     {
         if (RecordManager.instance != null) RecordManager.instance.ResetRecord();
-        else// Debug.Log("UI Sort OnEnable");
-        { }
-    }
-
-    private void Start()
-    {
-        if (RecordManager.instance != null) RecordManager.instance.ResetRecord();
-        else// Debug.Log("UI Sort Start");
-        { }
+        else{ /* pass */ }
     }
 }

@@ -266,8 +266,7 @@ public class MovedObject : MonoBehaviour
                     transform.parent = parentObj.transform;
                     controll.AddChild(transform.GetComponent<MeshCollider>());                    
                     targetNpc = collision.transform.GetComponent<NpcBase>();
-                    GunStateController.AddList(targetNpc);
-                    Debug.Log(targetNpc.gameObject.name);
+                    GunStateController.AddList(targetNpc);                    
                     targetNpc.ChangedState(npcState.objectAttached);
 
                     ClearState();

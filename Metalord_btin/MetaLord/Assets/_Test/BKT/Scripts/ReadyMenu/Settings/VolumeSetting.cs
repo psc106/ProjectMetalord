@@ -64,8 +64,6 @@ public class VolumeSetting : MonoBehaviour
             bgm_Audio = SoundManager.instance.transform.GetChild(0).GetComponent<AudioSource>();
             sfx_Audio = SoundManager.instance.transform.GetChild(1).GetComponent<AudioSource>();
         }
-
-
     }
 
     private void Start()
@@ -78,7 +76,6 @@ public class VolumeSetting : MonoBehaviour
         {
             Init();
         }
-        
     }
 
     private void OnDisable()
@@ -90,8 +87,7 @@ public class VolumeSetting : MonoBehaviour
     public void SetMasterVolume(float vol)
     {
         vol_Master = vol;
-        AudioMixerSet("Master", vol);        
-        //audioMixer.SetFloat("Master",Mathf.Log10(vol)*20);
+        AudioMixerSet("Master", vol);                
         text_Master.text = ((int)(vol * 100)).ToString() + "%";
     }
 
@@ -99,9 +95,7 @@ public class VolumeSetting : MonoBehaviour
     public void SetBGMVolume(float vol)
     {
         vol_BGM = vol;
-        AudioMixerSet("BGM", vol);
-
-        //audioMixer.SetFloat("BGM", Mathf.Log10(vol)*20);
+        AudioMixerSet("BGM", vol);        
         text_BGM.text = ((int)(vol * 100)).ToString() + "%";
     }
 
@@ -109,8 +103,7 @@ public class VolumeSetting : MonoBehaviour
     public void SetSFXVolume(float vol)
     {
         vol_SFX = vol;
-        AudioMixerSet("SFX", vol);
-        //audioMixer.SetFloat("SFX", Mathf.Log10(vol)*20);
+        AudioMixerSet("SFX", vol);        
         text_SFX.text = ((int)(vol * 100)).ToString() + "%";
     }
 

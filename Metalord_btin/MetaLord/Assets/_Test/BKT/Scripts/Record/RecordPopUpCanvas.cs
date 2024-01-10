@@ -48,10 +48,13 @@ public class RecordPopUpCanvas : MonoBehaviour
         gameObject.SetActive(false);
         Controller_Physics.SwitchCameraLock(false);
 
+        Debug.Log("현재 도감 카운트" + RecordManager.instance.recordObjectInfos);
+        Debug.Log("도감 카운트" + RecordManager.instance.endGameCount);
+
         // 채운 도감개수가 전체 도감 개수 이상이라면 게임 종료
-        if(RecordManager.endGameCount >= RecordManager.instance.recordObjectInfos.Count)
-        {
-            MainSceneManager.instance.EndGame();   
+        if(RecordManager.instance.endGameCount >= RecordManager.instance.recordObjectInfos.Count)
+        {            
+            MainSceneManager.instance.EndGame(); 
         }
     }
 }

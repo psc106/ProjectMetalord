@@ -55,13 +55,13 @@ public class RecordItem : MonoBehaviour
 
             GameEventsManager.instance.recordEvents.GetRecordItem((int)recordItem);
 
-            RecordManager.endGameCount++; // 게임 엔딩을 위해 게임종료 카운트 ++
+            // 전체 수집품 카운트 증가
+            UpRecordCount();
 
             // 사운드 추가
             int id = (int)ItemSoundList.GetRecordItemSound;
             SoundManager.instance.PlaySound(GroupList.Item, id);
-
-            //Debug.Log($"수집품 ID : {(int)recordItem}, 이름 : {recordItem}");
+            
             isExist = FALSE;
             gameObject.SetActive(false);
         }
@@ -72,9 +72,15 @@ public class RecordItem : MonoBehaviour
     {
         if (isExist == FALSE)
         {
-            //isExist = FALSE; // 존재 여부 False 적용
             GameEventsManager.instance.recordEvents.GetRecordItem((int)recordItem); // 도감에 적용
             gameObject.SetActive(false); //비활성화로 변경
+            UpRecordCount(); // 전체 수집품 카운트 증가
         }
+    }
+
+    private void UpRecordCount()
+    {
+            RecordManager.instance.endGameCount++; // 게임 엔딩을 위해 게임종료 카운트 ++
+
     }
 }
