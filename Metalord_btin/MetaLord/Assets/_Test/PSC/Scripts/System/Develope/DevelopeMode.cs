@@ -8,11 +8,11 @@ public class DevelopeMode : MonoBehaviour
     GameObject developePannel;
 
     // Update is called once per frame
-    void Update()
+    /*void Update()
     {
         if (Input.GetKeyDown(KeyCode.F1))
         {
             developePannel.SetActive(developePannel.activeInHierarchy ? false : true);
         }
-    }
+    }*/
 }
