@@ -66,7 +66,6 @@ public class MovedObject : MonoBehaviour
 
     void Update()
     {
-
             // 내 리지드바디가 존재하고, 그랩한 대상이 아닐 때 (그랩한 대상은 낙하속도 X)
             if (myRigid && !checkContact)
             {                
@@ -93,7 +92,7 @@ public class MovedObject : MonoBehaviour
                 }
             }
         // { TODO : 개인 리팩토링
-        #region CustomFallingObject
+       
         //if (state.usedGravity)
         //{
 
@@ -113,8 +112,7 @@ public class MovedObject : MonoBehaviour
         //    }
 
         //}
-
-        #endregion
+        
 
     }
 
@@ -348,8 +346,21 @@ public class MovedObject : MonoBehaviour
 
     //// 그랩한 물건이 이동형 오브젝트와 부딪힐때마다 물리력 행사 콜백
     private void OnCollisionEnter(Collision collision)
-    {
-        if(checkContact)
+    {        
+        if (collision.gameObject.CompareTag(contactTag))
+        {
+            ySpeed = 0;
+
+            if(myRigid)
+            {
+                Vector3 temp = myRigid.velocity;
+                temp.y = 0;
+                myRigid.velocity = temp;
+            }
+
+        }
+
+        if (checkContact)
         {
             gameObject.tag = contactTag;            
         }
@@ -360,7 +371,8 @@ public class MovedObject : MonoBehaviour
             // PaintTaget에 bool값 체크 존재, 페인팅된 대상에는 물리력을 부여 x Or 내가 페인팅된 상태면 X Or 특정 불값을 통해 연쇄적으로 서로에게 물리부여 상황 벗어나기
             if (collision.gameObject.GetComponent<PaintTarget>().CheckPainted() ||
                 transform.childCount != 0 ||
-                isSleep)
+                isSleep ||
+                collision.gameObject.CompareTag(contactTag))
             {
                 return;
             }
@@ -414,7 +426,7 @@ public class MovedObject : MonoBehaviour
 
     // 충돌지점 본드 체크
     private void OnCollisionStay(Collision collision)
-    {                       
+    {       
         // 그랩한 오브젝트가 플레이어 닿을시 임시 캔슬처리
         if (checkContact && collision.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
@@ -491,6 +503,18 @@ public class MovedObject : MonoBehaviour
         }
         #endregion
         // } TODO : 개인 리팩토링
+
+        if(collision.gameObject.CompareTag(contactTag))
+        {
+            ySpeed = 0;
+
+            if(myRigid)
+            {
+                Vector3 temp = myRigid.velocity;
+                temp.y = 0;
+                myRigid.velocity = temp;
+            }            
+        }
 
         // 이미 본드 동작을 하는 오브젝트를 다시 그랩하면 그랩하는순간 충돌면을 체크하여 그랩 해제됨에 따라 상태를 제어할 bool값 추가
         if (checkContact == false || collision.gameObject.layer == LayerMask.NameToLayer("CatchObject"))
@@ -749,6 +773,7 @@ public class MovedObject : MonoBehaviour
         isSleep = true;
         contactTime = 0f;
         ySpeed = 0f;
+        gameObject.tag = unContactTag;
 
         Invoke("ClearTime", 1.5f);
     }
