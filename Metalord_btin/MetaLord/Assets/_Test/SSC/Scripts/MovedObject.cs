@@ -35,6 +35,7 @@ public class MovedObject : MonoBehaviour
 
     Coroutine sleepCoroutine;
 
+    static int test = 0;
     private void Awake()
     {        
         state = FindAnyObjectByType<GunStateController>();
@@ -72,7 +73,7 @@ public class MovedObject : MonoBehaviour
                 }
 
                 // 충돌시간이 일정값 이하면 (공중에 있는 상태면)
-                if (contactTime <= 5f && !isSleep)
+                if (contactTime <= 3f && !isSleep)
                 {
                     // 임의의 중력가속도 적용
                     Vector3 tempVelocity = myRigid.velocity;
@@ -167,7 +168,7 @@ public class MovedObject : MonoBehaviour
 
     private void OnTriggerEnter(Collider collision)
     {
-        if (/*checkContact == false || */transform.parent != null || collision.gameObject.layer == LayerMask.NameToLayer("CatchObject"))
+        if (checkContact == false || transform.parent != null || collision.gameObject.layer == LayerMask.NameToLayer("CatchObject"))
         {            
             return;
         }        
@@ -178,7 +179,7 @@ public class MovedObject : MonoBehaviour
         if (collision.transform.parent == null)
         {
             // 상위 오브젝트 생성
-            parentObj = new GameObject();
+            parentObj = new GameObject("test"+test);
             parentObj.transform.gameObject.layer = LayerMask.NameToLayer("GrabedObject");
             CatchObject controll = parentObj.AddComponent<CatchObject>();
             GunStateController.AddList(controll);
@@ -228,7 +229,7 @@ public class MovedObject : MonoBehaviour
                     else
                     {
                         // 상위 오브젝트 생성
-                        parentObj = new GameObject();
+                        parentObj = new GameObject("test" + test++);
                         parentObj.transform.gameObject.layer = LayerMask.NameToLayer("Default");
                         CatchObject controll = parentObj.AddComponent<CatchObject>();
                         GunStateController.AddList(controll);
@@ -245,7 +246,7 @@ public class MovedObject : MonoBehaviour
                 }
                 else if (contactObj.transform.gameObject.layer == LayerMask.NameToLayer("NPC"))
                 {                    
-                    parentObj = new GameObject();
+                    parentObj = new GameObject("test" + test++);
                     parentObj.transform.gameObject.layer = LayerMask.NameToLayer("NPC");
                     //transform.gameObject.layer = LayerMask.NameToLayer("NPC");
                     CatchObject controll = parentObj.AddComponent<CatchObject>();
@@ -280,7 +281,7 @@ public class MovedObject : MonoBehaviour
                         return;
                     }
                     // 상위 오브젝트 생성
-                    parentObj = new GameObject();
+                    parentObj = new GameObject("test" + test++);
                     parentObj.transform.gameObject.layer = LayerMask.NameToLayer("GrabedObject");
                     CatchObject controll = parentObj.AddComponent<CatchObject>();
                     GunStateController.AddList(controll);
@@ -499,7 +500,7 @@ public class MovedObject : MonoBehaviour
                 if(collision.transform.parent == null)
                 {                    
                     // 상위 오브젝트 생성
-                    parentObj = new GameObject();
+                    parentObj = new GameObject("test" + test++);
                     parentObj.transform.gameObject.layer = LayerMask.NameToLayer("GrabedObject");                    
                     CatchObject controll = parentObj.AddComponent<CatchObject>();
                     GunStateController.AddList(controll);
@@ -573,7 +574,7 @@ public class MovedObject : MonoBehaviour
                             else 
                             {
                                 // 상위 오브젝트 생성
-                                parentObj = new GameObject();
+                                parentObj = new GameObject("test" + test++);
                                 parentObj.transform.gameObject.layer = LayerMask.NameToLayer("Default");
                                 CatchObject controll = parentObj.AddComponent<CatchObject>();
                                 GunStateController.AddList(controll);
@@ -587,7 +588,7 @@ public class MovedObject : MonoBehaviour
                         }
                         else if(contactObj.transform.gameObject.layer == LayerMask.NameToLayer("NPC"))
                         {
-                            parentObj = new GameObject();
+                            parentObj = new GameObject("test" + test++);
                             parentObj.transform.gameObject.layer = LayerMask.NameToLayer("NPC");
                             //transform.gameObject.layer = LayerMask.NameToLayer("NPC");
                             CatchObject controll = parentObj.AddComponent<CatchObject>();
@@ -615,7 +616,7 @@ public class MovedObject : MonoBehaviour
                                 return;
                             }
                             // 상위 오브젝트 생성
-                            parentObj = new GameObject();
+                            parentObj = new GameObject("test" + test++);
                             parentObj.transform.gameObject.layer = LayerMask.NameToLayer("GrabedObject");                        
                             CatchObject controll = parentObj.AddComponent<CatchObject>();                        
                             GunStateController.AddList(controll);
@@ -632,7 +633,7 @@ public class MovedObject : MonoBehaviour
                     // 아기곰의 경우
                     else if (contactObj.transform.gameObject.layer == LayerMask.NameToLayer("NPC"))
                     {
-                        parentObj = new GameObject();
+                        parentObj = new GameObject("test" + test++);
                         parentObj.transform.gameObject.layer = LayerMask.NameToLayer("NPC");
                         //transform.gameObject.layer = LayerMask.NameToLayer("NPC");
                         CatchObject controll = parentObj.AddComponent<CatchObject>();
@@ -693,8 +694,11 @@ public class MovedObject : MonoBehaviour
     {
         if (transform.parent != null)
         {
-            myColid.convex = true;                          
-            myRigid = transform.AddComponent<Rigidbody>();
+            myColid.convex = true;
+
+            myRigid = transform.GetComponent<Rigidbody>();
+            if (!myRigid) myRigid = transform.AddComponent<Rigidbody>();
+
             myRigid.velocity = Vector3.down * 3f;
             myRigid.mass = 10f;
             myRigid.useGravity = true;
@@ -719,7 +723,7 @@ public class MovedObject : MonoBehaviour
 
     // 강제 슬립?
     void SleepObj()
-    {                
+    {        
         checkContact = false;
         myRigid.velocity = Vector3.zero;
         Destroy(myRigid);        
@@ -800,7 +804,7 @@ public class MovedObject : MonoBehaviour
 
     void ClearTime()
     {        
-        isSleep = false;
+        isSleep = false;        
     }
 
 }

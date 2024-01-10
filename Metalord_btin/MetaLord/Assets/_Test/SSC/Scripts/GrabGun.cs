@@ -183,21 +183,34 @@ public class GrabGun : GunBase
     void FollowingObj( )
     {
         state.onGrab = true;
-        targetObj = state.hit.transform.gameObject;        
+        targetObj = state.hit.transform.gameObject;
+        Debug.Log(targetObj.gameObject.name);
 
         // 그랩 대상의 부모가 없다면
         if (targetObj.transform.parent == null)
-        {
-            // 공중에서 떨어지는 대상일 때 
-            if(targetObj.transform.GetComponent<Rigidbody>() != null)
-            {
-                /* PASS */
-            }
-            else
+        {            
+            // 떨어지고 있는 오브젝트라면
+            if(targetObj.GetComponent<Rigidbody>() == null)
             {                
                 targetObj.GetComponent<MeshCollider>().convex = true;
                 targetObj.AddComponent<Rigidbody>();
                 targetObj.GetComponent<MovedObject>().ChangedState();
+            }
+            else
+            {
+                // 조합된 오브젝트라면
+                if(targetObj.GetComponent<CatchObject>() != null)
+                {
+                    targetObj.GetComponent<CatchObject>().SetUpMesh();
+                    targetObj.GetComponent<CatchObject>().ChangedState();
+                }
+                else
+                {
+                    targetObj.GetComponent<MeshCollider>().convex = true;
+                    targetObj.GetComponent<MovedObject>().ChangedState();
+
+                }
+
             }
         }
         // 그랩 대상의 부모가 있다면
@@ -227,7 +240,8 @@ public class GrabGun : GunBase
                 targetObj = targetObj.transform.parent.gameObject;
                 CatchObject controll = targetObj.GetComponent<CatchObject>();
                 controll.SetUpMesh();
-                targetObj.AddComponent<Rigidbody>();                
+                targetObj.AddComponent<Rigidbody>();
+                targetRigid = targetObj.GetComponent<Rigidbody>();
                 controll.ChangedState();
             }
 
@@ -240,6 +254,7 @@ public class GrabGun : GunBase
         targetRigid = targetObj.GetComponent<Rigidbody>();
         colliders = targetRigid.GetComponentsInChildren<Collider>().ToList();
 
+    
         foreach(var collider in colliders)
         {
             collider.material.bounceCombine = PhysicMaterialCombine.Minimum;
