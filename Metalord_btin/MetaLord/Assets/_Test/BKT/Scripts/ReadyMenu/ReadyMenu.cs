@@ -68,16 +68,6 @@ public class ReadyMenu : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    ///// <summary>
-    ///// 게임 불러오기
-    ///// TODO Title쪽으로 옮겨야함
-    ///// </summary>
-    //public void LoadGame()
-    //{
-    //    //GameEventsManager.instance.dataEvents.LoadData(); // 불러오기 이벤트 발생
-    //    DataManager.instance.LoadGameData();
-    //}
-
     // 임시 버튼 사용 불가 소리
     public void CantUseSound()
     {
@@ -85,7 +75,7 @@ public class ReadyMenu : MonoBehaviour
         SoundManager.instance.PlaySound(GroupList.UI, (int)UISoundList.Cant_BuySound);
     }
 
-    // 임시 버튼 사용가능소리
+    // 사용 가능소리
     private void CanUseSound()
     {
         // 사운드 추가       

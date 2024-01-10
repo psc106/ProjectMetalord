@@ -58,11 +58,7 @@ public class MainSceneManager : MonoBehaviour
 
     IEnumerator EndingCredit()
     {
-        yield return new WaitForSeconds(2f);
-        //TODO 게임 엔딩크래딧 실행하는 함수
+        yield return new WaitForSeconds(2f);        
         endingCanvas.SetActive(true);
-
     }
-
-    
 }

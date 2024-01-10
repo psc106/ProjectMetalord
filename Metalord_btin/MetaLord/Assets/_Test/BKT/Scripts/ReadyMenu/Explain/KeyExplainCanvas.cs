@@ -2,8 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// 키 설명하는 캔버스
+// 배경택
 public class KeyExplainCanvas : MonoBehaviour
 {
+    // 확인된적이 있는지 체크하는 bool 변수
     private bool isConfirm = false;
 
     private void Awake()
@@ -33,12 +36,14 @@ public class KeyExplainCanvas : MonoBehaviour
         GameEventsManager.instance.dataEvents.onLoadData -= LoadObject;        
     }
 
+    // 저장
     private void SaveObject()
     {
         DataManager.instance.savedGamePlayData.ui_keyExplain = isConfirm;
 
     }
 
+    // 불러오기
     private void LoadObject()
     {
         isConfirm = DataManager.instance.savedGamePlayData.ui_keyExplain;

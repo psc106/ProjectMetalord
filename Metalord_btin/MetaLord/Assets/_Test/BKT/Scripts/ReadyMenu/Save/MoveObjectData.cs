@@ -72,9 +72,5 @@ public class MoveObjectData : MonoBehaviour
 
         // 불러온 오브젝트들은 전부 움직이지 않았던 오브젝트로 설정
         isMoved = false;
-
-        //Debug.Log($"{pos.x} + {pos.y} + {pos.z}");
-        //Debug.Log($"{rotation.x} + {rotation.y} + {rotation.z}");
-        //Debug.Log("값이 변경 됬나 ?");
     }
 }
