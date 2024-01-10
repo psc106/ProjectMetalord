@@ -120,8 +120,11 @@ public class GrabGun : GunBase
             else*/ 
             if (dir.magnitude > .5f && dir.magnitude <50)
             {
+                Vector3 power = dir * state.speed;
+                if (power.magnitude > 100)
+                    power = power.normalized * 100;
                 targetRigid.velocity = Vector3.zero;
-                targetRigid.AddForce(dir * state.speed, ForceMode.VelocityChange);
+                targetRigid.AddForce(power, ForceMode.VelocityChange);
                 //targetRigid.velocity = dir.normalized * scala;
                 //targetRigid.rotation = state.grabCorrectPoint.rotation;
                 //targetRigid.velocity += state.pickupPoint.forward * distance;
@@ -146,6 +149,7 @@ public class GrabGun : GunBase
     {        
         if(targetRigid != null)
         {
+            targetRigid.mass = 10;
             targetRigid.excludeLayers = 0;
             targetRigid.constraints = RigidbodyConstraints.None;
             targetRigid.useGravity = true;
@@ -290,7 +294,8 @@ public class GrabGun : GunBase
         
         targetRigid.excludeLayers &= ~(1 << excludedLayer);
         targetRigid.constraints = RigidbodyConstraints.FreezeRotation;
-        targetRigid.useGravity = false;      
+        targetRigid.useGravity = false;
+        targetRigid.mass *= 2;
         //state.isShootingState = true;
 
         if (state.Ammo >= -ammo)

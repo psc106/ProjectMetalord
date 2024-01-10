@@ -359,9 +359,9 @@ public class MovedObject : MonoBehaviour
             }
 
         }
-
         if (checkContact)
         {
+        
             gameObject.tag = contactTag;            
         }
 
