@@ -81,7 +81,7 @@ public class MovedObject : MonoBehaviour
                 {
                     // 임의의 중력가속도 적용
                     Vector3 tempVelocity = myRigid.velocity;
-                    ySpeed -= Time.deltaTime * state.gravityDecrement;
+                    ySpeed -= Time.deltaTime * decrementGravity;
                     tempVelocity.y += ySpeed;
 
                     if (tempVelocity.y >= maxGravity)

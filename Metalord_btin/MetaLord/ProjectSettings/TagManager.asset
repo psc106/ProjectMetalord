@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - ClimbObj
+  - ContactObject
   layers:
   - Default
   - TransparentFX
