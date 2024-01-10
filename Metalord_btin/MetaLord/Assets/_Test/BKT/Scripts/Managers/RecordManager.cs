@@ -13,7 +13,7 @@ using UnityEngine.UI;
 public class RecordManager : MonoBehaviour
 {
     static public RecordManager instance;
-    static public int endGameCount;
+    public int endGameCount;
 
     [Header("도감 캔버스")]
     [SerializeField] private GameObject recordCanvas;
@@ -80,7 +80,7 @@ public class RecordManager : MonoBehaviour
     {
         if (instance == null)
         {
-            instance = this;            
+            instance = this;                    
         }
         else if (instance != null)
         {
