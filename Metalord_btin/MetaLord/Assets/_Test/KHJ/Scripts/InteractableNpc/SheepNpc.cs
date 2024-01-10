@@ -4,11 +4,6 @@ using UnityEngine;
 
 public class SheepNpc : NpcBase, IInteractNpc
 {
-    //protected override void Awake()
-    //{
-    //    base.Awake();
-    //}
-
     public void InteractNpc()
     {
         myDialogue.CheckStateDialogue(12, state);
