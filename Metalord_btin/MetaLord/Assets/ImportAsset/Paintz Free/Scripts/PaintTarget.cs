@@ -791,9 +791,27 @@ public class PaintTarget : MonoBehaviour
         return;
     }
 
+    bool isRendering = true;
+
+    private void OnBecameVisible()
+    {
+        if(!isRendering)
+            isRendering = true;
+    }
+
+    private void OnBecameInvisible()
+    {
+        if(isRendering)
+            isRendering = false;
+    }
+
+    
+
     private void PaintSplats()
     {
         if (!validTarget) return;
+        if (!isRendering) return;
+
 
         if (m_Splats.Count > 0)
         {
